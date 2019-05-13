@@ -1,0 +1,76 @@
+<plexus xmlns="http://plexus.codehaus.org/PLEXUS/1.3.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://plexus.codehaus.org/PLEXUS/1.3.0 ./plexus-configuration-1.3.0.xsd">
+  <system-properties>
+    <xProperty>y</xProperty>
+  </system-properties>
+  <components>
+    <component>
+      <role>org.infrastructurebuilder.util.config.StringListSupplier</role>
+      <role-hint>testc1</role-hint>
+      <implementation>org.infrastructurebuilder.util.config.DefaultStringListSupplier</implementation>
+      <instantiation-strategy>singleton</instantiation-strategy>
+      <description>C1 string list config</description>
+      <isolated-realm>false</isolated-realm>
+      <configuration>
+        <strings>
+          <string>${project.build.testOutputDirectory}/c1.properties</string>
+        </strings>
+      </configuration>
+    </component>
+    <component>
+      <role>org.infrastructurebuilder.util.config.ConfigMapSupplier</role>
+      <role-hint>list1</role-hint>
+      <implementation>org.infrastructurebuilder.util.config.PropertiesInjectedConfigMapSupplier</implementation>
+      <instantiation-strategy>singleton</instantiation-strategy>
+      <description>C1 string list config</description>
+      <isolated-realm>false</isolated-realm>
+      <requirements>
+        <requirement>
+          <role>org.infrastructurebuilder.util.config.StringListSupplier</role>
+          <field-name>suppliers</field-name>
+        </requirement>
+      </requirements>
+    </component>
+
+    <component>
+      <role>org.apache.maven.project.MavenProject</role>
+      <role-hint>test-project</role-hint>
+      <implementation>org.apache.maven.project.MavenProject</implementation>
+      <instantiation-strategy>singleton</instantiation-strategy>
+      <description>Fake project</description>
+      <isolated-realm>false</isolated-realm>
+    </component>
+    <component>
+      <role>org.infrastructurebuilder.util.plexus.ProcessRunnerSupplier</role>
+      <role-hint>default</role-hint>
+      <implementation>org.infrastructurebuilder.util.plexus.DefaultProcessRunnerSupplier</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+      <description>Plexus-configured supplier for ProcessRunners</description>
+      <isolated-realm>false</isolated-realm>
+      <requirements>
+        <requirement>
+          <role>org.infrastructurebuilder.util.config.ConfigMapSupplier</role>
+          <role-hint>list1</role-hint>
+          <field-name>processRunnerConfigMapSupplier</field-name>
+        </requirement>
+      </requirements>
+    </component>
+    <component>
+      <role>org.infrastructurebuilder.util.config.ConfigMapSupplier</role>
+      <role-hint>testdefaultconfigmapsuppler</role-hint>
+      <implementation>org.infrastructurebuilder.util.plexus.DefaultProcessRunnerConfigMapSupplier</implementation>
+      <instantiation-strategy>singleton</instantiation-strategy>
+      <description>Test me</description>
+      <isolated-realm>false</isolated-realm>
+      <requirements>
+        <requirement>
+          <role>org.infrastructurebuilder.util.config.ConfigMapSupplier</role>
+          <field-name>configMap</field-name>
+        </requirement>
+      </requirements>
+    </component>
+  </components>
+
+
+</plexus>
