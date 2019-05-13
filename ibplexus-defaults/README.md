@@ -1,3 +1,3 @@
-# deliver8r-core-plexus-defaults
+# ibplexus-defaults
 
-Some basic default classes for rooting plexus implementations.
+Plexus defaults

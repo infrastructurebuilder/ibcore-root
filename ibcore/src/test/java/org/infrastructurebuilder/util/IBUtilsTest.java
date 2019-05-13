@@ -103,7 +103,10 @@ import java.util.zip.ZipEntry;
 import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.IBException;
 import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.infrastructurebuilder.util.artifacts.GAV;
+import org.infrastructurebuilder.util.artifacts.IBVersion;
 import org.infrastructurebuilder.util.artifacts.JSONOutputEnabled;
+import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
 import org.infrastructurebuilder.util.artifacts.impl.ServerProxyTestImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -1058,6 +1061,45 @@ public class IBUtilsTest {
     } catch (final IOException e) {
       fail("Nope!");
     }
+  }
+
+  @Test
+  public void testIntneralSgiPath() {
+    GAV g = new DefaultGAV("X:Y:1.0.0");
+    String s = IBUtils.toInternalSignaturePath(g);
+    assertEquals("X:Y::1.0.0:jar", s);
+  }
+
+  @Test
+  public void getVersion() {
+    GAV g = new DefaultGAV("X:Y:1.0.0");
+    IBVersion ibv = IBUtils.getVersion(g).get();
+    assertEquals("1.0.0", ibv.getValue());
+  }
+
+  @Test
+  public void testGeAFlinemaePath() {
+    GAV g = new DefaultGAV("X:Y:1.0.0");
+    String s = IBUtils.getArtifactFilenamePath(g);
+    assertEquals("Y-1.0.0.jar", s);
+    GAV g2 = new DefaultGAV("X:Y:1.0.0:abc:jeff");
+    String s2 = IBUtils.getArtifactFilenamePath(g2);
+    assertEquals("Y-1.0.0-jeff.abc", s2);
+  }
+
+  @Test
+  public void testAPIVersion() {
+    GAV g = new DefaultGAV("X:Y:1.0.0");
+    IBVersion c = IBUtils.apiVersion(g).get();
+    assertEquals("1.0", c.getValue());
+  }
+
+  @Test
+  public void test_Matcher() {
+    assertTrue(IBUtils._matcher("anything", null));
+    assertTrue(IBUtils._matcher(null, "anything"));
+    assertFalse(IBUtils._matcher("abc", "def"));
+    assertTrue(IBUtils._matcher("abc.*", "abcdef"));
 
   }
 }

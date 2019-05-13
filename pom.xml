@@ -44,7 +44,7 @@
   </distributionManagement>
   <properties>
     <error.version>1</error.version>
-    <iblog.version>0.9.0-SNAPSHOT</iblog.version>
+    <iblog.version>0.9.0</iblog.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -144,7 +144,6 @@
   </build>
   <modules>
     <module>ibcore</module>
-    <module>ibcore-extended</module>
     <module>ibexecutor</module>
     <module>ibplexus-defaults</module>
     <module>ibmaven-support</module>

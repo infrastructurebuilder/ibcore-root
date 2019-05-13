@@ -25,7 +25,7 @@ public class IBVersionException extends IBException {
    *
    */
   private static final long serialVersionUID = 6552670155614718500L;
-  public static ExceptionTranslator cvt = ET.newConfiguration().translate(SemverException.class)
+  public static ExceptionTranslator ibt = ET.newConfiguration().translate(SemverException.class)
       .to(IBVersionException.class).done();
 
   public IBVersionException() {

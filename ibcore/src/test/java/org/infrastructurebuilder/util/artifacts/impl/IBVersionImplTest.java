@@ -31,10 +31,12 @@ import org.infrastructurebuilder.util.artifacts.IBVersion.IBVersionType;
 import org.infrastructurebuilder.util.artifacts.IBVersion.VersionDiff;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultIBVersion;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultIBVersion.DefaultIBVersionRange;
-import org.infrastructurebuilder.util.artifacts.impl.DefaultIBVersion.DefaultIBVersionRequirement;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultIBVersion.RangeOperator;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.vdurmont.semver4j.Semver;
+import com.vdurmont.semver4j.Semver.SemverType;
 
 public class IBVersionImplTest {
   IBVersion v, v1, v2;
@@ -42,9 +44,11 @@ public class IBVersionImplTest {
   @Test
   public void compareTo_test() {
 
-    final IBVersion[] array = new DefaultIBVersion[] { new DefaultIBVersion("1.2.3"), new DefaultIBVersion("1.2.3-rc3"),
-        new DefaultIBVersion("1.2.3-rc2"), new DefaultIBVersion("1.2.3-rc1"), new DefaultIBVersion("1.2.2"),
-        new DefaultIBVersion("1.2.2-rc2"), new DefaultIBVersion("1.2.2-rc1"), new DefaultIBVersion("1.2.0") };
+    final IBVersion[] array = new DefaultIBVersion[] { new DefaultIBVersion("1.2.3"),
+        new DefaultIBVersion("1.2.3-rc3"), new DefaultIBVersion("1.2.3-rc2"),
+        new DefaultIBVersion("1.2.3-rc1"), new DefaultIBVersion("1.2.2"),
+        new DefaultIBVersion("1.2.2-rc2"), new DefaultIBVersion("1.2.2-rc1"),
+        new DefaultIBVersion("1.2.0") };
     final int len = array.length;
     final List<IBVersion> list = new ArrayList<>(len);
     Collections.addAll(list, array);
@@ -58,8 +62,10 @@ public class IBVersionImplTest {
 
   @Test
   public void compareTo_test2() {
-    assertTrue("2.0.0 is > 1.0.0", new DefaultIBVersion("2.0.0").compareTo(new DefaultIBVersion("1.0.0")) > 0);
-    assertTrue("1.0.0 == 1.0.0", new DefaultIBVersion("1.0.0").compareTo(new DefaultIBVersion("1.0.0")) == 0);
+    assertTrue("2.0.0 is > 1.0.0",
+        new DefaultIBVersion("2.0.0").compareTo(new DefaultIBVersion("1.0.0")) > 0);
+    assertTrue("1.0.0 == 1.0.0",
+        new DefaultIBVersion("1.0.0").compareTo(new DefaultIBVersion("1.0.0")) == 0);
   }
 
   @Test
@@ -146,7 +152,8 @@ public class IBVersionImplTest {
       assertFalse(semver.satisfies("4.5.6"));
     }
 
-    final IBVersionRequirement req = DefaultIBVersion.DefaultIBVersionRequirement.buildLoose("1.2.3");
+    final IBVersionRequirement req = DefaultIBVersion.DefaultIBVersionRequirement
+        .buildLoose("1.2.3");
 
     assertTrue("CVR really satisfies, like Snickers", new DefaultIBVersion("1.2.3+123").satisfies(req));
   }
@@ -167,8 +174,8 @@ public class IBVersionImplTest {
 
   @Test
   public void testdeliver8rVersionRangeImpl() {
-    final DefaultIBVersionRange testRange = new DefaultIBVersion.DefaultIBVersionRange(new DefaultIBVersion("1.0.0"),
-        RangeOperator.GTE);
+    final DefaultIBVersionRange testRange = new DefaultIBVersion.DefaultIBVersionRange(
+        new DefaultIBVersion("1.0.0"), RangeOperator.GTE);
     assertTrue("version range GTE 1.0.0 satisfied by String 1.0.0", testRange.isSatisfiedBy("1.0.0"));
     assertFalse("version range GTE 1.0.0 not satisfied by String 0.9.900", testRange.isSatisfiedBy("0.9.900"));
     assertTrue("version range GTE 1.0.0 satisfied by IBVersion(1.0.0)", testRange.isSatisfiedBy(v));
@@ -198,7 +205,8 @@ public class IBVersionImplTest {
 
   @Test
   public void testGetType() {
-    assertEquals("Type of IBVersion is ", IBVersionType.LOOSE, new DefaultIBVersion("1.0").getType());
+    assertEquals("Type of IBVersion is ", IBVersionType.LOOSE,
+        new DefaultIBVersion("1.0").getType());
   }
 
   @Test
@@ -216,8 +224,10 @@ public class IBVersionImplTest {
   public void testIsGreaterThan() {
     assertTrue("v1 is equal to '1.1.0'", v1.isGreaterThan(new DefaultIBVersion("1.1.0")));
     assertFalse("1.1.0 is less than 1.2.0'", new DefaultIBVersion("1.1.0").isGreaterThan(v1));
-    assertTrue("1.1 is greater than 1", new DefaultIBVersion("1.1").isGreaterThan(new DefaultIBVersion("1")));
-    assertFalse("1.1 is greater than 1", new DefaultIBVersion("1").isGreaterThan(new DefaultIBVersion("1.1")));
+    assertTrue("1.1 is greater than 1",
+        new DefaultIBVersion("1.1").isGreaterThan(new DefaultIBVersion("1")));
+    assertFalse("1.1 is greater than 1",
+        new DefaultIBVersion("1").isGreaterThan(new DefaultIBVersion("1.1")));
     assertTrue("1.2.3 is greater than 1.2.0", new DefaultIBVersion("1.2.3").isGreaterThan(v1));
   }
 
@@ -253,8 +263,10 @@ public class IBVersionImplTest {
     assertEquals("With Inc Major from 1.2.1 is 2.2.1", new DefaultIBVersion("2.2.1"),
         new DefaultIBVersion("1.2.1").withIncMajor());
 
-    assertEquals("With IncMajor from 1", new DefaultIBVersion("2"), new DefaultIBVersion("1").withIncMajor());
-    assertEquals("With IncMinor from 1.0", new DefaultIBVersion("1.1"), new DefaultIBVersion("1.0").withIncMinor());
+    assertEquals("With IncMajor from 1", new DefaultIBVersion("2"),
+        new DefaultIBVersion("1").withIncMajor());
+    assertEquals("With IncMinor from 1.0", new DefaultIBVersion("1.1"),
+        new DefaultIBVersion("1.0").withIncMinor());
 
   }
 
@@ -275,5 +287,45 @@ public class IBVersionImplTest {
     final IBVersion semver = new DefaultIBVersion("1.2.3-Beta.4+SHA123456789");
     semver.withClearedSuffixAndBuild().isEqualTo("1.2.3");
   }
-
+  @Test
+  public void testCocoapodsReq1() {
+    IBVersionRequirement req = DefaultIBVersion.DefaultIBVersionRequirement.buildCocoapods("~> 1.2");
+    DefaultIBVersion version = new DefaultIBVersion("1.2.3");
+    DefaultIBVersion version2 = new DefaultIBVersion("1.1");
+    assertTrue(req.isSatisfiedBy(version, IBVersionType.COCOAPODS));
+    assertFalse(req.isSatisfiedBy(version2, IBVersionType.COCOAPODS));
+  }
+  @Test
+  public void testIvyReq1() {
+    IBVersionRequirement req = DefaultIBVersion.DefaultIBVersionRequirement.buildIvy("1.2.+");
+    DefaultIBVersion version = new DefaultIBVersion("1.2.3");
+    DefaultIBVersion version2 = new DefaultIBVersion("1.1");
+    assertTrue(req.isSatisfiedBy(version, IBVersionType.IVY));
+    assertFalse(req.isSatisfiedBy(version2, IBVersionType.IVY));
+  }
+  @Test
+  public void testNPMReq1() {
+    IBVersionRequirement req = DefaultIBVersion.DefaultIBVersionRequirement.buildNPM("1.x");
+    DefaultIBVersion version = new DefaultIBVersion("1.2.3");
+    DefaultIBVersion version2 = new DefaultIBVersion("0.1");
+    assertTrue(req.isSatisfiedBy(version, IBVersionType.NPM));
+    assertFalse(req.isSatisfiedBy(version2, IBVersionType.NPM));
+  }
+  @Test
+  public void testLooseReq1() {
+    IBVersionRequirement req = DefaultIBVersion.DefaultIBVersionRequirement.buildLoose("1");
+    DefaultIBVersion version = new DefaultIBVersion("1");
+    DefaultIBVersion version2 = new DefaultIBVersion("0.1");
+    assertTrue(req.isSatisfiedBy(version, IBVersionType.LOOSE));
+    assertFalse(req.isSatisfiedBy(version2, IBVersionType.LOOSE));
+    IBVersionRequirement sreq = DefaultIBVersion.DefaultIBVersionRequirement.buildLoose(new Semver("1",SemverType.LOOSE));
+    DefaultIBVersion sversion = new DefaultIBVersion("1");
+    DefaultIBVersion sversion2 = new DefaultIBVersion("0.1");
+    assertTrue(sreq.isSatisfiedBy(sversion, IBVersionType.LOOSE));
+    assertFalse(sreq.isSatisfiedBy(sversion2, IBVersionType.LOOSE));
+  }
+  @Test(expected=IBVersionException.class)
+  public void testNull() {
+    new DefaultIBVersion(null);
+  }
 }

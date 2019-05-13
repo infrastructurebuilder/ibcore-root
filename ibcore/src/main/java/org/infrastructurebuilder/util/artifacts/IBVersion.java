@@ -19,15 +19,11 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.infrastructurebuilder.util.artifacts.impl.DefaultIBVersion;
+import org.infrastructurebuilder.util.artifacts.impl.DefaultIBVersion.RangeOperator;
 
 import com.vdurmont.semver4j.Semver.SemverType;
 
 public interface IBVersion extends Comparable<IBVersion> {
-  public static Optional<IBVersion> apiVersion(final GAV gav) {
-    return Objects.requireNonNull(gav).getVersion().map(DefaultIBVersion::new)
-        .map(DefaultIBVersion::apiVersion);
-  }
-
 
   public interface IBVersionRange {
     public boolean isSatisfiedBy(IBVersion version);
@@ -42,17 +38,9 @@ public interface IBVersion extends Comparable<IBVersion> {
 
   }
 
+  // Straight from SemverType
   public enum IBVersionType {
-
-    COCOAPODS,
-
-    IVY,
-
-    LOOSE,
-
-    NPM,
-
-    STRICT;
+    COCOAPODS, IVY, LOOSE, NPM, STRICT;
 
     public SemverType asSemVerType() {
       return SemverType.valueOf(name());
@@ -134,5 +122,7 @@ public interface IBVersion extends Comparable<IBVersion> {
   IBVersion withIncPatch();
 
   IBVersion withIncPatch(int increment);
+
+  IBVersionRange forRange(RangeOperator op);
 
 }

@@ -31,7 +31,7 @@
 	<!-- URL for site gen -->
   <url>${github.url.base}/${project.artifactId}</url>
   <properties>
-    <test.coverage.percentage.required>97</test.coverage.percentage.required>
+    <test.coverage.percentage.required>96</test.coverage.percentage.required>
   </properties>
   <dependencies>
     <dependency>
@@ -47,6 +47,11 @@
       <artifactId>org.eclipse.sisu.plexus</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.vdurmont</groupId>
+      <artifactId>semver4j</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>

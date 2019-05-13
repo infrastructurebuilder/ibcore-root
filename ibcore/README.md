@@ -1,3 +1,3 @@
-# deliver8r-core
+# ibcore
 
-Standard interfaces (and exceptions) for JVM-based applications within Deliver8r codebases
+Standard interfaces (and exceptions) for JVM-based applications within IB

@@ -1,4 +1,4 @@
-# deliver8r-executor
+# ibexecutor
 
 Standard interfaces (and exceptions) for executing processes and capturing the results.
 

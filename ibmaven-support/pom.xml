@@ -45,7 +45,7 @@
     </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder</groupId>
-      <artifactId>ibcore-extended</artifactId>
+      <artifactId>ibcore</artifactId>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

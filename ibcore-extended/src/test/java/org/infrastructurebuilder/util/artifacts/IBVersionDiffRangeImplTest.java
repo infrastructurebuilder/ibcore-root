@@ -46,22 +46,22 @@ public class IBVersionDiffRangeImplTest {
 
   @Test
   public void testRequirementCocoapods() {
-    final IBVersionRequirement v = DefaultIBVersion.DefaultDeliver8rVersionRequirement
+    final IBVersionRequirement v = DefaultIBVersion.DefaultIBVersionRequirement
         .buildCocoapods("1.0.1");
     assertNotNull("1.0.1 is a thing", v);
   }
 
   @Test
   public void testRequirementIvy() {
-    final IBVersionRequirement v = DefaultIBVersion.DefaultDeliver8rVersionRequirement.buildIvy("1.0.1");
+    final IBVersionRequirement v = DefaultIBVersion.DefaultIBVersionRequirement.buildIvy("1.0.1");
     assertNotNull("1.0.1 is a thing", v);
   }
 
   @Test
   public void testRequirementLoose() {
-    final IBVersionRequirement v = DefaultIBVersion.DefaultDeliver8rVersionRequirement.buildLoose("1.0");
+    final IBVersionRequirement v = DefaultIBVersion.DefaultIBVersionRequirement.buildLoose("1.0");
     assertNotNull("Loose is a thing", v);
-    final IBVersionRequirement v1 = DefaultIBVersion.DefaultDeliver8rVersionRequirement
+    final IBVersionRequirement v1 = DefaultIBVersion.DefaultIBVersionRequirement
         .buildLoose(new Semver("1.0", Semver.SemverType.LOOSE));
     assertNotNull("Loose is still a thing", v1);
     assertTrue("Satisfies 1.0", v1.isSatisfiedBy(new DefaultIBVersion("1.0"), IBVersionType.LOOSE));
@@ -70,7 +70,7 @@ public class IBVersionDiffRangeImplTest {
 
   @Test(expected = IBVersionException.class)
   public void testRequirementLooseFail() {
-    final IBVersionRequirement v1 = DefaultIBVersion.DefaultDeliver8rVersionRequirement
+    final IBVersionRequirement v1 = DefaultIBVersion.DefaultIBVersionRequirement
         .buildLoose(new Semver("1.0", Semver.SemverType.LOOSE));
     assertFalse("Satisfies 1.0 strict",
         v1.isSatisfiedBy(new DefaultIBVersion("1.0"), IBVersionType.STRICT));
@@ -79,19 +79,19 @@ public class IBVersionDiffRangeImplTest {
 
   @Test
   public void testRequirementNPM() {
-    final IBVersionRequirement v = DefaultIBVersion.DefaultDeliver8rVersionRequirement.buildNPM("1.0.1");
+    final IBVersionRequirement v = DefaultIBVersion.DefaultIBVersionRequirement.buildNPM("1.0.1");
     assertNotNull("1.0.1 is a thing", v);
   }
 
   @Test(expected = IBVersionException.class)
   public void testRequirementStrictFail() {
-    final IBVersionRequirement v = DefaultIBVersion.DefaultDeliver8rVersionRequirement.buildStrict("1.0");
+    final IBVersionRequirement v = DefaultIBVersion.DefaultIBVersionRequirement.buildStrict("1.0");
     assertNotNull("Loose is a thing", v);
   }
 
   @Test
   public void testRequirementStrictPass() {
-    final IBVersionRequirement v = DefaultIBVersion.DefaultDeliver8rVersionRequirement
+    final IBVersionRequirement v = DefaultIBVersion.DefaultIBVersionRequirement
         .buildStrict("1.0.1");
     assertNotNull("1.0.1 is a thing", v);
   }
