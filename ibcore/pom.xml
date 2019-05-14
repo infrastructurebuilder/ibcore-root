@@ -27,7 +27,7 @@
   <artifactId>ibcore</artifactId>
   <packaging>jar</packaging>
   <name>${project.artifactId}</name>
-  <description>Lightly encumberd Standard interfaces (and exceptions) for JVM-based applications within deliver8r codebases</description>
+  <description>Lightly encumberd Standard interfaces (and exceptions) for JVM-based applications within IB codebases</description>
 	<!-- URL for site gen -->
   <url>${github.url.base}/${project.artifactId}</url>
   <properties>

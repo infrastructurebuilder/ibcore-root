@@ -134,7 +134,7 @@ public class GAVTest {
 
   @Test
   public void testConstruction() {
-    assertNotNull("deliver8rVersioned", new DefaultGAV("ACLASSIFIER", "B", "1.0"));
+    assertNotNull("IBVersioned", new DefaultGAV("ACLASSIFIER", "B", "1.0"));
     assertNotNull("StringVersioned", new DefaultGAV("ACLASSIFIER", "B", "1.0"));
 
   }

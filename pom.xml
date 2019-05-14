@@ -93,12 +93,6 @@
       </dependency>
       <dependency>
         <groupId>org.infrastructurebuilder</groupId>
-        <artifactId>deliver8r-core-crypto-config</artifactId>
-        <version>${crypto.version}</version>
-        <type>test-jar</type>
-      </dependency>
-      <dependency>
-        <groupId>org.infrastructurebuilder</groupId>
         <artifactId>ibexceptions</artifactId>
         <version>${error.version}</version>
       </dependency>

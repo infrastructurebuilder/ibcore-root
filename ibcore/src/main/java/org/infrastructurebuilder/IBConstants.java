@@ -106,7 +106,7 @@ public interface IBConstants {
   String PRIVATE_KEY = "privateKey";
   String RANDOM = "*RANDOM*";
 
-  String ROOTPATH = "/io/deliver8r/test/keys";
+  String ROOTPATH = "com/infrastructurebuilder/test/keys";
   String SHA512 = _SHA512;
   String SOURCE_LEVEL = "sourceLevel";
   String SYMMETRIC_PREFIX = "*#*";

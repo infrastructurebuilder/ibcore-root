@@ -23,7 +23,7 @@ import org.junit.Test;
 public class ProcessExceptionTest {
 
   @Test
-  public void testdeliver8rProcessExceptionString() {
+  public void testIBProcessExceptionString() {
     assertNotNull(new ProcessException("X"));
     assertNotNull(new ProcessException(new RuntimeException()));
     assertNotNull(new ProcessException("X", new RuntimeException()));

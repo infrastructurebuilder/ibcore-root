@@ -91,8 +91,8 @@ public class IBVersionImplTest {
   @Test
   public void getValue_returns_the_original_value_trimmed_and_with_the_same_case() {
     final String version = "  1.2.3-BETA.11+sHa.0nSFGKjkjsdf  ";
-    final IBVersion deliver8rVersionImpl = new DefaultIBVersion(version);
-    assertEquals("1.2.3-BETA.11+sHa.0nSFGKjkjsdf", deliver8rVersionImpl.getValue());
+    final IBVersion ibVersionImpl = new DefaultIBVersion(version);
+    assertEquals("1.2.3-BETA.11+sHa.0nSFGKjkjsdf", ibVersionImpl.getValue());
   }
 
   @Test
@@ -173,7 +173,7 @@ public class IBVersionImplTest {
   }
 
   @Test
-  public void testdeliver8rVersionRangeImpl() {
+  public void testIBVersionRangeImpl() {
     final DefaultIBVersionRange testRange = new DefaultIBVersion.DefaultIBVersionRange(
         new DefaultIBVersion("1.0.0"), RangeOperator.GTE);
     assertTrue("version range GTE 1.0.0 satisfied by String 1.0.0", testRange.isSatisfiedBy("1.0.0"));

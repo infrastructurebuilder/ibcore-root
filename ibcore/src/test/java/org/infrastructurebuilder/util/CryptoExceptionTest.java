@@ -25,19 +25,19 @@ public class CryptoExceptionTest {
   private static final String STRING = "SOMESTRING";
 
   @Test
-  public void testdeliver8rCryptoException() {
+  public void testIBCryptoException() {
     assertNotNull("Empty", new IBCryptoException());
   }
 
   @Test
-  public void testdeliver8rCryptoExceptionString() {
+  public void testIBCryptoExceptionString() {
     final IBCryptoException x = new IBCryptoException(STRING);
     assertNotNull("String", x);
     assertEquals("String same", STRING, x.getMessage());
   }
 
   @Test
-  public void testdeliver8rCryptoExceptionStringThrowable() {
+  public void testIBCryptoExceptionStringThrowable() {
     final Throwable t = new NullPointerException();
     final IBCryptoException x = new IBCryptoException(STRING, t);
     assertNotNull("Throwable", x);
@@ -46,7 +46,7 @@ public class CryptoExceptionTest {
   }
 
   @Test
-  public void testdeliver8rCryptoExceptionStringThrowableBooleanBoolean() {
+  public void testIBCryptoExceptionStringThrowableBooleanBoolean() {
     final Throwable t = new NullPointerException();
     final IBCryptoException x = new IBCryptoException(STRING, t, false, false);
     assertNotNull("Throwable", x);
@@ -55,7 +55,7 @@ public class CryptoExceptionTest {
   }
 
   @Test
-  public void testdeliver8rCryptoExceptionThrowable() {
+  public void testIBCryptoExceptionThrowable() {
     final Throwable t = new NullPointerException();
     final IBCryptoException x = new IBCryptoException(t);
     assertNotNull("Throwable", x);
