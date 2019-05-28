@@ -15,23 +15,80 @@
  */
 package org.infrastructurebuilder.util;
 
+import static java.util.Objects.requireNonNull;
+import static org.infrastructurebuilder.IBException.cet;
+import static org.infrastructurebuilder.util.IBUtils.readFile;
+
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
-public interface ServerProxy {
+public class ServerProxy {
+  private final String id;
+  private final Optional<Path> keyPath;
+  private final Optional<String> passphrase;
+  private final Optional<String> principal;
+  private final Optional<String> secret;
+  private final Optional<String> filePermissions;
+  private final Optional<String> directoryPermissions;
+  private final Optional<String> configurationAsWrittenXMLString;
 
-  BasicCredentials getBasicCredentials();
+  public ServerProxy() {
+    this("default", Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+        Optional.empty(), Optional.empty());
+  }
 
-  String getId();
+  public ServerProxy(final String id, final Optional<String> principal, final Optional<String> secret,
+      final Optional<String> passphrase, final Optional<Path> keyPath, final Optional<String> filePerms,
+      final Optional<String> directoryPerms, final Optional<String> configAsXML) {
+    super();
+    this.id = requireNonNull(id);
+    this.principal = requireNonNull(principal);
+    this.secret = requireNonNull(secret);
+    this.passphrase = requireNonNull(passphrase);
+    this.keyPath = requireNonNull(keyPath);
+    this.filePermissions = requireNonNull(filePerms);
+    this.directoryPermissions = requireNonNull(directoryPerms);
+    this.configurationAsWrittenXMLString = requireNonNull(configAsXML);
+  }
 
-  Optional<Path> getKeyPath();
+  public BasicCredentials getBasicCredentials() {
+    return new DefaultBasicCredentials(principal.orElse(null), secret);
+  }
 
-  Optional<String> getPassphrase();
+  public String getId() {
+    return id;
+  }
 
-  Optional<String> getPrincipal();
+  public Optional<Path> getKeyPath() {
+    return keyPath.filter(Files::isReadable);
+  }
 
-  Optional<String> getSecret();
+  public Optional<String> getPassphrase() {
+    return passphrase;
+  }
 
-  Optional<String> readKey();
+  public Optional<String> getPrincipal() {
+    return principal;
+  }
 
+  public Optional<String> getSecret() {
+    return secret;
+  }
+
+  public Optional<String> readKey() {
+    return getKeyPath().map(f -> cet.withReturningTranslation(() -> readFile(f)));
+  }
+
+  public Optional<String> getConfiguration() {
+    return configurationAsWrittenXMLString;
+  }
+
+  public Optional<String> getDirectoryPermissions() {
+    return directoryPermissions;
+  }
+
+  public Optional<String> getFilePermissions() {
+    return filePermissions;
+  }
 }

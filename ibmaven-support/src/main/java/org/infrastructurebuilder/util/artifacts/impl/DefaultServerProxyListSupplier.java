@@ -27,7 +27,6 @@ import javax.inject.Named;
 import org.apache.maven.settings.Settings;
 import org.infrastructurebuilder.util.ServerProxy;
 import org.infrastructurebuilder.util.ServerProxyListSupplier;
-import org.infrastructurebuilder.util.artifacts.impl.ServerProxyImpl;
 
 @Named
 public class DefaultServerProxyListSupplier implements ServerProxyListSupplier {
@@ -37,7 +36,7 @@ public class DefaultServerProxyListSupplier implements ServerProxyListSupplier {
   @Inject
   public DefaultServerProxyListSupplier(final Settings settings) {
     servers = settings
-        .getServers().stream().map(s -> new ServerProxyImpl(s.getId(), ofNullable(s.getUsername()),
+        .getServers().stream().map(s -> new ServerProxy(s.getId(), ofNullable(s.getUsername()),
             ofNullable(s.getPassword()), ofNullable(s.getPassphrase()), ofNullable(s.getPrivateKey()).map(Paths::get)))
         .collect(Collectors.toList());
   }

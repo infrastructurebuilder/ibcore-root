@@ -104,7 +104,7 @@ public class ArtifactServicesTest {
 
     @Override
     public Optional<URL> getRemoteRepo() {
-      return IBException.cet.withReturningTranslation(() -> Optional.of(new URL(ArtifactServices.CENTRAL_REPO_URL)));
+      return Optional.of(ArtifactServices.CENTRAL_REPO_URL);
     }
 
   }
@@ -130,7 +130,7 @@ public class ArtifactServicesTest {
 
   @Test
   public void testGetTrmeote() {
-    assertEquals(ArtifactServices.CENTRAL_REPO_URL, as.getRemoteRepo().get().toExternalForm());
+    assertEquals(ArtifactServices.CENTRAL_REPO_URL, as.getRemoteRepo().get());
   }
 
   @Test

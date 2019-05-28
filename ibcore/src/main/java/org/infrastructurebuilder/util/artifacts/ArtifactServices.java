@@ -23,16 +23,18 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.infrastructurebuilder.IBException;
 
 public interface ArtifactServices {
   final static String BASIC_PACKAGING = "jar";
   final static String CENTRAL_REPO_ID = "central";
-  final static String CENTRAL_REPO_URL = "https://repo.maven.apache.org/maven2/";
+  final static String CENTRAL_REPO_STRING_URL = "https://repo.maven.apache.org/maven2/";
   static final String LOCALREPO = "localRepo";
 
   static final String NORMALIZE_SNAPSHOTS = "normalizeSnapshots";
   static final String REMOTE_REPO_URL = "remoteRepoUrl";
   final static String SOURCE_CLASSIFIER = "sources";
+  final static URL CENTRAL_REPO_URL = IBException.cet.withReturningTranslation(() -> new URL(CENTRAL_REPO_STRING_URL));
 
   GAV getArtifact(GAV coords, String scope);
 
@@ -55,9 +57,8 @@ public interface ArtifactServices {
 
   default List<Path> getDependencies(final GAV coords, final String scope) {
     List<GAV> q = getArtifacts(coords, scope, false).stream().filter(a -> a.getFile().isPresent())
-    .collect(Collectors.toList());
-    return q.stream().map(a -> a.getFile().get())
         .collect(Collectors.toList());
+    return q.stream().map(a -> a.getFile().get()).collect(Collectors.toList());
   }
 
   List<Path> getDependenciesOfClassifiedTypeFor(GAV coords, String scope, String classifier, String type,

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.artifacts.impl;
+package org.infrastructurebuilder.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -24,11 +24,13 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 import org.infrastructurebuilder.util.ServerProxy;
+import org.infrastructurebuilder.util.ServerProxy;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ServerProxyImplTest {
 
+  private static final String TESTCONFIGSTRING = "<configuration><abc>123</abc></configuration>";
   private ServerProxy p;
   private Path path;
 
@@ -37,8 +39,8 @@ public class ServerProxyImplTest {
     final Path target = Paths.get(Optional.ofNullable(System.getProperty("target")).orElse("./target"));
     final Path testClasses = target.resolve("test-classes");
     path = testClasses.resolve("X.txt").toAbsolutePath();
-    p = new ServerProxyImpl("id", Optional.of("username"), Optional.of("password"), Optional.of("passphrase"),
-        Optional.of(path));
+    p = new ServerProxy("id", Optional.of("username"), Optional.of("password"), Optional.of("passphrase"),
+        Optional.of(path), Optional.of("0666"), Optional.of("0777"), Optional.of(TESTCONFIGSTRING));
   }
 
   @Test
@@ -75,6 +77,17 @@ public class ServerProxyImplTest {
   @Test
   public void testServerProxyImpl() {
     assertNotNull(p);
+  }
+
+  @Test
+  public void testPermsData() {
+    assertEquals("0777", p.getDirectoryPermissions().get());
+    assertEquals("0666", p.getFilePermissions().get());
+  }
+
+  @Test
+  public void testConfiguration() {
+    assertEquals(TESTCONFIGSTRING, p.getConfiguration().get());
   }
 
 }

@@ -107,7 +107,6 @@ import org.infrastructurebuilder.util.artifacts.GAV;
 import org.infrastructurebuilder.util.artifacts.IBVersion;
 import org.infrastructurebuilder.util.artifacts.JSONOutputEnabled;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
-import org.infrastructurebuilder.util.artifacts.impl.ServerProxyTestImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -610,7 +609,6 @@ public class IBUtilsTest {
   public void testGetServerProxies() {
     final List<ServerProxy> a = getServicesFor(ServerProxy.class);
     assertEquals(1, a.size());
-    assertEquals(ServerProxyTestImpl.class, a.get(0).getClass());
   }
 
   @Test
