@@ -19,6 +19,7 @@ import static java.util.Optional.ofNullable;
 
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -35,9 +36,10 @@ public class DefaultServerProxyListSupplier implements ServerProxyListSupplier {
 
   @Inject
   public DefaultServerProxyListSupplier(final Settings settings) {
-    servers = settings
-        .getServers().stream().map(s -> new ServerProxy(s.getId(), ofNullable(s.getUsername()),
-            ofNullable(s.getPassword()), ofNullable(s.getPassphrase()), ofNullable(s.getPrivateKey()).map(Paths::get)))
+    servers = settings.getServers().stream()
+        .map(s -> new ServerProxy(s.getId(), ofNullable(s.getUsername()), ofNullable(s.getPassword()),
+            ofNullable(s.getPassphrase()), ofNullable(s.getPrivateKey()).map(Paths::get),
+            ofNullable(s.getFilePermissions()), ofNullable(s.getDirectoryPermissions()), Optional.empty()))
         .collect(Collectors.toList());
   }
 
