@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibparent</artifactId>
-    <version>4</version>
+    <version>5</version>
   </parent>
   <artifactId>ibcore-root</artifactId>
   <version>0.10.1-SNAPSHOT</version>
@@ -41,7 +41,7 @@
     </site>
   </distributionManagement>
   <properties>
-    <error.version>4</error.version>
+    <error.version>5</error.version>
     <iblog.version>0.9.0</iblog.version>
   </properties>
   <dependencyManagement>
@@ -51,7 +51,7 @@
         <artifactId>maven-import-bom</artifactId>
         <type>pom</type>
         <scope>import</scope>
-        <version>${maven.version}.1</version>
+        <version>${maven.version}.2</version>
       </dependency>
       <dependency>
         <groupId>org.infrastructurebuilder</groupId>
