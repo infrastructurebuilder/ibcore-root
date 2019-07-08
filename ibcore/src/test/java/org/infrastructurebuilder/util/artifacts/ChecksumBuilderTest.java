@@ -17,6 +17,7 @@ package org.infrastructurebuilder.util.artifacts;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -58,7 +59,6 @@ public class ChecksumBuilderTest {
   private Optional<Path> relativeRoot;
   private final Checksum relRootCheck = new Checksum(
       "ffdc68defa429277daa99fa2ef18b55c2f477bcb050bff14fd679e42aa97ddf8c1193276021b78d02645c7190ef02d81d4a0397e8de19f13129e8177df22bbd6");
-//  private ChecksumBuilder sha1;
   private ChecksumBuilder sha512;
   private ChecksumEnabled t;
 //  private final Checksum throwChek = new Checksum(
@@ -70,11 +70,15 @@ public class ChecksumBuilderTest {
   public void setUp() throws Exception {
     relativeRoot = Optional.of(Paths.get(Optional.ofNullable(System.getProperty("target_dir")).orElse("./target")));
     sha512 = ChecksumBuilder.newInstance(relativeRoot);
-    sha1 = ChecksumBuilder.newAlternateInstance("SHA-1", relativeRoot);
     map = new HashMap<>();
     m = new HashMap<>();
     t = () -> new Checksum("ABCD");
 
+  }
+
+  @Test
+  public void sha1Test() {
+    assertNotNull(ChecksumBuilder.newAlternateInstance("SHA-1", relativeRoot));
   }
 
   @Test
