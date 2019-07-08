@@ -45,7 +45,7 @@ public class GAVTest {
   private DefaultGAV gav2NoC;
   private DefaultGAV gav3;
   private DefaultGAV gavNoC;
-  private DefaultGAV gavNoC2;
+//  private DefaultGAV gavNoC2;
   private GAV gavNoV;
   private GAV gavs;
   private JSONObject j;
@@ -57,7 +57,7 @@ public class GAVTest {
     gavNoV = new DefaultGAV(X, Y, ACLASSIFIER, null, BASIC_PACKAGING);
     gavNoC = new DefaultGAV(X, Y, null, null, BASIC_PACKAGING);
     gav2 = new DefaultGAV(gav.asJSON());
-    gavNoC2 = new DefaultGAV(X, Y, "", null, BASIC_PACKAGING);
+//    gavNoC2 = new DefaultGAV(X, Y, "", null, BASIC_PACKAGING);
     gav2NoC = new DefaultGAV(gav.asJSON(), "");
     gav3 = DefaultGAV.copyFromSpec(gav2);
     j = new JSONObject("{\n" + "  \"extension\": \"" + BASIC_PACKAGING + "\",\n" + "  \"groupId\": \"" + X + "\",\n"

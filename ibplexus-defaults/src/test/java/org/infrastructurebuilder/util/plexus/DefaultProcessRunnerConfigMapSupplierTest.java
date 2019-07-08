@@ -21,7 +21,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.Map;
 
 import org.infrastructurebuilder.util.config.DefaultConfigMapSupplier;
-import org.infrastructurebuilder.util.plexus.DefaultProcessRunnerConfigMapSupplier;
 import org.junit.Before;
 import org.junit.Test;
 

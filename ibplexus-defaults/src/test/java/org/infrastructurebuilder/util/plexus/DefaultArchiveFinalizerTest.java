@@ -21,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 import org.codehaus.plexus.archiver.zip.ZipUnArchiver;
-import org.infrastructurebuilder.util.plexus.DefaultArchiveFinalizer;
 import org.junit.Before;
 import org.junit.Test;
 

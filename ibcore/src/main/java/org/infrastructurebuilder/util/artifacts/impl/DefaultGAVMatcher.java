@@ -24,7 +24,7 @@ import org.infrastructurebuilder.util.artifacts.GAVMatcher;
 import org.infrastructurebuilder.util.artifacts.IBVersion.IBVersionRange;
 
 public class DefaultGAVMatcher implements GAVMatcher {
-  private final static Pattern allString = Pattern.compile(".*");
+//  private final static Pattern allString = Pattern.compile(".*");
 
   public final static GAVMatcher from(final Optional<String> groupId, final Optional<String> artifactId,
       final Optional<IBVersionRange> versionRange, final Optional<String> versionByString,

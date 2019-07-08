@@ -236,7 +236,6 @@ public class DefaultProcessRunner implements ProcessRunner {
           }
         }
 
-        final int loops = 0;
         if (!fin.isZero()) {
           Duration dur = Duration.between(Instant.now(), endLock);
           while (bag.stillRunning() && dur.toNanos() > 0) {

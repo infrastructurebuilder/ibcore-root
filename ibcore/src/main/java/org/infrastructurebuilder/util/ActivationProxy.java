@@ -15,7 +15,8 @@
  */
 package org.infrastructurebuilder.util;
 
-import static java.util.Objects.*;
+import static java.util.Objects.requireNonNull;
+
 import java.util.Optional;
 
 public class ActivationProxy {

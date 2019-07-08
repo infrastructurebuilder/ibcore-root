@@ -15,7 +15,7 @@
  */
 package org.infrastructurebuilder.util;
 
-import static java.util.Objects.*;
+import static java.util.Objects.requireNonNull;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

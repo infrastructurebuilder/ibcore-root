@@ -15,10 +15,9 @@
  */
 package org.infrastructurebuilder.util.artifacts.impl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 import org.infrastructurebuilder.util.artifacts.GAV;
 import org.infrastructurebuilder.util.artifacts.GAVMatcher;

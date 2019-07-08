@@ -17,10 +17,7 @@ package org.infrastructurebuilder.util.artifacts;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,7 +30,6 @@ import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-import org.infrastructurebuilder.IBException;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
 import org.junit.Before;
 import org.junit.BeforeClass;

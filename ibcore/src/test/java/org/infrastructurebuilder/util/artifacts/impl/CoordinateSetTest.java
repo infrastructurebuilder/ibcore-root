@@ -22,7 +22,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.infrastructurebuilder.util.artifacts.ArtifactServices;
-import org.infrastructurebuilder.util.artifacts.impl.DefaultIBVersion;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

@@ -23,8 +23,6 @@ import java.util.Map;
 
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
-import org.infrastructurebuilder.util.config.MavenConfigMapSupplier;
-import org.infrastructurebuilder.util.config.MavenConfigWithServersMapSupplier;
 import org.junit.Before;
 import org.junit.Test;
 

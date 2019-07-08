@@ -16,6 +16,7 @@
 package org.infrastructurebuilder.util.artifacts;
 
 import org.infrastructurebuilder.IBException;
+
 import com.mscharhag.et.ET;
 import com.mscharhag.et.ExceptionTranslator;
 import com.vdurmont.semver4j.SemverException;

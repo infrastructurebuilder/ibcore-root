@@ -25,11 +25,10 @@ import java.util.Collections;
 import java.util.List;
 
 import org.infrastructurebuilder.util.artifacts.IBVersion;
-import org.infrastructurebuilder.util.artifacts.IBVersionException;
 import org.infrastructurebuilder.util.artifacts.IBVersion.IBVersionRequirement;
 import org.infrastructurebuilder.util.artifacts.IBVersion.IBVersionType;
 import org.infrastructurebuilder.util.artifacts.IBVersion.VersionDiff;
-import org.infrastructurebuilder.util.artifacts.impl.DefaultIBVersion;
+import org.infrastructurebuilder.util.artifacts.IBVersionException;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultIBVersion.DefaultIBVersionRange;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultIBVersion.RangeOperator;
 import org.junit.Before;

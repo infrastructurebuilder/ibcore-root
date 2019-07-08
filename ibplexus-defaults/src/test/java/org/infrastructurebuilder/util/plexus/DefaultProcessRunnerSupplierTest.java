@@ -33,7 +33,6 @@ import org.infrastructurebuilder.util.ProcessException;
 import org.infrastructurebuilder.util.config.DefaultStringListSupplier;
 import org.infrastructurebuilder.util.config.PropertiesInjectedConfigMapSupplier;
 import org.infrastructurebuilder.util.config.StringListSupplier;
-import org.infrastructurebuilder.util.plexus.DefaultProcessRunnerSupplier;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;

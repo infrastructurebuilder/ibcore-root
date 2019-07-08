@@ -29,8 +29,6 @@ import javax.inject.Named;
 @Named("properties")
 public class PropertiesInjectedConfigMapSupplier extends DefaultConfigMapSupplier {
 
-  private final StringListSupplier single = null;
-
   @Inject
   public PropertiesInjectedConfigMapSupplier(final List<StringListSupplier> suppliers) {
     for (final StringListSupplier s : suppliers) {

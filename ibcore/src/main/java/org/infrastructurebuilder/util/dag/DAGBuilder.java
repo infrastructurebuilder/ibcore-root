@@ -35,7 +35,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.IBException;
-import org.infrastructurebuilder.util.dag.DAGBuilder.MutableDAGImpl;
 
 public class DAGBuilder<T extends Comparable<T>> {
   public static final class MutableDAGImpl<T extends Comparable<T>> implements Serializable, MutableDAG<T> {

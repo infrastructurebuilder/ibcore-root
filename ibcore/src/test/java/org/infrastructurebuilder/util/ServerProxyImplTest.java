@@ -23,8 +23,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.ServerProxy;
-import org.infrastructurebuilder.util.ServerProxy;
 import org.junit.Before;
 import org.junit.Test;
 

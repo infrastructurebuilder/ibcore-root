@@ -15,7 +15,8 @@
  */
 package org.infrastructurebuilder.util;
 
-import static org.infrastructurebuilder.util.IBUtils.*;
+import static org.infrastructurebuilder.util.IBUtils.UTF_8;
+import static org.infrastructurebuilder.util.IBUtils.asStringStream;
 
 import java.security.MessageDigest;
 import java.util.Collection;

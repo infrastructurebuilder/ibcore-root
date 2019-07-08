@@ -15,13 +15,13 @@
  */
 package org.infrastructurebuilder.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-import org.infrastructurebuilder.util.HandCraftedEnvSupplier;
 import org.junit.Before;
 import org.junit.Test;
 

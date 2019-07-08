@@ -28,8 +28,6 @@ import java.util.Properties;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Model;
 import org.apache.maven.project.MavenProject;
-import org.infrastructurebuilder.util.config.MavenConfigMapSupplier;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

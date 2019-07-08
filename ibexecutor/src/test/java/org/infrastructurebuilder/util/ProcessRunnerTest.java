@@ -136,6 +136,7 @@ public class ProcessRunnerTest {
       final String x = String.join("\n", a.getStdErr());
       final String z = String.join("\n", a.getStdOut());
       assertTrue(x.contains("Usage: javac"));
+      assertNotNull(z);
     } catch (final Exception e) {
       fail(e.getClass().getCanonicalName() + " " + e.getMessage());
     }

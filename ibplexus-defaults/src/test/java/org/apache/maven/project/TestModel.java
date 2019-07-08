@@ -22,6 +22,10 @@ import org.infrastructurebuilder.util.plexus.ProcessRunnerSupplier;
 
 public class TestModel extends Model {
 
+  /**
+   *
+   */
+  private static final long serialVersionUID = 8170630890505544985L;
   private final Properties properties;
 
   public TestModel() {

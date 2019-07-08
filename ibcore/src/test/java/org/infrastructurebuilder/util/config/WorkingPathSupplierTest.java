@@ -76,7 +76,7 @@ public class WorkingPathSupplierTest {
     final DefaultPlexusContainer c = new DefaultPlexusContainer(dpcreq,
         new WireModule(new SpaceModule(new URLClassSpace(kw.getClassRealm(TESTING)))));
 
-    final WorkingPathSupplier v = c.lookup(WorkingPathSupplier.class);
+    c.lookup(WorkingPathSupplier.class);
   }
 
   @Test

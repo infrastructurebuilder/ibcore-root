@@ -15,10 +15,6 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
-import java.util.Objects;
-import java.util.Optional;
-
-import org.infrastructurebuilder.util.artifacts.impl.DefaultIBVersion;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultIBVersion.RangeOperator;
 
 import com.vdurmont.semver4j.Semver.SemverType;
