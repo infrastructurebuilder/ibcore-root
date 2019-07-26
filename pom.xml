@@ -20,10 +20,10 @@
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibparent</artifactId>
-    <version>7</version>
+    <version>8-SNAPSHOT</version>
   </parent>
   <artifactId>ibcore-root</artifactId>
-  <version>0.10.1-SNAPSHOT</version>
+  <version>0.11.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>${project.artifactId}</name>
   <description>InfrastructureBuilder Common</description>
@@ -139,5 +139,6 @@
     <module>ibexecutor</module>
     <module>ibplexus-defaults</module>
     <module>ibmaven-support</module>
+    <module>ibcore-files</module>
   </modules>
 </project>

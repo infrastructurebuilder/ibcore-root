@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class DefaultStringListSupplier implements StringListSupplier {
+public class DefaultStringListSupplier implements ExtendedListSupplier {
 
   public static final String ISFILE = "!FILE";
   public static final String ISOVERRIDE = "!OVERRIDE";

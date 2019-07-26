@@ -15,9 +15,9 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import java.util.List;
-import java.util.function.Supplier;
+public interface ExtendedListSupplier extends StringListSupplier {
+  boolean isFile();
 
-public interface StringListSupplier extends Supplier<List<String>> {
+  boolean isOverride();
 
 }

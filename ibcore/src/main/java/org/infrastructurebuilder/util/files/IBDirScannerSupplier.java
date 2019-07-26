@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.config;
+package org.infrastructurebuilder.util.files;
 
-import java.util.List;
 import java.util.function.Supplier;
 
-public interface StringListSupplier extends Supplier<List<String>> {
+public interface IBDirScannerSupplier extends Supplier<IBDirScanner> {
 
 }

@@ -32,7 +32,7 @@ import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.ProcessException;
 import org.infrastructurebuilder.util.config.DefaultStringListSupplier;
 import org.infrastructurebuilder.util.config.PropertiesInjectedConfigMapSupplier;
-import org.infrastructurebuilder.util.config.StringListSupplier;
+import org.infrastructurebuilder.util.config.ExtendedListSupplier;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -64,7 +64,7 @@ public class DefaultProcessRunnerSupplierTest {
   private List<String> list;
   private Logger logger;
   private DefaultProcessRunnerSupplier prs;
-  private List<StringListSupplier> suppliers;
+  private List<ExtendedListSupplier> suppliers;
 
   @Before
   public void setUp() throws Exception {

@@ -30,8 +30,8 @@ import javax.inject.Named;
 public class PropertiesInjectedConfigMapSupplier extends DefaultConfigMapSupplier {
 
   @Inject
-  public PropertiesInjectedConfigMapSupplier(final List<StringListSupplier> suppliers) {
-    for (final StringListSupplier s : suppliers) {
+  public PropertiesInjectedConfigMapSupplier(final List<ExtendedListSupplier> suppliers) {
+    for (final ExtendedListSupplier s : suppliers) {
       for (final String r : s.get()) {
         final Properties p = s.isFile() ? loadFile(r) : loadResource(r);
         if (s.isOverride()) {

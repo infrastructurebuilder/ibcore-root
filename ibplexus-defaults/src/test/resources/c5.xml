@@ -6,7 +6,7 @@
   </system-properties>
   <components>
     <component>
-      <role>org.infrastructurebuilder.util.config.StringListSupplier</role>
+      <role>org.infrastructurebuilder.util.config.ExtendedListSupplier</role>
       <role-hint>testc1</role-hint>
       <implementation>org.infrastructurebuilder.util.config.DefaultStringListSupplier</implementation>
       <instantiation-strategy>singleton</instantiation-strategy>
@@ -19,7 +19,7 @@
       </configuration>
     </component>
     <component>
-      <role>org.infrastructurebuilder.util.config.StringListSupplier</role>
+      <role>org.infrastructurebuilder.util.config.ExtendedListSupplier</role>
       <role-hint>testc2</role-hint>
       <implementation>org.infrastructurebuilder.util.config.DefaultStringListSupplier</implementation>
       <instantiation-strategy>singleton</instantiation-strategy>
@@ -43,7 +43,7 @@
       <isolated-realm>false</isolated-realm>
       <requirements>
         <requirement>
-          <role>org.infrastructurebuilder.util.config.StringListSupplier</role>
+          <role>org.infrastructurebuilder.util.config.ExtendedListSupplier</role>
           <field-name>suppliers</field-name>
         </requirement>
       </requirements>

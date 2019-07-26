@@ -24,12 +24,12 @@
       <isolated-realm>false</isolated-realm>
       <requirements>
         <requirement>
-          <role>org.infrastructurebuilder.util.config.StringListSupplier</role>
+          <role>org.infrastructurebuilder.util.config.ExtendedListSupplier</role>
           <field-name>suppliers</field-name>
           <optional>true</optional>
         </requirement>
         <requirement>
-          <role>org.infrastructurebuilder.util.config.StringListSupplier</role>
+          <role>org.infrastructurebuilder.util.config.ExtendedListSupplier</role>
           <field-name>single</field-name>
           <optional>true</optional>
         </requirement>

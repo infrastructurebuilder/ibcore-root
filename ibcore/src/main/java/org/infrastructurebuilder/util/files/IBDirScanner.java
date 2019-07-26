@@ -13,11 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.config;
+package org.infrastructurebuilder.util.files;
 
+import java.nio.file.Path;
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.Map;
 
-public interface StringListSupplier extends Supplier<List<String>> {
+public interface IBDirScanner {
+
+  /**
+   * Return a map of paths both included and excluded
+   * @return Map.  The "true" set is the included files.  The "false" set is excluded
+   */
+  Map<Boolean, List<Path>> scan();
 
 }
