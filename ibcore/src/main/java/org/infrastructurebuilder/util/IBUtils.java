@@ -15,6 +15,7 @@
  */
 package org.infrastructurebuilder.util;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toMap;
 
 import java.io.BufferedOutputStream;
@@ -54,6 +55,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.Random;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -83,6 +85,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class IBUtils {
+
+  /**
+   * Map a Map/String,String to a Properties object
+   */
+  public final static Function<Map<String, String>, Properties> mapSS2Properties = (m) -> {
+    Properties p = new Properties();
+    requireNonNull(m).entrySet().stream().forEach(e -> p.setProperty(e.getKey(), e.getValue()));
+    return p;
+  };
+
   public final static Function<JSONObject, JSONObject> cheapCopy = j -> {
     return new JSONObject(j.toString());
   };

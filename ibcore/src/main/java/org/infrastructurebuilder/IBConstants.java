@@ -85,6 +85,7 @@ public interface IBConstants {
   String FACTORY_NAME = "org.infrastructurebuilder.core.config.CoreCryptoProviderFactory";
   String FILE_PERMISSIONS = "filePermissions";
   String FILESYSTEM_CRYPTO_CONFIGURATION = "Filesystem-Crypto-Configuration";
+  String GITHUB = "github";
   String HEX_IDENTIFIER = "HEXID:";
   String ID = "id";
   String JSON_EXT = ".json";
