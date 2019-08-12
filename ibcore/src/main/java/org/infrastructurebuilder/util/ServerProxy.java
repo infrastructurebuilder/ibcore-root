@@ -23,7 +23,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
-public class ServerProxy {
+import org.infrastructurebuilder.util.artifacts.Identified;
+import org.infrastructurebuilder.util.artifacts.JSONBuilder;
+import org.infrastructurebuilder.util.artifacts.JSONOutputEnabled;
+import org.json.JSONObject;
+
+public class ServerProxy implements Identified, JSONOutputEnabled {
+  public static final String ID_STRING = "id";
   private final String id;
   private final Optional<Path> keyPath;
   private final Optional<String> passphrase;
@@ -90,5 +96,26 @@ public class ServerProxy {
 
   public Optional<String> getFilePermissions() {
     return filePermissions;
+  }
+
+  @Override
+  public JSONObject asJSON() {
+    return JSONBuilder.newInstance()
+        // id
+        .addString(ID_STRING, getId())
+        //
+        .addString("key", readKey())
+        //
+        .addString("principal", getPrincipal())
+        //
+        .addString("secret", getSecret())
+        //
+        .addString("configuration", getConfiguration())
+        //
+        .addString("directoryPermissions", getDirectoryPermissions())
+        //
+        .addString("filePermissions", getFilePermissions())
+        // fin
+        .asJSON();
   }
 }

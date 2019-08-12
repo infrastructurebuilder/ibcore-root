@@ -23,10 +23,22 @@ import static java.util.stream.Collectors.toMap;
 
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
+import org.json.JSONObject;
 
 public class SettingsProxy {
 
@@ -122,6 +134,18 @@ public class SettingsProxy {
    */
   public List<ServerProxy> getServers() {
     return this.servers;
+  }
+
+  public final static Collector<JSONObject, JSONObject, JSONObject> joc = Collector.of(() -> new JSONObject(),
+      (a, b) -> a.put(b.getString(ServerProxy.ID_STRING), b), (x, y) -> x, Collector.Characteristics.IDENTITY_FINISH,
+      Collector.Characteristics.UNORDERED);
+
+  /**
+   * Get a mapped list of servers from the settings object
+   * @return Servers mapped by getId
+   */
+  public JSONObject getServersAsJSON() {
+    return getServers().stream().map(ServerProxy::asJSON).collect(joc);
   }
 
   /**
