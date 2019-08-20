@@ -88,4 +88,5 @@ public class ServerProxyImplTest {
     assertEquals(TESTCONFIGSTRING, p.getConfiguration().get());
   }
 
+
 }
