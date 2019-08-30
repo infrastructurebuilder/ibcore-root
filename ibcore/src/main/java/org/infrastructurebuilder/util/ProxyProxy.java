@@ -46,11 +46,11 @@ public class ProxyProxy {
     this.nonProxyHosts = nonProxyHosts;
     this.password = password;
     this.port = port;
-    this.protocol = protocol;
+    this.protocol = protocol;  // "protocol" is the same as "type" for WagonManager
     this.username = username;
     this.active = active;
   }
-  String getId() {
+  public String getId() {
     return this.id;
   }
  /**
@@ -58,7 +58,7 @@ public class ProxyProxy {
    *
    * @return String
    */
-  String getHost() {
+  public String getHost() {
     return this.host;
   }
   /**
@@ -66,7 +66,7 @@ public class ProxyProxy {
    *
    * @return String
    */
-  List<String> getNonProxyHosts() {
+  public List<String> getNonProxyHosts() {
     return this.nonProxyHosts;
   }
   /**
@@ -74,7 +74,7 @@ public class ProxyProxy {
    *
    * @return String
    */
-  Optional<String> getPassword() {
+  public Optional<String> getPassword() {
     return this.password;
   }
   /**
@@ -82,7 +82,7 @@ public class ProxyProxy {
    *
    * @return int
    */
-  int getPort() {
+  public int getPort() {
     return this.port;
   }; //-- int getPort()
 
@@ -91,7 +91,7 @@ public class ProxyProxy {
    *
    * @return String
    */
-  String getProtocol() {
+  public String getProtocol() {
     return this.protocol;
   }
   /**
@@ -99,7 +99,7 @@ public class ProxyProxy {
    *
    * @return String
    */
-  Optional<String> getUsername() {
+  public Optional<String> getUsername() {
     return this.username;
   }
   /**
@@ -107,7 +107,7 @@ public class ProxyProxy {
    *
    * @return boolean
    */
-  boolean isActive() {
+  public boolean isActive() {
     return this.active;
   }
 }
