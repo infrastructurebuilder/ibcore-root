@@ -15,37 +15,37 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.Optional;
+import java.util.regex.Pattern;
 
 import javax.inject.Named;
-import static org.infrastructurebuilder.IBConstants.*;
+import javax.inject.Singleton;
+
+import org.infrastructurebuilder.IBConstants;
+
 /**
- * This maps to a list of "release versions" for some known golang release types that generally
- * release in Github.  The most common is the first ("v1.0.0") but the others exist.
- *
+ * Override matchIt or override and call it from within a subclass using another regex.
  * @author mykel.alvis
  *
  */
-@Named(GITHUB)
-public class GithubGenericReleaseVersionMapper implements VersionMapper {
+@Named(IBConstants.AZUREDEVOPS)
+@Singleton
+public class AzureDevopsGroupId2OrgMapper implements GroupId2OrgMapper {
+  public final static String DEFAULT_REGEX = "^io.github.(\\w+)(\\..*)?$";
+  public final Pattern p = Pattern.compile(DEFAULT_REGEX);
 
   @Override
-  public List<String> apply(GAV t) {
-    return t.getVersion().map(v -> {
-      return Arrays.asList("v" + v, v, t.getArtifactId() + "-" + v);
-    }).orElse(Collections.emptyList());
+  public final Optional<String> apply(String t) {
+    return matchIt(t);
+  }
+
+  protected Optional<String> matchIt(String t) {
+    return Optional.ofNullable(t).map(res -> p.matcher(res)).filter(m -> m.matches()).map(m -> m.group(1));
   }
 
   @Override
   public String getId() {
-    return GITHUB;
-  }
-
-  @Override
-  public Integer getWeight() {
-    return 1; // slightly above the default weight
+    return IBConstants.AZUREDEVOPS;
   }
 
 }

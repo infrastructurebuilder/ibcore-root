@@ -28,8 +28,8 @@ import static org.infrastructurebuilder.IBConstants.*;
  * @author mykel.alvis
  *
  */
-@Named(GITHUB)
-public class GithubGenericReleaseVersionMapper implements VersionMapper {
+@Named(AZUREDEVOPS)
+public class AzureDevopsGenericReleaseVersionMapper implements VersionMapper {
 
   @Override
   public List<String> apply(GAV t) {
@@ -40,7 +40,7 @@ public class GithubGenericReleaseVersionMapper implements VersionMapper {
 
   @Override
   public String getId() {
-    return GITHUB;
+    return AZUREDEVOPS;
   }
 
   @Override

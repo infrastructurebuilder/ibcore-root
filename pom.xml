@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibparent</artifactId>
-    <version>9</version>
+    <version>10-SNAPSHOT</version>
   </parent>
   <artifactId>ibcore-root</artifactId>
   <version>0.11.1-SNAPSHOT</version>
@@ -41,8 +41,8 @@
     </site>
   </distributionManagement>
   <properties>
-    <error.version>8</error.version>
-    <iblog.version>0.9.0</iblog.version>
+    <error.version>10-SNAPSHOT</error.version>
+    <iblog.version>0.10.0-SNAPSHOT</iblog.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -51,18 +51,7 @@
         <artifactId>maven-import-bom</artifactId>
         <type>pom</type>
         <scope>import</scope>
-        <version>${maven.version}.2</version>
-      </dependency>
-      <dependency>
-        <groupId>org.infrastructurebuilder</groupId>
-        <artifactId>ibcore-extended</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.infrastructurebuilder</groupId>
-        <artifactId>ibcore-extended</artifactId>
-        <type>test-jar</type>
-        <version>${project.version}</version>
+        <version>${maven.version}.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.infrastructurebuilder</groupId>

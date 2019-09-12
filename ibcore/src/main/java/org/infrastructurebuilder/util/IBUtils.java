@@ -47,6 +47,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -95,6 +96,10 @@ public class IBUtils {
     return p;
   };
 
+  public final static URL reURL(String url) {
+    return Optional.ofNullable(url).map(u -> IBException.cet.withReturningTranslation(() -> new URL(u))).orElse(null);
+  }
+
   public final static Function<JSONObject, JSONObject> cheapCopy = j -> {
     return new JSONObject(j.toString());
   };
@@ -112,6 +117,9 @@ public class IBUtils {
   public final static Function<String, String> nullIfBlank = l -> {
     return new String(Optional.ofNullable(l).orElse("")).trim().length() > 0 ? l : null;
   };
+
+  public final static Function<String, Date> parseISODateTime = s -> Date.from(Instant.from(
+      java.time.OffsetDateTime.parse(Objects.requireNonNull(s), java.time.format.DateTimeFormatter.ISO_DATE_TIME)));
 
   public final static Pattern p = Pattern.compile("(\\S+):(\\S+):(.*):(.*):(.*)");
 
@@ -164,7 +172,7 @@ public class IBUtils {
   public static Stream<String> asStringStream(final JSONArray array) {
     final Iterable<String> iterable = () -> {
       final List<String> l = new ArrayList<>();
-      for (int i = 0; i < array.length(); ++i) {
+      for (int i = 0; i < requireNonNull(array).length(); ++i) {
         l.add(array.getString(i));
       }
       return l.iterator();
@@ -201,8 +209,7 @@ public class IBUtils {
 
   public static Checksum copyAndDigest(final InputStream ins, final OutputStream target)
       throws IOException, NoSuchAlgorithmException {
-    try (DigestInputStream sink = new DigestInputStream(ins,
-        MessageDigest.getInstance(IBConstants.DIGEST_TYPE))) {
+    try (DigestInputStream sink = new DigestInputStream(ins, MessageDigest.getInstance(IBConstants.DIGEST_TYPE))) {
       copy(sink, target);
       final Checksum d = new Checksum(sink.getMessageDigest().digest());
 
@@ -567,8 +574,8 @@ public class IBUtils {
   }
 
   public static Optional<URL> zipEntryToUrl(final Optional<URL> p, final ZipEntry e) {
-    return Objects.requireNonNull(p).map(u -> IBException.cet
-        .withReturningTranslation(() -> new URL("jar:" + u.toExternalForm() + "!/" + e.getName())));
+    return Objects.requireNonNull(p).map(
+        u -> IBException.cet.withReturningTranslation(() -> new URL("jar:" + u.toExternalForm() + "!/" + e.getName())));
   }
 
   private static boolean _match(final JSONObject metadata, final Pattern key, final Pattern value) {
@@ -585,11 +592,11 @@ public class IBUtils {
     return Objects.requireNonNull(gav).getVersion().map(DefaultIBVersion::new).map(DefaultIBVersion::apiVersion);
   }
 
-//  public final static Function<Artifact, GAV> artifactToGAV = (art) -> {
-//    final Path p = Optional.ofNullable(art.getFile()).map(p2 -> p2.toPath()).orElse(null);
-//    return new DefaultGAV(art.getGroupId(), art.getArtifactId(), art.getClassifier(), art.getVersion(),
-//        art.getExtension()).withFile(p);
-//  };
+  //  public final static Function<Artifact, GAV> artifactToGAV = (art) -> {
+  //    final Path p = Optional.ofNullable(art.getFile()).map(p2 -> p2.toPath()).orElse(null);
+  //    return new DefaultGAV(art.getGroupId(), art.getArtifactId(), art.getClassifier(), art.getVersion(),
+  //        art.getExtension()).withFile(p);
+  //  };
 
   public static String toInternalSignaturePath(final GAV gav) {
     return gav.getGroupId() + ":" + gav.getArtifactId() + ":" + gav.getClassifier().orElse("") + ":"
@@ -610,59 +617,57 @@ public class IBUtils {
     return b;
   }
 
-//  public static boolean _versionmatcher(final GAV art, final GAV range) {
-//    if (!art.getVersion().isPresent())
-//      return true;
-//    if (!range.getVersion().isPresent())
-//      return true;
-//    try {
-//      final boolean b = inRange(art, ((DefaultGAV) range).asRange());
-//      return b;
-//    } catch (final IBException e) {
-//      return false;
-//    }
-//  }
+  //  public static boolean _versionmatcher(final GAV art, final GAV range) {
+  //    if (!art.getVersion().isPresent())
+  //      return true;
+  //    if (!range.getVersion().isPresent())
+  //      return true;
+  //    try {
+  //      final boolean b = inRange(art, ((DefaultGAV) range).asRange());
+  //      return b;
+  //    } catch (final IBException e) {
+  //      return false;
+  //    }
+  //  }
 
-//  public static Artifact asArtifact(final GAV art) {
-//    return new DefaultArtifact(art.getDefaultSignaturePath());
-//  }
-//
-//  public static Dependency asDependency(final GAV art, final String scope) {
-//    return new Dependency(asArtifact(art), scope);
-//  }
+  //  public static Artifact asArtifact(final GAV art) {
+  //    return new DefaultArtifact(art.getDefaultSignaturePath());
+  //  }
+  //
+  //  public static Dependency asDependency(final GAV art, final String scope) {
+  //    return new Dependency(asArtifact(art), scope);
+  //  }
 
-//  public static int compareVersion(final GAV art, final GAV otherVersion)
-//      throws org.eclipse.aether.version.InvalidVersionSpecificationException {
-//    return getVersionScheme().parseVersion(art.getVersion().get().toString())
-//        .compareTo(getVersionScheme().parseVersion(otherVersion.getVersion().get().toString()));
-//  }
+  //  public static int compareVersion(final GAV art, final GAV otherVersion)
+  //      throws org.eclipse.aether.version.InvalidVersionSpecificationException {
+  //    return getVersionScheme().parseVersion(art.getVersion().get().toString())
+  //        .compareTo(getVersionScheme().parseVersion(otherVersion.getVersion().get().toString()));
+  //  }
 
-//  public static GAV fromArtifact(final Artifact a) {
-//    return new DefaultGAV(a.getGroupId(), a.getArtifactId(), a.getClassifier(), a.getVersion(), a.getExtension())
-//        .withFile(Optional.ofNullable(a.getFile()).map(File::toPath).orElse(null));
-//  }
+  //  public static GAV fromArtifact(final Artifact a) {
+  //    return new DefaultGAV(a.getGroupId(), a.getArtifactId(), a.getClassifier(), a.getVersion(), a.getExtension())
+  //        .withFile(Optional.ofNullable(a.getFile()).map(File::toPath).orElse(null));
+  //  }
 
   public static Optional<IBVersion> getVersion(final GAV art) {
     return art.getVersion().map(DefaultIBVersion::new);
   }
 
-//  public static VersionScheme getVersionScheme() {
-//    return new org.eclipse.aether.util.version.GenericVersionScheme();
-//  }
-//
-//  public static boolean inRange(final GAV art, final String versionRange) {
-//    return IBException.cet.withReturningTranslation(() -> {
-//      return getVersionScheme().parseVersionRange(versionRange)
-//          .containsVersion(getVersionScheme().parseVersion(art.getVersion().orElse(null)));
-//    });
-//  }
+  //  public static VersionScheme getVersionScheme() {
+  //    return new org.eclipse.aether.util.version.GenericVersionScheme();
+  //  }
+  //
+  //  public static boolean inRange(final GAV art, final String versionRange) {
+  //    return IBException.cet.withReturningTranslation(() -> {
+  //      return getVersionScheme().parseVersionRange(versionRange)
+  //          .containsVersion(getVersionScheme().parseVersion(art.getVersion().orElse(null)));
+  //    });
+  //  }
 
-//  public static boolean matches(final GAV art, final GAV pattern) {
-//    return _matcher(pattern.getGroupId(), art.getGroupId()) && _matcher(pattern.getArtifactId(), art.getArtifactId())
-//        && _matcher(pattern.getClassifier().orElse(".*"), art.getClassifier().orElse(null))
-//        && _matcher(pattern.getExtension(), art.getExtension()) && _versionmatcher(art, pattern);
-//  }
-
-
+  //  public static boolean matches(final GAV art, final GAV pattern) {
+  //    return _matcher(pattern.getGroupId(), art.getGroupId()) && _matcher(pattern.getArtifactId(), art.getArtifactId())
+  //        && _matcher(pattern.getClassifier().orElse(".*"), art.getClassifier().orElse(null))
+  //        && _matcher(pattern.getExtension(), art.getExtension()) && _versionmatcher(art, pattern);
+  //  }
 
 }

@@ -86,6 +86,7 @@ public interface IBConstants {
   String FILE_PERMISSIONS = "filePermissions";
   String FILESYSTEM_CRYPTO_CONFIGURATION = "Filesystem-Crypto-Configuration";
   String GITHUB = "github";
+  String AZUREDEVOPS = "azuredevops";
   String HEX_IDENTIFIER = "HEXID:";
   String ID = "id";
   String JSON_EXT = ".json";
