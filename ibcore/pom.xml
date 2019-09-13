@@ -55,6 +55,7 @@
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
       <scope>test</scope>
+      <classifier>no_aop</classifier>
     </dependency>
     <dependency>
       <groupId>org.jooq</groupId>
