@@ -42,7 +42,7 @@
   </distributionManagement>
   <properties>
     <error.version>10</error.version>
-    <iblog.version>0.10.0-SNAPSHOT</iblog.version>
+    <iblog.version>0.10.0</iblog.version>
   </properties>
   <dependencyManagement>
     <dependencies>
