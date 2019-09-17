@@ -19,7 +19,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.Collections;
 
-import org.infrastructurebuilder.util.ExecutionEnvironmentFilter;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -38,7 +38,6 @@ import org.eclipse.aether.util.artifact.JavaScopes;
 import org.infrastructurebuilder.util.artifacts.GAV;
 import org.infrastructurebuilder.util.artifacts.InjectedResolver;
 import org.infrastructurebuilder.util.artifacts.ResolveOutcome;
-import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
 
 @Named
 public class DefaultInjectedResolver implements InjectedResolver {

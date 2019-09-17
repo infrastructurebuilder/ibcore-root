@@ -17,7 +17,6 @@ package org.infrastructurebuilder.util;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.infrastructurebuilder.util.ProcessException;
 import org.junit.Test;
 
 public class ProcessExceptionTest {

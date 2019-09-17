@@ -15,12 +15,13 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
+import static org.infrastructurebuilder.IBConstants.AZUREDEVOPS;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Named;
-import static org.infrastructurebuilder.IBConstants.*;
 /**
  * This maps to a list of "release versions" for some known golang release types that generally
  * release in Github.  The most common is the first ("v1.0.0") but the others exist.

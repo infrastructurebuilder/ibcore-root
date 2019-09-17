@@ -1,0 +1,430 @@
+<model xmlns="http://codehaus-plexus.github.io/MODELLO/1.8.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://codehaus-plexus.github.io/MODELLO/1.8.0 http://codehaus-plexus.github.io/modello/xsd/modello-1.8.0.xsd"
+  java.suppressAllWarnings="false"
+  xml.namespace="https://resources.infrastructurebuilder.org/ASC/${version}"
+  xml.schemaLocation="https://resources.infrastructurebuilder.org/xsd/Deployment-${version}"
+  xsd.namespace="https://resources.infrastructurebuilder.org/ASC/${version}"
+  xsd.targetNamespace="https://resources.infrastructurebuilder.org/ASC/${version}">
+  <id>datasource</id>
+  <name>IBDataSourceModel</name> <!--  Must be a single (no spaces, no dashes, no periods) identifier in order to create reader/writer -->
+  <description>Mechanism to read config for an IBDataSource</description>
+
+  <defaults>
+    <default>
+      <key>package</key>
+      <value>${project.groupId}.model</value>
+    </default>
+  </defaults>
+  <classes>
+  <!-- MODEL -->
+    <class rootElement="true" xml.tagName="repositoryAccessConfiguration"
+      java.clone.hook="cloneHook">
+      <name>DataSourceConfiguration</name>
+      <description>
+        <![CDATA[
+        The <code>&lt;dataSourceConfiguration&gt;</code> element is the root of the configuration.
+        ]]>
+      </description>
+      <version>1.0.0+</version>
+      <fields>
+
+        <!-- ====================================================================== -->
+        <!-- Deployment Version                                                          -->
+        <!-- ====================================================================== -->
+        <field>
+          <name>modelVersion</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Declares to which version of project descriptor this configuration conforms.</description>
+          <type>String</type>
+          <defaultValue>${project.version}</defaultValue>
+        </field>
+
+        <field xdoc.separator="blank">
+          <name>name</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>The full name of the project.</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>description</name>
+          <version>1.0.0+</version>
+          <description>A detailed description of the project, used whenever the system needs to
+            describe the project. While this element can be specified as
+            CDATA to enable the use of HTML tags within the description, it is discouraged to allow
+            plain text representation. If you need to modify the index page of the generated web
+            site, you are able to specify your own instead of adjusting this text.</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>instances</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Instances of ArtifactServices Configurations</description>
+          <association>
+            <type>ArtifactServicesConfigInstance</type>
+            <multiplicity>*</multiplicity>
+          </association>
+        </field>
+        <field>
+          <name>defaultInstance</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <defaultValue>default</defaultValue>
+          <description>Id of default instance</description>
+          <type>String</type>
+        </field>
+      </fields>
+      <codeSegments>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  public java.util.Optional<org.infrastructurebuilder.util.artifacts.ArtifactServices> getWeightedArtifactServices(
+      org.infrastructurebuilder.util.artifacts.GAV gav, String scope) {
+    return java.util.Optional.empty();
+  }
+            ]]>
+          </code>
+        </codeSegment>
+      </codeSegments>
+    </class>
+    <class java.clone="deep" xml.tagName="instance">
+      <name>ArtifactServicesConfigInstance</name>
+      <version>1.0.0+</version>
+      <interfaces>
+        <interface>
+          <![CDATA[java.lang.Comparable<ArtifactServicesConfigInstance>]]>
+        </interface>
+      </interfaces>
+      <description>
+        <![CDATA[
+        The <code>&lt;instance&gt;</code> element contains information about a configured instance of ArtifactServices.
+        ]]>
+      </description>
+      <fields>
+        <field>
+          <name>id</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Identifier for instance</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>name</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Short name for this config instance</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>weight</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Weighting for determining if an artifact is available (0 by default, higher is first)</description>
+          <type>int</type>
+        </field>
+        <field>
+          <name>localRepo</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Path to the local repository</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>remoteRepo</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>URL of remote repository</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>normalizeSnapshots</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <defaultValue>false</defaultValue>
+          <description>Normalize snapshots</description>
+          <type>Boolean</type>
+        </field>
+
+        <field>
+          <name>credentials</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Credentials management</description>
+          <association>
+            <type>Credential</type>
+            <multiplicity>1</multiplicity>
+          </association>
+        </field>
+        <field>
+          <name>inclusions</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>INCLUSION Restricters for this config's instance. Inclusions override exclusions.  Also, this
+          only applies to the initial artifact to be resolved, not transitive dependencies.</description>
+          <association>
+            <type>Restriction</type>
+            <multiplicity>*</multiplicity>
+          </association>
+        </field>
+        <field>
+          <name>exclusions</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>EXCLUSION Restricters for this config's instance. Inclusions override exclusions.  Also, this
+          only applies to the initial artifact to be resolved, not transitive dependencies.</description>
+          <association>
+            <type>Restriction</type>
+            <multiplicity>*</multiplicity>
+          </association>
+        </field>
+      </fields>
+
+
+
+      <codeSegments>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  @Override
+  public int compareTo(ArtifactServicesConfigInstance o) {
+    java.util.Objects.requireNonNull(o, "compareTo argument for " + this.getClass().getCanonicalName());
+    if (this.id.equals("default")) {
+      if (o.id.equals("default") && this != o)
+        throw new IllegalArgumentException("Two instances cannot have default as their id");
+      return -1; // Default is always lowest
+    }
+    return this.id.compareTo(o.id); // Otherwise, string compare
+  }
+            ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  public java.nio.file.Path getLocalRepoPath() {
+    return java.nio.file.Paths.get(this.localRepo);
+  }
+
+            ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  public java.util.Optional<java.net.URL> getRemoteRepoURL() {
+    return java.util.Optional.ofNullable(this.remoteRepo)
+        .map(t -> org.infrastructurebuilder.IBException.cet
+            .withReturningTranslation(() -> new java.net.URL(t)));
+  }
+            ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+
+
+            ]]>
+          </code>
+        </codeSegment>
+      </codeSegments>
+
+    </class>
+    <class java.clone="deep">
+      <name>Credential</name>
+      <version>1.0.0+</version>
+      <description>
+        <![CDATA[
+        The <code>&lt;credential&gt;</code> element determines how credentialing values are passed to the config.
+        ]]>
+      </description>
+      <fields>
+        <field>
+          <name>serverId</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <type>String</type>
+          <description>Server id from settings.xml</description>
+        </field>
+        <field>
+          <name>principal</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <type>String</type>
+          <description>Username for credentials</description>
+        </field>
+        <field>
+          <name>secret</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <type>String</type>
+          <description>Unencrypted password for credentials</description>
+        </field>
+      </fields>
+    </class>
+    <class java.clone="deep">
+      <name>Restriction</name>
+      <version>1.0.0+</version>
+      <!--
+      <interfaces>
+        <interface>
+          <![CDATA[java.lang.Comparable<Restriction>]]>
+        </interface>
+      </interfaces>
+       -->
+      <description>
+        <![CDATA[
+        The <code>&lt;restriction&gt;</code> element determines situations in which a given
+        config applies conditionally.  For instance, a given set of ArtifactServices configurations might
+        only be valid for application deployments, or might only be used during testing.
+        ]]>
+      </description>
+      <fields>
+        <field>
+          <name>types</name>
+          <version>1.0.0+</version>
+          <description>Extension to exclude</description>
+          <association>
+            <type>Type</type>
+            <multiplicity>*</multiplicity>
+          </association>
+        </field>
+        <field>
+          <name>scopes</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Scope of restriction</description>
+          <association>
+            <type>String</type>
+            <multiplicity>*</multiplicity>
+          </association>
+
+        </field>
+      </fields>
+    </class>
+    <class java.clone="deep">
+      <name>Type</name>
+      <version>1.0.0+</version>
+      <description>
+        <![CDATA[
+        The <code>&lt;type&gt;</code> element indicates a given optional classifier and required extension.
+        ]]>
+      </description>
+      <fields>
+        <field>
+          <name>classifier</name>
+          <version>1.0.0+</version>
+          <description>Classifier of the type</description>
+          <required>false</required>
+          <type>String</type>
+        </field>
+        <field>
+          <name>extension</name>
+          <version>1.0.0+</version>
+          <description>Extension of the type</description>
+          <required>true</required>
+          <type>String</type>
+        </field>
+      </fields>
+      <codeSegments>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+
+    @Override
+    public String toString()
+    {
+        return getClassifier() + " : " + getExtension();
+    }
+            ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+
+    public boolean comparedToArtifact(org.infrastructurebuilder.util.artifacts.GAV artifact) {
+      return java.util.Optional.ofNullable(this.getClassifier()).equals(artifact.getClassifier()) && java.util.Optional.ofNullable(this.getExtension()).equals(artifact.getExtension());
+    }
+
+        ]]>
+        </code>
+        </codeSegment>
+
+      </codeSegments>
+
+    </class>
+    <class locationTracker="locations" java.clone="shallow">
+      <name>RepositoryAccessConfigInputLocation</name>
+      <version>1.0.0+</version>
+      <fields>
+        <!-- line, column and source fields are auto-generated by Modello -->
+      </fields>
+      <codeSegments>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+
+    @Override
+    public String toString()
+    {
+        return getLineNumber() + " : " + getColumnNumber() + ", " + getSource();
+    }
+            ]]>
+          </code>
+        </codeSegment>
+      </codeSegments>
+    </class>
+    <class sourceTracker="source" java.clone="shallow">
+      <name>RepositoryAccessConfigInputSource</name>
+      <version>1.0.0+</version>
+      <fields>
+        <field>
+          <name>modelId</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description>
+            <![CDATA[
+            The identifier of the deployment model in the format {@code <groupId>:<artifactId>:<version>}.
+            ]]>
+          </description>
+        </field>
+        <field>
+          <name>location</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description>
+            <![CDATA[
+            The path/URL of the deployment model or {@code null} if unknown.
+            ]]>
+          </description>
+        </field>
+      </fields>
+      <codeSegments>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+    @Override
+    public String toString()
+    {
+        return getModelId() + " " + getLocation();
+    }
+            ]]>
+          </code>
+        </codeSegment>
+      </codeSegments>
+    </class>
+  </classes>
+</model>

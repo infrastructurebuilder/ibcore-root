@@ -13,23 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util;
+package org.infrastructurebuilder.data;
 
-import java.nio.file.Path;
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
-public class OverrideListCapturingOutputStream extends ListCapturingLogOutputStream {
+public interface IBDataStreamSupplier extends Supplier<Optional<IBDataStream>> {
 
-  private final List<String> l2;
-
-  public OverrideListCapturingOutputStream(final Optional<Path> pth, final List<String> output) {
-    super(pth, Optional.empty());
-    l2 = output;
-  }
-
-  @Override
-  public List<String> getList() {
-    return l2;
-  }
+  String getId();
 }

@@ -13,23 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util;
+package org.infrastructurebuilder.data;
 
-import java.nio.file.Path;
-import java.util.List;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Optional;
 
-public class OverrideListCapturingOutputStream extends ListCapturingLogOutputStream {
+import org.infrastructurebuilder.util.BasicCredentials;
+import org.infrastructurebuilder.util.artifacts.Checksum;
 
-  private final List<String> l2;
-
-  public OverrideListCapturingOutputStream(final Optional<Path> pth, final List<String> output) {
-    super(pth, Optional.empty());
-    l2 = output;
-  }
-
-  @Override
-  public List<String> getList() {
-    return l2;
-  }
+/**
+ * An IBDataSource understands where a data stream originates and how to acquire it
+ *
+ * @author mykel.alvis
+ *
+ */
+public interface IBDataSource {
+  String getId();
+  Optional<URL> getSourceURL();
+  Optional<InputStream> getOverrideInputStream();
+  Optional<BasicCredentials> getCredentials();
+  Optional<Checksum> getChecksum();
 }

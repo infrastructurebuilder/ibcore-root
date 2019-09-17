@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibparent</artifactId>
-    <version>10</version>
+    <version>11</version>
   </parent>
   <artifactId>ibcore-root</artifactId>
   <version>0.11.2-SNAPSHOT</version>
@@ -41,7 +41,7 @@
     </site>
   </distributionManagement>
   <properties>
-    <error.version>10</error.version>
+    <error.version>11</error.version>
     <iblog.version>0.10.0</iblog.version>
   </properties>
   <dependencyManagement>
@@ -129,5 +129,6 @@
     <module>ibplexus-defaults</module>
     <module>ibmaven-support</module>
     <module>ibcore-files</module>
+    <module>ibdata-api</module>
   </modules>
 </project>
