@@ -16,9 +16,10 @@
 package org.infrastructurebuilder.data;
 
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Supplier;
 
-public interface IBDataStreamSupplier extends Supplier<Optional<IBDataStream>> {
+public interface IBDataStreamSupplier extends Supplier<IBDataStream> {
 
-  String getId();
+  UUID getId();
 }

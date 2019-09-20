@@ -15,6 +15,23 @@
  */
 package org.infrastructurebuilder.data;
 
+import java.util.Optional;
+
 public interface IBDataTransformer {
-  IBTransformationResult transform(IBDataStream stream);
+  /**
+   * Override to return true where a transformer responds to an datastream of type "i"
+   * @param i
+   * @return
+   */
+  default boolean respondsTo(IBDataStream i) {
+    return false;
+  }
+  /**
+   * Call onl if respondsTo(i)
+   * @param stream
+   * @return
+   */
+  default Optional<IBTransformationResult> transform(IBDataStream stream) {
+    return Optional.empty();
+  }
 }

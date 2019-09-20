@@ -41,7 +41,7 @@
     </site>
   </distributionManagement>
   <properties>
-    <error.version>11</error.version>
+    <error.version>12</error.version>
     <iblog.version>0.10.0</iblog.version>
   </properties>
   <dependencyManagement>

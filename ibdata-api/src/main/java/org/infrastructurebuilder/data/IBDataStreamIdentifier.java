@@ -15,27 +15,27 @@
  */
 package org.infrastructurebuilder.data;
 
-import java.io.InputStream;
 import java.net.URL;
+import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
 
-import org.infrastructurebuilder.util.BasicCredentials;
 import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.w3c.dom.Document;
 
-/**
- * An IBDataSource understands where a data stream originates and how to acquire it
- *
- * @author mykel.alvis
- *
- */
-public interface IBDataSource {
-  Optional<URL> getSourceURL();
-  Optional<InputStream> getOverrideInputStream();
-  Optional<BasicCredentials> getCredentials();
-  Optional<Checksum> getChecksum();
-  /**
-   * This is really a descriptive value, although it needs to be unique as well
-   * @return
-   */
-  String getId();
+public interface IBDataStreamIdentifier {
+
+  String IBDATA_PREFIX = "IBDataTemp_";
+  String IBDATA_SUFFIX = ".ibdata";
+
+  UUID getId();
+
+  Optional<URL> getURL();
+
+  Checksum getChecksum();
+
+  Date getCreationDate();
+
+  Document getMetadata();
+
 }

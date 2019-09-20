@@ -15,6 +15,10 @@
  */
 package org.infrastructurebuilder.data;
 
-public interface IBTransformationResult {
-
+/**
+ * @author mykel.alvis
+ *
+ * @param <T>
+ */
+public interface IBTransformationResult extends IBDataStreamIdentifier {
 }

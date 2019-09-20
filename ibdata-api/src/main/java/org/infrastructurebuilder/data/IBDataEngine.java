@@ -15,7 +15,13 @@
  */
 package org.infrastructurebuilder.data;
 
-import org.infrastructurebuilder.data.IbdataApiVersioning;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 import org.infrastructurebuilder.util.artifacts.IBVersion;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultIBVersion;
 
@@ -34,4 +40,26 @@ public interface IBDataEngine {
   default IBVersion getEngineAPIVersion() {
     return API_ENGINE_VERSION;
   }
+
+  Optional<IBDataSet> fetchDataSetById(UUID id);
+
+  Optional<IBDataStream> fetchDataStreamById(UUID id);
+
+  Optional<IBDataStream> fetchDataStreamByMetadataPatternMatcher(Map<String, Pattern> patternMap);
+
+  default Optional<IBDataStream> fetchDataStreamByMetadataPatternMatcherFromStrings(Map<String, String> patternMap) {
+    return this.fetchDataStreamByMetadataPatternMatcher(patternMap.entrySet().stream()
+        .collect(Collectors.toMap(k -> k.getKey().toString(), v -> Pattern.compile(v.getValue()))));
+  }
+
+  Optional<IBTransformationResult> transform(UUID original, List<UUID> sources, String transformer);
+
+  Map<String, IBTransformer> getTransformers();
+
+  /**
+   * Read all available items in the classpath to acquire DOM objects for the metadata
+   * @return
+   */
+  int prepopulate();
+
 }

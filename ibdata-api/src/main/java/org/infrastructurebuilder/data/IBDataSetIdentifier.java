@@ -15,17 +15,27 @@
  */
 package org.infrastructurebuilder.data;
 
-import java.util.function.Supplier;
-import java.util.stream.Stream;
+import static org.infrastructurebuilder.data.IBDataException.cet;
 
-/**
- * IBTypedDataStreamSupplier<T> returns a Stream of typed elements.
- * This is probably Avro for most "typed" records.
- *
- * @author mykel.alvis
- *
- * @param <T> The type of data returned.
- */
-public interface IBTypedDataStreamSupplier<T> extends Supplier<Stream<T>>, IBDataStreamIdentifier {
+import java.util.Date;
+import java.util.UUID;
+import java.util.function.Supplier;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+
+public interface IBDataSetIdentifier {
+  public final static DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+  public final static Supplier<DocumentBuilder> builderSupplier = () -> cet
+      .withReturningTranslation(() -> factory.newDocumentBuilder());
+  public final static Supplier<Document> emptyDocumentSupplier = () -> builderSupplier.get().newDocument();
+
+  UUID getId();
+
+  Date getCreationDate();
+
+  Document getMetadata();
 
 }

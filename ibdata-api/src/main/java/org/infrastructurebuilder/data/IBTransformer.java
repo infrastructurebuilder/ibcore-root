@@ -15,27 +15,17 @@
  */
 package org.infrastructurebuilder.data;
 
-import java.io.InputStream;
-import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.BasicCredentials;
-import org.infrastructurebuilder.util.artifacts.Checksum;
-
-/**
- * An IBDataSource understands where a data stream originates and how to acquire it
- *
- * @author mykel.alvis
- *
- */
-public interface IBDataSource {
-  Optional<URL> getSourceURL();
-  Optional<InputStream> getOverrideInputStream();
-  Optional<BasicCredentials> getCredentials();
-  Optional<Checksum> getChecksum();
+public interface IBTransformer {
   /**
-   * This is really a descriptive value, although it needs to be unique as well
+   * Sanity test in the transformer to see if it will respond to an object of type "i"
+   * @param i
    * @return
    */
-  String getId();
+  boolean respondsTo(Object i);
+
+  Optional<IBTransformationResult> transform(IBDataStream original, List<IBDataStream> additional);
+
 }

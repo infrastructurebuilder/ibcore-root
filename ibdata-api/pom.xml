@@ -40,10 +40,6 @@
       <artifactId>javax.inject</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-settings-builder</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
@@ -51,12 +47,6 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.inject</groupId>
-      <artifactId>guice</artifactId>
-      <scope>test</scope>
-      <classifier>no_aop</classifier>
     </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder</groupId>
@@ -84,6 +74,13 @@
       <classifier>test</classifier>
       <scope>test</scope>
     </dependency>
+    <!--
+    <dependency>
+      <groupId>org.dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+      <version>2.1.1</version>
+    </dependency>
+     -->
   </dependencies>
 
   <build>
@@ -131,6 +128,11 @@
                 <goal>xpp3-reader</goal>
                 <goal>xpp3-extended-reader</goal>
                 <goal>xpp3-writer</goal>
+                <!--
+                <goal>dom4j-writer</goal>
+                <goal>dom4j-reader</goal>
+                 -->
+
               </goals>
             </execution>
             <execution>

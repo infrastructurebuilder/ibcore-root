@@ -13,16 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data;
+package org.infrastructurebuilder.util.artifacts;
 
-import java.util.List;
+import java.nio.file.Path;
 
-/**
- * An IBDataSet is a logical grouping of D
- * @author mykel.alvis
- *
- */
-public interface IBDataSet extends IBDataSetIdentifier {
-  List<IBDataStreamSupplier> getStreamSuppliers();
-
+public interface SourcePathEnabled {
+  Path getSourcePath();
 }

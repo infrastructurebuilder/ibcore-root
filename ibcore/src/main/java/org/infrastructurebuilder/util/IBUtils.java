@@ -17,6 +17,7 @@ package org.infrastructurebuilder.util;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toMap;
+import static org.infrastructurebuilder.util.IBUtils.copy;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -54,7 +55,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Random;
@@ -87,6 +87,28 @@ import org.slf4j.LoggerFactory;
 
 public class IBUtils {
 
+  public final static java.util.Comparator<String> nullSafeStringComparator = java.util.Comparator
+      .nullsFirst(String::compareToIgnoreCase);
+  public final static java.util.Comparator<java.util.UUID> nullSafeUUIDComparator = java.util.Comparator.
+      nullsFirst(java.util.UUID::compareTo);
+  public final static java.util.Comparator<java.util.Date> nullSafeDateComparator = java.util.Comparator.
+      nullsFirst(java.util.Date::compareTo);
+
+  public final static class ChecksumPathSet {
+    private final Checksum checksum;
+    private final Path path;
+
+    public ChecksumPathSet(Path path, Checksum checksum) {
+      this.path = requireNonNull(path);
+      this.checksum = requireNonNull(checksum);
+    }
+    public Path getPath() {
+      return path;
+    }
+    public Checksum getChecksum() {
+      return checksum;
+    }
+  }
   /**
    * Map a Map/String,String to a Properties object
    */
@@ -104,14 +126,14 @@ public class IBUtils {
     return new JSONObject(j.toString());
   };
   public final static Function<JSONObject, JSONObject> deepCopy = j -> {
-    return new JSONObject(Objects.requireNonNull(j),
-        Optional.ofNullable(JSONObject.getNames(Objects.requireNonNull(j))).orElse(new String[0]));
+    return new JSONObject(requireNonNull(j),
+        Optional.ofNullable(JSONObject.getNames(requireNonNull(j))).orElse(new String[0]));
   };
   public final static Function<String, byte[]> getBytes = x -> {
     return Optional.ofNullable(x).orElse("").getBytes(StandardCharsets.UTF_8);
   };
   public final static Function<JSONObject, Map<String, String>> mapJSONToStringString = j -> {
-    return Objects.requireNonNull(j).toMap().entrySet().stream()
+    return requireNonNull(j).toMap().entrySet().stream()
         .collect(Collectors.toMap(k -> k.getKey(), v -> v.getValue().toString()));
   };
   public final static Function<String, String> nullIfBlank = l -> {
@@ -119,7 +141,7 @@ public class IBUtils {
   };
 
   public final static Function<String, Date> parseISODateTime = s -> Date.from(Instant.from(
-      java.time.OffsetDateTime.parse(Objects.requireNonNull(s), java.time.format.DateTimeFormatter.ISO_DATE_TIME)));
+      java.time.OffsetDateTime.parse(requireNonNull(s), java.time.format.DateTimeFormatter.ISO_DATE_TIME)));
 
   public final static Pattern p = Pattern.compile("(\\S+):(\\S+):(.*):(.*):(.*)");
 
@@ -194,8 +216,8 @@ public class IBUtils {
 
   public static void copy(final InputStream source, final OutputStream sink) throws IOException {
     final byte[] buffer = new byte[BUFFER_SIZE];
-    for (int n = 0; (n = Objects.requireNonNull(source, "source").read(buffer)) > 0;) {
-      Objects.requireNonNull(sink, "sink").write(buffer, 0, n);
+    for (int n = 0; (n = requireNonNull(source, "source").read(buffer)) > 0;) {
+      requireNonNull(sink, "sink").write(buffer, 0, n);
     }
     return;
   }
@@ -214,6 +236,29 @@ public class IBUtils {
       final Checksum d = new Checksum(sink.getMessageDigest().digest());
 
       return d;
+    }
+  }
+
+  public final static Path copyToDeletedOnExitTempPath(String prefix, String suffix, final InputStream source)
+      throws IOException {
+    final Path target;
+    target = Files.createTempFile(prefix, suffix);
+    target.toFile().deleteOnExit();
+    try (OutputStream outs = Files.newOutputStream(target)) {
+      copy(source, outs);
+    }
+    return target;
+  }
+
+  public final static ChecksumPathSet copyToDeletedOnExitTempChecksumAndPath(String prefix, String suffix, final InputStream source)
+      throws IOException {
+    final Path target;
+    target = Files.createTempFile(prefix, suffix);
+    target.toFile().deleteOnExit();
+    try (OutputStream outs = Files.newOutputStream(target)) {
+      return new ChecksumPathSet(target, copyAndDigest(source, outs));
+    } catch (NoSuchAlgorithmException nsae) {
+      throw new IOException(nsae); // Cheating
     }
   }
 
@@ -266,7 +311,7 @@ public class IBUtils {
   }
 
   public static Path forceDirectoryPath(final File file) {
-    return forceDirectoryPath(Objects.requireNonNull(file).toPath());
+    return forceDirectoryPath(requireNonNull(file).toPath());
   }
 
   public static Path forceDirectoryPath(final Path path) {
@@ -333,7 +378,7 @@ public class IBUtils {
 
   public static JSONObject getJSONObjectFromMapStringString(final Map<String, String> map) {
     final JSONObject j = new JSONObject();
-    Objects.requireNonNull(map).forEach((k, v) -> j.put(k, v));
+    requireNonNull(map).forEach((k, v) -> j.put(k, v));
     return j;
   }
 
@@ -355,7 +400,7 @@ public class IBUtils {
   }
 
   public final static Optional<Integer> getOptInteger(final JSONObject orig, final String key) {
-    return Optional.ofNullable(Objects.requireNonNull(orig).opt(Objects.requireNonNull(key))).map(m -> m.toString())
+    return Optional.ofNullable(requireNonNull(orig).opt(requireNonNull(key))).map(m -> m.toString())
         .map(Integer::parseInt);
   }
 
@@ -364,7 +409,7 @@ public class IBUtils {
   }
 
   public final static Optional<Long> getOptLong(final JSONObject j, final String key) {
-    if (!Objects.requireNonNull(j).has(key))
+    if (!requireNonNull(j).has(key))
       return Optional.empty();
     return Optional.of(j.getLong(key));
   }
@@ -392,18 +437,18 @@ public class IBUtils {
   }
 
   public final static FileSystem getZipFileSystem(final Path pathToZip, final boolean create) throws IOException {
-    final String pathToZip2 = Objects.requireNonNull(pathToZip).toAbsolutePath().toUri().getPath();
+    final String pathToZip2 = requireNonNull(pathToZip).toAbsolutePath().toUri().getPath();
     return FileSystems.newFileSystem(URI.create("jar:file:" + pathToZip2), getZipFileCreateMap(create));
   }
 
   public static JSONObject hardMergeJSONObject(final JSONObject l, final JSONObject r) {
-    final JSONObject j = new JSONObject(Objects.requireNonNull(l).toString());
+    final JSONObject j = new JSONObject(requireNonNull(l).toString());
     r.keySet().stream().forEach(key -> j.put(key, r.get(key)));
     return j;
   }
 
   public final static boolean hasAll(final JSONObject j, final Collection<String> keys) {
-    return Objects.requireNonNull(keys).stream().filter(key -> !Objects.requireNonNull(j).has(key))
+    return requireNonNull(keys).stream().filter(key -> !requireNonNull(j).has(key))
         .collect(Collectors.toList()).size() == 0;
   }
 
@@ -487,8 +532,8 @@ public class IBUtils {
 
   public final static Map<String, String> mergeMapSS(final Map<String, String> base,
       final Map<String, String> overlay) {
-    final Map<String, String> retVal = new HashMap<>(Objects.requireNonNull(base));
-    retVal.putAll(Objects.requireNonNull(overlay));
+    final Map<String, String> retVal = new HashMap<>(requireNonNull(base));
+    retVal.putAll(requireNonNull(overlay));
     return retVal;
   }
 
@@ -511,7 +556,7 @@ public class IBUtils {
   }
 
   public static JSONObject readToJSONObject(final InputStream ins) throws IOException {
-    return new JSONObject(readToString(Objects.requireNonNull(ins)));
+    return new JSONObject(readToString(requireNonNull(ins)));
   }
 
   public static String readToString(final InputStream ins) throws IOException {
@@ -574,7 +619,7 @@ public class IBUtils {
   }
 
   public static Optional<URL> zipEntryToUrl(final Optional<URL> p, final ZipEntry e) {
-    return Objects.requireNonNull(p).map(
+    return requireNonNull(p).map(
         u -> IBException.cet.withReturningTranslation(() -> new URL("jar:" + u.toExternalForm() + "!/" + e.getName())));
   }
 
@@ -589,7 +634,7 @@ public class IBUtils {
   }
 
   public static Optional<IBVersion> apiVersion(final GAV gav) {
-    return Objects.requireNonNull(gav).getVersion().map(DefaultIBVersion::new).map(DefaultIBVersion::apiVersion);
+    return requireNonNull(gav).getVersion().map(DefaultIBVersion::new).map(DefaultIBVersion::apiVersion);
   }
 
   //  public final static Function<Artifact, GAV> artifactToGAV = (art) -> {

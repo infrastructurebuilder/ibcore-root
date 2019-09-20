@@ -18,6 +18,10 @@ package org.infrastructurebuilder.data;
 import java.io.InputStream;
 import java.util.function.Supplier;
 
-public interface IBDataStream extends Supplier<InputStream>, AutoCloseable {
-  String getId();
+/**
+ * Supplies a new instance of an InputStream every time get() is called
+ * @author mykel.alvis
+ *
+ */
+public interface IBDataStream extends Supplier<InputStream>, AutoCloseable, IBDataStreamIdentifier {
 }

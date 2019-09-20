@@ -15,27 +15,15 @@
  */
 package org.infrastructurebuilder.data;
 
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Optional;
-
-import org.infrastructurebuilder.util.BasicCredentials;
-import org.infrastructurebuilder.util.artifacts.Checksum;
+import java.util.function.Function;
 
 /**
- * An IBDataSource understands where a data stream originates and how to acquire it
- *
+ * For ease of use making a component that does this. Some concrete class would be injected into an IBDataTransformer
  * @author mykel.alvis
  *
+ * @param <I> Input type (line of text, array of strings, whatever, Avro record)
+ * @param <O> Output type (target type (frequently Avro record)
  */
-public interface IBDataSource {
-  Optional<URL> getSourceURL();
-  Optional<InputStream> getOverrideInputStream();
-  Optional<BasicCredentials> getCredentials();
-  Optional<Checksum> getChecksum();
-  /**
-   * This is really a descriptive value, although it needs to be unique as well
-   * @return
-   */
-  String getId();
+public interface IBDataLineTransformer<I, O> extends Function<I, O> {
+
 }

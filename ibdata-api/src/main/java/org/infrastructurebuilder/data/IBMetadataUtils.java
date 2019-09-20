@@ -15,27 +15,17 @@
  */
 package org.infrastructurebuilder.data;
 
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Optional;
+import java.io.StringReader;
+import java.util.function.Function;
 
-import org.infrastructurebuilder.util.BasicCredentials;
-import org.infrastructurebuilder.util.artifacts.Checksum;
+import javax.xml.parsers.DocumentBuilderFactory;
 
-/**
- * An IBDataSource understands where a data stream originates and how to acquire it
- *
- * @author mykel.alvis
- *
- */
-public interface IBDataSource {
-  Optional<URL> getSourceURL();
-  Optional<InputStream> getOverrideInputStream();
-  Optional<BasicCredentials> getCredentials();
-  Optional<Checksum> getChecksum();
-  /**
-   * This is really a descriptive value, although it needs to be unique as well
-   * @return
-   */
-  String getId();
+import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+
+public class IBMetadataUtils {
+  public final static Function<Xpp3Dom, Document> fromXpp3Dom = (document) -> IBDataException.cet
+      .withReturningTranslation(() -> DocumentBuilderFactory.newInstance().newDocumentBuilder()
+          .parse(new InputSource(new StringReader(document.toString()))));
 }
