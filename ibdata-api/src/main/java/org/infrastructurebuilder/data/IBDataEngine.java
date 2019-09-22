@@ -31,7 +31,8 @@ import org.infrastructurebuilder.util.artifacts.impl.DefaultIBVersion;
  *
  */
 public interface IBDataEngine {
-  final static IBVersion API_ENGINE_VERSION = new DefaultIBVersion(IbdataApiVersioning.getVersion());
+  // FIXME This won't work.  IbdataApiVersioning is loaded from the classpath, not localized
+  final static IBVersion API_ENGINE_VERSION = new DefaultIBVersion(IbdataApiVersioning.getApiVersion());
 
   /**
    * Should be overriden in implementations because top-level erasure is a thingS
@@ -40,6 +41,8 @@ public interface IBDataEngine {
   default IBVersion getEngineAPIVersion() {
     return API_ENGINE_VERSION;
   }
+
+  List<UUID> getAvailableIds();
 
   Optional<IBDataSet> fetchDataSetById(UUID id);
 
@@ -57,9 +60,13 @@ public interface IBDataEngine {
   Map<String, IBTransformer> getTransformers();
 
   /**
-   * Read all available items in the classpath to acquire DOM objects for the metadata
-   * @return
+   * Execute a (probably extremely expensive) read of all available items in the classpath to acquire DOM objects for the metadata
+   * @return number of Datasets found in the classpath
    */
   int prepopulate();
+  /**
+   * Return a list of UUIDs of Datasets currently available
+   * @return
+   */
 
 }

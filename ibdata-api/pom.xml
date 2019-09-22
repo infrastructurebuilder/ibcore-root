@@ -168,6 +168,24 @@
     </pluginManagement>
     <plugins>
       <plugin>
+        <groupId>org.infrastructurebuilder.maven</groupId>
+        <artifactId>ibversions-maven-plugin</artifactId>
+        <version>0.10.0-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <id>default</id>
+            <phase>validate</phase> <!--  Needs to be before resource filtering -->
+            <goals>
+              <goal>generate-java-version</goal>
+              <goal>generate-java-test-version</goal>
+            </goals>
+            <configuration>
+              <apiVersionPropertyName>apiVersion</apiVersionPropertyName>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
@@ -183,20 +201,6 @@
             <model>target/classes/${project.artifactId}.mdo</model>
           </models>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.infrastructurebuilder.maven</groupId>
-        <artifactId>ibversions-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>generate-java-version</goal>
-              <goal>generate-java-test-version</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.eclipse.sisu</groupId>
