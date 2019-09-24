@@ -15,6 +15,8 @@
  */
 package org.infrastructurebuilder.data;
 
+import java.util.List;
+
 public interface IBDataIngester {
-  IBDataSet ingest();
+  IBDataSet ingest(List<IBDataSourceSupplier> dss);
 }

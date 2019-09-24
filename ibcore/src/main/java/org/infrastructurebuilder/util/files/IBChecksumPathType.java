@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data;
+package org.infrastructurebuilder.util.files;
 
-import java.util.Optional;
-import java.util.function.Function;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.util.function.Supplier;
 
-/**
- * For ease of use making a component that does this. Some concrete class would be injected into an IBDataTransformer
- * @author mykel.alvis
- *
- * @param <I> Input type (line of text, array of strings, whatever, Avro record)
- * @param <O> Output type (target type (frequently Avro record)
- */
-public interface IBDataLineTransformer<I extends Object, O extends Object> extends Function<I, Optional<O>> {
+import org.infrastructurebuilder.util.artifacts.Checksum;
+
+public interface IBChecksumPathType extends Supplier<InputStream> {
+
+  Path getPath();
+
+  Checksum getChecksum();
+
+  String getType();
 
 }

@@ -15,6 +15,7 @@
  */
 package org.infrastructurebuilder.util;
 
+import java.net.PasswordAuthentication;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -61,5 +62,6 @@ public class DefaultBasicCredentials implements BasicCredentials {
     result = prime * result + key.hashCode();
     return result;
   }
+
 
 }

@@ -17,7 +17,6 @@ package org.infrastructurebuilder.util;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toMap;
-import static org.infrastructurebuilder.util.IBUtils.copy;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -71,8 +70,6 @@ import java.util.stream.StreamSupport;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import javax.xml.bind.DatatypeConverter;
-
 import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.IBException;
 import org.infrastructurebuilder.util.artifacts.Checksum;
@@ -89,26 +86,11 @@ public class IBUtils {
 
   public final static java.util.Comparator<String> nullSafeStringComparator = java.util.Comparator
       .nullsFirst(String::compareToIgnoreCase);
-  public final static java.util.Comparator<java.util.UUID> nullSafeUUIDComparator = java.util.Comparator.
-      nullsFirst(java.util.UUID::compareTo);
-  public final static java.util.Comparator<java.util.Date> nullSafeDateComparator = java.util.Comparator.
-      nullsFirst(java.util.Date::compareTo);
+  public final static java.util.Comparator<java.util.UUID> nullSafeUUIDComparator = java.util.Comparator
+      .nullsFirst(java.util.UUID::compareTo);
+  public final static java.util.Comparator<java.util.Date> nullSafeDateComparator = java.util.Comparator
+      .nullsFirst(java.util.Date::compareTo);
 
-  public final static class ChecksumPathSet {
-    private final Checksum checksum;
-    private final Path path;
-
-    public ChecksumPathSet(Path path, Checksum checksum) {
-      this.path = requireNonNull(path);
-      this.checksum = requireNonNull(checksum);
-    }
-    public Path getPath() {
-      return path;
-    }
-    public Checksum getChecksum() {
-      return checksum;
-    }
-  }
   /**
    * Map a Map/String,String to a Properties object
    */
@@ -140,8 +122,8 @@ public class IBUtils {
     return new String(Optional.ofNullable(l).orElse("")).trim().length() > 0 ? l : null;
   };
 
-  public final static Function<String, Date> parseISODateTime = s -> Date.from(Instant.from(
-      java.time.OffsetDateTime.parse(requireNonNull(s), java.time.format.DateTimeFormatter.ISO_DATE_TIME)));
+  public final static Function<String, Date> parseISODateTime = s -> Date.from(Instant
+      .from(java.time.OffsetDateTime.parse(requireNonNull(s), java.time.format.DateTimeFormatter.ISO_DATE_TIME)));
 
   public final static Pattern p = Pattern.compile("(\\S+):(\\S+):(.*):(.*):(.*)");
 
@@ -250,18 +232,6 @@ public class IBUtils {
     return target;
   }
 
-  public final static ChecksumPathSet copyToDeletedOnExitTempChecksumAndPath(String prefix, String suffix, final InputStream source)
-      throws IOException {
-    final Path target;
-    target = Files.createTempFile(prefix, suffix);
-    target.toFile().deleteOnExit();
-    try (OutputStream outs = Files.newOutputStream(target)) {
-      return new ChecksumPathSet(target, copyAndDigest(source, outs));
-    } catch (NoSuchAlgorithmException nsae) {
-      throw new IOException(nsae); // Cheating
-    }
-  }
-
   public final static void deletePath(final Path root) {
     try {
       Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
@@ -353,8 +323,21 @@ public class IBUtils {
     return getHex(raw, UTF_8);
   }
 
+  public static String byteToHex(byte num) {
+    char[] hexDigits = new char[2];
+    hexDigits[0] = Character.forDigit((num >> 4) & 0xF, 16);
+    hexDigits[1] = Character.forDigit((num & 0xF), 16);
+    return new String(hexDigits);
+  }
+
   public static String getHex(final byte[] raw, final Charset cs) {
-    return raw == null ? null : new String(DatatypeConverter.printHexBinary(raw).toLowerCase().getBytes(cs));
+    if (raw == null)
+      return null;
+    StringBuffer hexStringBuffer = new StringBuffer();
+    for (int i = 0; i < raw.length; i++) {
+      hexStringBuffer.append(byteToHex(raw[i]));
+    }
+    return new String(hexStringBuffer.toString().toLowerCase().getBytes(cs));
   }
 
   public static String getHexStringFromInputStream(final InputStream ins) throws IOException {
@@ -448,8 +431,8 @@ public class IBUtils {
   }
 
   public final static boolean hasAll(final JSONObject j, final Collection<String> keys) {
-    return requireNonNull(keys).stream().filter(key -> !requireNonNull(j).has(key))
-        .collect(Collectors.toList()).size() == 0;
+    return requireNonNull(keys).stream().filter(key -> !requireNonNull(j).has(key)).collect(Collectors.toList())
+        .size() == 0;
   }
 
   public final static boolean hex8Digit(final String v) {
@@ -464,7 +447,30 @@ public class IBUtils {
   }
 
   public static byte[] hexStringToByteArray(final String s) {
-    return DatatypeConverter.parseHexBinary(s.toUpperCase());
+
+    if (s.length() % 2 == 1) {
+      throw new IllegalArgumentException("Not a hex string");
+    }
+
+    byte[] bytes = new byte[s.length() / 2];
+    for (int i = 0; i < s.length(); i += 2) {
+      bytes[i / 2] = hexToByte(s.substring(i, i + 2));
+    }
+    return bytes;
+  }
+
+  public static byte hexToByte(String hexString) {
+    int firstDigit = toDigit(hexString.charAt(0));
+    int secondDigit = toDigit(hexString.charAt(1));
+    return (byte) ((firstDigit << 4) + secondDigit);
+  }
+
+  private static int toDigit(char hexChar) {
+    int digit = Character.digit(hexChar, 16);
+    if (digit == -1) {
+      throw new IllegalArgumentException("Invalid Hexadecimal Character: " + hexChar);
+    }
+    return digit;
   }
 
   public static InputStream inputStreamFromHexString(final String hexString) {

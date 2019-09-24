@@ -15,27 +15,42 @@
  */
 package org.infrastructurebuilder.data;
 
-import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.Optional;
+import java.util.function.Supplier;
 
+import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.util.BasicCredentials;
 import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.w3c.dom.Document;
 
 /**
- * An IBDataSource understands where a data stream originates and how to acquire it
+ * An IBDataSource understands where a data stream originates and how to acquire it.
+ * Furthermore, it actually acquires that datastream.
+ *
+ * An IBDataSource always returns a Path pointer to some acquired tempfile.
+ * The contract for IBDataSource:
+ *          1. An IBData
+ *          1. the Path supplied is to the same temp file every time.
  *
  * @author mykel.alvis
  *
  */
-public interface IBDataSource {
-  Optional<URL> getSourceURL();
-  Optional<InputStream> getOverrideInputStream();
+public interface IBDataSource extends Supplier<Path> {
+  URL getSourceURL();
   Optional<BasicCredentials> getCredentials();
   Optional<Checksum> getChecksum();
+  Optional<Document> getMetadata();
   /**
    * This is really a descriptive value, although it needs to be unique as well
    * @return
    */
   String getId();
+
+  Checksum getActualChecksum();
+
+  default String getMimeType() {
+    return IBConstants.APPLICATION_OCTET_STREAM;
+  }
 }

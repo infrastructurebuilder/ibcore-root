@@ -15,11 +15,17 @@
  */
 package org.infrastructurebuilder.util;
 
+import java.net.PasswordAuthentication;
 import java.util.Optional;
+import java.util.function.Supplier;
 
-public interface BasicCredentials {
+public interface BasicCredentials extends Supplier<PasswordAuthentication> {
   String getKeyId();
 
   Optional<String> getSecret();
+
+  default PasswordAuthentication get() {
+    return new PasswordAuthentication(getKeyId(), getSecret().map(s -> s.toCharArray()).orElse(new char[0]));
+  }
 
 }

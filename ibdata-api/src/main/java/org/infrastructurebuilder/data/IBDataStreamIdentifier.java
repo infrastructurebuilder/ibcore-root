@@ -38,4 +38,5 @@ public interface IBDataStreamIdentifier {
 
   Document getMetadata();
 
+  String getMimeType();
 }

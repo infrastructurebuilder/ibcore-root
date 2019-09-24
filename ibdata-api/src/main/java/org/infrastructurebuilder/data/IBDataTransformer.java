@@ -15,9 +15,13 @@
  */
 package org.infrastructurebuilder.data;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface IBDataTransformer {
+  default String getHint() {
+    return "default";
+  }
   /**
    * Override to return true where a transformer responds to an datastream of type "i"
    * @param i
@@ -31,7 +35,7 @@ public interface IBDataTransformer {
    * @param stream
    * @return
    */
-  default Optional<IBTransformationResult> transform(IBDataStream stream) {
+  default Optional<IBTransformationResult> transform(List<IBDataStream> stream) {
     return Optional.empty();
   }
 }

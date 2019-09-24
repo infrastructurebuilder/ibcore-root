@@ -179,6 +179,14 @@
           <type>String</type>
         </field>
         <field>
+          <name>mimeType</name>
+          <version>1.0.0+</version>
+          <description>Stringified version of a MIME type for the datastream</description>
+          <required>true</required>
+          <defaultValue>application/octet-stream</defaultValue>
+          <type>String</type>
+        </field>
+        <field>
           <name>creationDate</name>
           <version>1.0.0+</version>
           <required>true</required>

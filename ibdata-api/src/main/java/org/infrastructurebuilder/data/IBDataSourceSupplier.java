@@ -24,10 +24,5 @@ import java.util.function.Supplier;
  *
  */
 public interface IBDataSourceSupplier extends Supplier<IBDataSource>{
-  /**
-   * Return the id of the targeted dataset.  In most cases, it'll be the same as the id for this dataset.
-   * @return
-   */
-  UUID getId();
 
 }

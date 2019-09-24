@@ -15,6 +15,7 @@
  */
 package org.infrastructurebuilder.util;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -127,11 +128,10 @@ public class ProcessRunnerTest {
       System.out.println(p.getResults().size());
       assertTrue(newrunner.hasErrorResult(p.getResults()));
       final ProcessExecutionResult a = p.getExecutions().get(id);
-      final String x = String.join("\n", a.getStdErr());
-      final String z = String.join("\n", a.getStdOut());
-      assertTrue(x.contains("Usage: javac"));
-      assertNotNull(z);
+      assertEquals(2, a.getResultCode().get().longValue());
+      logger.debug(a.getId() + " " + a.getException().toString() + a.getResultCode());
     } catch (final Exception e) {
+      logger.error("Unexpected exception occurred" ,e);
       fail(e.getClass().getCanonicalName() + " " + e.getMessage());
     }
     assertFalse(Files.exists(scratchDir));
