@@ -42,6 +42,8 @@ public interface IBDataSource extends Supplier<Path> {
   Optional<BasicCredentials> getCredentials();
   Optional<Checksum> getChecksum();
   Optional<Document> getMetadata();
+  Optional<String> getName();
+  Optional<String> getDescription();
   /**
    * This is really a descriptive value, although it needs to be unique as well
    * @return

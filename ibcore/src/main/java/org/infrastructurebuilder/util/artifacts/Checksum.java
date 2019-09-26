@@ -115,6 +115,10 @@ public class Checksum implements Comparable<Checksum>, Supplier<Optional<UUID>> 
     this(insS.get(), relativeRoot);
   }
 
+  public Checksum(final List<Checksum> checksums) {
+    this(Optional.empty(), checksums);
+  }
+
   public Optional<UUID> asUUID() {
     return Optional.ofNullable(b == null ? null : UUID.nameUUIDFromBytes(b));
   }

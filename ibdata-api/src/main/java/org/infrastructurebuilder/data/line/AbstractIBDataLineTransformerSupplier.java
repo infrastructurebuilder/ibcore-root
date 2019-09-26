@@ -13,34 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data;
+package org.infrastructurebuilder.data.line;
 
-import java.net.URL;
-import java.util.Date;
 import java.util.Optional;
-import java.util.UUID;
+import java.util.Properties;
 
-import org.infrastructurebuilder.util.artifacts.Checksum;
-import org.w3c.dom.Document;
+import org.infrastructurebuilder.util.PropertiesSupplier;
 
-public interface IBDataStreamIdentifier {
+abstract public class AbstractIBDataLineTransformerSupplier<I, O> implements IBDataLineTransformerSupplier<I, O> {
 
-  String IBDATA_PREFIX = "IBDataTemp_";
-  String IBDATA_SUFFIX = ".ibdata";
+  private final PropertiesSupplier ps;
 
-  UUID getId();
+  public AbstractIBDataLineTransformerSupplier(PropertiesSupplier ps) {
+    this.ps = ps;
+  }
 
-  Optional<URL> getURL();
+  public PropertiesSupplier getProperties() {
+    return Optional.ofNullable(ps).orElse(() -> new Properties());
+  }
 
-  Optional<String> getName();
-
-  Optional<String> getDescription();
-
-  Checksum getChecksum();
-
-  Date getCreationDate();
-
-  Document getMetadata();
-
-  String getMimeType();
 }

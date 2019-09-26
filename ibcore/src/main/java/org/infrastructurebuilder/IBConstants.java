@@ -130,4 +130,9 @@ public interface IBConstants {
   public static final String X7FD737B2 = "7FD737B2";
   public static final String X7FD737B2_PUBLIC_SUBKEY = "E48A21FD";
 
+  public final static String HTTP_PREFIX = "http://";
+  public final static String HTTPS_PREFIX = "https://";
+  public final static String FILE_PREFIX = "file:";
+  public final static String ZIP_PREFIX = "zip:";
+
 }

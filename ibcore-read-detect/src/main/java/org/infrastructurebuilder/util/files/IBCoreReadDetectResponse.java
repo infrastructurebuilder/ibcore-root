@@ -21,19 +21,24 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
+import java.util.Optional;
 
 import org.infrastructurebuilder.util.IBUtils;
 
 public class IBCoreReadDetectResponse {
 
-
-  public final static IBChecksumPathType copyToDeletedOnExitTempChecksumAndPath(String prefix, String suffix,
-      final InputStream source) {
+  public final static IBChecksumPathType copyToDeletedOnExitTempChecksumAndPath(Optional<Path> targetDir, String prefix,
+      String suffix, final InputStream source) {
     return cet.withReturningTranslation(() -> {
-      Path target = Files.createTempFile(prefix, suffix);
+      Path target = Objects.requireNonNull(targetDir).isPresent()
+          ? Files.createTempFile(targetDir.get(), prefix, suffix)
+          : Files.createTempFile(prefix, suffix);
       target.toFile().deleteOnExit();
       try (OutputStream outs = Files.newOutputStream(target)) {
-        return new DefaultIBChecksumPathType(target, IBUtils.copyAndDigest(source, outs));
+        IBChecksumPathType cpt = new DefaultIBChecksumPathType(target, IBUtils.copyAndDigest(source, outs));
+
+        return cpt;
       }
     });
   }

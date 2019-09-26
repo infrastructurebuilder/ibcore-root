@@ -15,8 +15,15 @@
  */
 package org.infrastructurebuilder.data;
 
+import java.nio.file.Path;
 import java.util.List;
 
 public interface IBDataIngester {
-  IBDataSet ingest(List<IBDataSourceSupplier> dss);
+  /**
+   * Ingestion returns a Path to a completed DataSet (i.e. a written IBDataEngine.IBDATA_IBDATASET_XML file).  That path can contain
+   * no other files
+   * @param dss
+   * @return
+   */
+  Path ingest(IBDataSetIdentifier dsi, List<IBDataSourceSupplier> dss);
 }

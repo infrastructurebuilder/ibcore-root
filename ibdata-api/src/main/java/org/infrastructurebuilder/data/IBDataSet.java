@@ -15,7 +15,17 @@
  */
 package org.infrastructurebuilder.data;
 
+import static java.util.stream.Collectors.toList;
+import static org.infrastructurebuilder.data.IBDataException.cet;
+
+import java.io.InputStream;
 import java.util.List;
+import java.util.UUID;
+import java.util.function.Function;
+
+import org.infrastructurebuilder.data.model.DataSet;
+import org.infrastructurebuilder.data.model.DataSetInputSource;
+import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3ReaderEx;
 
 /**
  * An IBDataSet is a logical grouping of D
@@ -23,6 +33,23 @@ import java.util.List;
  *
  */
 public interface IBDataSet extends IBDataSetIdentifier {
+  public final static Function<? super InputStream, ? extends DataSet> mapStreamToDataSet = (in) -> {
+    IBDataSourceModelXpp3ReaderEx reader;
+    DataSetInputSource dsis;
+
+    reader = new IBDataSourceModelXpp3ReaderEx();
+    dsis = new DataSetInputSource();
+    try {
+      return cet.withReturningTranslation(() -> reader.read(in, true, dsis));
+    } finally {
+      cet.withTranslation(() -> in.close());
+    }
+  };
+
   List<IBDataStreamSupplier> getStreamSuppliers();
+
+  default List<UUID> getStreamIds() {
+    return getStreamSuppliers().stream().map(ss -> ss.getId()).collect(toList());
+  }
 
 }

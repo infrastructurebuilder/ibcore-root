@@ -15,7 +15,9 @@
  */
 package org.infrastructurebuilder.util;
 
+import static java.lang.Long.MAX_VALUE;
 import static java.util.Objects.requireNonNull;
+import static java.util.Spliterator.ORDERED;
 import static java.util.stream.Collectors.toMap;
 
 import java.io.BufferedOutputStream;
@@ -59,7 +61,9 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.Spliterators;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -142,6 +146,34 @@ public class IBUtils {
       l.add((T) array.get(i));
     }
     return l.iterator();
+  }
+
+  /**
+   * Modified from https://stackoverflow.com/questions/33242577/how-do-i-turn-a-java-enumeration-into-a-stream
+   * @param <T>
+   * @param e1
+   * @param parallel
+   * @return
+   */
+  public final static <T> Stream<T> enumerationAsStream(Enumeration<T> e1, boolean parallel) {
+    return StreamSupport.stream(new Spliterators.AbstractSpliterator<T>(MAX_VALUE, ORDERED) {
+      public boolean tryAdvance(Consumer<? super T> advance) {
+        if (e1.hasMoreElements()) {
+          advance.accept(e1.nextElement());
+          return true;
+        }
+        return false;
+      }
+
+      public void forEachRemaining(Consumer<? super T> action) {
+        while (e1.hasMoreElements())
+          action.accept(e1.nextElement());
+      }
+    }, parallel);
+  }
+
+  public final static <T> Stream<T> iterableAsStream(Iterator<T> e1, boolean parallel) {
+    return StreamSupport.stream(Spliterators.spliteratorUnknownSize(e1, 0), parallel);
   }
 
   public static Stream<JSONObject> asJSONObjectStream(final JSONArray array) {

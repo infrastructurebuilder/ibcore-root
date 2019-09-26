@@ -55,14 +55,14 @@
           <type>String</type>
         </field>
         <field>
-          <name>name</name>
+          <name>dataSetName</name>
           <version>1.0.0+</version>
           <required>true</required>
           <description>The full name of the dataset.</description>
           <type>String</type>
         </field>
         <field>
-          <name>description</name>
+          <name>dataSetDescription</name>
           <version>1.0.0+</version>
           <description>A detailed description of the dataset</description>
           <type>String</type>
@@ -93,6 +93,33 @@
         </field>
       </fields>
       <codeSegments>
+                <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  @Override
+  public java.util.Optional<String> getName() {
+    return java.util.Optional.ofNullable(getDataSetName());
+  }
+
+  ]]>
+          </code>
+        </codeSegment>
+                <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  @Override
+  public java.util.Optional<String> getDescription() {
+    return java.util.Optional.ofNullable(getDataSetDescription());
+  }
+
+  ]]>
+          </code>
+        </codeSegment>
+
+
+
         <codeSegment>
           <version>1.0.0+</version>
           <code>
@@ -166,14 +193,14 @@
           <type>String</type>
         </field>
         <field>
-          <name>name</name>
+          <name>dataStreamName</name>
           <version>1.0.0+</version>
           <required>true</required>
           <description>The full name of the datastream.</description>
           <type>String</type>
         </field>
         <field>
-          <name>description</name>
+          <name>dataStreamDescription</name>
           <version>1.0.0+</version>
           <description>A detailed description of the datastream</description>
           <type>String</type>
@@ -283,6 +310,31 @@
   ]]>
           </code>
         </codeSegment>
+                <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  @Override
+  public java.util.Optional<String> getName() {
+    return java.util.Optional.ofNullable(getDataStreamName());
+  }
+
+  ]]>
+          </code>
+        </codeSegment>
+                <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  @Override
+  public java.util.Optional<String> getDescription() {
+    return java.util.Optional.ofNullable(getDataStreamDescription());
+  }
+
+  ]]>
+          </code>
+        </codeSegment>
+
         <codeSegment>
           <version>1.0.0+</version>
           <code>

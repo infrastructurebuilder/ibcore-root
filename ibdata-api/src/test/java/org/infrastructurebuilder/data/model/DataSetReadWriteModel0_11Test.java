@@ -15,20 +15,15 @@
  */
 package org.infrastructurebuilder.data.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -39,14 +34,13 @@ import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3Writer;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 public class DataSetReadWriteModel0_11Test {
 
   private DataStream ds;
   private DataSet set;
   private Xpp3Dom d;
+
   @Before
   public void setUp() throws Exception {
 
@@ -66,22 +60,22 @@ public class DataSetReadWriteModel0_11Test {
     });
     set = new DataSet();
     set.setCreationDate(new Date());
-    set.setDescription("setDescription");
+    set.setDataSetDescription("setDescription");
     set.setModelEncoding("UTF-8");
     set.setModelVersion(IbdataApiVersioning.getApiVersion());
     set.setUuid(UUID.randomUUID().toString());
     ds = new DataStream();
-    ds.setDescription("description 1");
+    ds.setDataStreamDescription("description 1");
     ds.setCreationDate(new Date());
-    ds.setName("one");
+    ds.setDataStreamName("one");
     ds.setSha512(new Checksum().toString());
     ds.setSourceURL("https://www.google.com");
     ds.setUuid(UUID.randomUUID().toString());
     ds.set_metadata(d);
     set.addStream(ds);
     ds.setCreationDate(new Date());
-    ds.setName("two");
-    ds.setDescription("description two");
+    ds.setDataStreamName("two");
+    ds.setDataStreamDescription("description two");
     set.addStream(ds);
 
     StringWriter sw = new StringWriter();
@@ -103,6 +97,7 @@ public class DataSetReadWriteModel0_11Test {
       assertEquals("310dc0e2-109d-4237-9729-e266176e1c7a", read.getId().toString());
     }
   }
+
   @Test
   public void testReader() throws IOException, XmlPullParserException {
     IBDataSourceModelXpp3Reader reader = new IBDataSourceModelXpp3Reader();

@@ -15,6 +15,8 @@
  */
 package org.infrastructurebuilder.util;
 
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 import static org.infrastructurebuilder.util.IBUtils.UTF_8;
 import static org.infrastructurebuilder.util.IBUtils.asIterator;
 import static org.infrastructurebuilder.util.IBUtils.asJSONObjectStream;
@@ -96,7 +98,6 @@ import java.util.Properties;
 import java.util.UUID;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 
@@ -176,7 +177,7 @@ public class IBUtilsTest {
 
   @Test
   public void testAsIterator() {
-    final Iterator<JSONObject> i = asIterator(new JSONArray(Arrays.asList(objects)));
+    final Iterator<JSONObject> i = asIterator(new JSONArray(asList(objects)));
     int c = 0;
     while (i.hasNext()) {
       JSONAssert.assertEquals(objects[c], i.next(), true);
@@ -186,17 +187,17 @@ public class IBUtilsTest {
 
   @Test
   public void testAsJSONObjectStream() {
-    final JSONArray a = new JSONArray(Arrays.asList(objects));
-    final List<JSONObject> x = asJSONObjectStream(a).collect(Collectors.toList());
-    assertEquals("Lists equal", Arrays.asList(objects), x);
+    final JSONArray a = new JSONArray(asList(objects));
+    final List<JSONObject> x = asJSONObjectStream(a).collect(toList());
+    assertEquals("Lists equal", asList(objects), x);
   }
 
   @Test
   public void testAsJSONObjectStream2() {
-    final JSONArray a = new JSONArray(Arrays.asList(objects));
+    final JSONArray a = new JSONArray(asList(objects));
     final Stream<JSONObject> y = asStream(a);
-    final List<JSONObject> x = y.collect(Collectors.toList());
-    assertEquals("Lists equal", Arrays.asList(objects), x);
+    final List<JSONObject> x = y.collect(toList());
+    assertEquals("Lists equal", asList(objects), x);
   }
 
   @Test
@@ -209,10 +210,10 @@ public class IBUtilsTest {
   @Test
   public void testAsStringStream() {
     final String[] s = new String[] { "A", "B", "C" };
-    final List<String> l = Arrays.asList(s);
+    final List<String> l = asList(s);
     final JSONArray j = new JSONArray(l);
     final Stream<String> y = asStringStream(j);
-    assertEquals("Lists same", l, y.collect(Collectors.toList()));
+    assertEquals("Lists same", l, y.collect(toList()));
   }
 
   @Test
@@ -505,13 +506,13 @@ public class IBUtilsTest {
   public void testGetJSONArray() {
     final JSONObject j = new JSONObject();
     assertFalse(getOptionalJSONArray(j, "X").isPresent());
-    j.put("X", new JSONArray(Arrays.asList("A")));
+    j.put("X", new JSONArray(asList("A")));
     assertTrue(getOptionalJSONArray(j, "X").isPresent());
   }
 
   @Test
   public void testGetJSONArrayAsListString() {
-    final JSONObject j = new JSONObject().put("X", new JSONArray(Arrays.asList("1", "2")));
+    final JSONObject j = new JSONObject().put("X", new JSONArray(asList("1", "2")));
     final List<String> s = IBUtils.getJSONArrayAsListString(j, "X");
     assertEquals(2, s.size());
     assertTrue(s.contains("1"));
@@ -626,8 +627,8 @@ public class IBUtilsTest {
   @Test
   public void testHasAll() {
     final JSONObject j = new JSONObject().put("A", "B");
-    assertFalse(hasAll(j, Arrays.asList("A", "C")));
-    assertTrue(hasAll(j, Arrays.asList("A")));
+    assertFalse(hasAll(j, asList("A", "C")));
+    assertTrue(hasAll(j, asList("A")));
   }
 
   @Test
@@ -641,8 +642,8 @@ public class IBUtilsTest {
 
   @Test
   public void testJSONArray() {
-    final JSONArray expected = new JSONArray(Arrays.asList(new FakeJSONOutputEnabled().asJSON()));
-    final List<? extends JSONOutputEnabled> v = Arrays.asList(new FakeJSONOutputEnabled());
+    final JSONArray expected = new JSONArray(asList(new FakeJSONOutputEnabled().asJSON()));
+    final List<? extends JSONOutputEnabled> v = asList(new FakeJSONOutputEnabled());
     final JSONArray actual = getJSONArrayFromJSONOutputEnabled(v);
     JSONAssert.assertEquals(expected, actual, true);
   }
@@ -719,35 +720,35 @@ public class IBUtilsTest {
 
   @Test
   public void testMergeJSONArray() {
-    final JSONArray a = new JSONArray(Arrays.asList("A", "B"));
-    final JSONArray c = new JSONArray(Arrays.asList("C", "D"));
+    final JSONArray a = new JSONArray(asList("A", "B"));
+    final JSONArray c = new JSONArray(asList("C", "D"));
     final JSONArray z = mergeJSONArray(a, c);
-    final JSONArray actual = new JSONArray(Arrays.asList("D", "C", "B", "A"));
+    final JSONArray actual = new JSONArray(asList("D", "C", "B", "A"));
     JSONAssert.assertEquals(z, actual, false);
   }
 
   @Test
   public void testMergeJSONArray2() {
-    final JSONArray a = new JSONArray(Arrays.asList("A", "B"));
+    final JSONArray a = new JSONArray(asList("A", "B"));
     final JSONArray z = mergeJSONArray(a, "C");
-    final JSONArray actual = new JSONArray(Arrays.asList("C", "B", "A"));
+    final JSONArray actual = new JSONArray(asList("C", "B", "A"));
     JSONAssert.assertEquals(z, actual, false);
   }
 
   @Test
   public void testMergeJSONArray3() {
     final String a = "A";
-    final JSONArray c = new JSONArray(Arrays.asList("C", "D"));
+    final JSONArray c = new JSONArray(asList("C", "D"));
     final JSONArray z = mergeJSONArray(c, a);
-    final JSONArray actual = new JSONArray(Arrays.asList("D", "C", "A"));
+    final JSONArray actual = new JSONArray(asList("D", "C", "A"));
     JSONAssert.assertEquals(z, actual, false);
   }
 
   @Test
   public void testMergeJSONArrayAlreadyPresent() {
-    final JSONArray a = new JSONArray(Arrays.asList("A", "B"));
+    final JSONArray a = new JSONArray(asList("A", "B"));
     final JSONArray z = mergeJSONArray(a, "B");
-    final JSONArray actual = new JSONArray(Arrays.asList("B", "A"));
+    final JSONArray actual = new JSONArray(asList("B", "A"));
     JSONAssert.assertEquals(z, actual, false);
   }
 

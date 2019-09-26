@@ -18,6 +18,7 @@ package org.infrastructurebuilder.data;
 import static org.infrastructurebuilder.data.IBDataException.cet;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -33,6 +34,10 @@ public interface IBDataSetIdentifier {
   public final static Supplier<Document> emptyDocumentSupplier = () -> builderSupplier.get().newDocument();
 
   UUID getId();
+
+  Optional<String> getName();
+
+  Optional<String> getDescription();
 
   Date getCreationDate();
 

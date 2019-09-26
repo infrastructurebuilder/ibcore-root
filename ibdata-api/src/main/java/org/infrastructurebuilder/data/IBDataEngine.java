@@ -32,7 +32,12 @@ import org.infrastructurebuilder.util.artifacts.impl.DefaultIBVersion;
  */
 public interface IBDataEngine {
   // FIXME This won't work.  IbdataApiVersioning is loaded from the classpath, not localized
-  final static IBVersion API_ENGINE_VERSION = new DefaultIBVersion(IbdataApiVersioning.getApiVersion());
+  public static final IBVersion API_ENGINE_VERSION = new DefaultIBVersion(IbdataApiVersioning.getApiVersion());
+  // The final name of the metadata resources
+  public static final String IBDATA = "IBDATA";
+  public static final String IBDATA_DIR = "/" + IBDATA + "/";
+  public static final String IBDATASET_XML = "ibdataset.xml";
+  public static final String IBDATA_IBDATASET_XML = IBDATA_DIR + IBDATASET_XML;
 
   /**
    * Should be overriden in implementations because top-level erasure is a thingS
@@ -55,9 +60,15 @@ public interface IBDataEngine {
         .collect(Collectors.toMap(k -> k.getKey().toString(), v -> Pattern.compile(v.getValue()))));
   }
 
-  Optional<IBTransformationResult> transform(UUID original, List<UUID> sources, String transformer);
+  /**
+   * Transform a list of sources
+   * @param sources There must be at least ONE!  This is the "original"
+   * @param transformer
+   * @return
+   */
+  Optional<IBTransformationResult> transform(List<UUID> sources, String transformer);
 
-  Map<String, IBTransformer> getTransformers();
+  Map<String, IBDataTransformer> getTransformers();
 
   /**
    * Execute a (probably extremely expensive) read of all available items in the classpath to acquire DOM objects for the metadata
