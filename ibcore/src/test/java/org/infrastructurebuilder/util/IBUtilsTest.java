@@ -108,6 +108,7 @@ import org.infrastructurebuilder.util.artifacts.GAV;
 import org.infrastructurebuilder.util.artifacts.IBVersion;
 import org.infrastructurebuilder.util.artifacts.JSONOutputEnabled;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
+import org.infrastructurebuilder.util.config.WorkingPathSupplier;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -132,6 +133,7 @@ public class IBUtilsTest {
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
+    WorkingPathSupplier wps = new WorkingPathSupplier();
     objects = new JSONObject[] { new JSONObject("{ x : 1}"), new JSONObject("{x:2}"), new JSONObject("{x:3}") };
 
     jj = new JSONObject(
@@ -140,8 +142,7 @@ public class IBUtilsTest {
     jjNull3 = new JSONObject("{ \"groupId\" : \"def\", \"artifactId\":\"abc\", \"additional\":\"abc\"}");
     jjNull2 = new JSONObject(
         "{ \"extension\":\"jar\",\"version\" : \"1.0.0\", \"groupId\" : \"a.b.c\", \"artifactId\":\"abc\"}");
-    target = Paths.get(Optional.ofNullable(System.getProperty("target")).orElse("./target")).toRealPath()
-        .toAbsolutePath();
+    target = wps.getRoot();
 
   }
 
@@ -861,7 +862,7 @@ public class IBUtilsTest {
 
   @Test
   public void testReadFile() throws IOException {
-    final Path p = Paths.get("target", "test-classes", "X.txt");
+    final Path p = target.resolve("test-classes").resolve("X.txt");
 
     final String v = readFile(p, Charset.defaultCharset());
 
@@ -874,14 +875,14 @@ public class IBUtilsTest {
 
   @Test
   public void testReadFilePath() throws IOException {
-    final Path p = Paths.get("target", "test-classes", "X.txt");
+    final Path p = target.resolve("test-classes").resolve("X.txt");
     final String v = readFile(p);
     assertEquals("ABC_123", "ABC_123", v);
   }
 
   @Test
   public void testReadJsonObjectFromPath() throws IOException {
-    final Path p = Paths.get("target", "test-classes", "somefile.json");
+    final Path p = target.resolve("test-classes").resolve("somefile.json");
     final JSONObject j = readJsonObject(p);
     JSONObject k;
     try (InputStream ins = Files.newInputStream(p)) {

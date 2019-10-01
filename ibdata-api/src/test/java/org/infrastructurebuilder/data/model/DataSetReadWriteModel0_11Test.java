@@ -27,6 +27,7 @@ import java.util.UUID;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.infrastructurebuilder.data.IBDataEngine;
 import org.infrastructurebuilder.data.IbdataApiVersioning;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3Reader;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3ReaderEx;
@@ -62,7 +63,7 @@ public class DataSetReadWriteModel0_11Test {
     set.setCreationDate(new Date());
     set.setDataSetDescription("setDescription");
     set.setModelEncoding("UTF-8");
-    set.setModelVersion(IbdataApiVersioning.getApiVersion());
+    set.setModelVersion(IBDataEngine.API_ENGINE_VERSION.toString());
     set.setUuid(UUID.randomUUID().toString());
     ds = new DataStream();
     ds.setDataStreamDescription("description 1");

@@ -32,9 +32,8 @@ import org.infrastructurebuilder.util.artifacts.impl.DefaultIBVersion;
  */
 public interface IBDataEngine {
   // FIXME This won't work.  IbdataApiVersioning is loaded from the classpath, not localized
-  public static final IBVersion API_ENGINE_VERSION = new DefaultIBVersion(IbdataApiVersioning.getApiVersion());
-  // The final name of the metadata resources
-  public static final String IBDATA = "IBDATA";
+  public static final IBVersion API_ENGINE_VERSION = new DefaultIBVersion(IbdataApiVersioning.getVersion()).apiVersion();  // The final name of the metadata resources
+  public static final String IBDATA = "IBDATA-INF";
   public static final String IBDATA_DIR = "/" + IBDATA + "/";
   public static final String IBDATASET_XML = "ibdataset.xml";
   public static final String IBDATA_IBDATASET_XML = IBDATA_DIR + IBDATASET_XML;

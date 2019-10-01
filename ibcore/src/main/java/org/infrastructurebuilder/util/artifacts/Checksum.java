@@ -76,6 +76,9 @@ public class Checksum implements Comparable<Checksum>, Supplier<Optional<UUID>> 
       b = ins == null ? null : digestInputStream(ins);
     } catch (NoSuchAlgorithmException | IOException e) {
       throw new IBException(e);
+    } finally {
+      if (ins != null)
+        IBException.cet.withTranslation(() -> ins.close());
     }
     this.relativeRoot = Objects.requireNonNull(relativeRoot);
   }
@@ -93,8 +96,7 @@ public class Checksum implements Comparable<Checksum>, Supplier<Optional<UUID>> 
   public Checksum(final Optional<Path> relativeRoot, final List<Checksum> list) {
     this(Objects.requireNonNull(list).stream()
         // Collects all checksums as a string into a long string and then gets the checksum of the UTF-8 bytes.
-        .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
-        .toString().getBytes(UTF_8)
+        .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString().getBytes(UTF_8)
     // RelRoot
         , relativeRoot);
   }

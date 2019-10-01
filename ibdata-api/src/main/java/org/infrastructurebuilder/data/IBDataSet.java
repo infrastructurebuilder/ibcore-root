@@ -15,17 +15,23 @@
  */
 package org.infrastructurebuilder.data;
 
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.infrastructurebuilder.data.IBDataException.cet;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.data.model.DataSet;
 import org.infrastructurebuilder.data.model.DataSetInputSource;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3ReaderEx;
+import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
 
 /**
  * An IBDataSet is a logical grouping of D
@@ -51,5 +57,32 @@ public interface IBDataSet extends IBDataSetIdentifier {
   default List<UUID> getStreamIds() {
     return getStreamSuppliers().stream().map(ss -> ss.getId()).collect(toList());
   }
+
+  /**
+   * Get the aggregated checksum of all the checksums of all the data streams.
+   * This is not a checksum of all the data bytes.  This is a checksum of
+   * the list of data stream checksums
+   *
+   * @return Checksum of all the summary streams' data.  Empty if no streams
+   */
+  default Optional<Checksum> getDataChecksum() {
+    return ofNullable(getStreamSuppliers().size() > 0
+        ? new Checksum(getStreamSuppliers().stream().map(Supplier::get).map(ds -> ds.getChecksum()).collect(Collectors.toList()))
+        : null);
+  }
+
+  /**
+   * Get the aggregated checksum of all the
+   * @return
+   */
+  default Checksum getDataSetMetadataChecksum() {
+    return ChecksumBuilder.newInstance()
+        // data checksum
+        .addListChecksumEnabled(getStreamSuppliers().stream().map(Supplier::get).collect(Collectors.toList()))
+        .asChecksum();
+
+
+  }
+
 
 }

@@ -15,7 +15,9 @@
     limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
@@ -86,15 +88,15 @@
       <dependency>
         <groupId>org.infrastructurebuilder.util</groupId>
         <artifactId>iblogconfig</artifactId>
-      <version>${iblog.version}</version>
+        <version>${iblog.version}</version>
         <classifier>debug</classifier>
         <scope>test</scope>
       </dependency>
-          <dependency>
-      <groupId>org.infrastructurebuilder.util</groupId>
-      <artifactId>iblog-slf4j-component</artifactId>
-      <version>${iblog.version}</version>
-    </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder.util</groupId>
+        <artifactId>iblog-slf4j-component</artifactId>
+        <version>${iblog.version}</version>
+      </dependency>
 
     </dependencies>
   </dependencyManagement>
@@ -122,6 +124,12 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.sisu</groupId>
+        <artifactId>sisu-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
   </build>
   <modules>
     <module>ibcore</module>

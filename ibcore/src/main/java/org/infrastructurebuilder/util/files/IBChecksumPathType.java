@@ -29,4 +29,5 @@ public interface IBChecksumPathType extends Supplier<InputStream> {
 
   String getType();
 
+
 }

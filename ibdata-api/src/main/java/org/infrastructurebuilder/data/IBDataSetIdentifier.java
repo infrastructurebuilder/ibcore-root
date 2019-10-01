@@ -25,6 +25,8 @@ import java.util.function.Supplier;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
 import org.w3c.dom.Document;
 
 public interface IBDataSetIdentifier {
@@ -41,6 +43,20 @@ public interface IBDataSetIdentifier {
 
   Date getCreationDate();
 
-  Document getMetadata();
+  Object getMetadata();
+
+  default Checksum getIdentifierChecksum() {
+    return ChecksumBuilder.newInstance()
+        //
+        .addString(getName())
+        //
+        .addString(getDescription())
+        //
+        .addInstant(getCreationDate().toInstant())
+        //
+//        .addChecksum(IBMetadataUtils.asChecksum.apply((Document)getMetadata()))
+        // fin
+        .asChecksum();
+  }
 
 }

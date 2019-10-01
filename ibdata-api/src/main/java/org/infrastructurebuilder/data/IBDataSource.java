@@ -15,14 +15,17 @@
  */
 package org.infrastructurebuilder.data;
 
+import static java.util.Optional.of;
+import static org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM;
+
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.util.BasicCredentials;
 import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.infrastructurebuilder.util.files.IBChecksumPathType;
 import org.w3c.dom.Document;
 
 /**
@@ -37,22 +40,35 @@ import org.w3c.dom.Document;
  * @author mykel.alvis
  *
  */
-public interface IBDataSource extends Supplier<Path> {
+public interface IBDataSource extends Supplier<Optional<IBChecksumPathType>> {
   URL getSourceURL();
+
   Optional<BasicCredentials> getCredentials();
+
   Optional<Checksum> getChecksum();
+
   Optional<Document> getMetadata();
+
   Optional<String> getName();
+
   Optional<String> getDescription();
+
   /**
    * This is really a descriptive value, although it needs to be unique as well
    * @return
    */
   String getId();
 
-  Checksum getActualChecksum();
-
-  default String getMimeType() {
-    return IBConstants.APPLICATION_OCTET_STREAM;
+  default Optional<String> getMimeType() {
+    return of(APPLICATION_OCTET_STREAM);
   }
+
+  IBDataSource withTargetPath(Path targetPath);
+
+  IBDataSource withName(String name);
+
+  IBDataSource withDescription(String description);
+
+  IBDataSource withDownloadCacheDirectory(Path cacheDir);
+
 }

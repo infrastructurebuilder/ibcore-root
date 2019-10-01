@@ -20,6 +20,7 @@ import java.util.Properties;
 import java.util.function.Supplier;
 
 public interface ConfigMapSupplier extends Supplier<Map<String, String>> {
+  public static final String MAVEN = "maven";
 
   void addConfiguration(Map<String, String> add);
 

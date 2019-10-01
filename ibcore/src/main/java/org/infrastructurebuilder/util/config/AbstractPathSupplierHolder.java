@@ -13,23 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data;
-
-import static org.infrastructurebuilder.data.IBDataException.cet;
+package org.infrastructurebuilder.util.config;
 
 import java.nio.file.Path;
-import java.util.Optional;
 
-public interface IBSerializer<T, C, S extends AutoCloseable> extends AutoCloseable {
+abstract public class AbstractPathSupplierHolder  implements PathSupplier {
 
-  IBSerializer<T, C, S> toPath(Path p);
+  private Path path = null;
 
-  IBSerializer<T, C, S> withSerializationConfiguration(C c);
+  public AbstractPathSupplierHolder() {
+    super();
+  }
 
-  Optional<S> getSerializer();
+  public void setPath(Path path) {
+    if (this.path == null) // Set it once
+      this.path = path;
+  }
 
-  default void close() throws Exception {
-    getSerializer().ifPresent(e -> cet.withTranslation(() -> e.close()));
+  @Override
+  public Path get() {
+    return this.path;
   }
 
 }

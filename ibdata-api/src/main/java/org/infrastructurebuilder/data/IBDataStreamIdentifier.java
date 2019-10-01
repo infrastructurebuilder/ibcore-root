@@ -16,14 +16,17 @@
 package org.infrastructurebuilder.data;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
+import org.infrastructurebuilder.util.artifacts.ChecksumEnabled;
 import org.w3c.dom.Document;
 
-public interface IBDataStreamIdentifier {
+public interface IBDataStreamIdentifier extends ChecksumEnabled {
 
   String IBDATA_PREFIX = "IBDataTemp_";
   String IBDATA_SUFFIX = ".ibdata";
@@ -43,4 +46,31 @@ public interface IBDataStreamIdentifier {
   Document getMetadata();
 
   String getMimeType();
+
+  default Checksum getMetadataChecksum() {
+    return ChecksumBuilder.newInstance()
+        // URL
+        .addString(getURL().map(URL::toExternalForm))
+        // Name
+        .addString(getName())
+        // Desc
+        .addString(getDescription())
+        // Date
+        .addInstant(getCreationDate().toInstant())
+        // Mime type
+        .addString(getMimeType())
+        // metadata
+        .addChecksum(IBMetadataUtils.asChecksum.apply(getMetadata()))
+        //
+        .asChecksum();
+  }
+
+  /**
+   * SLIGHLY DIFFERENT CHECKSUM!
+   * This is a checksum of the data + metadata
+   */
+  @Override
+  default Checksum asChecksum() {
+    return new Checksum(Arrays.asList(getChecksum(), getMetadataChecksum()));
+  }
 }

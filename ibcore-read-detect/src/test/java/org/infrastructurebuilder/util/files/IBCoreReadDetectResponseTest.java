@@ -15,6 +15,7 @@
  */
 package org.infrastructurebuilder.util.files;
 
+import static org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM;
 import static org.infrastructurebuilder.util.files.IBCoreReadDetectResponse.copyToDeletedOnExitTempChecksumAndPath;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -25,7 +26,6 @@ import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.WorkingPathSupplier;
 import org.junit.Before;
@@ -43,8 +43,8 @@ public class IBCoreReadDetectResponseTest {
 
   @Test
   public void testBasicType() {
-    assertEquals(IBConstants.APPLICATION_OCTET_STREAM,
-        new BasicIBChecksumPathType(Paths.get("."), new Checksum()).getType());
+    assertEquals(APPLICATION_OCTET_STREAM,
+        DefaultIBChecksumPathType.from(Paths.get("."), new Checksum(), APPLICATION_OCTET_STREAM).getType());
   }
 
   @Test

@@ -15,17 +15,65 @@
  */
 package org.infrastructurebuilder.data;
 
+import static org.infrastructurebuilder.data.IBDataException.cet;
+
 import java.io.StringReader;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
+import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
+import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
 public class IBMetadataUtils {
-  public final static Function<Xpp3Dom, Document> fromXpp3Dom = (document) -> IBDataException.cet
-      .withReturningTranslation(() -> DocumentBuilderFactory.newInstance().newDocumentBuilder()
-          .parse(new InputSource(new StringReader(document.toString()))));
+  private final static TransformerFactory tf = TransformerFactory.newInstance();
+  private final static Supplier<Transformer> tfSupplier = () -> {
+    return cet.withReturningTranslation(() -> tf.newTransformer());
+  };
+  public final static Function<Object, Document> fromXpp3Dom = (document) -> cet
+      .withReturningTranslation(() -> (document instanceof Document) ?
+      // Already a document
+          (Document) document :
+          // Not yet a document
+          (DocumentBuilderFactory.newInstance().newDocumentBuilder()
+              .parse(new InputSource(new StringReader(document.toString()))))
+      // returned translation
+      );
+  public final static Function<Document, String> stringifyDocument = (document) -> cet.withReturningTranslation(() -> {
+    StringWriter writer = new StringWriter();
+    cet.withTranslation(() -> tfSupplier.get().transform(new DOMSource(document), new StreamResult(writer)));
+    return writer.toString();
+  });
+
+  public final static Function<Object, Object> translateToXpp3Dom = (document) -> cet.withReturningTranslation(() -> {
+    if (document instanceof Xpp3Dom)
+      return (Xpp3Dom) document;
+    else if (document instanceof Document) {
+      Document d = (Document) document;
+      if (d.hasAttributes() || d.hasChildNodes())
+        return Xpp3DomBuilder.build(new StringReader(stringifyDocument.apply(d)));
+      else
+        return new Xpp3Dom("metadata");
+    } else if (document instanceof XmlPlexusConfiguration) {
+      return Xpp3DomBuilder.build(new StringReader(document.toString()),true);
+    } else
+
+      return null;
+  });
+
+  public final static Function<Document, Checksum> asChecksum = (metadata) -> {
+
+    return new Checksum(stringifyDocument.apply(metadata).getBytes(StandardCharsets.UTF_8));
+  };
 }

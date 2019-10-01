@@ -24,8 +24,8 @@ import java.util.function.Function;
  * The second trivial revers map is that xxx without any dots is the xxx org
  *
  * However, you might have abitrary additional mapping:
- *  "com.myorganization" -> "myorganization"
- *  "[org,com].myorganization.*" -> "myorganization" (possible collision!)
+ *  "com.myorganization" -- to "myorganization"
+ *  "[org,com].myorganization.*" -- to  "myorganization" (possible collision!)
  *
  *  Return empty if the org doesn't map
  * @author mykel.alvis

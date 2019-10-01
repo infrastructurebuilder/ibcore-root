@@ -15,15 +15,24 @@
  */
 package org.infrastructurebuilder.data;
 
-import java.nio.file.Path;
-import java.util.List;
+import java.util.SortedMap;
 
+import org.infrastructurebuilder.util.files.IBChecksumPathType;
+
+/**
+ * Instances of this need to Inject a  Named(SingletonLateBindingPathSupplier.SINGLETON_LATE_BINDING_PATH_SUPPLIER) WorkingPathSupplier wps
+ * if they need working paths.  The ingester mojo will configure that path properly.
+ * @author mykel.alvis
+ *
+ */
 public interface IBDataIngester {
   /**
    * Ingestion returns a Path to a completed DataSet (i.e. a written IBDataEngine.IBDATA_IBDATASET_XML file).  That path can contain
    * no other files
+   *
+   * Sorted by natural order of "temporary id"
    * @param dss
    * @return
    */
-  Path ingest(IBDataSetIdentifier dsi, List<IBDataSourceSupplier> dss);
+  IBChecksumPathType ingest(IBDataSetIdentifier dsi, SortedMap<String,IBDataSourceSupplier> dss);
 }

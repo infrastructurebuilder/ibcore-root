@@ -170,7 +170,6 @@
       <plugin>
         <groupId>org.infrastructurebuilder.maven</groupId>
         <artifactId>ibversions-maven-plugin</artifactId>
-        <version>0.10.0-SNAPSHOT</version>
         <executions>
           <execution>
             <id>default</id>

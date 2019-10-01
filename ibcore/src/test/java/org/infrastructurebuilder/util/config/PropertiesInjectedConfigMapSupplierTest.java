@@ -18,11 +18,9 @@ package org.infrastructurebuilder.util.config;
 import static org.junit.Assert.assertNotNull;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -34,8 +32,7 @@ public class PropertiesInjectedConfigMapSupplierTest {
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
-    target = Paths.get(Optional.ofNullable(System.getProperty("target")).orElse("./target")).toRealPath()
-        .toAbsolutePath();
+    target = new WorkingPathSupplier().getRoot();
   }
 
   private PropertiesInjectedConfigMapSupplier k;

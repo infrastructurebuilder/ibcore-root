@@ -30,7 +30,7 @@ import org.apache.maven.project.MavenProject;
 import org.infrastructurebuilder.IBException;
 import org.infrastructurebuilder.util.IBUtils;
 
-@Named("maven")
+@Named(ConfigMapSupplier.MAVEN)
 @Singleton
 public class MavenConfigMapSupplier extends DefaultConfigMapSupplier {
 

@@ -15,7 +15,6 @@
  */
 package org.infrastructurebuilder.util;
 
-import java.net.PasswordAuthentication;
 import java.util.Objects;
 import java.util.Optional;
 

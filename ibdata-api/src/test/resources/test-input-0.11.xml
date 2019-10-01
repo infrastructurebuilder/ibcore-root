@@ -6,21 +6,21 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>0.11</modelVersion>
   <uuid>310dc0e2-109d-4237-9729-e266176e1c7a</uuid>
-  <description>setDescription</description>
+  <dataSetDescription>setdataStreamDescription</dataSetDescription>
   <creationDate>2019-09-21T08:30:10.478</creationDate>
   <streams>
     <stream>
       <uuid>183d3030-6dae-4f33-acde-79eacbaa8c2d</uuid>
-      <name>two</name>
-      <description>description two</description>
+      <dataStreamName>two</dataStreamName>
+      <dataStreamDescription>dataStreamDescription two</dataStreamDescription>
       <creationDate>2019-09-21T08:30:29.769</creationDate>
       <sourceURL>https://www.google.com</sourceURL>
       <_metadata />
     </stream>
     <stream>
       <uuid>183d3030-6dae-4f33-acde-79eacbaa8c2d</uuid>
-      <name>two</name>
-      <description>description two</description>
+      <dataStreamName>two</dataStreamName>
+      <dataStreamDescription>dataStreamDescription two</dataStreamDescription>
       <creationDate>2019-09-21T08:30:29.769</creationDate>
       <sourceURL>https://www.google.com</sourceURL>
       <_metadata />

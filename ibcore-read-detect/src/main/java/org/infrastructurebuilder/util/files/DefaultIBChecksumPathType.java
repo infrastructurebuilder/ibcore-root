@@ -39,6 +39,12 @@ public class DefaultIBChecksumPathType extends BasicIBChecksumPathType implement
 
   };
 
+  public final static IBChecksumPathType from(Path p, Checksum c, String type) {
+    return new BasicIBChecksumPathType(p, c, type);
+  }
+
+
+
   DefaultIBChecksumPathType(Path path, Checksum checksum) throws IOException {
     super(path, checksum, toType.apply(path));
   }

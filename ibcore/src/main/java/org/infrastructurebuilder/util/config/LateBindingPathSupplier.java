@@ -13,23 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data;
-
-import static org.infrastructurebuilder.data.IBDataException.cet;
+package org.infrastructurebuilder.util.config;
 
 import java.nio.file.Path;
-import java.util.Optional;
 
-public interface IBSerializer<T, C, S extends AutoCloseable> extends AutoCloseable {
+import javax.inject.Named;
 
-  IBSerializer<T, C, S> toPath(Path p);
+@Named(LateBindingPathSupplier.LATE_BINDING_PATH_SUPPLIER)
+public class LateBindingPathSupplier extends TSupplier<Path> implements PathSupplier {
 
-  IBSerializer<T, C, S> withSerializationConfiguration(C c);
+  public static final String LATE_BINDING_PATH_SUPPLIER = "late-binding-path-supplier";
 
-  Optional<S> getSerializer();
+  public LateBindingPathSupplier() {
+    setT(null);
+  }
 
-  default void close() throws Exception {
-    getSerializer().ifPresent(e -> cet.withTranslation(() -> e.close()));
+  private LateBindingPathSupplier(Path p) {
+    setT(p);
+  }
+
+  PathSupplier withLateBoundPath(Path p) {
+    return new LateBindingPathSupplier(p);
   }
 
 }

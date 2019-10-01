@@ -15,8 +15,34 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import java.nio.file.Path;
-import java.util.function.Supplier;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
-public interface PathSupplier extends Supplier<Path> {
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
+
+import org.junit.Before;
+import org.junit.Test;
+
+public class InPlaceLateBindingPathSupplierTest {
+
+  private SingletonLateBindingPathSupplier ps;
+
+  @Before
+  public void setUp() throws Exception {
+    this.ps = new SingletonLateBindingPathSupplier();
+  }
+
+  @Test
+  public void test() {
+    Path p1 = Paths.get(".");
+    Path p2 = p1.resolve(UUID.randomUUID().toString());
+    assertNull(this.ps.get());
+    this.ps.setPath(p1);
+    assertEquals(p1, this.ps.get());
+    this.ps.setPath(p2);
+    assertEquals(p1, this.ps.get());
+  }
+
 }

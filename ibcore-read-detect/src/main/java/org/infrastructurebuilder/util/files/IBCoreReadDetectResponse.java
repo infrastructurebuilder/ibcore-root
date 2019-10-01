@@ -21,10 +21,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.infrastructurebuilder.IBException;
 import org.infrastructurebuilder.util.IBUtils;
+import org.infrastructurebuilder.util.artifacts.Checksum;
 
 public class IBCoreReadDetectResponse {
 
@@ -34,10 +37,15 @@ public class IBCoreReadDetectResponse {
       Path target = Objects.requireNonNull(targetDir).isPresent()
           ? Files.createTempFile(targetDir.get(), prefix, suffix)
           : Files.createTempFile(prefix, suffix);
-      target.toFile().deleteOnExit();
+      if (!targetDir.isPresent())
+        target.toFile().deleteOnExit();
       try (OutputStream outs = Files.newOutputStream(target)) {
-        IBChecksumPathType cpt = new DefaultIBChecksumPathType(target, IBUtils.copyAndDigest(source, outs));
-
+        Checksum k = IBUtils.copyAndDigest(source, outs);
+        Optional<Path> newTarget = targetDir.map(td -> td.resolve(k.asUUID().get().toString()));
+        newTarget.ifPresent(nt -> {
+          IBException.cet.withTranslation(() -> Files.move(target, nt, StandardCopyOption.ATOMIC_MOVE));
+        });
+        IBChecksumPathType cpt = new DefaultIBChecksumPathType(Files.exists(target) ? target : newTarget.get(), k);
         return cpt;
       }
     });

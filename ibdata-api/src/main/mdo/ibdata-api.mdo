@@ -159,7 +159,7 @@
             <![CDATA[
   @Override
   public org.w3c.dom.Document getMetadata() {
-    return org.infrastructurebuilder.data.IBMetadataUtils.fromXpp3Dom.apply((org.codehaus.plexus.util.xml.Xpp3Dom) get_metadata());
+    return org.infrastructurebuilder.data.IBMetadataUtils.fromXpp3Dom.apply( get_metadata());
   }
 
   ]]>
@@ -304,7 +304,7 @@
             <![CDATA[
   @Override
   public org.w3c.dom.Document getMetadata() {
-    return org.infrastructurebuilder.data.IBMetadataUtils.fromXpp3Dom.apply((org.codehaus.plexus.util.xml.Xpp3Dom) get_metadata());
+    return org.infrastructurebuilder.data.IBMetadataUtils.fromXpp3Dom.apply( get_metadata());
   }
 
   ]]>

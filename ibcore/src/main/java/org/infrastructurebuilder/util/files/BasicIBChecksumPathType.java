@@ -24,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.StringJoiner;
 
 import org.infrastructurebuilder.util.artifacts.Checksum;
 
@@ -63,6 +64,11 @@ public class BasicIBChecksumPathType implements IBChecksumPathType {
   public InputStream get() {
     return cet.withReturningTranslation(
         () -> Files.newInputStream(this.path, StandardOpenOption.READ, LinkOption.NOFOLLOW_LINKS));
+  }
+
+  @Override
+  public String toString() {
+    return new StringJoiner("|").add(getType()).add(getChecksum().asUUID().get().toString()).add(getPath().toString()).toString();
   }
 
 }
