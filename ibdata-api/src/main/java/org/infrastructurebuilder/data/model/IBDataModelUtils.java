@@ -34,7 +34,7 @@ public class IBDataModelUtils {
   public final static void writeDataSet(DataSet ds, Path target) {
     try (Writer writer = IBDataException.cet.withReturningTranslation(
         () -> Files.newBufferedWriter(target.resolve(IBDATA).resolve(IBDATASET_XML), UTF_8, CREATE_NEW))) {
-      cet.withTranslation(() -> new IBDataSourceModelXpp3Writer().write(writer, ds));
+      cet.withTranslation(() -> new IBDataSourceModelXpp3Writer().write(writer, ds.clone()));
     } catch (IOException e) {
       throw new IBDataException(e);
     }

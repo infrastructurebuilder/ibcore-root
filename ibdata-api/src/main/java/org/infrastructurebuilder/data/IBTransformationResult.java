@@ -20,5 +20,5 @@ package org.infrastructurebuilder.data;
  *
  * @param <T>
  */
-public interface IBTransformationResult extends IBDataStreamIdentifier {
+public interface IBTransformationResult extends IBDataSetIdentifier {
 }

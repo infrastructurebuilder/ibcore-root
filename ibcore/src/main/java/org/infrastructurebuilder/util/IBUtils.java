@@ -17,8 +17,11 @@ package org.infrastructurebuilder.util;
 
 import static java.lang.Long.MAX_VALUE;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import static java.util.Spliterator.ORDERED;
 import static java.util.stream.Collectors.toMap;
+import static java.util.stream.StreamSupport.stream;
+import static org.infrastructurebuilder.IBException.cet;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -70,7 +73,6 @@ import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -95,6 +97,10 @@ public class IBUtils {
   public final static java.util.Comparator<java.util.Date> nullSafeDateComparator = java.util.Comparator
       .nullsFirst(java.util.Date::compareTo);
 
+  public final static Function<String,Optional<URL>> nullSafeURLMapper = (s) -> {
+    return ofNullable(s).map(u->cet.withReturningTranslation(() -> new URL(u)));
+  };
+
   /**
    * Map a Map/String,String to a Properties object
    */
@@ -105,7 +111,7 @@ public class IBUtils {
   };
 
   public final static URL reURL(String url) {
-    return Optional.ofNullable(url).map(u -> IBException.cet.withReturningTranslation(() -> new URL(u))).orElse(null);
+    return ofNullable(url).map(u -> cet.withReturningTranslation(() -> new URL(u))).orElse(null);
   }
 
   public final static Function<JSONObject, JSONObject> cheapCopy = j -> {
@@ -113,17 +119,17 @@ public class IBUtils {
   };
   public final static Function<JSONObject, JSONObject> deepCopy = j -> {
     return new JSONObject(requireNonNull(j),
-        Optional.ofNullable(JSONObject.getNames(requireNonNull(j))).orElse(new String[0]));
+        ofNullable(JSONObject.getNames(requireNonNull(j))).orElse(new String[0]));
   };
   public final static Function<String, byte[]> getBytes = x -> {
-    return Optional.ofNullable(x).orElse("").getBytes(StandardCharsets.UTF_8);
+    return ofNullable(x).orElse("").getBytes(StandardCharsets.UTF_8);
   };
   public final static Function<JSONObject, Map<String, String>> mapJSONToStringString = j -> {
     return requireNonNull(j).toMap().entrySet().stream()
-        .collect(Collectors.toMap(k -> k.getKey(), v -> v.getValue().toString()));
+        .collect(toMap(k -> k.getKey(), v -> v.getValue().toString()));
   };
   public final static Function<String, String> nullIfBlank = l -> {
-    return new String(Optional.ofNullable(l).orElse("")).trim().length() > 0 ? l : null;
+    return new String(ofNullable(l).orElse("")).trim().length() > 0 ? l : null;
   };
 
   public final static Function<String, Date> parseISODateTime = s -> Date.from(Instant
@@ -156,7 +162,7 @@ public class IBUtils {
    * @return
    */
   public final static <T> Stream<T> enumerationAsStream(Enumeration<T> e1, boolean parallel) {
-    return StreamSupport.stream(new Spliterators.AbstractSpliterator<T>(MAX_VALUE, ORDERED) {
+    return stream(new Spliterators.AbstractSpliterator<T>(MAX_VALUE, ORDERED) {
       public boolean tryAdvance(Consumer<? super T> advance) {
         if (e1.hasMoreElements()) {
           advance.accept(e1.nextElement());
@@ -173,7 +179,7 @@ public class IBUtils {
   }
 
   public final static <T> Stream<T> iterableAsStream(Iterator<T> e1, boolean parallel) {
-    return StreamSupport.stream(Spliterators.spliteratorUnknownSize(e1, 0), parallel);
+    return stream(Spliterators.spliteratorUnknownSize(e1, 0), parallel);
   }
 
   public static Stream<JSONObject> asJSONObjectStream(final JSONArray array) {
@@ -184,7 +190,7 @@ public class IBUtils {
       }
       return l.iterator();
     };
-    return StreamSupport.stream(iterable.spliterator(), false);
+    return stream(iterable.spliterator(), false);
   }
 
   public static Optional<Map<String, Object>> asOptFilesystemMap(final Object o) {
@@ -202,7 +208,7 @@ public class IBUtils {
       }
       return l.iterator();
     };
-    return StreamSupport.stream(iterable.spliterator(), false);
+    return stream(iterable.spliterator(), false);
   }
 
   public static Stream<String> asStringStream(final JSONArray array) {
@@ -213,7 +219,7 @@ public class IBUtils {
       }
       return l.iterator();
     };
-    return StreamSupport.stream(iterable.spliterator(), false);
+    return stream(iterable.spliterator(), false);
   }
 
   public static final Optional<URL> asURL(final String url) {
@@ -319,7 +325,7 @@ public class IBUtils {
   public static Path forceDirectoryPath(final Path path) {
     final Path p = path.toAbsolutePath();
     if (!Files.exists(p)) {
-      IBException.cet.withTranslation(() -> Files.createDirectories(p));
+      cet.withTranslation(() -> Files.createDirectories(p));
     }
     if (!Files.isDirectory(p))
       throw new IBException("Path " + p + " is not a directory");
@@ -387,7 +393,7 @@ public class IBUtils {
   }
 
   public final static JSONArray getJSONArrayFromJSONOutputEnabled(final List<? extends JSONOutputEnabled> v) {
-    return Optional.ofNullable(v)
+    return ofNullable(v)
         .map(v1 -> new JSONArray(v1.stream().map(JSONOutputEnabled::asJSON).collect(Collectors.toList()))).orElse(null);
   }
 
@@ -398,29 +404,29 @@ public class IBUtils {
   }
 
   public static Map<String, String> getMapStringStringFromJSONObject(final JSONObject j) {
-    return Optional.ofNullable(j).orElse(new JSONObject()).toMap().entrySet().stream()
+    return ofNullable(j).orElse(new JSONObject()).toMap().entrySet().stream()
         .collect(toMap(k -> k.getKey(), v -> v.getValue().toString()));
   }
 
   public final static Map<String, String> getMapStringStringfromMapObjectObject(final Map<Object, Object> m) {
-    return m.entrySet().stream().collect(Collectors.toMap(k -> k.getKey().toString(), v -> v.getValue().toString()));
+    return m.entrySet().stream().collect(toMap(k -> k.getKey().toString(), v -> v.getValue().toString()));
   }
 
   public final static Map<String, String> getMapStringStringfromMapStringObject(final Map<String, Object> m) {
-    return m.entrySet().stream().collect(Collectors.toMap(k -> k.getKey(), v -> v.getValue().toString()));
+    return m.entrySet().stream().collect(toMap(k -> k.getKey(), v -> v.getValue().toString()));
   }
 
   public final static Optional<Boolean> getOptBoolean(final JSONObject j, final String key) {
-    return Optional.ofNullable(j.has(key) ? j.getBoolean(key) : null);
+    return ofNullable(j.has(key) ? j.getBoolean(key) : null);
   }
 
   public final static Optional<Integer> getOptInteger(final JSONObject orig, final String key) {
-    return Optional.ofNullable(requireNonNull(orig).opt(requireNonNull(key))).map(m -> m.toString())
+    return ofNullable(requireNonNull(orig).opt(requireNonNull(key))).map(m -> m.toString())
         .map(Integer::parseInt);
   }
 
   public static Optional<JSONArray> getOptionalJSONArray(final JSONObject g, final String key) {
-    return Optional.ofNullable(g.optJSONArray(key));
+    return ofNullable(g.optJSONArray(key));
   }
 
   public final static Optional<Long> getOptLong(final JSONObject j, final String key) {
@@ -431,7 +437,7 @@ public class IBUtils {
 
   public static Optional<String> getOptString(final JSONObject g, final String key) {
     final String s = g.optString(key).trim();
-    return Optional.ofNullable("".equals(s) ? null : s);
+    return ofNullable("".equals(s) ? null : s);
   }
 
   public static <T> List<T> getServicesFor(final Class<T> c) {
@@ -447,7 +453,7 @@ public class IBUtils {
 
   public final static Map<String, String> getZipFileCreateMap(final Boolean create) {
     final HashMap<String, String> m = new HashMap<>();
-    m.put("create", Optional.ofNullable(create).orElse(false).toString());
+    m.put("create", ofNullable(create).orElse(false).toString());
     return m;
   }
 
@@ -612,7 +618,7 @@ public class IBUtils {
   }
 
   public static Map<String, String> splitToMap(final JSONObject json) {
-    return json.toMap().entrySet().stream().collect(Collectors.toMap(k -> k.getKey(), v -> v.getValue().toString()));
+    return json.toMap().entrySet().stream().collect(toMap(k -> k.getKey(), v -> v.getValue().toString()));
   }
 
   public static void unzip(final Path zipFilePath, final Path destDirectory) throws IOException {
@@ -658,7 +664,7 @@ public class IBUtils {
 
   public static Optional<URL> zipEntryToUrl(final Optional<URL> p, final ZipEntry e) {
     return requireNonNull(p).map(
-        u -> IBException.cet.withReturningTranslation(() -> new URL("jar:" + u.toExternalForm() + "!/" + e.getName())));
+        u -> cet.withReturningTranslation(() -> new URL("jar:" + u.toExternalForm() + "!/" + e.getName())));
   }
 
   private static boolean _match(final JSONObject metadata, final Pattern key, final Pattern value) {

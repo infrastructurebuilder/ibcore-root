@@ -17,6 +17,7 @@ package org.infrastructurebuilder.data;
 
 import static org.infrastructurebuilder.data.IBDataException.cet;
 
+import java.net.URL;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
@@ -45,6 +46,15 @@ public interface IBDataSetIdentifier {
 
   Object getMetadata();
 
+  /**
+   * Possibly null representation of where this dataset currently exists.
+   * This value should be nulled out prior to persisting the model, and must
+   * be set by hand when deserializing it.
+   *
+   * @return
+   */
+  String getPath();
+
   default Checksum getIdentifierChecksum() {
     return ChecksumBuilder.newInstance()
         //
@@ -54,9 +64,14 @@ public interface IBDataSetIdentifier {
         //
         .addInstant(getCreationDate().toInstant())
         //
-//        .addChecksum(IBMetadataUtils.asChecksum.apply((Document)getMetadata()))
+        //        .addChecksum(IBMetadataUtils.asChecksum.apply((Document)getMetadata()))
         // fin
         .asChecksum();
+  }
+
+  default Optional<URL> pathAsURL() {
+    return org.infrastructurebuilder.util.IBUtils.nullSafeURLMapper.apply(getPath());
+
   }
 
 }
