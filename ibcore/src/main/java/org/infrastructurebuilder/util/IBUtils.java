@@ -90,6 +90,13 @@ import org.slf4j.LoggerFactory;
 
 public class IBUtils {
 
+  public final static Function<Properties, Map<String, String>> propertiesToMapSS = (p) -> {
+    final Map<String, String> m = new HashMap<>();
+    Optional.ofNullable(p)
+        .ifPresent(properties -> properties.stringPropertyNames().forEach(n -> m.put(n, p.getProperty(n))));
+    return m;
+  };
+
   public final static java.util.Comparator<String> nullSafeStringComparator = java.util.Comparator
       .nullsFirst(String::compareToIgnoreCase);
   public final static java.util.Comparator<java.util.UUID> nullSafeUUIDComparator = java.util.Comparator
@@ -97,8 +104,8 @@ public class IBUtils {
   public final static java.util.Comparator<java.util.Date> nullSafeDateComparator = java.util.Comparator
       .nullsFirst(java.util.Date::compareTo);
 
-  public final static Function<String,Optional<URL>> nullSafeURLMapper = (s) -> {
-    return ofNullable(s).map(u->cet.withReturningTranslation(() -> new URL(u)));
+  public final static Function<String, Optional<URL>> nullSafeURLMapper = (s) -> {
+    return ofNullable(s).map(u -> cet.withReturningTranslation(() -> new URL(u)));
   };
 
   /**
@@ -118,15 +125,13 @@ public class IBUtils {
     return new JSONObject(j.toString());
   };
   public final static Function<JSONObject, JSONObject> deepCopy = j -> {
-    return new JSONObject(requireNonNull(j),
-        ofNullable(JSONObject.getNames(requireNonNull(j))).orElse(new String[0]));
+    return new JSONObject(requireNonNull(j), ofNullable(JSONObject.getNames(requireNonNull(j))).orElse(new String[0]));
   };
   public final static Function<String, byte[]> getBytes = x -> {
     return ofNullable(x).orElse("").getBytes(StandardCharsets.UTF_8);
   };
   public final static Function<JSONObject, Map<String, String>> mapJSONToStringString = j -> {
-    return requireNonNull(j).toMap().entrySet().stream()
-        .collect(toMap(k -> k.getKey(), v -> v.getValue().toString()));
+    return requireNonNull(j).toMap().entrySet().stream().collect(toMap(k -> k.getKey(), v -> v.getValue().toString()));
   };
   public final static Function<String, String> nullIfBlank = l -> {
     return new String(ofNullable(l).orElse("")).trim().length() > 0 ? l : null;
@@ -421,8 +426,7 @@ public class IBUtils {
   }
 
   public final static Optional<Integer> getOptInteger(final JSONObject orig, final String key) {
-    return ofNullable(requireNonNull(orig).opt(requireNonNull(key))).map(m -> m.toString())
-        .map(Integer::parseInt);
+    return ofNullable(requireNonNull(orig).opt(requireNonNull(key))).map(m -> m.toString()).map(Integer::parseInt);
   }
 
   public static Optional<JSONArray> getOptionalJSONArray(final JSONObject g, final String key) {
@@ -663,8 +667,8 @@ public class IBUtils {
   }
 
   public static Optional<URL> zipEntryToUrl(final Optional<URL> p, final ZipEntry e) {
-    return requireNonNull(p).map(
-        u -> cet.withReturningTranslation(() -> new URL("jar:" + u.toExternalForm() + "!/" + e.getName())));
+    return requireNonNull(p)
+        .map(u -> cet.withReturningTranslation(() -> new URL("jar:" + u.toExternalForm() + "!/" + e.getName())));
   }
 
   private static boolean _match(final JSONObject metadata, final Pattern key, final Pattern value) {

@@ -15,11 +15,29 @@
  */
 package org.infrastructurebuilder.data;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.util.config.ConfigMapSupplier;
+public interface IBDataStreamRecordFinalizer<T> extends Supplier<InputStream>, AutoCloseable {
+  String getId();
 
-public interface IBDataIngesterSupplier extends Supplier<IBDataIngester> {
-  IBDataIngesterSupplier config(ConfigMapSupplier cms);
+  /**
+   * This method actually writes the final transformation.
+   * @param recordToWrite
+   * @return
+   */
+  Optional<IBDataTransformationError> writeRecord(T recordToWrite);
 
+  /**
+   * This value
+   * @return
+   * @throws IOException
+   */
+  OutputStream getWriterTarget() throws IOException;
+
+
+  IBDataStreamSupplier finalizeRecord(IBDataStreamIdentifier ds);
 }

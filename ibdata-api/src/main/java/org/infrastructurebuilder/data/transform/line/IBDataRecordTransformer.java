@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data.line;
+package org.infrastructurebuilder.data.transform.line;
 
-import java.util.Optional;
+import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -28,14 +28,18 @@ import java.util.function.Function;
  *      The result of the apply CAN be null, which should terminate processing for that record/row/whatever
  * @param <T>
  */
-public interface IBDataLineTransformer<I, O> extends Function<I, O> {
-  public String getName();
+public interface IBDataRecordTransformer<I, O> extends Function<I, O> {
   /**
-   * Get the specific keyed configuration for this transformer
+   * The name/id of the IBDataRecordTransformer.
+   * This must be unique among all loaded transformers
    * @return
    */
-  public Optional<String> getConfiguration(String key);
+  public String getHint();
 
-  public Optional<String> getConfiguration(String key, String defaultValue);
+  default boolean respondsTo(Object o) {
+    return false;
+  }
+
+  IBDataRecordTransformer<I, O> configure(Map<String, String> cms);
 
 }

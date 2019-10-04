@@ -59,6 +59,10 @@
     </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore-read-detect</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
       <artifactId>ibcore</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>

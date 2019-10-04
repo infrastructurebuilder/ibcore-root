@@ -21,13 +21,16 @@ import java.util.Optional;
 import java.util.StringJoiner;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 
+@Named(MavenConfigWithServersMapSupplier.MAVEN_WITH_SERVERS)
 public class MavenConfigWithServersMapSupplier extends MavenConfigMapSupplier {
 
+  public static final String MAVEN_WITH_SERVERS = "maven-with-servers";
   public static final String MAVEN_SETTINGS_SERVER_NAMESPACE = "maven.settings.server.";
 
   @Inject

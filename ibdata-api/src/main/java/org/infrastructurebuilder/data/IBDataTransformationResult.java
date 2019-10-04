@@ -15,10 +15,15 @@
  */
 package org.infrastructurebuilder.data;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
+
 /**
  * @author mykel.alvis
  *
  * @param <T>
  */
-public interface IBTransformationResult extends IBDataSetIdentifier {
+public interface IBDataTransformationResult extends Supplier<Optional<IBDataSet>>{
+  List<IBDataTransformationError> getErrors();
 }

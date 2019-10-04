@@ -20,6 +20,7 @@ import static java.util.stream.Collectors.toList;
 import static org.infrastructurebuilder.data.IBDataException.cet;
 
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -32,6 +33,8 @@ import org.infrastructurebuilder.data.model.DataSetInputSource;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3ReaderEx;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
+import org.infrastructurebuilder.util.files.DefaultIBChecksumPathType;
+import org.infrastructurebuilder.util.files.IBChecksumPathType;
 
 /**
  * An IBDataSet is a logical grouping of D
@@ -39,18 +42,6 @@ import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
  *
  */
 public interface IBDataSet extends IBDataSetIdentifier {
-  public final static Function<? super InputStream, ? extends DataSet> mapStreamToDataSet = (in) -> {
-    IBDataSourceModelXpp3ReaderEx reader;
-    DataSetInputSource dsis;
-
-    reader = new IBDataSourceModelXpp3ReaderEx();
-    dsis = new DataSetInputSource();
-    try {
-      return cet.withReturningTranslation(() -> reader.read(in, true, dsis));
-    } finally {
-      cet.withTranslation(() -> in.close());
-    }
-  };
 
   List<IBDataStreamSupplier> getStreamSuppliers();
 
@@ -67,7 +58,8 @@ public interface IBDataSet extends IBDataSetIdentifier {
    */
   default Optional<Checksum> getDataChecksum() {
     return ofNullable(getStreamSuppliers().size() > 0
-        ? new Checksum(getStreamSuppliers().stream().map(Supplier::get).map(ds -> ds.getChecksum()).collect(Collectors.toList()))
+        ? new Checksum(
+            getStreamSuppliers().stream().map(Supplier::get).map(ds -> ds.getChecksum()).collect(Collectors.toList()))
         : null);
   }
 
@@ -81,8 +73,11 @@ public interface IBDataSet extends IBDataSetIdentifier {
         .addListChecksumEnabled(getStreamSuppliers().stream().map(Supplier::get).collect(Collectors.toList()))
         .asChecksum();
 
-
   }
 
+  default IBChecksumPathType asChecksumType() {
+    Checksum c = new Checksum();
+    return DefaultIBChecksumPathType.from(Paths.get(getPath()), c, IBDataIngester.APPLICATION_IBDATA_ARCHIVE);
+  }
 
 }

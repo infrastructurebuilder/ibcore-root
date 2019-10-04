@@ -17,17 +17,26 @@ package org.infrastructurebuilder.data.model;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
-import static org.infrastructurebuilder.data.IBDataEngine.IBDATA;
-import static org.infrastructurebuilder.data.IBDataEngine.IBDATASET_XML;
+import static java.util.Optional.of;
+import static java.util.stream.Collectors.toList;
 import static org.infrastructurebuilder.data.IBDataException.cet;
+import static org.infrastructurebuilder.data.IBMetadataUtils.IBDATA;
+import static org.infrastructurebuilder.data.IBMetadataUtils.IBDATASET_XML;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.function.Function;
 
 import org.infrastructurebuilder.data.IBDataException;
+import org.infrastructurebuilder.data.IBDataStreamSupplier;
+import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3ReaderEx;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3Writer;
+import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
 
 public class IBDataModelUtils {
 
@@ -38,6 +47,28 @@ public class IBDataModelUtils {
     } catch (IOException e) {
       throw new IBDataException(e);
     }
-
   }
+
+  public final static Checksum fromPathDSAndStream(Path workingPath, DataSet ds, List<IBDataStreamSupplier> ibdssList) {
+    return ChecksumBuilder.newInstance(of(workingPath))
+        // Checksum of data of streams
+        .addChecksum(new Checksum(ibdssList.stream().map(s -> s.get().getChecksum()).collect(toList())))
+        // Checksum of stream metadata
+        .addChecksum(ds.getIdentifierChecksum()).asChecksum();
+  }
+
+  public final static Function<? super InputStream, ? extends DataSet> mapInputStreamToDataSet = (in) -> {
+    IBDataSourceModelXpp3ReaderEx reader;
+    DataSetInputSource dsis;
+
+    reader = new IBDataSourceModelXpp3ReaderEx();
+    dsis = new DataSetInputSource();
+    try {
+      return cet.withReturningTranslation(() -> reader.read(in, true, dsis));
+    } finally {
+      cet.withTranslation(() -> in.close());
+    }
+  };
+
+
 }

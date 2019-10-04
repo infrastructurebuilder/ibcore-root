@@ -28,6 +28,12 @@ import org.json.JSONObject;
 public interface IBConstants {
   public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
   public final static String TEXT_PLAIN = "text/plain";
+  public static final String AVRO_BINARY = ".avro";
+  public static final String APPLICATION_PDF = "application/pdf";
+  public static final String TEXT_CSV = "text/csv";
+  public static final String APPLICATION_ZIP = "application/zip";
+  public static final String APPLICATION_XML = "application/xml";
+
   public static final String _ENCRYPTION_TYPE_NONE = "org.infrastructurebuilder.util.noop.NoopCryptoStreamConfig";
   public static final String _NOOP_CRYPTO_TYPE = _ENCRYPTION_TYPE_NONE;
   public static final String _SHA512 = "sha512";

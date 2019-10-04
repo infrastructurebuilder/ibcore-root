@@ -26,8 +26,14 @@ import org.infrastructurebuilder.util.files.IBChecksumPathType;
  *
  */
 public interface IBDataIngester {
+  public static final String APPLICATION_IBDATA_ARCHIVE = "application/ibdata-archive";
+
   /**
-   * Ingestion returns a Path to a completed DataSet (i.e. a written IBDataEngine.IBDATA_IBDATASET_XML file).  That path can contain
+   *
+   * Reads a source and returns a calculated set of attributes.  Since the result of any write action is
+   * expected to be the output of some finalizer, the execution of how that set of data arrives is left to that component
+   *
+   * Ingestion returns an IBChecksumPathType, which to a completed DataSet (i.e. a written IBDataEngine.IBDATA_IBDATASET_XML file).  That path can contain
    * no other files
    *
    * Sorted by natural order of "temporary id"

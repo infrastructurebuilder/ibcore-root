@@ -34,20 +34,30 @@ public class MavenConfigWithServersMapSupplierTest extends MavenConfigMapSupplie
   private static final String USERNAME = "username";
   private MavenConfigWithServersMapSupplier cms;
   private Settings s;
-  private String ns;
+  private String ns,ns2;
   private MavenConfigWithServersMapSupplier cms2;
 
   @Before
   public void setUp() throws Exception {
     s = new Settings();
     final Server server = new Server();
-     ns = MAVEN_SETTINGS_SERVER_NAMESPACE + "id.";
-    server.setId("id");
-    server.setUsername(USERNAME);
-    server.setPassphrase(PASSPHRASE);
-    server.setPassword(PASSWORD);
-    server.setPrivateKey(PRIVATEKEY);
-    s.addServer(server);
+    ns = MAVEN_SETTINGS_SERVER_NAMESPACE + "id.";
+   server.setId("id");
+   server.setUsername(USERNAME);
+   server.setPassphrase(PASSPHRASE);
+   server.setPassword(PASSWORD);
+   server.setPrivateKey(PRIVATEKEY);
+   s.addServer(server);
+
+   final Server server2 = new Server();
+   ns2 = MAVEN_SETTINGS_SERVER_NAMESPACE + "id2.";
+  server2.setId("id2");
+  server2.setUsername(USERNAME + "2");
+  server2.setPassphrase(PASSPHRASE + "2");
+  server2.setPassword(PASSWORD + "2");
+  server2.setPrivateKey(PRIVATEKEY + "2");
+  s.addServer(server2);
+
     cms = new MavenConfigWithServersMapSupplier(mp,s);
     cms2 = new MavenConfigWithServersMapSupplier(mp,new Settings());
   }
@@ -67,6 +77,8 @@ public class MavenConfigWithServersMapSupplierTest extends MavenConfigMapSupplie
     assertEquals(map.get(ns + PASSPHRASE), PASSPHRASE);
     assertEquals(map.get(ns + PASSWORD), PASSWORD);
     assertEquals(map.get(ns + PRIVATEKEY), PRIVATEKEY);
+
+    assertEquals(map.get(ns2 + PRIVATEKEY ), PRIVATEKEY +"2");
   }
 
 }

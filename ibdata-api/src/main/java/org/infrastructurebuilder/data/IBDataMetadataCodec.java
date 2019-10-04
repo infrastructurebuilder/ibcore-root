@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.infrastructurebuilder.data.model.DataSet;
+
 /**
  * This class can read and write a DOM based on the versioned Modello models in ibdata-api
  *
@@ -59,4 +61,6 @@ public interface IBDataMetadataCodec {
    * @return
    */
   Path writeDataSet(IBDataSet dataSet);
+
+  IBDataSet transform(IBDataSetIdentifier dataSet);
 }

@@ -19,7 +19,13 @@ import java.util.function.Supplier;
 
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 
-public interface IBDataIngesterSupplier extends Supplier<IBDataIngester> {
-  IBDataIngesterSupplier config(ConfigMapSupplier cms);
-
+public interface IBDataDataStreamRecordFinalizerSupplier<T> extends Supplier<IBDataStreamRecordFinalizer<T>> {
+  /**
+   * BY CONTRACT this method MUST return a NEW instance of the IBDataDataStreamRecordFinalizerSupplier in question.
+   * The original injected map of IBDataDataStreamRecordFinalizerSupplier instances must remain intact
+   *
+   * @param cms
+   * @return
+   */
+  IBDataDataStreamRecordFinalizerSupplier<T> config(ConfigMapSupplier cms);
 }

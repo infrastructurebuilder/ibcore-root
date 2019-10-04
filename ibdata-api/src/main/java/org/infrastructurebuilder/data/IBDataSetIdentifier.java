@@ -30,6 +30,16 @@ import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
 import org.w3c.dom.Document;
 
+/**
+ * This is the top-level interface that describes a DataSet.
+ *
+ * A DataSet is a group of common metadata that holds a set of DataStreams
+ *
+ * Under nearly every circumstance, one might think of a DataSet as an archive (a jar or zip file),
+ * since an archive can only have a single DataSet metadata file
+ * @author mykel.alvis
+ *
+ */
 public interface IBDataSetIdentifier {
   public final static DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
   public final static Supplier<DocumentBuilder> builderSupplier = () -> cet
@@ -71,7 +81,9 @@ public interface IBDataSetIdentifier {
 
   default Optional<URL> pathAsURL() {
     return org.infrastructurebuilder.util.IBUtils.nullSafeURLMapper.apply(getPath());
-
   }
 
+  default Document metdataAsDocument() {
+    return IBMetadataUtils.fromXpp3Dom.apply(getMetadata());
+  }
 }

@@ -125,7 +125,7 @@ public class ProcessRunnerTest {
       newrunner.setKeepScratchDir(false);
       newrunner.lock(Duration.ofSeconds(15), Optional.of(25L));
       final ProcessExecutionResultBag p = runner.get().get();
-      System.out.println(p.getResults().size());
+      
       assertTrue(newrunner.hasErrorResult(p.getResults()));
       final ProcessExecutionResult a = p.getExecutions().get(id);
       assertEquals(2, a.getResultCode().get().longValue());

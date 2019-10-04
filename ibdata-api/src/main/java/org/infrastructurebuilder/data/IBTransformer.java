@@ -41,6 +41,6 @@
 //   */
 //  boolean respondsTo(Object i);
 //
-//  Optional<IBTransformationResult> transform(IBDataStream original, List<IBDataStream> additional);
+//  Optional<IBDataTransformationResult> transform(IBDataStream original, List<IBDataStream> additional);
 //
 //}

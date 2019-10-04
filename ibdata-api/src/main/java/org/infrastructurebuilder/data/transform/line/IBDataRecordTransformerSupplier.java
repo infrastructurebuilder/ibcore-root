@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data.line;
+package org.infrastructurebuilder.data.transform.line;
 
-import java.util.Optional;
-import java.util.Properties;
+import java.util.function.Supplier;
 
-import org.infrastructurebuilder.util.PropertiesSupplier;
+import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 
-abstract public class AbstractIBDataLineTransformerSupplier<I, O> implements IBDataLineTransformerSupplier<I, O> {
+/**
+ * IMPORTANT!  READ THIS!
+ * All Suppliers of IBDataTransformer, including suppliers of IBDataRecordTransformer,
+ * are meant to provide disposable, non-singleton instances of the transformer.
+ *
+ * @author mykel.alvis
+ *
+ */
+public interface IBDataRecordTransformerSupplier<I, O> extends Supplier<IBDataRecordTransformer<I,O>> {
+  String getHint();
 
-  private final PropertiesSupplier ps;
-
-  public AbstractIBDataLineTransformerSupplier(PropertiesSupplier ps) {
-    this.ps = ps;
-  }
-
-  public PropertiesSupplier getProperties() {
-    return Optional.ofNullable(ps).orElse(() -> new Properties());
-  }
+  IBDataRecordTransformerSupplier<I, O> configure(ConfigMapSupplier cms);
 
 }

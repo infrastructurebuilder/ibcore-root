@@ -16,26 +16,39 @@
 package org.infrastructurebuilder.data;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 public interface IBDataTransformer {
-  default String getHint() {
-    return "default";
-  }
+
   /**
-   * Override to return true where a transformer responds to an datastream of type "i"
+   * This should return the Named hint of the IBDataStreamTransformationSupplier that created id (or some derivative thereof)
+   * @return
+   */
+  String getHint();
+
+  /**
+   * Override to return if a transformer responds to a given datastream (eg, line-based transformers probably don't repsond to PDFs)
    * @param i
    * @return
    */
   default boolean respondsTo(IBDataStream i) {
-    return false;
+    return true;
   }
+
+  /**
+   * Overrides of this method MUST return a NEW INSTANCE of the calling transformer.
+   * unless no changes are made to the state of the object,
+   * @param map
+   * @return
+   */
+  default IBDataTransformer configure(Map<String, String> map) {
+    return this;
+  }
+
   /**
    * Call onl if respondsTo(i)
    * @param stream
    * @return
    */
-  default Optional<IBTransformationResult> transform(List<IBDataStream> stream) {
-    return Optional.empty();
-  }
+  IBDataTransformationResult transform(IBDataSet ds, List<IBDataStream> stream, boolean failOnError);
 }

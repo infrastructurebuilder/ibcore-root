@@ -67,7 +67,7 @@
           <description>A detailed description of the dataset</description>
           <type>String</type>
         </field>
-        <field xml.format="yyyy-MM-dd'T'HH:mm:ss.SSSXXX">
+        <field xml.format="yyyy-MM-dd'T'HH:mm:ss.SSS">
           <name>creationDate</name>
           <version>1.0.0+</version>
           <required>true</required>
@@ -95,7 +95,7 @@
           <name>path</name>
           <version>1.0.0+</version>
           <required>false</required>
-          <description>Describes an optional path to the dataset</description>
+          <description>Describes a path to the dataset</description>
           <type>String</type>
         </field>
       </fields>
@@ -272,8 +272,8 @@
         <field>
           <name>path</name>
           <version>1.0.0+</version>
-          <required>false</required>
-          <description>Describes an optional path to the stream</description>
+          <required>true</required>
+          <description>Describes a path to the stream</description>
           <type>String</type>
         </field>
 

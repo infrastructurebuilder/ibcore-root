@@ -17,6 +17,41 @@ package org.infrastructurebuilder.data;
 
 import java.util.function.Supplier;
 
-public interface IBDataTransformerSupplier extends Supplier<IBDataTransformer> {
+import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 
+/**
+ * IMPORTANT!  READ THIS!
+ * All Suppliers of IBDataTransformer, including suppliers of IBDataRecordTransformer,
+ * are meant to provide disposable, non-singleton instances of the transformer.
+ *
+ * @author mykel.alvis
+ *
+ */
+public interface IBDataTransformerSupplier extends Supplier<IBDataTransformer> {
+//  public final static String UNCONFIGURABLEKEY_FINALIZER_KEY = "<!-- FINALIZER -->";
+
+  /**
+   * Return a NEW INSTANCE of IBDataTransformerSupplier.  Methods implementing this must not
+   * <code>return this;</code> under any circumstances
+   *
+   * @param cms
+   * @return
+   */
+  IBDataTransformerSupplier configure(ConfigMapSupplier cms);
+
+  /**
+   *
+   * Return a NEW INSTANCE of IBDataTransformerSupplier.  Methods implementing this must not
+   * <code>return this;</code> under any circumstances
+   *
+   * This method must be called before <code>configure()</code>
+   *
+   * Only actually necessary with record-based systems.  Everyone else should write
+   * files like adults.
+   *
+   * @param finalizer
+   * @return
+   */
+
+  Supplier<IBDataTransformer> withFinalizer(IBDataStreamRecordFinalizer finalizer);
 }

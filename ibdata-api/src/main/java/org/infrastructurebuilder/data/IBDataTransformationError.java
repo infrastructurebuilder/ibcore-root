@@ -13,10 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data.line;
+package org.infrastructurebuilder.data;
 
-import java.util.function.Supplier;
+import java.util.Optional;
 
-public interface IBDataLineTransformerSupplier<I, O> extends Supplier<IBDataLineTransformer<I,O>> {
+public interface IBDataTransformationError {
+
+  Optional<String> getMessage();
+
+  Optional<Throwable> getError();
 
 }

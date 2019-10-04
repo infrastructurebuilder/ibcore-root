@@ -23,10 +23,19 @@ import org.infrastructurebuilder.util.artifacts.Checksum;
 
 public interface IBChecksumPathType extends Supplier<InputStream> {
 
+  /**
+   * @return Non-null Path to this result
+   */
   Path getPath();
 
+  /**
+   * @return Calculated Checksum of the contents of the file at getPath()
+   */
   Checksum getChecksum();
 
+  /**
+   * @return Non-null MIME type for the file at getPath()
+   */
   String getType();
 
 

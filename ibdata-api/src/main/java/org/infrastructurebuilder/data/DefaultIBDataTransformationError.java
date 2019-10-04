@@ -15,24 +15,30 @@
  */
 package org.infrastructurebuilder.data;
 
-import java.io.StringReader;
-import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 
-import javax.xml.parsers.DocumentBuilderFactory;
+public class DefaultIBDataTransformationError implements IBDataTransformationError {
 
-import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
+  private final Optional<Throwable> e;
+  private final Optional<String> message;
 
-public interface IBMetadata {
-  public final static Function<Xpp3Dom, Document> fromXpp3Dom = (document) -> IBDataException.cet
-      .withReturningTranslation(() -> DocumentBuilderFactory.newInstance().newDocumentBuilder()
-          .parse(new InputSource(new StringReader(document.toString()))));
+  DefaultIBDataTransformationError() {
+    this(Optional.empty(), Optional.of("No message"));
+  }
 
-  String getName();
-  Optional<String> getValue();
-  Optional<List<IBMetadata>> getChildren();
-  Xpp3Dom asDOM();
+  public DefaultIBDataTransformationError(Optional<Throwable> e, Optional<String> message) {
+    this.e = Objects.requireNonNull(e);
+    this.message = Objects.requireNonNull(message);
+  }
+
+  @Override
+  public Optional<String> getMessage() {
+    return message;
+  }
+
+  @Override
+  public Optional<Throwable> getError() {
+    return e;
+  }
 }
