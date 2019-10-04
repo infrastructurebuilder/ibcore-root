@@ -24,7 +24,7 @@ public class DefaultIBDataTransformationError implements IBDataTransformationErr
   private final Optional<String> message;
 
   DefaultIBDataTransformationError() {
-    this(Optional.empty(), Optional.of("No message"));
+    this(Optional.empty(), Optional.of("No message"));  // FIXME (At least one or the other?
   }
 
   public DefaultIBDataTransformationError(Optional<Throwable> e, Optional<String> message) {

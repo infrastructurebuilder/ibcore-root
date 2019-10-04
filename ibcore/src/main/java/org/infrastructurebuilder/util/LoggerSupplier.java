@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data;
+package org.infrastructurebuilder.util;
 
-import org.infrastructurebuilder.util.config.TSupplier;
+import java.util.function.Supplier;
 
-public class LogSupplier extends TSupplier<Object> {
+import org.slf4j.Logger;
+
+public interface LoggerSupplier extends Supplier<Logger> {
 
 }
