@@ -37,7 +37,7 @@ import org.junit.Test;
 import com.vdurmont.semver4j.Semver;
 import com.vdurmont.semver4j.Semver.SemverType;
 
-public class IBVersionImplTest {
+public class DefaultIBVersionTest {
   IBVersion v, v1, v2;
 
   @Test
@@ -57,6 +57,11 @@ public class IBVersionImplTest {
     for (int i = 0; i < list.size(); i++) {
       assertEquals(array[len - 1 - i], list.get(i));
     }
+  }
+
+  @Test
+  public void testApi() {
+    assertEquals("2.2", new DefaultIBVersion("2.2.2").getApiVersion().toString());
   }
 
   @Test

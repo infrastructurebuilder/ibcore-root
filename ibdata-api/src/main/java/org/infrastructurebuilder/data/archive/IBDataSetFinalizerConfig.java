@@ -13,25 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util;
+package org.infrastructurebuilder.data.archive;
 
-import java.util.Collection;
+import java.nio.file.Path;
 
-import org.infrastructurebuilder.IBConstants;
-import org.json.JSONObject;
+import org.infrastructurebuilder.data.model.DataSet;
 
-public class PGPDSEncryptionIdentifier extends DefaultEncryptionIdentifier {
+public interface IBDataSetFinalizerConfig {
 
-  public PGPDSEncryptionIdentifier(final JSONObject jsonObject) {
-    super(jsonObject);
-  }
+  public final static int INGESTER = 0;
+  public final static int TRANSFORMER = 1;
 
-  public PGPDSEncryptionIdentifier(final String json) {
-    super(json);
-  }
+  Path getWorkingPath();
 
-  public PGPDSEncryptionIdentifier(final String id, final Collection<String> ids) {
-    super(id, IBConstants.PGP_DS_TYPE, ids);
-  }
+  int getExecutionType();
+
+  DataSet getDataSet();
 
 }

@@ -17,7 +17,7 @@ package org.infrastructurebuilder.data.model;
 
 import static org.infrastructurebuilder.data.IBMetadataUtils.IBDATA;
 import static org.infrastructurebuilder.data.IBMetadataUtils.IBDATASET_XML;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Files;

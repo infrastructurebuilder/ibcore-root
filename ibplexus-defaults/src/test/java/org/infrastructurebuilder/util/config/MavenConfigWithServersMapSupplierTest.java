@@ -58,8 +58,8 @@ public class MavenConfigWithServersMapSupplierTest extends MavenConfigMapSupplie
   server2.setPrivateKey(PRIVATEKEY + "2");
   s.addServer(server2);
 
-    cms = new MavenConfigWithServersMapSupplier(mp,s);
-    cms2 = new MavenConfigWithServersMapSupplier(mp,new Settings());
+    cms = new MavenConfigWithServersMapSupplier(mp,s, ms, me);
+    cms2 = new MavenConfigWithServersMapSupplier(mp,new Settings(), ms, me);
   }
 
 

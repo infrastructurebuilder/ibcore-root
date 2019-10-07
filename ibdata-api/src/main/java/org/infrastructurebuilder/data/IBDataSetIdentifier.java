@@ -28,6 +28,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
+import org.infrastructurebuilder.util.artifacts.GAV;
+import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
 import org.w3c.dom.Document;
 
 /**
@@ -45,6 +47,14 @@ public interface IBDataSetIdentifier {
   public final static Supplier<DocumentBuilder> builderSupplier = () -> cet
       .withReturningTranslation(() -> factory.newDocumentBuilder());
   public final static Supplier<Document> emptyDocumentSupplier = () -> builderSupplier.get().newDocument();
+
+  String getGroupId();
+  String getArtifactId();
+  String getVersion();
+
+  default GAV getGAV() {
+    return new DefaultGAV(getGroupId(), getArtifactId(), getVersion());
+  }
 
   UUID getId();
 

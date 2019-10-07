@@ -15,30 +15,28 @@
  */
 package org.infrastructurebuilder.data;
 
+import java.util.List;
 import java.util.SortedMap;
 
 import org.infrastructurebuilder.util.files.IBChecksumPathType;
 
 /**
- * Instances of this need to Inject a  Named(SingletonLateBindingPathSupplier.SINGLETON_LATE_BINDING_PATH_SUPPLIER) WorkingPathSupplier wps
+ * Instances of this need to Inject a  Named(IBMetadataUtils.IBDATA_WORKING_PATH_SUPPLIER) WorkingPathSupplier wps
  * if they need working paths.  The ingester mojo will configure that path properly.
  * @author mykel.alvis
  *
  */
 public interface IBDataIngester {
-  public static final String APPLICATION_IBDATA_ARCHIVE = "application/ibdata-archive";
 
   /**
    *
    * Reads a source and returns a calculated set of attributes.  Since the result of any write action is
    * expected to be the output of some finalizer, the execution of how that set of data arrives is left to that component
    *
-   * Ingestion returns an IBChecksumPathType, which to a completed DataSet (i.e. a written IBDataEngine.IBDATA_IBDATASET_XML file).  That path can contain
-   * no other files
-   *
-   * Sorted by natural order of "temporary id"
+   * Ingestion returns an List<IBDataStreamSupplier>, which is supplied to a finalizer to produce a DataSet
+
    * @param dss
    * @return
    */
-  IBChecksumPathType ingest(IBDataSetIdentifier dsi, SortedMap<String,IBDataSourceSupplier> dss);
+  List<IBDataStreamSupplier> ingest(IBDataSetIdentifier dsi, SortedMap<String,IBDataSourceSupplier> dss);
 }

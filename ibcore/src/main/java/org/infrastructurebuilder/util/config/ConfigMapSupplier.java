@@ -28,6 +28,11 @@ public interface ConfigMapSupplier extends Supplier<Map<String, String>> {
 
   ConfigMapSupplier addValue(String key, String value);
 
+  /**
+   * The contract for ConfigMapSupplier is that "OVERRIDES" should <code>return this;</code>
+   * @param over
+   * @return
+   */
   ConfigMapSupplier overrideConfiguration(Map<String, String> over);
 
   ConfigMapSupplier overrideConfiguration(Properties over);

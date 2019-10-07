@@ -28,7 +28,6 @@ import java.util.UUID;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.infrastructurebuilder.data.IBDataEngine;
-import org.infrastructurebuilder.data.IbdataApiVersioning;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3Reader;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3ReaderEx;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3Writer;

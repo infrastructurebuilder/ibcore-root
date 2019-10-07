@@ -17,20 +17,14 @@ package org.infrastructurebuilder.data;
 
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static org.infrastructurebuilder.data.IBDataException.cet;
 
-import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import org.infrastructurebuilder.data.model.DataSet;
-import org.infrastructurebuilder.data.model.DataSetInputSource;
-import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3ReaderEx;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
 import org.infrastructurebuilder.util.files.DefaultIBChecksumPathType;
@@ -77,7 +71,7 @@ public interface IBDataSet extends IBDataSetIdentifier {
 
   default IBChecksumPathType asChecksumType() {
     Checksum c = new Checksum();
-    return DefaultIBChecksumPathType.from(Paths.get(getPath()), c, IBDataIngester.APPLICATION_IBDATA_ARCHIVE);
+    return DefaultIBChecksumPathType.from(Paths.get(getPath()), c, IBMetadataUtils.APPLICATION_IBDATA_ARCHIVE);
   }
 
 }

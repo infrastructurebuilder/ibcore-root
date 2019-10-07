@@ -34,63 +34,18 @@ public interface IBConstants {
   public static final String APPLICATION_ZIP = "application/zip";
   public static final String APPLICATION_XML = "application/xml";
 
-  public static final String _ENCRYPTION_TYPE_NONE = "org.infrastructurebuilder.util.noop.NoopCryptoStreamConfig";
-  public static final String _NOOP_CRYPTO_TYPE = _ENCRYPTION_TYPE_NONE;
   public static final String _SHA512 = "sha512";
   public static final String ASC_EXT = ".asc";
 
   public static final JSONArray CHECKSUM_TYPES_DEFAULT = new JSONArray(Arrays.asList(_SHA512));
 
   public static final Optional<String> CHECKSUM_TYPES_SHA512 = Optional.of(_SHA512);
-  public static final String CRYPTO_API_VERSION = "Crypto-API-Version";
-  public static final String CRYPTO_CIPHER = "Cryto-Cipher";
-  public static final String CRYPTO_DEFAULT = "Crypto-Defaults";
-  public static final String CRYPTO_ENCODED_KEY = "Crypto-Encoded-Key";
-  public static final String CRYPTO_ENCRYPT_WITH_ALL_ENCRYPTION_KEYS = "Crypto-Encrypt-With-All-Encryption-Keys";
-  public static final String CRYPTO_ENCRYPTION_IDENTIFIER = "Crypto-Encryption-Identifier";
-  public static final String CRYPTO_ENCRYPTION_IDENTIFIERS = "Crypto-Encryption-Identifiers";
-  public static final String CRYPTO_EXTERNAL_KEYRINGS = "Crypto-External-Keyrings";
-  public static final String CRYPTO_ID = "Crypto-Id";
-  public static final String CRYPTO_KEY_IDS_TO_PASSWORDS = "Crypto-Key-Ids-To-Passwords";
-  public static final String CRYPTO_KEY_RING = "Crypto-KeyRing";
-  public static final String CRYPTO_KEY_RINGS = "Crypto-KeyRings";
-  public static final String CRYPTO_KEYIDS_FOR_ENCRYPTION = "Crypto-Key-Ids-For-Encryption";
-  public static final String CRYPTO_KEYPAIRS_FOR_DECRYPTION = "Crypto-Key-Pairs-For-Decryption";
-  public static final String CRYPTO_PAIRS = "Crypto-Pairs";
-  public static final String CRYPTO_PASSPHRASE = "Crypto-Passphrase";
-  public static final String CRYPTO_PRINCIPAL = "Crypto-Principal";
-  public static final String CRYPTO_PRIVATE_KEY = "Crypto-PrivateKey";
-
-  public static final String CRYPTO_PRIVATE_KEYS = "Crypto-Private-Keys";
-  public static final String CRYPTO_PUBLIC_KEY = "Crypto-PublicKey";
-
-  public static final String CRYPTO_PUBLIC_KEYS = "Crypto-Public-Keys";
-
-  public static final String CRYPTO_SECRET = "Crypto-Secret";
-
-  public static final String CRYPTO_SECRET_KEYPAIRS = "Crypto-Secret-Keypairs";
-  public static final String CRYPTO_SERVER_IDS = "Crypto-Server-Ids";
-
-  public static final String CRYPTO_TYPE = "Crypto-Type";
-  public static final String CRYPTO_TYPES = "Crypto-Types";
-  public static final String CRYTPO_ASYMMETRIC_KEYPAIR = "Crypto-Asymmetric-KeyPair";
-  public static final String D99C2A73 = "D99C2A73";
 
   public static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss-SSS")
       .withLocale(Locale.US).withZone(ZoneId.of("Z"));
-  public static final String DEFAULT_CRYPTO_CONFIGURATION_KEY = "defaultCryptoConfig";
 
-  public static final String DEFAULT_NOOP_CRYPTO_CONFIG = new JSONObject()
-      .put(CRYPTO_KEY_IDS_TO_PASSWORDS, new JSONObject())
-
-      .put(CRYPTO_TYPES, new JSONArray().put(_NOOP_CRYPTO_TYPE))
-
-      .put(_NOOP_CRYPTO_TYPE, new JSONObject())
-
-      .toString(2);
   public static final String DIGEST_TYPE = "SHA-512";
   public static final String DIRECTORY_PERMISSIONS = "directoryPermissions";
-  public static final String ENCRYPTION_TYPE_NONE = _ENCRYPTION_TYPE_NONE;
   public static final String EXPORTED = "ExportedInsecureTestKeyrings";
   public static final String FACTORY_NAME = "org.infrastructurebuilder.core.config.CoreCryptoProviderFactory";
   public static final String FILE_PERMISSIONS = "filePermissions";
@@ -105,16 +60,12 @@ public interface IBConstants {
   public static final String MAVEN_MIRRORS = "MAVEN_MIRRORS";
   public static final String NAME = "name";
   public static final String NO_OP = "no-op";
-  public static final String NOOP_CRYPTO_TYPE = _NOOP_CRYPTO_TYPE;
   public static final String NULL_PASSPHRASE = "*NULL*";
   public static final String OF = "of";
   public static final String PASSPHRASE = "passphrase";
   public static final String PASSPHRASE_ENV = "SPECIFIC_PASSPHRASE";
   public static final String PASSWORD = "password";
-  public static final String PASSWORD_ENCRYPTION_TYPE = "org.infrastructurebuilder.util.crypto.symkey.PasswordCryptoStreamSubconfig";
   public static final String PASSWORD_TYPE = "PASSWORD";
-  public static final String PGP_DS_TYPE = "org.infrastructurebuilder.util.pgp.PGPDSCryptoStreamSubconfig";
-  public static final String PGP_ENCRYPTION_TYPE = PGP_DS_TYPE;
   public static final String PRIVATE_KEY = "privateKey";
   public static final String RANDOM = "*RANDOM*";
 
@@ -129,12 +80,6 @@ public interface IBConstants {
 
   public static final Charset UTF8 = Charset.forName("UTF-8");
   public static final String VERSION = "version";
-  public static final String X101155F2 = "101155F2";
-  public static final String X101155F2_PUBLIC_SUBKEY = "B4A231B1";
-  public static final String X400FEB21 = "400FEB21";
-
-  public static final String X7FD737B2 = "7FD737B2";
-  public static final String X7FD737B2_PUBLIC_SUBKEY = "E48A21FD";
 
   public final static String HTTP_PREFIX = "http://";
   public final static String HTTPS_PREFIX = "https://";

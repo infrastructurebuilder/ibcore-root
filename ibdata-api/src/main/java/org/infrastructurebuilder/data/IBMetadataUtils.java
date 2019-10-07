@@ -16,6 +16,7 @@
 package org.infrastructurebuilder.data;
 
 import static java.util.Objects.requireNonNull;
+import static javax.xml.parsers.DocumentBuilderFactory.newInstance;
 import static org.infrastructurebuilder.data.IBDataException.cet;
 
 import java.io.StringReader;
@@ -24,7 +25,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -38,8 +38,13 @@ import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
+import java.util.Optional;
+
 public class IBMetadataUtils {
+  public static final String APPLICATION_IBDATA_ARCHIVE = "application/ibdata-archive";
   public final static String UNCONFIGURABLE = "<!-- UNCONFIGURABLE -->";
+  public final static String IBDATA_WORKING_PATH_SUPPLIER = "ibdata-working-path-supplier";
+  public final static String CACHE_DIRECTORY_CONFIG_ITEM = UNCONFIGURABLE + ".cachePath";
   public final static String TRANSFORMERSLIST = UNCONFIGURABLE + ".transformers";
   public final static String RECORD_SPLITTER = ",";
   public final static String MAP_SPLITTER = "|";
@@ -53,15 +58,19 @@ public class IBMetadataUtils {
   private final static Supplier<Transformer> tfSupplier = () -> {
     return cet.withReturningTranslation(() -> tf.newTransformer());
   };
-  public final static Function<Object, Document> fromXpp3Dom = (document) -> cet
-      .withReturningTranslation(() -> (document instanceof Document) ?
-      // Already a document
-          (Document) document :
-          // Not yet a document
-          (DocumentBuilderFactory.newInstance().newDocumentBuilder()
-              .parse(new InputSource(new StringReader(document.toString()))))
-      // returned translation
-      );
+
+  /**
+   * Map an object to a W3C Document.  If null, returns an empty Document
+   */
+  public final static Function<Object, Document> fromXpp3Dom = (document) ->
+  Optional.ofNullable(cet.withReturningTranslation(() ->
+  (document instanceof Document) ? // Is it a Document
+      (Document) document : // Already a document
+      (newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(document.toString())))) // Make it a document
+  ))
+
+      .orElse(IBDataSetIdentifier.emptyDocumentSupplier.get());
+
   public final static Function<Document, String> stringifyDocument = (document) -> cet.withReturningTranslation(() -> {
     StringWriter writer = new StringWriter();
     cet.withTranslation(() -> tfSupplier.get().transform(new DOMSource(document), new StreamResult(writer)));
@@ -92,6 +101,7 @@ public class IBMetadataUtils {
   public final static Function<IBDataStream, DataStream> toDataStream = (ibds) -> {
     DataStream ds = new DataStream();
     requireNonNull(ibds).getName().ifPresent(ds::setDataStreamName);
+    ds.setCreationDate(ibds.getCreationDate());
     ibds.getDescription().ifPresent(ds::setDataStreamDescription);
     ibds.getURL().ifPresent(u -> ds.setSourceURL(u.toExternalForm()));
     ds.set_metadata(IBMetadataUtils.translateToXpp3Dom.apply((Object) ibds.getMetadata()));
@@ -100,4 +110,49 @@ public class IBMetadataUtils {
     ds.setUuid(ibds.getChecksum().asUUID().get().toString());
     return ds;
   };
+  //public final static Document extractDatasetMetadataTheHardWay(final Xpp3Dom xpp) throws MojoFailureException {
+  ////    Xpp3Dom xpp = getMojo().getConfiguration();
+  //
+  //final XPath xPath = XPathFactory.newInstance().newXPath();
+  //final Document document = IBMetadataUtils.fromXpp3Dom.apply(xpp);
+  //try {
+  //  final NodeList nodeList = (NodeList) xPath.compile("/configuration/ingestionConfig/dataSet/metadata")
+  //      .evaluate(document, XPathConstants.NODESET);
+  //  switch (nodeList.getLength()) {
+  //  case 0:
+  //    return IBDataSetIdentifier.emptyDocumentSupplier.get();
+  //  case 1:
+  //    final Node nNode = nodeList.item(1);
+  //    final Document d = IBDataSetIdentifier.emptyDocumentSupplier.get();
+  //    d.appendChild(d.importNode(nNode, true));
+  //    return d;
+  //  default:
+  //    throw new MojoFailureException("Too many metadata nodes for DataSet");
+  //  }
+  //} catch (final XPathExpressionException e) {
+  //  throw new MojoFailureException("Failed to acquire metadata", e);
+  //}
+  //}
+  //
+  //public final static Map<String, Document> extractDatastreamsMetadataTheHardWay(final Xpp3Dom xpp)
+  //  throws MojoFailureException {
+  //final XPath xPath = XPathFactory.newInstance().newXPath();
+  //final Document document = IBMetadataUtils.fromXpp3Dom.apply(xpp);
+  //try {
+  //  final NodeList nodeList = (NodeList) xPath.compile("/configuration/ingestionConfig/dataSet/streams/id")
+  //      .evaluate(document, XPathConstants.NODESET);
+  //  final Map<String, Document> dMap = new HashMap<>();
+  //  for (int i = 0; i < nodeList.getLength(); ++i) {
+  //    final Node nNode = nodeList.item(i);
+  //
+  //    final String key = "default";
+  //    final Document d = IBDataSetIdentifier.emptyDocumentSupplier.get();
+  //    d.appendChild(d.importNode(nNode, true));
+  //    dMap.putIfAbsent(key, d);
+  //  }
+  //  return dMap;
+  //} catch (final XPathExpressionException e) {
+  //  throw new MojoFailureException("Failed to acquire metadata", e);
+  //}
+  //}
 }

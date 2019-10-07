@@ -18,7 +18,8 @@
   </defaults>
   <classes>
   <!-- MODEL -->
-    <class xml.tagName="dataSet" rootElement="true" java.clone.hook="cloneHook" java.clone = "deep">
+    <class xml.tagName="dataSet" rootElement="true"
+      java.clone.hook="cloneHook" java.clone="deep">
       <name>DataSet</name>
       <description>
         <![CDATA[
@@ -43,35 +44,57 @@
           <name>modelVersion</name>
           <version>1.0.0+</version>
           <required>true</required>
-          <description>Declares to which version of project descriptor this configuration conforms.</description>
+          <description>Declares to which version of project descriptor this configuration conforms.  This value is the api version (major.minor) of ibdata-api and conforms to semantic versioning</description>
           <type>String</type>
         </field>
 
+
+        <field>
+          <name>groupId</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Namespace of the dataset.  This defaults to the project.groupId of the building project</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>artifactId</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Artifact Identifier of the dataset.  This defaults to the project.artifactId of the building project</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>version</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Version of the dataset.  This defaults to the project.version of the building project</description>
+          <type>String</type>
+        </field>
         <field>
           <name>uuid</name>
           <version>1.0.0+</version>
           <required>true</required>
-          <description>UUID identifier of the dataset.</description>
+          <description>UUID identifier of the dataset.  This is the UUID from the Checksums of all the DataStream elements</description>
           <type>String</type>
         </field>
         <field>
           <name>dataSetName</name>
           <version>1.0.0+</version>
           <required>true</required>
-          <description>The full name of the dataset.</description>
+          <description>The full name of the dataset.  This defaults to the project.name of the building project</description>
           <type>String</type>
         </field>
         <field>
           <name>dataSetDescription</name>
           <version>1.0.0+</version>
-          <description>A detailed description of the dataset</description>
+          <description>A detailed description of the dataset.  This defaults to the project.description of the building project</description>
           <type>String</type>
         </field>
         <field xml.format="yyyy-MM-dd'T'HH:mm:ss.SSS">
           <name>creationDate</name>
           <version>1.0.0+</version>
           <required>true</required>
-          <description>URL of the source of this stream, if available</description>
+          <description>A Date that is very close to the moment when this DataSet was persisted.  It has essentially no relationship to when the streams were read, except that it must be later.</description>
           <type>Date</type>
         </field>
         <field>
@@ -100,7 +123,6 @@
         </field>
       </fields>
       <codeSegments>
-
         <codeSegment>
           <version>1.0.0+</version>
           <code>
@@ -196,7 +218,7 @@
       </codeSegments>
 
     </class>
-    <class xml.tagName="dataStream" java.clone="deep" >
+    <class xml.tagName="dataStream" java.clone="deep">
       <name>DataStream</name>
       <version>1.0.0+</version>
       <interfaces>
@@ -279,7 +301,7 @@
 
       </fields>
       <codeSegments>
-              <codeSegment>
+        <codeSegment>
           <version>1.0.0+</version>
           <code>
             <![CDATA[
