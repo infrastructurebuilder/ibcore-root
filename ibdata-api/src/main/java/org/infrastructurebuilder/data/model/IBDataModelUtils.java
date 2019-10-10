@@ -62,10 +62,10 @@ public class IBDataModelUtils {
     }
   }
 
-  public final static Checksum fromPathDSAndStream(Path workingPath, DataSet ds, List<IBDataStreamSupplier> ibdssList) {
+  public final static Checksum fromPathDSAndStream(Path workingPath, DataSet ds) {
     return ChecksumBuilder.newInstance(of(workingPath))
         // Checksum of data of streams
-        .addChecksum(new Checksum(ibdssList.stream().map(s -> s.get().getChecksum()).collect(toList())))
+        .addChecksum(new Checksum(ds.getStreams().stream().map(s -> s.getChecksum()).collect(toList())))
         // Checksum of stream metadata
         .addChecksum(ds.getIdentifierChecksum()).asChecksum();
   }
@@ -112,7 +112,7 @@ public class IBDataModelUtils {
             // to list
             .collect(toList()));
     // The id of the archive is based on the checksum of the data within it
-    Checksum dsChecksum = IBDataModelUtils.fromPathDSAndStream(workingPath, finalData, ibdssList);
+    Checksum dsChecksum = IBDataModelUtils.fromPathDSAndStream(newWorkingPath, finalData);
     finalData.setUuid(dsChecksum.asUUID().get().toString());
     // We're going to relocate the entire directory to a named UUID-backed directory
     Path newTarget = workingPath.getParent().resolve(finalData.getUuid());

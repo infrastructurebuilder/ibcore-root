@@ -23,8 +23,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringJoiner;
 
 import org.infrastructurebuilder.util.IBUtils;
@@ -35,10 +38,19 @@ public class BasicIBChecksumPathType implements IBChecksumPathType {
   protected final Checksum checksum;
   protected final Path path;
   protected final String type;
+  private final OpenOption[] readOptions;
 
   public BasicIBChecksumPathType(Path path, Checksum checksum, String type) {
     super();
     this.path = requireNonNull(path);
+    List<OpenOption> o = new ArrayList<>();
+    o.add(StandardOpenOption.READ);
+    if (this.path.getClass().getCanonicalName().contains("Zip")) {
+
+    } else {
+      o.add(LinkOption.NOFOLLOW_LINKS);
+    }
+    this.readOptions = o.toArray(new OpenOption[o.size()]);
     this.checksum = requireNonNull(checksum);
     this.type = requireNonNull(type);
   }
@@ -65,7 +77,7 @@ public class BasicIBChecksumPathType implements IBChecksumPathType {
   @Override
   public InputStream get() {
     return cet.withReturningTranslation(
-        () -> Files.newInputStream(this.path, StandardOpenOption.READ, LinkOption.NOFOLLOW_LINKS));
+        () -> Files.newInputStream(this.path, readOptions));
   }
 
   @Override
