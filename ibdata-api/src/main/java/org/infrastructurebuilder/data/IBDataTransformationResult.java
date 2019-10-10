@@ -20,6 +20,15 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
+ *
+ * Supplies the result of a transformation.
+ * If the supplied Optional IBDataSet is empty, then the transformation was not successful.
+ * If the transformation was not successful, then the errors should be available from getErrors()
+ *
+ * If the transformation <b>was</b> successful, then the supplied IBDataSet is the result, and should
+ * be passed on to any subsequent transformations.  Any new streams in the new IBDataSet are available for
+ * additional transformation.
+ *
  * @author mykel.alvis
  *
  * @param <T>

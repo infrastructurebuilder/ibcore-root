@@ -26,6 +26,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public interface IBConstants {
+
+  public final static String IBDATA_PREFIX = "IBDataTemp_";
+  public final static String IBDATA_SUFFIX = ".ibdata";
+
   public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
   public final static String TEXT_PLAIN = "text/plain";
   public static final String AVRO_BINARY = ".avro";

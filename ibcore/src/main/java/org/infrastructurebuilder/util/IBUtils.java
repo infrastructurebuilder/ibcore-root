@@ -24,11 +24,13 @@ import static java.util.stream.StreamSupport.stream;
 import static org.infrastructurebuilder.IBException.cet;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
@@ -36,6 +38,7 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
@@ -73,6 +76,7 @@ import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -149,6 +153,10 @@ public class IBUtils {
   static final int BUFFER_SIZE = 10240;
 
   private static final Logger iolog = LoggerFactory.getLogger(IBUtils.class);
+
+  public static Stream<String> readInputStreamAsStringStream(InputStream ins) {
+    return IBException.cet.withReturningTranslation(() -> new BufferedReader(new InputStreamReader(ins)).lines());
+  }
 
   @SuppressWarnings("unchecked")
   public static <T> Iterator<T> asIterator(final JSONArray array) {
@@ -583,6 +591,30 @@ public class IBUtils {
     final Map<String, String> retVal = new HashMap<>(requireNonNull(base));
     retVal.putAll(requireNonNull(overlay));
     return retVal;
+  }
+
+  /**
+   * Try to atomically move a source path to a target path.
+   *
+   * IF THAT FAILS TO WORK, then copy source to target and then TRY to delete source but accept if it doesn't work
+   * @param source
+   * @param target
+   * @return target
+   * @throws IOException
+   */
+  public static Path moveAtomic(final Path source, final Path target) throws IOException {
+    try {
+      return Files.move(source, target, StandardCopyOption.ATOMIC_MOVE);
+    } catch (AtomicMoveNotSupportedException amns) {
+      // If we cannot move atomic, then copy the file instead and then TRY to delete it but accept delete failure
+      Path retVal = Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+      try {
+        Files.delete(source);
+      } catch (IOException e) {
+        // Do nothing here.  Leave trash on thefilesystem
+      }
+      return retVal;
+    }
   }
 
   public static Path moveFileToNewIdPath(final Path oldFile, final UUID newPath) throws IOException {

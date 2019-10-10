@@ -31,8 +31,8 @@
 	<!-- URL for site gen -->
   <url>${github.url.base}/${project.artifactId}</url>
   <properties>
-    <test.coverage.percentage.required>90</test.coverage.percentage.required>
-    <jacoco.max.missed.classes>14</jacoco.max.missed.classes>
+    <test.coverage.percentage.required>85</test.coverage.percentage.required>
+    <jacoco.max.missed.classes>20</jacoco.max.missed.classes>
   </properties>
   <dependencies>
     <dependency>

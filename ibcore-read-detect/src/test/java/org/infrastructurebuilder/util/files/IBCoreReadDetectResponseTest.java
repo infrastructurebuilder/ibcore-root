@@ -25,7 +25,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.UUID;
 
+import org.infrastructurebuilder.IBException;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.WorkingPathSupplier;
 import org.junit.Before;
@@ -45,6 +47,11 @@ public class IBCoreReadDetectResponseTest {
   public void testBasicType() {
     assertEquals(APPLICATION_OCTET_STREAM,
         DefaultIBChecksumPathType.from(Paths.get("."), new Checksum(), APPLICATION_OCTET_STREAM).getType());
+  }
+
+  @Test(expected = IBException.class)
+  public void testNonExistentFile() {
+    DefaultIBChecksumPathType.toType.apply(Paths.get(".").resolve(UUID.randomUUID().toString()));
   }
 
   @Test

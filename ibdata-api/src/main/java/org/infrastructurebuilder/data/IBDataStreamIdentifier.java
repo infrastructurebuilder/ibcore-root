@@ -39,9 +39,6 @@ import org.w3c.dom.Document;
  */
 public interface IBDataStreamIdentifier extends ChecksumEnabled {
 
-  String IBDATA_PREFIX = "IBDataTemp_";
-  String IBDATA_SUFFIX = ".ibdata";
-
   /**
    * <i>Usually</i> this will return the "data stream id", which a UUID generated from the bytes of a Checksum of the contents of the stream in question.
    * This IS NULLABLE, but only temporarily.  It may not be available, as there might not have been a computed checksum for something that hasn't been
@@ -70,7 +67,11 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
   /**
    * This is a checksum of the underlying file (used to calculate the UUID in getId()).
    * It only contains a checksum for the file, not the metadata. See getMetadataChecksum() to get checksums of all elements
-   * @return  Checksum of the contents of the underlying file.
+   *
+   * This is expected to be a non-null value unless the underlying code handles an actual stream.  In that case the value needs
+   * to be calculated.
+   *
+   * @return  Checksum of the contents of the underlying file or throw NullPointerException
    */
   Checksum getChecksum();
 
@@ -81,16 +82,18 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
   Date getCreationDate();
 
   /**
-   * Document instance containing the metadata supplied for THIS stream.
+   * Xpp3Dom instance containing the metadata supplied for THIS stream.
    *
    * No extra metadata is supplied by the default ingester, although subtypes could easily introduce or require additional metadata.
    *
    * The DataSet has the capability of aggregating metadata.
    * You should probably use that.
    *
-   * @return Document instance describing the metadata supplied at creation time.
+   * Use getMetadataAsDocument for W3c Document
+   *
+   * @return Xpp3Dom instance describing the metadata supplied at creation time.
    */
-  Document getMetadata();
+  Object getMetadata();
 
   /**
    * Non-nullable mime type of the contents of the stream.
@@ -119,22 +122,18 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
         // Desc
         .addString(getDescription())
         // Date
-        .addInstant(getCreationDate().toInstant())
+        .addDate(getCreationDate())
         // Mime type
         .addString(getMimeType())
         // metadata
-        .addChecksum(IBMetadataUtils.asChecksum.apply(getMetadata()))
+        .addChecksum(IBMetadataUtils.asChecksum.apply(getMetadataAsDocument()))
         //
         .asChecksum();
   }
 
-  /**
-   * SLIGHLY DIFFERENT CHECKSUM!
-   * This is a checksum of the data + metadata
-   */
   @Override
   default Checksum asChecksum() {
-    return new Checksum(Arrays.asList(getChecksum(), getMetadataChecksum()));
+    return getChecksum();
   }
 
   /**
@@ -162,4 +161,9 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
     }).orElse(null));
 
   }
+
+  default Document getMetadataAsDocument() {
+    return IBMetadataUtils.fromXpp3Dom.apply(getMetadata());
+  }
+
 }

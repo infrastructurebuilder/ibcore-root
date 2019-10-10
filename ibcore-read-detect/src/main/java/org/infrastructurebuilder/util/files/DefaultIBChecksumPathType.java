@@ -15,8 +15,6 @@
  */
 package org.infrastructurebuilder.util.files;
 
-import static org.infrastructurebuilder.IBException.cet;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -25,16 +23,18 @@ import java.nio.file.StandardOpenOption;
 import java.util.function.Function;
 
 import org.apache.tika.Tika;
+import org.infrastructurebuilder.IBException;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 
 public class DefaultIBChecksumPathType extends BasicIBChecksumPathType implements IBChecksumPathType {
   public final static Tika tika = new Tika();
   public final static Function<Path, String> toType = (path) -> {
     synchronized (tika) { // FIXME Unnecessary
-      InputStream ins = cet.withReturningTranslation(() -> Files.newInputStream(path, StandardOpenOption.READ));
-      String k = cet.withReturningTranslation(() -> tika.detect(ins));
-      cet.withTranslation(() -> ins.close());
-      return k;
+      try (InputStream ins = Files.newInputStream(path, StandardOpenOption.READ)) {
+        return tika.detect(ins);
+      } catch (IOException e) {
+        throw new IBException("Failed during attempt to get tika type", e);
+      }
     }
 
   };
@@ -42,8 +42,6 @@ public class DefaultIBChecksumPathType extends BasicIBChecksumPathType implement
   public final static IBChecksumPathType from(Path p, Checksum c, String type) {
     return new BasicIBChecksumPathType(p, c, type);
   }
-
-
 
   DefaultIBChecksumPathType(Path path, Checksum checksum) throws IOException {
     super(path, checksum, toType.apply(path));

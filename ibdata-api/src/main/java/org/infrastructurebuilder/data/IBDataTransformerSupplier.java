@@ -27,7 +27,7 @@ import org.infrastructurebuilder.util.config.ConfigMapSupplier;
  * @author mykel.alvis
  *
  */
-public interface IBDataTransformerSupplier extends Supplier<IBDataTransformer> {
+public interface IBDataTransformerSupplier<T> extends Supplier<IBDataTransformer> {
 //  public final static String UNCONFIGURABLEKEY_FINALIZER_KEY = "<!-- FINALIZER -->";
 
   /**
@@ -37,7 +37,7 @@ public interface IBDataTransformerSupplier extends Supplier<IBDataTransformer> {
    * @param cms
    * @return
    */
-  IBDataTransformerSupplier configure(ConfigMapSupplier cms);
+  IBDataTransformerSupplier<T> configure(ConfigMapSupplier cms);
 
   /**
    *
@@ -46,12 +46,12 @@ public interface IBDataTransformerSupplier extends Supplier<IBDataTransformer> {
    *
    * This method must be called before <code>configure()</code>
    *
-   * Only actually necessary with record-based systems.  Everyone else should write
-   * files like adults.
+   * Only actually necessary with record-based systems.  Everyone else should <code>return this;</code>
+   * and write files like adults
    *
-   * @param finalizer
+   * @param ts2
    * @return
    */
 
-  Supplier<IBDataTransformer> withFinalizer(IBDataStreamRecordFinalizer finalizer);
+  IBDataTransformerSupplier<T> withFinalizer(IBDataStreamRecordFinalizer<?> ts2);
 }

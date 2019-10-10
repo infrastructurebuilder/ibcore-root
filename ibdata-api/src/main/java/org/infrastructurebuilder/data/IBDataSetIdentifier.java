@@ -65,7 +65,6 @@ public interface IBDataSetIdentifier {
   Date getCreationDate();
 
   Object getMetadata();
-
   /**
    * Possibly null representation of where this dataset currently exists.
    * This value should be nulled out prior to persisting the model, and must
@@ -77,14 +76,18 @@ public interface IBDataSetIdentifier {
 
   default Checksum getIdentifierChecksum() {
     return ChecksumBuilder.newInstance()
+        // Group
+        .addString(getGroupId())
+        // artifact
+        .addString(getArtifactId())
+        // version
+        .addString(getVersion())
         //
         .addString(getName())
         //
         .addString(getDescription())
         //
-        .addInstant(getCreationDate().toInstant())
-        //
-        //        .addChecksum(IBMetadataUtils.asChecksum.apply((Document)getMetadata()))
+        .addDate(getCreationDate())
         // fin
         .asChecksum();
   }
@@ -93,7 +96,7 @@ public interface IBDataSetIdentifier {
     return org.infrastructurebuilder.util.IBUtils.nullSafeURLMapper.apply(getPath());
   }
 
-  default Document metdataAsDocument() {
+  default Document getMetadataAsDocument() {
     return IBMetadataUtils.fromXpp3Dom.apply(getMetadata());
   }
 }

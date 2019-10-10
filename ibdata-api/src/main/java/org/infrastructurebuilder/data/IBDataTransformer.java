@@ -46,9 +46,12 @@ public interface IBDataTransformer {
   }
 
   /**
-   * Call onl if respondsTo(i)
-   * @param stream
+   * Transform the supplied IBDataSet to a new IBDataTransformationResult
+   * TODO Call only if respondsTo(i)
+   * @param ds IBDataSet that is the "ongoing transformation".  Modifying anyhting in is not defined.
+   * @param suppliedStreams List of "source streams" as noted in the Transformation
+   * @param failOnError fail if any error occurs, otherwise return all errors in the result
    * @return
    */
-  IBDataTransformationResult transform(IBDataSet ds, List<IBDataStream> stream, boolean failOnError);
+  IBDataTransformationResult transform(IBDataSet ds, List<IBDataStream> suppliedStreams, boolean failOnError);
 }

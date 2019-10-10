@@ -71,7 +71,7 @@ public class DataSetReadWriteModel0_11Test {
     ds.setSha512(new Checksum().toString());
     ds.setSourceURL("https://www.google.com");
     ds.setUuid(UUID.randomUUID().toString());
-    ds.set_metadata(d);
+    ds.setMetadata(d);
     set.addStream(ds);
     ds.setCreationDate(new Date());
     ds.setDataStreamName("two");

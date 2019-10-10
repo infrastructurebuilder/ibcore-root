@@ -15,32 +15,15 @@
  */
 package org.infrastructurebuilder.data;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Path;
 import java.util.Optional;
-import java.util.function.Supplier;
+import java.util.stream.Stream;
 
-public interface IBDataStreamRecordFinalizer<T> extends Supplier<InputStream>, AutoCloseable {
-  String getId();
-
-  /**
-   * This method actually writes the final transformation.
-   * @param recordToWrite
-   * @return
-   */
-  Optional<IBDataTransformationError> writeRecord(T recordToWrite);
+public interface IBStreamerFactory {
 
   /**
-   * This value
-   * @return
-   * @throws IOException
+   * From the list of available streamers, get the most appropriate one for the supplied stream
+   * @param ds Stream in question
+   * @return Optional stream of objects from teh data stream
    */
-  OutputStream getWriterTarget() throws IOException;
-
-
-  IBDataStreamSupplier finalizeRecord(IBDataStreamIdentifier ds);
-
-  Path getWorkingPath();
+  Optional<Stream<Object>> from(IBDataStream ds);
 }

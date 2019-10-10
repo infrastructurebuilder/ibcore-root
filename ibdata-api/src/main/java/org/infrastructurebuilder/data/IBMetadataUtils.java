@@ -18,6 +18,7 @@ package org.infrastructurebuilder.data;
 import static java.util.Objects.requireNonNull;
 import static javax.xml.parsers.DocumentBuilderFactory.newInstance;
 import static org.infrastructurebuilder.data.IBDataException.cet;
+import static org.infrastructurebuilder.data.IBDataSetIdentifier.emptyDocumentSupplier;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -62,14 +63,14 @@ public class IBMetadataUtils {
   /**
    * Map an object to a W3C Document.  If null, returns an empty Document
    */
-  public final static Function<Object, Document> fromXpp3Dom = (document) ->
-  Optional.ofNullable(cet.withReturningTranslation(() ->
-  (document instanceof Document) ? // Is it a Document
-      (Document) document : // Already a document
-      (newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(document.toString())))) // Make it a document
-  ))
+  public final static Function<Object, Document> fromXpp3Dom = (document) -> Optional
+      .ofNullable(cet.withReturningTranslation(
+          () -> (Optional.ofNullable(document).orElse(emptyDocumentSupplier.get()) instanceof Document) ? // Is it a Document
+              (Document) document : // Already a document
+              (newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(document.toString())))) // Make it a document
+      ))
 
-      .orElse(IBDataSetIdentifier.emptyDocumentSupplier.get());
+      .orElse(emptyDocumentSupplier.get());
 
   public final static Function<Document, String> stringifyDocument = (document) -> cet.withReturningTranslation(() -> {
     StringWriter writer = new StringWriter();
@@ -86,7 +87,7 @@ public class IBMetadataUtils {
         return Xpp3DomBuilder.build(new StringReader(stringifyDocument.apply(d)));
       else
         return new Xpp3Dom("metadata");
-    } else if (document instanceof XmlPlexusConfiguration) {
+    } else if (document instanceof XmlPlexusConfiguration || document instanceof String) {
       return Xpp3DomBuilder.build(new StringReader(document.toString()), true);
     } else
 
@@ -104,10 +105,11 @@ public class IBMetadataUtils {
     ds.setCreationDate(ibds.getCreationDate());
     ibds.getDescription().ifPresent(ds::setDataStreamDescription);
     ibds.getURL().ifPresent(u -> ds.setSourceURL(u.toExternalForm()));
-    ds.set_metadata(IBMetadataUtils.translateToXpp3Dom.apply((Object) ibds.getMetadata()));
+    ds.setMetadata(IBMetadataUtils.translateToXpp3Dom.apply((Object) ibds.getMetadata()));
     ds.setMimeType(ibds.getMimeType());
     ds.setSha512(ibds.getChecksum().toString());
     ds.setUuid(ibds.getChecksum().asUUID().get().toString());
+    ds.setPath(ibds.getPath());
     return ds;
   };
   //public final static Document extractDatasetMetadataTheHardWay(final Xpp3Dom xpp) throws MojoFailureException {

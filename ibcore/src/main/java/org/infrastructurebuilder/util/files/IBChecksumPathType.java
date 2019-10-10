@@ -15,10 +15,12 @@
  */
 package org.infrastructurebuilder.util.files;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.function.Supplier;
 
+import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 
 public interface IBChecksumPathType extends Supplier<InputStream> {
@@ -38,5 +40,12 @@ public interface IBChecksumPathType extends Supplier<InputStream> {
    */
   String getType();
 
+  /**
+   * Relocate underlying path to new path
+   * @param target
+   * @return
+   * @throws IOException
+   */
+  IBChecksumPathType moveTo(Path target) throws IOException;
 
 }

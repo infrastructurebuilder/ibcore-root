@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
@@ -52,8 +51,7 @@ public interface IBDataSet extends IBDataSetIdentifier {
    */
   default Optional<Checksum> getDataChecksum() {
     return ofNullable(getStreamSuppliers().size() > 0
-        ? new Checksum(
-            getStreamSuppliers().stream().map(Supplier::get).map(ds -> ds.getChecksum()).collect(Collectors.toList()))
+        ? new Checksum(asStreamsList().stream().map(IBDataStream::getChecksum).collect(toList()))
         : null);
   }
 
@@ -64,8 +62,7 @@ public interface IBDataSet extends IBDataSetIdentifier {
   default Checksum getDataSetMetadataChecksum() {
     return ChecksumBuilder.newInstance()
         // data checksum
-        .addListChecksumEnabled(getStreamSuppliers().stream().map(Supplier::get).collect(Collectors.toList()))
-        .asChecksum();
+        .addListChecksumEnabled(getStreamSuppliers().stream().map(Supplier::get).collect(toList())).asChecksum();
 
   }
 
@@ -74,4 +71,7 @@ public interface IBDataSet extends IBDataSetIdentifier {
     return DefaultIBChecksumPathType.from(Paths.get(getPath()), c, IBMetadataUtils.APPLICATION_IBDATA_ARCHIVE);
   }
 
+  default List<IBDataStream> asStreamsList() {
+    return getStreamSuppliers().stream().map(Supplier::get).collect(toList());
+  }
 }

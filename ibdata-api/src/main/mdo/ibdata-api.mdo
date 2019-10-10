@@ -108,7 +108,7 @@
           </association>
         </field>
         <field>
-          <name>_metadata</name>
+          <name>metadata</name>
           <version>1.0.0+</version>
           <required>true</required>
           <description>Additional metadata</description>
@@ -203,18 +203,6 @@
   }            ]]>
           </code>
         </codeSegment>
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-  @Override
-  public org.w3c.dom.Document getMetadata() {
-    return org.infrastructurebuilder.data.IBMetadataUtils.fromXpp3Dom.apply( get_metadata());
-  }
-
-  ]]>
-          </code>
-        </codeSegment>
       </codeSegments>
 
     </class>
@@ -285,7 +273,7 @@
           <type>String</type>
         </field>
         <field>
-          <name>_metadata</name>
+          <name>metadata</name>
           <version>1.0.0+</version>
           <required>true</required>
           <description>Additional metadata</description>
@@ -373,8 +361,8 @@
           <code>
             <![CDATA[
   @Override
-  public org.w3c.dom.Document getMetadata() {
-    return org.infrastructurebuilder.data.IBMetadataUtils.fromXpp3Dom.apply( get_metadata());
+  public org.w3c.dom.Document getMetadataAsDocument() {
+    return org.infrastructurebuilder.data.IBMetadataUtils.fromXpp3Dom.apply( getMetadata());
   }
 
   ]]>

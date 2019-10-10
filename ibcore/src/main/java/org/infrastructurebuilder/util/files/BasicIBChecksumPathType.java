@@ -19,6 +19,7 @@ import static java.util.Objects.requireNonNull;
 import static org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM;
 import static org.infrastructurebuilder.IBException.cet;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -26,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.StringJoiner;
 
+import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 
 public class BasicIBChecksumPathType implements IBChecksumPathType {
@@ -69,6 +71,12 @@ public class BasicIBChecksumPathType implements IBChecksumPathType {
   @Override
   public String toString() {
     return new StringJoiner("|").add(getType()).add(getChecksum().asUUID().get().toString()).add(getPath().toString()).toString();
+  }
+
+  @Override
+  public IBChecksumPathType moveTo(Path target) throws IOException {
+    IBUtils.moveAtomic(this.path, target);
+    return new BasicIBChecksumPathType(target, this.checksum, this.type);
   }
 
 }
