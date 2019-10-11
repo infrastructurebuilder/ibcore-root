@@ -21,18 +21,25 @@ import java.util.Optional;
 import java.util.StringJoiner;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
+import org.eclipse.sisu.Nullable;
 
+@Named(MavenConfigWithServersMapSupplier.MAVEN_WITH_SERVERS)
 public class MavenConfigWithServersMapSupplier extends MavenConfigMapSupplier {
 
+  public static final String MAVEN_WITH_SERVERS = "maven-with-servers";
   public static final String MAVEN_SETTINGS_SERVER_NAMESPACE = "maven.settings.server.";
 
   @Inject
-  public MavenConfigWithServersMapSupplier(final MavenProject mavenProject, final Settings settings) {
-    super(mavenProject);
+  public MavenConfigWithServersMapSupplier(final MavenProject mavenProject, final Settings settings,
+      @Nullable MavenSession session, @Nullable MojoExecution execution) {
+    super(mavenProject, session, execution);
     final StringJoiner sb = new StringJoiner(",");
     final List<Server> servers = Objects.requireNonNull(settings).getServers();
     servers.stream().forEach(server -> {

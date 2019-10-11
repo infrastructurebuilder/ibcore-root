@@ -13,25 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util;
+package org.infrastructurebuilder.data;
 
-import java.util.Collection;
+import static org.infrastructurebuilder.data.IBDataException.cet;
 
-import org.infrastructurebuilder.IBConstants;
-import org.json.JSONObject;
+import java.nio.file.Path;
+import java.util.Optional;
 
-public class PGPDSEncryptionIdentifier extends DefaultEncryptionIdentifier {
+public interface IBSerializer<T, C, S extends AutoCloseable> extends AutoCloseable {
 
-  public PGPDSEncryptionIdentifier(final JSONObject jsonObject) {
-    super(jsonObject);
-  }
+  IBSerializer<T, C, S> toPath(Path p);
 
-  public PGPDSEncryptionIdentifier(final String json) {
-    super(json);
-  }
+  IBSerializer<T, C, S> withSerializationConfiguration(C c);
 
-  public PGPDSEncryptionIdentifier(final String id, final Collection<String> ids) {
-    super(id, IBConstants.PGP_DS_TYPE, ids);
+  Optional<S> getSerializer();
+
+  default void close() throws Exception {
+    getSerializer().ifPresent(e -> cet.withTranslation(() -> e.close()));
   }
 
 }

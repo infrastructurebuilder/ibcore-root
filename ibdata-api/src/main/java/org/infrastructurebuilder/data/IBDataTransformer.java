@@ -15,6 +15,43 @@
  */
 package org.infrastructurebuilder.data;
 
+import java.util.List;
+import java.util.Map;
+
 public interface IBDataTransformer {
-  IBTransformationResult transform(IBDataStream stream);
+
+  /**
+   * This should return the Named hint of the IBDataStreamTransformationSupplier that created id (or some derivative thereof)
+   * @return
+   */
+  String getHint();
+
+  /**
+   * Override to return if a transformer responds to a given datastream (eg, line-based transformers probably don't repsond to PDFs)
+   * @param i
+   * @return
+   */
+  default boolean respondsTo(IBDataStream i) {
+    return true;
+  }
+
+  /**
+   * Overrides of this method MUST return a NEW INSTANCE of the calling transformer.
+   * unless no changes are made to the state of the object,
+   * @param map
+   * @return
+   */
+  default IBDataTransformer configure(Map<String, String> map) {
+    return this;
+  }
+
+  /**
+   * Transform the supplied IBDataSet to a new IBDataTransformationResult
+   * TODO Call only if respondsTo(i)
+   * @param ds IBDataSet that is the "ongoing transformation".  Modifying anyhting in is not defined.
+   * @param suppliedStreams List of "source streams" as noted in the Transformation
+   * @param failOnError fail if any error occurs, otherwise return all errors in the result
+   * @return
+   */
+  IBDataTransformationResult transform(IBDataSet ds, List<IBDataStream> suppliedStreams, boolean failOnError);
 }

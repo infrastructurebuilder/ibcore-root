@@ -15,10 +15,16 @@
  */
 package org.infrastructurebuilder.data;
 
-import java.util.Optional;
+import java.nio.file.Path;
+import java.util.UUID;
 import java.util.function.Supplier;
 
-public interface IBDataStreamSupplier extends Supplier<Optional<IBDataStream>> {
+import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
 
-  String getId();
+public interface IBDataStreamSupplier extends Supplier<IBDataStream> {
+
+  UUID getId();
+
+  IBDataStreamSupplier relocateTo(Path newWorkingPath, TypeToExtensionMapper t2e);
+
 }

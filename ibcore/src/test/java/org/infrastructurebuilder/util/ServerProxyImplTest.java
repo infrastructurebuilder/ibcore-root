@@ -20,9 +20,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
 
+import org.infrastructurebuilder.util.config.WorkingPathSupplier;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,7 +34,7 @@ public class ServerProxyImplTest {
 
   @Before
   public void setUp() throws Exception {
-    final Path target = Paths.get(Optional.ofNullable(System.getProperty("target")).orElse("./target"));
+    final Path target = new WorkingPathSupplier().getRoot();
     final Path testClasses = target.resolve("test-classes");
     path = testClasses.resolve("X.txt").toAbsolutePath();
     p = new ServerProxy("id", Optional.of("username"), Optional.of("password"), Optional.of("passphrase"),

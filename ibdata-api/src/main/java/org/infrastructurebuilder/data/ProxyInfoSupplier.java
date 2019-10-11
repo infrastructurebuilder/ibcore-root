@@ -15,6 +15,8 @@
  */
 package org.infrastructurebuilder.data;
 
-public interface IBTransformationResult {
+import org.infrastructurebuilder.util.config.TSupplier;
+
+public class ProxyInfoSupplier extends TSupplier<Object> {
 
 }

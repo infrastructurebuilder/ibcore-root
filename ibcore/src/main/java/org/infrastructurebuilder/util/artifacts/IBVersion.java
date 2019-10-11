@@ -121,4 +121,6 @@ public interface IBVersion extends Comparable<IBVersion> {
 
   IBVersionRange forRange(RangeOperator op);
 
+  IBVersion getApiVersion();
+
 }

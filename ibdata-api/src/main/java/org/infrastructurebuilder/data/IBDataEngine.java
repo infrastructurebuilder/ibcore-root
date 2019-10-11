@@ -15,7 +15,13 @@
  */
 package org.infrastructurebuilder.data;
 
-import org.infrastructurebuilder.data.IbdataApiVersioning;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 import org.infrastructurebuilder.util.artifacts.IBVersion;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultIBVersion;
 
@@ -25,7 +31,8 @@ import org.infrastructurebuilder.util.artifacts.impl.DefaultIBVersion;
  *
  */
 public interface IBDataEngine {
-  final static IBVersion API_ENGINE_VERSION = new DefaultIBVersion(IbdataApiVersioning.getVersion());
+  // FIXME This won't work.  IbdataApiVersioning is loaded from the classpath, not localized
+  public static final IBVersion API_ENGINE_VERSION = new DefaultIBVersion(IbdataApiVersioning.getVersion()).apiVersion();  // The final name of the metadata resources
 
   /**
    * Should be overriden in implementations because top-level erasure is a thingS
@@ -34,4 +41,28 @@ public interface IBDataEngine {
   default IBVersion getEngineAPIVersion() {
     return API_ENGINE_VERSION;
   }
+
+  List<UUID> getAvailableIds();
+
+  Optional<IBDataSet> fetchDataSetById(UUID id);
+
+  Optional<IBDataStream> fetchDataStreamById(UUID id);
+
+  Optional<IBDataStream> fetchDataStreamByMetadataPatternMatcher(Map<String, Pattern> patternMap);
+
+  default Optional<IBDataStream> fetchDataStreamByMetadataPatternMatcherFromStrings(Map<String, String> patternMap) {
+    return this.fetchDataStreamByMetadataPatternMatcher(patternMap.entrySet().stream()
+        .collect(Collectors.toMap(k -> k.getKey().toString(), v -> Pattern.compile(v.getValue()))));
+  }
+
+  /**
+   * Execute a (probably extremely expensive) read of all available items in the classpath to acquire DOM objects for the metadata
+   * @return number of Datasets found in the classpath
+   */
+  int prepopulate();
+  /**
+   * Return a list of UUIDs of Datasets currently available
+   * @return
+   */
+
 }

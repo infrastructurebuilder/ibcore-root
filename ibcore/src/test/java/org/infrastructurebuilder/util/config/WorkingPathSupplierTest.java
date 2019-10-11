@@ -24,34 +24,11 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.codehaus.plexus.ContainerConfiguration;
-import org.codehaus.plexus.DefaultContainerConfiguration;
-import org.codehaus.plexus.DefaultPlexusContainer;
-import org.codehaus.plexus.PlexusConstants;
-import org.codehaus.plexus.classworlds.ClassWorld;
-import org.eclipse.sisu.space.SpaceModule;
-import org.eclipse.sisu.space.URLClassSpace;
-import org.eclipse.sisu.wire.WireModule;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class WorkingPathSupplierTest {
-
-  private static final String TESTING = "testing";
-  private static ContainerConfiguration dpcreq;
-  private static ClassWorld kw;
-
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception {
-
-    final String mavenCoreRealmId = TESTING;
-    kw = new ClassWorld(mavenCoreRealmId, WorkingPathSupplierTest.class.getClassLoader());
-    dpcreq = new DefaultContainerConfiguration().setClassWorld(kw).setClassPathScanning(PlexusConstants.SCANNING_INDEX)
-        .setName(TESTING);
-
-  }
 
   private final Map<String, String> params = new HashMap<>();
   private WorkingPathSupplier w, w2;
@@ -69,14 +46,6 @@ public class WorkingPathSupplierTest {
     cid = new ConsecutiveIDSupplier();
     w = new WorkingPathSupplier();
     w2 = new WorkingPathSupplier(params, cid);
-  }
-
-  @Test
-  public void testContainer() throws Exception {
-    final DefaultPlexusContainer c = new DefaultPlexusContainer(dpcreq,
-        new WireModule(new SpaceModule(new URLClassSpace(kw.getClassRealm(TESTING)))));
-
-    c.lookup(WorkingPathSupplier.class);
   }
 
   @Test

@@ -20,22 +20,27 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Build;
+import org.apache.maven.model.Resource;
+import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
+import org.eclipse.sisu.Nullable;
 import org.infrastructurebuilder.IBException;
 import org.infrastructurebuilder.util.IBUtils;
 
-@Named("maven")
-@Singleton
+@Named(ConfigMapSupplier.MAVEN)
 public class MavenConfigMapSupplier extends DefaultConfigMapSupplier {
 
   @Inject
-  public MavenConfigMapSupplier(final MavenProject mavenProject) {
+  public MavenConfigMapSupplier(final MavenProject mavenProject, @Nullable MavenSession session,
+      @Nullable MojoExecution execution) {
 
     final Build build = mavenProject.getBuild();
 
@@ -43,13 +48,15 @@ public class MavenConfigMapSupplier extends DefaultConfigMapSupplier {
     super.overrideValueDefaultBlank("project.build.outputDirectory", build.getOutputDirectory());
     super.overrideValueDefaultBlank("project.build.testOutputDirectory", build.getTestOutputDirectory());
     super.overrideValueDefaultBlank("project.build.defaultGoal", build.getDefaultGoal());
+    super.overrideValueDefaultBlank("project.build.finalName", build.getFinalName());
+    super.overrideValueDefaultBlank("project.build.scriptSourceDirectory", build.getScriptSourceDirectory());
+    super.overrideValueDefaultBlank("project.build.sourceDirectory", build.getSourceDirectory());
+    super.overrideValueDefaultBlank("project.build.testOutputDirectory", build.getTestOutputDirectory());
+    super.overrideValueDefaultBlank("project.build.testSourceDirectory", build.getTestSourceDirectory());
 
     super.overrideValueDefaultBlank("project.artifactId", mavenProject.getArtifactId());
     super.overrideValueDefaultBlank("project.groupId", mavenProject.getGroupId());
     super.overrideValueDefaultBlank("project.version", mavenProject.getVersion());
-
-    super.overrideValueDefaultBlank("project.build.finalName", build.getFinalName());
-    super.overrideValueDefaultBlank("project.build.scriptSourceDirectory", build.getScriptSourceDirectory());
 
     final Path workingDir = Paths.get(build.getDirectory()).resolve(UUID.randomUUID().toString());
     IBException.cet.withTranslation(() -> Files.createDirectories(workingDir));

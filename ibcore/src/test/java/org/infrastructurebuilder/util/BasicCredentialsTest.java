@@ -17,6 +17,7 @@ package org.infrastructurebuilder.util;
 
 import static org.junit.Assert.assertEquals;
 
+import java.net.PasswordAuthentication;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -38,6 +39,12 @@ public class BasicCredentialsTest {
       @Override
       public Optional<String> getSecret() {
         return Optional.of("secret");
+      }
+
+      @Override
+      public PasswordAuthentication get() {
+        // TODO Auto-generated method stub
+        return null;
       }
 
     };

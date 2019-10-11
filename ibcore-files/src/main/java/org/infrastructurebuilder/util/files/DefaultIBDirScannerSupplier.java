@@ -16,12 +16,10 @@
 package org.infrastructurebuilder.util.files;
 
 import static java.util.Objects.requireNonNull;
-import static org.infrastructurebuilder.IBException.cet;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +29,6 @@ import java.util.TreeSet;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;

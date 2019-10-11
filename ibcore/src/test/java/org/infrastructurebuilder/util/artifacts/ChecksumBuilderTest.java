@@ -50,8 +50,8 @@ public class ChecksumBuilderTest {
       "4dff4ea340f0a823f15d3f4f01ab62eae0e5da579ccb851f8db9dfe84c58b2b37b89903a740e1ee172da793a6e79d560e5f7f9bd058a12a280433ed6fa46510a");
   private final Checksum jsonArrayChek = new Checksum(
       "0739c4d3cad25f62492289a172dc32ab27dcbefe32aac1855a2f944d5cc4ce9e881b2544c68d24b7bf83ed8910fadbad7715f9cc06708534b91f4a334d7649c9");
-//  private final Checksum jsonChek = new Checksum(
-//      "4aea1a0cbef2b738c255cef844eda734c5fff6bd4a80e9d2bf92046ab09c7cafbe140461f678a71096fe7b8839ff69131b452c19dba11987a5db3906c3014041");
+  //  private final Checksum jsonChek = new Checksum(
+  //      "4aea1a0cbef2b738c255cef844eda734c5fff6bd4a80e9d2bf92046ab09c7cafbe140461f678a71096fe7b8839ff69131b452c19dba11987a5db3906c3014041");
   private final Checksum longChek = new Checksum(
       "4dff4ea340f0a823f15d3f4f01ab62eae0e5da579ccb851f8db9dfe84c58b2b37b89903a740e1ee172da793a6e79d560e5f7f9bd058a12a280433ed6fa46510a");
   private Map<String, List<ChecksumEnabled>> m;
@@ -61,8 +61,8 @@ public class ChecksumBuilderTest {
       "ffdc68defa429277daa99fa2ef18b55c2f477bcb050bff14fd679e42aa97ddf8c1193276021b78d02645c7190ef02d81d4a0397e8de19f13129e8177df22bbd6");
   private ChecksumBuilder sha512;
   private ChecksumEnabled t;
-//  private final Checksum throwChek = new Checksum(
-//      "ffdc68defa429277daa99fa2ef18b55c2f477bcb050bff14fd679e42aa97ddf8c1193276021b78d02645c7190ef02d81d4a0397e8de19f13129e8177df22bbd6");
+  //  private final Checksum throwChek = new Checksum(
+  //      "ffdc68defa429277daa99fa2ef18b55c2f477bcb050bff14fd679e42aa97ddf8c1193276021b78d02645c7190ef02d81d4a0397e8de19f13129e8177df22bbd6");
   private final Checksum trueChek = new Checksum(
       "9120cd5faef07a08e971ff024a3fcbea1e3a6b44142a6d82ca28c6c42e4f852595bcf53d81d776f10541045abdb7c37950629415d0dc66c8d86c64a5606d32de");
 
@@ -142,9 +142,9 @@ public class ChecksumBuilderTest {
   @Test
   public void testAddJSONObject() {
     final JSONObject j1 = new JSONObject().put("one", "two")
-        .put("three", new JSONArray(Arrays.asList("four", "five", "six"))).put("double", new Double(1.2))
-        .put("float", new Float(1.2)).put("int", new Integer(1)).put("long", new Long(1L)).put("boolean", true)
-        .put("obj", new JSONObject());
+        .put("three", new JSONArray(Arrays.asList("four", "five", "six"))).put("double", Double.valueOf(1.2))
+        .put("float", Float.valueOf(1.2f)).put("int", Integer.valueOf(1)).put("long", Long.valueOf(1L))
+        .put("boolean", true).put("obj", new JSONObject());
     final Checksum v = sha512.addJSONObject(j1).asChecksum();
     assertEquals(
         "1d285a69f4f9b4a650f3e72b4b56e95e557c34b321c70e601567f7aadd6d3b49199c840f284cb77252efa9b3a52e9ffaf12d3a16dce7e97ee2f1697f4a2e62d7",

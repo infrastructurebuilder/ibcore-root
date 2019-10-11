@@ -19,5 +19,4 @@ import java.nio.file.Path;
 import java.util.function.Supplier;
 
 public interface PathSupplier extends Supplier<Path> {
-
 }

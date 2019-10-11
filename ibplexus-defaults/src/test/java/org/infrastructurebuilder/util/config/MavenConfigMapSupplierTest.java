@@ -25,8 +25,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Model;
+import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,6 +37,8 @@ public class MavenConfigMapSupplierTest {
 
   public static Map<String, String> m, n;
   public static MavenProject mp;
+  public static MavenSession ms;
+  public static MojoExecution me;
   public static Model mm;
   public static Properties properties;
   public static Path target;
@@ -63,11 +67,14 @@ public class MavenConfigMapSupplierTest {
     mm.setProperties(properties);
     mp.setModel(mm);
     mp.setBuild(b);
+
+    ms = null;
+    me = null;
   }
 
 
   public MavenConfigMapSupplier getCms() {
-    return new MavenConfigMapSupplier(mp);
+    return new MavenConfigMapSupplier(mp, ms, me);
   }
 
   @Test

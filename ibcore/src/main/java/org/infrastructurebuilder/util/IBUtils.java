@@ -15,15 +15,22 @@
  */
 package org.infrastructurebuilder.util;
 
+import static java.lang.Long.MAX_VALUE;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
+import static java.util.Spliterator.ORDERED;
 import static java.util.stream.Collectors.toMap;
+import static java.util.stream.StreamSupport.stream;
+import static org.infrastructurebuilder.IBException.cet;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
@@ -31,6 +38,7 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
@@ -54,13 +62,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Random;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.Spliterators;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -70,8 +79,6 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import javax.xml.bind.DatatypeConverter;
 
 import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.IBException;
@@ -87,6 +94,24 @@ import org.slf4j.LoggerFactory;
 
 public class IBUtils {
 
+  public final static Function<Properties, Map<String, String>> propertiesToMapSS = (p) -> {
+    final Map<String, String> m = new HashMap<>();
+    Optional.ofNullable(p)
+        .ifPresent(properties -> properties.stringPropertyNames().forEach(n -> m.put(n, p.getProperty(n))));
+    return m;
+  };
+
+  public final static java.util.Comparator<String> nullSafeStringComparator = java.util.Comparator
+      .nullsFirst(String::compareToIgnoreCase);
+  public final static java.util.Comparator<java.util.UUID> nullSafeUUIDComparator = java.util.Comparator
+      .nullsFirst(java.util.UUID::compareTo);
+  public final static java.util.Comparator<java.util.Date> nullSafeDateComparator = java.util.Comparator
+      .nullsFirst(java.util.Date::compareTo);
+
+  public final static Function<String, Optional<URL>> nullSafeURLMapper = (s) -> {
+    return ofNullable(s).map(u -> cet.withReturningTranslation(() -> new URL(u)));
+  };
+
   /**
    * Map a Map/String,String to a Properties object
    */
@@ -97,29 +122,27 @@ public class IBUtils {
   };
 
   public final static URL reURL(String url) {
-    return Optional.ofNullable(url).map(u -> IBException.cet.withReturningTranslation(() -> new URL(u))).orElse(null);
+    return ofNullable(url).map(u -> cet.withReturningTranslation(() -> new URL(u))).orElse(null);
   }
 
   public final static Function<JSONObject, JSONObject> cheapCopy = j -> {
     return new JSONObject(j.toString());
   };
   public final static Function<JSONObject, JSONObject> deepCopy = j -> {
-    return new JSONObject(Objects.requireNonNull(j),
-        Optional.ofNullable(JSONObject.getNames(Objects.requireNonNull(j))).orElse(new String[0]));
+    return new JSONObject(requireNonNull(j), ofNullable(JSONObject.getNames(requireNonNull(j))).orElse(new String[0]));
   };
   public final static Function<String, byte[]> getBytes = x -> {
-    return Optional.ofNullable(x).orElse("").getBytes(StandardCharsets.UTF_8);
+    return ofNullable(x).orElse("").getBytes(StandardCharsets.UTF_8);
   };
   public final static Function<JSONObject, Map<String, String>> mapJSONToStringString = j -> {
-    return Objects.requireNonNull(j).toMap().entrySet().stream()
-        .collect(Collectors.toMap(k -> k.getKey(), v -> v.getValue().toString()));
+    return requireNonNull(j).toMap().entrySet().stream().collect(toMap(k -> k.getKey(), v -> v.getValue().toString()));
   };
   public final static Function<String, String> nullIfBlank = l -> {
-    return new String(Optional.ofNullable(l).orElse("")).trim().length() > 0 ? l : null;
+    return new String(ofNullable(l).orElse("")).trim().length() > 0 ? l : null;
   };
 
-  public final static Function<String, Date> parseISODateTime = s -> Date.from(Instant.from(
-      java.time.OffsetDateTime.parse(Objects.requireNonNull(s), java.time.format.DateTimeFormatter.ISO_DATE_TIME)));
+  public final static Function<String, Date> parseISODateTime = s -> Date.from(Instant
+      .from(java.time.OffsetDateTime.parse(requireNonNull(s), java.time.format.DateTimeFormatter.ISO_DATE_TIME)));
 
   public final static Pattern p = Pattern.compile("(\\S+):(\\S+):(.*):(.*):(.*)");
 
@@ -131,6 +154,10 @@ public class IBUtils {
 
   private static final Logger iolog = LoggerFactory.getLogger(IBUtils.class);
 
+  public static Stream<String> readInputStreamAsStringStream(InputStream ins) {
+    return IBException.cet.withReturningTranslation(() -> new BufferedReader(new InputStreamReader(ins)).lines());
+  }
+
   @SuppressWarnings("unchecked")
   public static <T> Iterator<T> asIterator(final JSONArray array) {
     final List<T> l = new ArrayList<>();
@@ -138,6 +165,34 @@ public class IBUtils {
       l.add((T) array.get(i));
     }
     return l.iterator();
+  }
+
+  /**
+   * Modified from https://stackoverflow.com/questions/33242577/how-do-i-turn-a-java-enumeration-into-a-stream
+   * @param <T>
+   * @param e1
+   * @param parallel
+   * @return
+   */
+  public final static <T> Stream<T> enumerationAsStream(Enumeration<T> e1, boolean parallel) {
+    return stream(new Spliterators.AbstractSpliterator<T>(MAX_VALUE, ORDERED) {
+      public boolean tryAdvance(Consumer<? super T> advance) {
+        if (e1.hasMoreElements()) {
+          advance.accept(e1.nextElement());
+          return true;
+        }
+        return false;
+      }
+
+      public void forEachRemaining(Consumer<? super T> action) {
+        while (e1.hasMoreElements())
+          action.accept(e1.nextElement());
+      }
+    }, parallel);
+  }
+
+  public final static <T> Stream<T> iterableAsStream(Iterator<T> e1, boolean parallel) {
+    return stream(Spliterators.spliteratorUnknownSize(e1, 0), parallel);
   }
 
   public static Stream<JSONObject> asJSONObjectStream(final JSONArray array) {
@@ -148,7 +203,7 @@ public class IBUtils {
       }
       return l.iterator();
     };
-    return StreamSupport.stream(iterable.spliterator(), false);
+    return stream(iterable.spliterator(), false);
   }
 
   public static Optional<Map<String, Object>> asOptFilesystemMap(final Object o) {
@@ -166,7 +221,7 @@ public class IBUtils {
       }
       return l.iterator();
     };
-    return StreamSupport.stream(iterable.spliterator(), false);
+    return stream(iterable.spliterator(), false);
   }
 
   public static Stream<String> asStringStream(final JSONArray array) {
@@ -177,7 +232,7 @@ public class IBUtils {
       }
       return l.iterator();
     };
-    return StreamSupport.stream(iterable.spliterator(), false);
+    return stream(iterable.spliterator(), false);
   }
 
   public static final Optional<URL> asURL(final String url) {
@@ -194,8 +249,8 @@ public class IBUtils {
 
   public static void copy(final InputStream source, final OutputStream sink) throws IOException {
     final byte[] buffer = new byte[BUFFER_SIZE];
-    for (int n = 0; (n = Objects.requireNonNull(source, "source").read(buffer)) > 0;) {
-      Objects.requireNonNull(sink, "sink").write(buffer, 0, n);
+    for (int n = 0; (n = requireNonNull(source, "source").read(buffer)) > 0;) {
+      requireNonNull(sink, "sink").write(buffer, 0, n);
     }
     return;
   }
@@ -215,6 +270,17 @@ public class IBUtils {
 
       return d;
     }
+  }
+
+  public final static Path copyToDeletedOnExitTempPath(String prefix, String suffix, final InputStream source)
+      throws IOException {
+    final Path target;
+    target = Files.createTempFile(prefix, suffix);
+    target.toFile().deleteOnExit();
+    try (OutputStream outs = Files.newOutputStream(target)) {
+      copy(source, outs);
+    }
+    return target;
   }
 
   public final static void deletePath(final Path root) {
@@ -266,13 +332,13 @@ public class IBUtils {
   }
 
   public static Path forceDirectoryPath(final File file) {
-    return forceDirectoryPath(Objects.requireNonNull(file).toPath());
+    return forceDirectoryPath(requireNonNull(file).toPath());
   }
 
   public static Path forceDirectoryPath(final Path path) {
     final Path p = path.toAbsolutePath();
     if (!Files.exists(p)) {
-      IBException.cet.withTranslation(() -> Files.createDirectories(p));
+      cet.withTranslation(() -> Files.createDirectories(p));
     }
     if (!Files.isDirectory(p))
       throw new IBException("Path " + p + " is not a directory");
@@ -308,8 +374,21 @@ public class IBUtils {
     return getHex(raw, UTF_8);
   }
 
+  public static String byteToHex(byte num) {
+    char[] hexDigits = new char[2];
+    hexDigits[0] = Character.forDigit((num >> 4) & 0xF, 16);
+    hexDigits[1] = Character.forDigit((num & 0xF), 16);
+    return new String(hexDigits);
+  }
+
   public static String getHex(final byte[] raw, final Charset cs) {
-    return raw == null ? null : new String(DatatypeConverter.printHexBinary(raw).toLowerCase().getBytes(cs));
+    if (raw == null)
+      return null;
+    StringBuffer hexStringBuffer = new StringBuffer();
+    for (int i = 0; i < raw.length; i++) {
+      hexStringBuffer.append(byteToHex(raw[i]));
+    }
+    return new String(hexStringBuffer.toString().toLowerCase().getBytes(cs));
   }
 
   public static String getHexStringFromInputStream(final InputStream ins) throws IOException {
@@ -327,51 +406,50 @@ public class IBUtils {
   }
 
   public final static JSONArray getJSONArrayFromJSONOutputEnabled(final List<? extends JSONOutputEnabled> v) {
-    return Optional.ofNullable(v)
+    return ofNullable(v)
         .map(v1 -> new JSONArray(v1.stream().map(JSONOutputEnabled::asJSON).collect(Collectors.toList()))).orElse(null);
   }
 
   public static JSONObject getJSONObjectFromMapStringString(final Map<String, String> map) {
     final JSONObject j = new JSONObject();
-    Objects.requireNonNull(map).forEach((k, v) -> j.put(k, v));
+    requireNonNull(map).forEach((k, v) -> j.put(k, v));
     return j;
   }
 
   public static Map<String, String> getMapStringStringFromJSONObject(final JSONObject j) {
-    return Optional.ofNullable(j).orElse(new JSONObject()).toMap().entrySet().stream()
+    return ofNullable(j).orElse(new JSONObject()).toMap().entrySet().stream()
         .collect(toMap(k -> k.getKey(), v -> v.getValue().toString()));
   }
 
   public final static Map<String, String> getMapStringStringfromMapObjectObject(final Map<Object, Object> m) {
-    return m.entrySet().stream().collect(Collectors.toMap(k -> k.getKey().toString(), v -> v.getValue().toString()));
+    return m.entrySet().stream().collect(toMap(k -> k.getKey().toString(), v -> v.getValue().toString()));
   }
 
   public final static Map<String, String> getMapStringStringfromMapStringObject(final Map<String, Object> m) {
-    return m.entrySet().stream().collect(Collectors.toMap(k -> k.getKey(), v -> v.getValue().toString()));
+    return m.entrySet().stream().collect(toMap(k -> k.getKey(), v -> v.getValue().toString()));
   }
 
   public final static Optional<Boolean> getOptBoolean(final JSONObject j, final String key) {
-    return Optional.ofNullable(j.has(key) ? j.getBoolean(key) : null);
+    return ofNullable(j.has(key) ? j.getBoolean(key) : null);
   }
 
   public final static Optional<Integer> getOptInteger(final JSONObject orig, final String key) {
-    return Optional.ofNullable(Objects.requireNonNull(orig).opt(Objects.requireNonNull(key))).map(m -> m.toString())
-        .map(Integer::parseInt);
+    return ofNullable(requireNonNull(orig).opt(requireNonNull(key))).map(m -> m.toString()).map(Integer::parseInt);
   }
 
   public static Optional<JSONArray> getOptionalJSONArray(final JSONObject g, final String key) {
-    return Optional.ofNullable(g.optJSONArray(key));
+    return ofNullable(g.optJSONArray(key));
   }
 
   public final static Optional<Long> getOptLong(final JSONObject j, final String key) {
-    if (!Objects.requireNonNull(j).has(key))
+    if (!requireNonNull(j).has(key))
       return Optional.empty();
     return Optional.of(j.getLong(key));
   }
 
   public static Optional<String> getOptString(final JSONObject g, final String key) {
     final String s = g.optString(key).trim();
-    return Optional.ofNullable("".equals(s) ? null : s);
+    return ofNullable("".equals(s) ? null : s);
   }
 
   public static <T> List<T> getServicesFor(final Class<T> c) {
@@ -387,24 +465,24 @@ public class IBUtils {
 
   public final static Map<String, String> getZipFileCreateMap(final Boolean create) {
     final HashMap<String, String> m = new HashMap<>();
-    m.put("create", Optional.ofNullable(create).orElse(false).toString());
+    m.put("create", ofNullable(create).orElse(false).toString());
     return m;
   }
 
   public final static FileSystem getZipFileSystem(final Path pathToZip, final boolean create) throws IOException {
-    final String pathToZip2 = Objects.requireNonNull(pathToZip).toAbsolutePath().toUri().getPath();
+    final String pathToZip2 = requireNonNull(pathToZip).toAbsolutePath().toUri().getPath();
     return FileSystems.newFileSystem(URI.create("jar:file:" + pathToZip2), getZipFileCreateMap(create));
   }
 
   public static JSONObject hardMergeJSONObject(final JSONObject l, final JSONObject r) {
-    final JSONObject j = new JSONObject(Objects.requireNonNull(l).toString());
+    final JSONObject j = new JSONObject(requireNonNull(l).toString());
     r.keySet().stream().forEach(key -> j.put(key, r.get(key)));
     return j;
   }
 
   public final static boolean hasAll(final JSONObject j, final Collection<String> keys) {
-    return Objects.requireNonNull(keys).stream().filter(key -> !Objects.requireNonNull(j).has(key))
-        .collect(Collectors.toList()).size() == 0;
+    return requireNonNull(keys).stream().filter(key -> !requireNonNull(j).has(key)).collect(Collectors.toList())
+        .size() == 0;
   }
 
   public final static boolean hex8Digit(final String v) {
@@ -419,7 +497,30 @@ public class IBUtils {
   }
 
   public static byte[] hexStringToByteArray(final String s) {
-    return DatatypeConverter.parseHexBinary(s.toUpperCase());
+
+    if (s.length() % 2 == 1) {
+      throw new IllegalArgumentException("Not a hex string");
+    }
+
+    byte[] bytes = new byte[s.length() / 2];
+    for (int i = 0; i < s.length(); i += 2) {
+      bytes[i / 2] = hexToByte(s.substring(i, i + 2));
+    }
+    return bytes;
+  }
+
+  public static byte hexToByte(String hexString) {
+    int firstDigit = toDigit(hexString.charAt(0));
+    int secondDigit = toDigit(hexString.charAt(1));
+    return (byte) ((firstDigit << 4) + secondDigit);
+  }
+
+  private static int toDigit(char hexChar) {
+    int digit = Character.digit(hexChar, 16);
+    if (digit == -1) {
+      throw new IllegalArgumentException("Invalid Hexadecimal Character: " + hexChar);
+    }
+    return digit;
   }
 
   public static InputStream inputStreamFromHexString(final String hexString) {
@@ -487,9 +588,33 @@ public class IBUtils {
 
   public final static Map<String, String> mergeMapSS(final Map<String, String> base,
       final Map<String, String> overlay) {
-    final Map<String, String> retVal = new HashMap<>(Objects.requireNonNull(base));
-    retVal.putAll(Objects.requireNonNull(overlay));
+    final Map<String, String> retVal = new HashMap<>(requireNonNull(base));
+    retVal.putAll(requireNonNull(overlay));
     return retVal;
+  }
+
+  /**
+   * Try to atomically move a source path to a target path.
+   *
+   * IF THAT FAILS TO WORK, then copy source to target and then TRY to delete source but accept if it doesn't work
+   * @param source
+   * @param target
+   * @return target
+   * @throws IOException
+   */
+  public static Path moveAtomic(final Path source, final Path target) throws IOException {
+    try {
+      return Files.move(source, target, StandardCopyOption.ATOMIC_MOVE);
+    } catch (AtomicMoveNotSupportedException amns) {
+      // If we cannot move atomic, then copy the file instead and then TRY to delete it but accept delete failure
+      Path retVal = Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+      try {
+        Files.delete(source);
+      } catch (IOException e) {
+        // Do nothing here.  Leave trash on thefilesystem
+      }
+      return retVal;
+    }
   }
 
   public static Path moveFileToNewIdPath(final Path oldFile, final UUID newPath) throws IOException {
@@ -511,7 +636,7 @@ public class IBUtils {
   }
 
   public static JSONObject readToJSONObject(final InputStream ins) throws IOException {
-    return new JSONObject(readToString(Objects.requireNonNull(ins)));
+    return new JSONObject(readToString(requireNonNull(ins)));
   }
 
   public static String readToString(final InputStream ins) throws IOException {
@@ -529,7 +654,7 @@ public class IBUtils {
   }
 
   public static Map<String, String> splitToMap(final JSONObject json) {
-    return json.toMap().entrySet().stream().collect(Collectors.toMap(k -> k.getKey(), v -> v.getValue().toString()));
+    return json.toMap().entrySet().stream().collect(toMap(k -> k.getKey(), v -> v.getValue().toString()));
   }
 
   public static void unzip(final Path zipFilePath, final Path destDirectory) throws IOException {
@@ -574,8 +699,8 @@ public class IBUtils {
   }
 
   public static Optional<URL> zipEntryToUrl(final Optional<URL> p, final ZipEntry e) {
-    return Objects.requireNonNull(p).map(
-        u -> IBException.cet.withReturningTranslation(() -> new URL("jar:" + u.toExternalForm() + "!/" + e.getName())));
+    return requireNonNull(p)
+        .map(u -> cet.withReturningTranslation(() -> new URL("jar:" + u.toExternalForm() + "!/" + e.getName())));
   }
 
   private static boolean _match(final JSONObject metadata, final Pattern key, final Pattern value) {
@@ -589,7 +714,7 @@ public class IBUtils {
   }
 
   public static Optional<IBVersion> apiVersion(final GAV gav) {
-    return Objects.requireNonNull(gav).getVersion().map(DefaultIBVersion::new).map(DefaultIBVersion::apiVersion);
+    return requireNonNull(gav).getVersion().map(DefaultIBVersion::new).map(DefaultIBVersion::apiVersion);
   }
 
   //  public final static Function<Artifact, GAV> artifactToGAV = (art) -> {

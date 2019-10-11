@@ -20,21 +20,27 @@ import java.util.Properties;
 import java.util.function.Supplier;
 
 public interface ConfigMapSupplier extends Supplier<Map<String, String>> {
+  public static final String MAVEN = "maven"; // This one is implemented in ibcore-plexus
 
-  void addConfiguration(Map<String, String> add);
+  ConfigMapSupplier addConfiguration(Map<String, String> add);
 
-  void addConfiguration(Properties add);
+  ConfigMapSupplier addConfiguration(Properties add);
 
-  void addValue(String key, String value);
+  ConfigMapSupplier addValue(String key, String value);
 
-  void overrideConfiguration(Map<String, String> over);
+  /**
+   * The contract for ConfigMapSupplier is that "OVERRIDES" should <code>return this;</code>
+   * @param over
+   * @return
+   */
+  ConfigMapSupplier overrideConfiguration(Map<String, String> over);
 
-  void overrideConfiguration(Properties over);
+  ConfigMapSupplier overrideConfiguration(Properties over);
 
-  void overrideValue(String key, String value);
+  ConfigMapSupplier overrideValue(String key, String value);
 
-  void overrideValueDefault(String key, String value, String defaultValue);
+  ConfigMapSupplier overrideValueDefault(String key, String value, String defaultValue);
 
-  void overrideValueDefaultBlank(String key, String value);
+  ConfigMapSupplier overrideValueDefaultBlank(String key, String value);
 
 }

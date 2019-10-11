@@ -494,4 +494,9 @@ public final class DefaultIBVersion implements IBVersion {
     return with(getMajor() + majorInc, minor, patch, true, true);
   }
 
+  @Override
+  public IBVersion getApiVersion() {
+    return new DefaultIBVersion(getMajor() + "." + getMinor());
+  }
+
 }

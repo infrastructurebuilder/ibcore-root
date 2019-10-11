@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -75,12 +76,29 @@ public class Checksum implements Comparable<Checksum>, Supplier<Optional<UUID>> 
       b = ins == null ? null : digestInputStream(ins);
     } catch (NoSuchAlgorithmException | IOException e) {
       throw new IBException(e);
+    } finally {
+      if (ins != null)
+        IBException.cet.withTranslation(() -> ins.close());
     }
     this.relativeRoot = Objects.requireNonNull(relativeRoot);
   }
 
   public Checksum(final Path file) {
     this(cet.withReturningTranslation(() -> Files.newInputStream(Objects.requireNonNull(file))));
+  }
+
+  /**
+   * This constructore produces a checksum of a list of checksums.  It DEFINITELY loses fidelity
+   * but for SHA-512 strings it's...OK.
+   * @param relativeRoot
+   * @param list
+   */
+  public Checksum(final Optional<Path> relativeRoot, final List<Checksum> list) {
+    this(Objects.requireNonNull(list).stream()
+        // Collects all checksums as a string into a long string and then gets the checksum of the UTF-8 bytes.
+        .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString().getBytes(UTF_8)
+    // RelRoot
+        , relativeRoot);
   }
 
   public Checksum(final String hexString) {
@@ -97,6 +115,10 @@ public class Checksum implements Comparable<Checksum>, Supplier<Optional<UUID>> 
 
   public Checksum(final Supplier<InputStream> insS, final Optional<Path> relativeRoot) {
     this(insS.get(), relativeRoot);
+  }
+
+  public Checksum(final List<Checksum> checksums) {
+    this(Optional.empty(), checksums);
   }
 
   public Optional<UUID> asUUID() {

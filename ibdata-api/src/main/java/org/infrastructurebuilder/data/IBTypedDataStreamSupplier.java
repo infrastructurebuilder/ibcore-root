@@ -26,6 +26,6 @@ import java.util.stream.Stream;
  *
  * @param <T> The type of data returned.
  */
-public interface IBTypedDataStreamSupplier<T> extends Supplier<Stream<T>> {
+public interface IBTypedDataStreamSupplier<T> extends Supplier<Stream<T>>, IBDataStreamIdentifier {
 
 }

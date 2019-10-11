@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Test data for version 0.11 of the model (will be obsoleted and moved to 1.0 eventually -->
+<dataSet
+  xsi:schemaLocation="https://resources.infrastructurebuilder.org/IBDataSet/0.11 https://resources.infrastructurebuilder.org/xsd/IBDataSet-0.11"
+  xmlns="https://resources.infrastructurebuilder.org/IBDataSet/0.11"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>0.11</modelVersion>
+  <uuid>310dc0e2-109d-4237-9729-e266176e1c7a</uuid>
+  <dataSetDescription>setdataStreamDescription</dataSetDescription>
+  <creationDate>2019-09-21T08:30:10.478</creationDate>
+  <streams>
+    <stream>
+      <uuid>183d3030-6dae-4f33-acde-79eacbaa8c2d</uuid>
+      <dataStreamName>two</dataStreamName>
+      <dataStreamDescription>dataStreamDescription two</dataStreamDescription>
+      <creationDate>2019-09-21T08:30:29.769</creationDate>
+      <sourceURL>https://www.google.com</sourceURL>
+      <metadata />
+    </stream>
+    <stream>
+      <uuid>183d3030-6dae-4f33-acde-79eacbaa8c2d</uuid>
+      <dataStreamName>two</dataStreamName>
+      <dataStreamDescription>dataStreamDescription two</dataStreamDescription>
+      <creationDate>2019-09-21T08:30:29.769</creationDate>
+      <sourceURL>https://www.google.com</sourceURL>
+      <metadata />
+    </stream>
+  </streams>
+</dataSet>

@@ -15,6 +15,10 @@
  */
 package org.infrastructurebuilder.util.config;
 
+import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
+import static org.infrastructurebuilder.IBException.cet;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,24 +26,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.infrastructurebuilder.IBException;
 import org.infrastructurebuilder.util.IBUtils;
 
-@Named("working")
+@Named(WorkingPathSupplier.WORKING)
 public class WorkingPathSupplier implements PathSupplier {
 
+  public static final String WORKING = "working";
   private static final String WORKING_PATH_KEY = "working-root";
   private final Path root;
   private final IdentifierSupplier id;
   private final List<Path> paths = new ArrayList<>();
   private final boolean cleanup;
 
+  @Inject
   public WorkingPathSupplier() {
-    this(new HashMap<>(), null, true);
+    this(new HashMap<>(), new DefaultIdentifierSupplier(), true);
   }
 
   public WorkingPathSupplier(final Map<String, String> params, @org.eclipse.sisu.Nullable final IdentifierSupplier id) {
@@ -48,11 +53,19 @@ public class WorkingPathSupplier implements PathSupplier {
 
   public WorkingPathSupplier(final Map<String, String> params, @org.eclipse.sisu.Nullable final IdentifierSupplier id,
       final boolean cleanup) {
+    this(
+        () -> cet
+            .withReturningTranslation(() -> Paths
+                .get(ofNullable(params.get(WORKING_PATH_KEY))
+                    .orElse(ofNullable(System.getProperty("target_dir")).orElse("./target")))
+                .toRealPath().toAbsolutePath()),
+        id, cleanup);
+  }
+
+  public WorkingPathSupplier(final PathSupplier root, final IdentifierSupplier id, final boolean cleanup) {
     this.cleanup = cleanup;
-    this.id = Optional.ofNullable(id).orElse(new DefaultIdentifierSupplier());
-    final String prop = Optional.ofNullable(System.getProperty("target")).orElse("./target");
-    root = IBException.cet.withReturningTranslation(
-        () -> Paths.get(Optional.ofNullable(params.get(WORKING_PATH_KEY)).orElse(prop)).toRealPath().toAbsolutePath());
+    this.id = ofNullable(id).orElse(new DefaultIdentifierSupplier());
+    this.root = requireNonNull(root).get();
   }
 
   @Override
@@ -66,13 +79,13 @@ public class WorkingPathSupplier implements PathSupplier {
 
   @Override
   public Path get() {
-    Path p = root.resolve(id.get());
+    Path p = getRoot().resolve(id.get());
     while (Files.exists(p)) {
-      p = root.resolve(id.get());
+      p = getRoot().resolve(id.get());
     }
     final Path k = p;
     paths.add(k);
-    IBException.cet.withTranslation(() -> Files.createDirectories(k));
+    cet.withTranslation(() -> Files.createDirectories(k));
     return k;
   }
 

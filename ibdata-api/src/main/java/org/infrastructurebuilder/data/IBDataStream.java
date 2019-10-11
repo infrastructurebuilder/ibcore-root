@@ -16,8 +16,23 @@
 package org.infrastructurebuilder.data;
 
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.function.Supplier;
 
-public interface IBDataStream extends Supplier<InputStream>, AutoCloseable {
-  String getId();
+import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
+
+/**
+ * Supplies a new instance of an InputStream every time get() is called
+ * @author mykel.alvis
+ *
+ */
+public interface IBDataStream extends Supplier<InputStream>, AutoCloseable, IBDataStreamIdentifier {
+  /**
+   * Relocate the local stream to some new parent location according to data checksum.  How this happens
+   * depends mostly on how the stream is stored in the given instance of the DSS.
+   * @param newWorkingPath
+   * @return a new or updated IBDataStreamSupplier
+   */
+  IBDataStream relocateTo(Path newWorkingPath, TypeToExtensionMapper t2e);
+
 }

@@ -26,28 +26,33 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import org.infrastructurebuilder.IBException;
+import org.infrastructurebuilder.util.config.WorkingPathSupplier;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
 public class ChecksumTest {
 
+  private static WorkingPathSupplier wps;
   private Checksum cnull;
   private Checksum cRick;
   private Checksum cString;
   private Path p;
   private final String theString = "NEVER_GONNA_GIVE_YOU_UP";
 
+  @BeforeClass
+  public static void setupB4Class() {
+    wps = new WorkingPathSupplier();
+  }
   @Before
   public void setUp() throws Exception {
-    p = Paths.get(Optional.ofNullable(System.getProperty("target")).orElse("./target")).toRealPath().toAbsolutePath();
+    p = wps.getRoot();
     cnull = new Checksum();
     cRick = new Checksum(p.resolve("test-classes").resolve("rick.jpg"));
     cString = new Checksum(theString.getBytes(UTF_8));
