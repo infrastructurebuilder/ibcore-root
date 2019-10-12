@@ -191,7 +191,7 @@ public class IBUtils {
     }, parallel);
   }
 
-  public final static <T> Stream<T> iterableAsStream(Iterator<T> e1, boolean parallel) {
+  public final static <T> Stream<T> iteratorAsStream(Iterator<T> e1, boolean parallel) {
     return stream(Spliterators.spliteratorUnknownSize(e1, 0), parallel);
   }
 

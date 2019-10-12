@@ -31,7 +31,7 @@ import org.junit.Test;
 public class WorkingPathSupplierTest {
 
   private final Map<String, String> params = new HashMap<>();
-  private WorkingPathSupplier w, w2;
+  private TestingPathSupplier w, w2;
 
   private ConsecutiveIDSupplier cid;
 
@@ -44,8 +44,8 @@ public class WorkingPathSupplierTest {
   @Before
   public void setUp() throws Exception {
     cid = new ConsecutiveIDSupplier();
-    w = new WorkingPathSupplier();
-    w2 = new WorkingPathSupplier(params, cid);
+    w = new TestingPathSupplier();
+    w2 = new TestingPathSupplier(params, cid);
   }
 
   @Test
@@ -67,6 +67,12 @@ public class WorkingPathSupplierTest {
     final Path p = w.getRoot();
     assertTrue(Files.exists(p));
     assertTrue(Files.isDirectory(p));
+  }
+
+  @Test
+  public void testOthers() {
+    assertTrue(w.getTestClasses().endsWith("test-classes"));
+    assertTrue(w.getClasses().endsWith("classes"));
   }
 
 }

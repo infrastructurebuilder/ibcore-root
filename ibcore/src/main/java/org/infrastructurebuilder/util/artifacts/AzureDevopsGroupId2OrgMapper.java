@@ -31,7 +31,7 @@ import org.infrastructurebuilder.IBConstants;
 @Named(IBConstants.AZUREDEVOPS)
 @Singleton
 public class AzureDevopsGroupId2OrgMapper implements GroupId2OrgMapper {
-  public final static String DEFAULT_REGEX = "^io.github.(\\w+)(\\..*)?$";
+  public final static String DEFAULT_REGEX = "^https://dev.azure.com\\/(\\w+)\\/(\\..*)?$";
   public final Pattern p = Pattern.compile(DEFAULT_REGEX);
 
   @Override

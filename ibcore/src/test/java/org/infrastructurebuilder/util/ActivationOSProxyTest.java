@@ -15,48 +15,31 @@
  */
 package org.infrastructurebuilder.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.util.Optional;
+import static java.util.Optional.of;
+import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
 
-public class BasicCredentialsTest {
+public class ActivationOSProxyTest {
 
-  private BasicCredentials creds;
+  private static final String _1_0_0 = "1.0.0";
+  private static final String MYNAME = "myname";
+  private static final String WINDOWS = "Windows";
+  private static final String I386 = "i386";
+  private ActivationOSProxy a;
 
   @Before
   public void setUp() throws Exception {
-    creds = new BasicCredentials() {
-
-      @Override
-      public String getKeyId() {
-        return "1";
-      }
-
-      @Override
-      public Optional<String> getSecret() {
-        return Optional.of("secret");
-      }
-
-    };
+    a = new ActivationOSProxy(of(I386), of(WINDOWS), of(MYNAME), of(_1_0_0));
   }
 
   @Test
-  public void testGetPassword() {
-    assertEquals("secret", creds.getSecret().get());
-  }
-
-  @Test
-  public void testGetPrincipal() {
-    assertEquals("1", creds.getKeyId());
-  }
-
-  @Test
-  public void testGet() {
-    assertNotNull(creds.get());
+  public void test() {
+    assertEquals(I386, a.getArch().get());
+    assertEquals(WINDOWS, a.getFamily().get());
+    assertEquals(MYNAME, a.getName().get());
+    assertEquals(_1_0_0, a.getVersion().get());
   }
 
 }

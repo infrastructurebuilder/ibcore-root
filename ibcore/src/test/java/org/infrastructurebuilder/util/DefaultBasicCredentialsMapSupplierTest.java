@@ -16,6 +16,7 @@
 package org.infrastructurebuilder.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +55,10 @@ public class DefaultBasicCredentialsMapSupplierTest {
   @Test(expected = IBCryptoException.class)
   public void testExtends2() {
     cs.addCredentials("B", bCreds);
+    Map<String, BasicCredentials> m = cs.get();
+    assertNotNull(m);
+    BasicCredentials c = m.get("B");
+    assertNotNull(c.get());
   }
 
 }

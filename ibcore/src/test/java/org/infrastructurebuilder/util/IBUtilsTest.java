@@ -16,6 +16,7 @@
 package org.infrastructurebuilder.util;
 
 import static java.util.Arrays.asList;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.infrastructurebuilder.util.IBUtils.UTF_8;
 import static org.infrastructurebuilder.util.IBUtils.asIterator;
@@ -56,6 +57,7 @@ import static org.infrastructurebuilder.util.IBUtils.matches;
 import static org.infrastructurebuilder.util.IBUtils.mergeJSONArray;
 import static org.infrastructurebuilder.util.IBUtils.mergeJsonObjects;
 import static org.infrastructurebuilder.util.IBUtils.nullIfBlank;
+import static org.infrastructurebuilder.util.IBUtils.reURL;
 import static org.infrastructurebuilder.util.IBUtils.readFile;
 import static org.infrastructurebuilder.util.IBUtils.readJsonObject;
 import static org.infrastructurebuilder.util.IBUtils.readToJSONObject;
@@ -89,15 +91,19 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.StringJoiner;
+import java.util.StringTokenizer;
 import java.util.UUID;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 
@@ -108,6 +114,7 @@ import org.infrastructurebuilder.util.artifacts.GAV;
 import org.infrastructurebuilder.util.artifacts.IBVersion;
 import org.infrastructurebuilder.util.artifacts.JSONOutputEnabled;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
+import org.infrastructurebuilder.util.config.TestingPathSupplier;
 import org.infrastructurebuilder.util.config.WorkingPathSupplier;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -123,17 +130,27 @@ import org.skyscreamer.jsonassert.JSONAssert;
 @SuppressWarnings("unused")
 public class IBUtilsTest {
 
+  private static final String C1_PROPERTY = "process.executor.interim.sleep";
+  private static final String FAKEFILE = "FAKEFILE.zip";
+  private static final String CANNOT_READ_TARGET_DIR = "I cannot read the target dir";
+  private static final String ABC = "ABC";
+  private static final String ABC_CHECKSUM = "397118fdac8d83ad98813c50759c85b8c47565d8268bf10da483153b747a74743a58a90e85aa9f705ce6984ffc128db567489817e4092d050d8a1cc596ddc119";
+  private static final String X_TXT = "X.txt";
+  public static final String TESTFILE_CHECKSUM = "0bd4468980d90ef4d5e1e39bf30b93670492d282c518da95334df7bcad7ba8e0afe377a97d8fd64b4b6fd452b5d60ee9ee665e2fa5ecb13d8d51db8794011f3e";
+  public static final String TESTFILE = "rick.jpg";
   private static JSONObject jj;
   private static JSONObject jjNull;
   private static JSONObject jjNull2;
   private static JSONObject jjNull3;
   private static JSONObject[] objects;
-  private static Path target;
+  private static Path target, testClasses, classes;
+  private static TestingPathSupplier wps;
   private static final String TESTSTRING = "ABCDE";
+  private static final String URL = "https://www.google.com";
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
-    WorkingPathSupplier wps = new WorkingPathSupplier();
+    wps = new TestingPathSupplier();
     objects = new JSONObject[] { new JSONObject("{ x : 1}"), new JSONObject("{x:2}"), new JSONObject("{x:3}") };
 
     jj = new JSONObject(
@@ -143,11 +160,14 @@ public class IBUtilsTest {
     jjNull2 = new JSONObject(
         "{ \"extension\":\"jar\",\"version\" : \"1.0.0\", \"groupId\" : \"a.b.c\", \"artifactId\":\"abc\"}");
     target = wps.getRoot();
+    testClasses = wps.getTestClasses();
+    classes = wps.getClasses();
 
   }
 
   @AfterClass
   public static void tearDownAfterClass() throws Exception {
+    wps.finalize();
   }
 
   private Path testDir;
@@ -159,8 +179,30 @@ public class IBUtilsTest {
 
   @Before
   public void before() throws IOException {
-    testDir = target.resolve(UUID.randomUUID().toString());
-    Files.createDirectories(testDir);
+    testDir = wps.get();
+  }
+
+  @Test
+  public void testEnumerationAsStream() {
+    List<String> a = Arrays.asList("A", "B", "C", "D", "E");
+
+    String[] s = new String[5];
+    s = a.toArray(s);
+    StringJoiner q = new StringJoiner("\t");
+    a.forEach(ss -> q.add(ss));
+    String v = q.toString();
+    Enumeration<Object> e = new StringTokenizer(v);
+    List<String> k = IBUtils.enumerationAsStream(e, true).map(Object::toString).collect(Collectors.toList());
+    assertEquals(a, k);
+  }
+
+  @Test
+  public void testIteratorAsStream() {
+
+    List<String> a = Arrays.asList("A", "B", "C", "D", "E");
+    List<String> k = IBUtils.iteratorAsStream(a.iterator(), true).map(Object::toString).collect(Collectors.toList());
+    assertEquals(a, k);
+
   }
 
   @Test
@@ -238,9 +280,9 @@ public class IBUtilsTest {
 
   @Test
   public void testChecksumInputStream() throws NoSuchAlgorithmException, IOException {
-    final String checksum = "0bd4468980d90ef4d5e1e39bf30b93670492d282c518da95334df7bcad7ba8e0afe377a97d8fd64b4b6fd452b5d60ee9ee665e2fa5ecb13d8d51db8794011f3e";
-    assertEquals("Checksum is " + checksum, checksum, IBUtils
-        .checksumInputStream(Files.newInputStream(target.resolve("test-classes").resolve("rick.jpg"))).toString());
+    final String checksum = TESTFILE_CHECKSUM;
+    assertEquals("Checksum is " + checksum, checksum,
+        IBUtils.checksumInputStream(Files.newInputStream(testClasses.resolve(TESTFILE))).toString());
   }
 
   @Test
@@ -254,10 +296,9 @@ public class IBUtilsTest {
 
   @Test
   public void testCopyAndDigestInputStream() throws IOException, NoSuchAlgorithmException {
-    final String x = "ABC";
+    final String x = ABC;
     Checksum y;
-    final Checksum expected = new Checksum(
-        "397118fdac8d83ad98813c50759c85b8c47565d8268bf10da483153b747a74743a58a90e85aa9f705ce6984ffc128db567489817e4092d050d8a1cc596ddc119");
+    final Checksum expected = new Checksum(ABC_CHECKSUM);
     try (ByteArrayInputStream bis = new ByteArrayInputStream(x.getBytes(UTF_8));
         ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
       y = copyAndDigest(bis, bos);
@@ -270,38 +311,34 @@ public class IBUtilsTest {
 
   @Test
   public void testCopyPaths() throws IOException {
-    final Path a = target.resolve(UUID.randomUUID().toString());
+    final Path a = wps.get();
     final Path b = a.resolve(UUID.randomUUID().toString());
     final Path c = a.resolve(UUID.randomUUID().toString());
-    Files.createDirectories(a);
-    writeString(b, "ABC");
+    writeString(b, ABC);
     final Path d = copy(b, c);
     assertEquals(c, d);
     final String g = readFile(d);
-    assertEquals("ABC", g);
+    assertEquals(ABC, g);
     deletePath(a);
   }
 
-  @Ignore
-
   @Test(expected = IOException.class)
   public void testCopyPathsFail1() throws IOException {
-    final Path a = target.resolve(UUID.randomUUID().toString());
+    final Path a = wps.get();
     final Path b = a.resolve(UUID.randomUUID().toString());
     final Path c = a.resolve(UUID.randomUUID().toString());
-    Files.createDirectories(a);
-    writeString(b, "ABC");
+    writeString(b, ABC);
     b.toFile().setReadable(false);
     copy(b, c);
   }
 
   @Test(expected = IOException.class)
   public void testCopyPathsFail2() throws IOException {
-    final Path a = target.resolve(UUID.randomUUID().toString());
+    final Path a = wps.get();
     final Path b = a.resolve(UUID.randomUUID().toString());
     final Path c = a.resolve(UUID.randomUUID().toString());
     Files.createDirectories(a);
-    writeString(b, "ABC");
+    writeString(b, ABC);
     copy(b, c);
     c.toFile().setWritable(false);
     copy(b, c);
@@ -309,33 +346,32 @@ public class IBUtilsTest {
 
   @Test(expected = IOException.class)
   public void testCopyPathsFail3() throws IOException {
-    final Path a = target.resolve(UUID.randomUUID().toString());
+    final Path a = wps.get();
     final Path b = a.resolve(UUID.randomUUID().toString());
     final Path c = a.resolve(UUID.randomUUID().toString());
-    Files.createDirectories(a);
     copy(b, c);
   }
 
   @Test(expected = NullPointerException.class)
   public void testCopyPathsNull1() throws IOException {
-    final Path a = target.resolve(UUID.randomUUID().toString());
-    a.resolve(UUID.randomUUID().toString());
+    final Path a = wps.get();
+    final Path b = a.resolve(UUID.randomUUID().toString());
     final Path c = a.resolve(UUID.randomUUID().toString());
-    Files.createDirectories(a);
+    a.resolve(UUID.randomUUID().toString());
     copy(null, c);
   }
 
   @Test(expected = IOException.class)
   public void testCopyPathsNull2() throws IOException {
-    final Path a = target.resolve(UUID.randomUUID().toString());
-    a.resolve(UUID.randomUUID().toString());
+    final Path a = wps.get();
+    final Path b = a.resolve(UUID.randomUUID().toString());
     final Path c = a.resolve(UUID.randomUUID().toString());
     Files.createDirectories(a);
     copy(c, null);
   }
 
   @Test(expected = NullPointerException.class)
-  public void testCorpyAndDigestNullStream() throws NoSuchAlgorithmException, IOException {
+  public void testCopyAndDigestNullStream() throws NoSuchAlgorithmException, IOException {
     copyAndDigest(null, null);
   }
 
@@ -354,16 +390,15 @@ public class IBUtilsTest {
 
   @Test
   public void testDeleteNonexistentPath() {
-    final Path p = Paths.get("target", "test-classes", "nonexistent");
+    final Path p = testClasses.resolve("nonexistent");
     deletePath(p);
   }
 
   @Test
   public void testDigestInputStream() throws IOException, NoSuchAlgorithmException {
-    final String x = "ABC";
+    final String x = ABC;
     Checksum y;
-    final Checksum expected = new Checksum(
-        "397118fdac8d83ad98813c50759c85b8c47565d8268bf10da483153b747a74743a58a90e85aa9f705ce6984ffc128db567489817e4092d050d8a1cc596ddc119");
+    final Checksum expected = new Checksum(ABC_CHECKSUM);
     try (ByteArrayInputStream bis = new ByteArrayInputStream(x.getBytes(UTF_8))) {
       y = new Checksum(bis);
       bis.close();
@@ -374,8 +409,7 @@ public class IBUtilsTest {
   @Test(expected = IOException.class)
   public void testDigestInputStreamFail() throws IOException, NoSuchAlgorithmException {
     Checksum y;
-    final Checksum expected = new Checksum(
-        "397118fdac8d83ad98813c50759c85b8c47565d8268bf10da483153b747a74743a58a90e85aa9f705ce6984ffc128db567489817e4092d050d8a1cc596ddc119");
+    final Checksum expected = new Checksum(ABC_CHECKSUM);
     try (InputStream bis = Files.newInputStream(Paths.get("NOSUCHFILE"))) {
       y = new Checksum(bis);
       bis.close();
@@ -390,14 +424,14 @@ public class IBUtilsTest {
 
   @Test(expected = IOException.class)
   public void testFailReadFile() throws IOException {
-    final Path p = Paths.get("target", "test-classes", "NOT_SOME_X.txt");
+    final Path p = testClasses.resolve(FAKEFILE);
 
     readFile(p);
   }
 
   @Test(expected = IOException.class)
   public void testFailUnzip() throws IOException {
-    final Path p = Paths.get("target", "test-classes", "NOT_SOME_X.zip");
+    final Path p = testClasses.resolve(FAKEFILE);
     Path t;
     try {
       t = Files.createTempDirectory("X");
@@ -418,7 +452,7 @@ public class IBUtilsTest {
   @Test(expected = IBException.class)
   public void testForcePathAlreadyAFile() throws IOException {
     final Path s = testDir.resolve(UUID.randomUUID().toString());
-    IBUtils.writeString(s, "ABC");
+    IBUtils.writeString(s, ABC);
     forceDirectoryPath(s.toFile());
   }
 
@@ -635,7 +669,7 @@ public class IBUtilsTest {
   @Test
   public void testHex8Digit() {
     assertFalse("False if null", hex8Digit(null));
-    assertFalse("False if len != 8", hex8Digit("ABC"));
+    assertFalse("False if len != 8", hex8Digit(ABC));
     assertFalse("False if cannot parse", hex8Digit("ABCDEFGH"));
     assertTrue("True!", hex8Digit("ABCD1234"));
 
@@ -823,7 +857,7 @@ public class IBUtilsTest {
   @Test
   public void testMoveFileToNewIdPath() throws IOException {
     final Path p = Paths.get(".", "target");
-    final Path f = Files.createTempFile(p, "ABC", "DEF");
+    final Path f = Files.createTempFile(p, ABC, "DEF");
     assertTrue("Temp File exists", Files.exists(f, LinkOption.NOFOLLOW_LINKS));
     final UUID u = UUID.randomUUID();
     final Path q = p.resolve(u.toString());
@@ -845,7 +879,7 @@ public class IBUtilsTest {
 
   @Test(expected = NoSuchFileException.class)
   public void testNonExistentReadJsonObjectFromPath() throws IOException {
-    final JSONObject j = readJsonObject(Paths.get("target", "test-classes", "doesnotexist.json"));
+    final JSONObject j = readJsonObject(testClasses.resolve("doesnotexist.json"));
     assertEquals("Got E", "E", j.getJSONObject("C").getString("D"));
   }
 
@@ -853,16 +887,42 @@ public class IBUtilsTest {
   public void testNullIfBlank() {
     final String x = null;
     final String y = " ";
-    final String z = "ABC";
+    final String z = ABC;
 
     assertEquals(null, nullIfBlank.apply(x));
     assertEquals(null, nullIfBlank.apply(y));
-    assertEquals("ABC", nullIfBlank.apply(z));
+    assertEquals(ABC, nullIfBlank.apply(z));
+  }
+
+  @Test
+  public void testPropertiesToMapSS() throws IOException {
+    Properties p = new Properties();
+    p.load(getClass().getResourceAsStream("/c1.properties"));
+    Map<String, String> m = IBUtils.propertiesToMapSS.apply(p);
+    assertEquals(4, m.size());
+    assertEquals("1000", m.get(C1_PROPERTY));
+
+    Properties v = IBUtils.mapSS2Properties.apply(m);
+    assertEquals(4, v.size());
+    assertEquals("1000", v.getProperty(C1_PROPERTY));
+
+  }
+
+  @Test
+  public void testreUrl() {
+    assertFalse(ofNullable(reURL(null)).isPresent());
+    assertEquals(URL, reURL(URL).toExternalForm());
+  }
+
+  @Test
+  public void testNullSafeUrlMapper() {
+    assertFalse(IBUtils.nullSafeURLMapper.apply(null).isPresent());
+    assertTrue(IBUtils.nullSafeURLMapper.apply(URL).isPresent());
   }
 
   @Test
   public void testReadFile() throws IOException {
-    final Path p = target.resolve("test-classes").resolve("X.txt");
+    final Path p = testClasses.resolve(X_TXT);
 
     final String v = readFile(p, Charset.defaultCharset());
 
@@ -875,14 +935,14 @@ public class IBUtilsTest {
 
   @Test
   public void testReadFilePath() throws IOException {
-    final Path p = target.resolve("test-classes").resolve("X.txt");
+    final Path p = testClasses.resolve(X_TXT);
     final String v = readFile(p);
     assertEquals("ABC_123", "ABC_123", v);
   }
 
   @Test
   public void testReadJsonObjectFromPath() throws IOException {
-    final Path p = target.resolve("test-classes").resolve("somefile.json");
+    final Path p = testClasses.resolve("somefile.json");
     final JSONObject j = readJsonObject(p);
     JSONObject k;
     try (InputStream ins = Files.newInputStream(p)) {
@@ -895,8 +955,8 @@ public class IBUtilsTest {
 
   @Test
   public void testReadToString() throws IOException {
-    final ByteArrayInputStream stream = new ByteArrayInputStream("ABC".getBytes(UTF_8));
-    assertEquals("ABC", "ABC", readToString(stream));
+    final ByteArrayInputStream stream = new ByteArrayInputStream(ABC.getBytes(UTF_8));
+    assertEquals(ABC, ABC, readToString(stream));
   }
 
   @Test
@@ -913,67 +973,67 @@ public class IBUtilsTest {
 
   @Test
   public void testUnzipAndDelete() throws IOException {
-    final Path p = target.resolve("test-classes").resolve("X.zip");
+    final Path p = testClasses.resolve("X.zip");
 
     final Path t = testDir.resolve(UUID.randomUUID().toString());
     Files.createDirectories(t);
     final Path f = t.resolve("X").resolve("Y");
 
-    assertFalse("I cannot read the target dir", Files.isDirectory(f));
-    assertFalse("rick.jpg is not a file", Files.isRegularFile(f.resolve("rick.jpg")));
+    assertFalse(CANNOT_READ_TARGET_DIR, Files.isDirectory(f));
+    assertFalse(TESTFILE + " is not a file", Files.isRegularFile(f.resolve(TESTFILE)));
 
     unzip(p, t);
     assertTrue("I can read the target dir", Files.isDirectory(f));
-    assertTrue("rick.jpg is a file", Files.isRegularFile(f.resolve("rick.jpg")));
+    assertTrue(TESTFILE + " is a file", Files.isRegularFile(f.resolve(TESTFILE)));
 
     assertTrue("t is a dir", Files.isDirectory(t));
     deletePath(t);
     assertFalse("t is no longer a dir", Files.isDirectory(t));
-    assertFalse("rick.jpg is not a file", Files.isRegularFile(f.resolve("rick.jpg")));
+    assertFalse(TESTFILE + " is not a file", Files.isRegularFile(f.resolve(TESTFILE)));
   }
 
   @Test(expected = NoSuchFileException.class)
   public void testUnzipAndDeleteFAKEPATH() throws IOException {
-    final Path p = target.resolve("test-classes").resolve("SOMEFAKE.zip");
+    final Path p = testClasses.resolve("SOMEFAKE.zip");
 
     final Path t = testDir.resolve(UUID.randomUUID().toString());
     Files.createDirectories(t);
     final Path f = t.resolve("X").resolve("Y");
 
-    assertFalse("I cannot read the target dir", Files.isDirectory(f));
-    assertFalse("rick.jpg is not a file", Files.isRegularFile(f.resolve("rick.jpg")));
+    assertFalse(CANNOT_READ_TARGET_DIR, Files.isDirectory(f));
+    assertFalse(TESTFILE + " is not a file", Files.isRegularFile(f.resolve(TESTFILE)));
 
     unzip(p, t);
     assertTrue("I can read the target dir", Files.isDirectory(f));
-    assertTrue("rick.jpg is a file", Files.isRegularFile(f.resolve("rick.jpg")));
+    assertTrue(TESTFILE + " is a file", Files.isRegularFile(f.resolve(TESTFILE)));
 
     assertTrue("t is a dir", Files.isDirectory(t));
     deletePath(t);
     assertFalse("t is no longer a dir", Files.isDirectory(t));
-    assertFalse("rick.jpg is not a file", Files.isRegularFile(f.resolve("rick.jpg")));
+    assertFalse(TESTFILE + " is not a file", Files.isRegularFile(f.resolve(TESTFILE)));
   }
 
   @Ignore
 
   @Test(expected = AccessDeniedException.class)
   public void testUnzipFailUnreadable() throws IOException {
-    final Path p = copy(target.resolve("test-classes").resolve("X.zip"), testDir.resolve("Y.zip"));
+    final Path p = copy(testClasses.resolve("X.zip"), testDir.resolve("Y.zip"));
     p.toFile().setReadable(false);
     final Path t = testDir.resolve(UUID.randomUUID().toString());
     Files.createDirectories(t);
     final Path f = t.resolve("X").resolve("Y");
 
-    assertFalse("I cannot read the target dir", Files.isDirectory(f));
-    assertFalse("rick.jpg is not a file", Files.isRegularFile(f.resolve("rick.jpg")));
+    assertFalse(CANNOT_READ_TARGET_DIR, Files.isDirectory(f));
+    assertFalse(TESTFILE + " is not a file", Files.isRegularFile(f.resolve(TESTFILE)));
 
     unzip(p, t);
     assertTrue("I can read the target dir", Files.isDirectory(f));
-    assertTrue("rick.jpg is a file", Files.isRegularFile(f.resolve("rick.jpg")));
+    assertTrue(TESTFILE + " is a file", Files.isRegularFile(f.resolve(TESTFILE)));
 
     assertTrue("t is a dir", Files.isDirectory(t));
     deletePath(t);
     assertFalse("t is no longer a dir", Files.isDirectory(t));
-    assertFalse("rick.jpg is not a file", Files.isRegularFile(f.resolve("rick.jpg")));
+    assertFalse(TESTFILE + " is not a file", Files.isRegularFile(f.resolve(TESTFILE)));
   }
 
   @Test(expected = NoSuchFileException.class)
@@ -1000,7 +1060,7 @@ public class IBUtilsTest {
 
   @Test
   public void testVerifyJarfile() throws IOException {
-    final String name = target.resolve("test-classes").resolve("junit-4.8.2.jar").toAbsolutePath().toString();
+    final String name = testClasses.resolve("junit-4.8.2.jar").toAbsolutePath().toString();
     final JarFile j = new JarFile(name);
     IBUtils.verify(j);
   }
@@ -1041,7 +1101,7 @@ public class IBUtilsTest {
 
   @Test
   public void testZipFilesystem() throws IOException {
-    final Path p = target.resolve("test-classes").resolve("X.zip");
+    final Path p = testClasses.resolve("X.zip");
     try (FileSystem zipFs = getZipFileSystem(p, false)) {
       final Path src = zipFs.getPath("X/Y/rick.jpg");
       final Path targetFile = Paths.get(".", "target", "testfile.rick.jpg");
@@ -1053,7 +1113,7 @@ public class IBUtilsTest {
 
   @Test
   public void testZipFilesystem2() {
-    final Path p = target.resolve("test-classes").resolve("NOSUCHFILE.FOO.zip");
+    final Path p = testClasses.resolve("NOSUCHFILE.FOO.zip");
     try (FileSystem zipFs = getZipFileSystem(p, false)) {
       fail("This shouldn't work");
     } catch (final FileSystemNotFoundException e) {

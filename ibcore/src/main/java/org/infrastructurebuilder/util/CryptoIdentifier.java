@@ -20,13 +20,13 @@ import java.util.SortedSet;
 
 import org.infrastructurebuilder.util.artifacts.JSONAndChecksumEnabled;
 
-public interface EncryptionIdentifier extends JSONAndChecksumEnabled {
+public interface CryptoIdentifier extends JSONAndChecksumEnabled {
 
-  default boolean absolutelyMatch(final EncryptionIdentifier i) {
-    return i == null ? false : matches(i) && i.getEncryptionIdentifiers().containsAll(getEncryptionIdentifiers());
+  default boolean absolutelyMatch(final CryptoIdentifier i) {
+    return i == null ? false : matches(i) && i.getIdentifiers().containsAll(getIdentifiers());
   }
 
-  SortedSet<String> getEncryptionIdentifiers();
+  SortedSet<String> getIdentifiers();
 
   String getId();
 
@@ -34,8 +34,8 @@ public interface EncryptionIdentifier extends JSONAndChecksumEnabled {
 
   Optional<String> getValidationIdentifier();
 
-  default boolean matches(final EncryptionIdentifier i) {
+  default boolean matches(final CryptoIdentifier i) {
     return i == null ? false
-        : i.getType().equals(getType()) && getEncryptionIdentifiers().containsAll(i.getEncryptionIdentifiers());
+        : i.getType().equals(getType()) && getIdentifiers().containsAll(i.getIdentifiers());
   }
 }

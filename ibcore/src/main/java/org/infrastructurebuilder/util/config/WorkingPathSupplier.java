@@ -75,6 +75,7 @@ public class WorkingPathSupplier implements PathSupplier {
         IBUtils.deletePath(p);
       }
     });
+    paths.clear();
   }
 
   @Override

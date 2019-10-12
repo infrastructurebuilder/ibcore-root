@@ -13,50 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util;
+package org.infrastructurebuilder.util.artifacts;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Optional;
 
+import org.infrastructurebuilder.IBConstants;
+import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BasicCredentialsTest {
+public class AzureDevopsGroupId2OrgMapperTest {
 
-  private BasicCredentials creds;
+  private AzureDevopsGroupId2OrgMapper ads;
+
+  private static final String VER = "1.0.0";
+  private static final String A = "y";
+  private GAV gav;
 
   @Before
   public void setUp() throws Exception {
-    creds = new BasicCredentials() {
-
-      @Override
-      public String getKeyId() {
-        return "1";
-      }
-
-      @Override
-      public Optional<String> getSecret() {
-        return Optional.of("secret");
-      }
-
-    };
+    ads = new AzureDevopsGroupId2OrgMapper();
+    gav = new DefaultGAV("x:" + A + ":" + VER);
   }
 
   @Test
-  public void testGetPassword() {
-    assertEquals("secret", creds.getSecret().get());
+  public void testApply() {
+    assertEquals(Optional.of("Y"), ads.apply("https://dev.azure.com/Y/"));
   }
 
   @Test
-  public void testGetPrincipal() {
-    assertEquals("1", creds.getKeyId());
-  }
-
-  @Test
-  public void testGet() {
-    assertNotNull(creds.get());
+  public void testGetId() {
+    assertEquals(IBConstants.AZUREDEVOPS, ads.getId());
   }
 
 }

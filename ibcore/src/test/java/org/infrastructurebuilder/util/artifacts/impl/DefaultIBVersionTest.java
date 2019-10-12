@@ -38,15 +38,28 @@ import com.vdurmont.semver4j.Semver;
 import com.vdurmont.semver4j.Semver.SemverType;
 
 public class DefaultIBVersionTest {
+  private static final String _2_0_0 = "2.0.0";
+  private static final String _1_0_0 = "1.0.0";
+  private static final String _2_2_2 = "2.2.2";
+  private static final String _1_1 = "1.1";
+  private static final String _0_1 = "0.1";
+  private static final String _2_2_0 = "2.2.0";
+  private static final String _1_0_0_ALPHA_1 = "1.0.0-alpha.1";
+  private static final String RC3 = "-rc3";
+  private static final String RC2 = "-rc2";
+  private static final String RC1 = "-rc1";
+  private static final String _1_2_2 = "1.2.2";
+  private static final String FOFISIX = "4.5.6";
+  private static final String UNODOSTRES = "1.2.3";
   IBVersion v, v1, v2;
 
   @Test
   public void compareTo_test() {
 
-    final IBVersion[] array = new DefaultIBVersion[] { new DefaultIBVersion("1.2.3"),
-        new DefaultIBVersion("1.2.3-rc3"), new DefaultIBVersion("1.2.3-rc2"),
-        new DefaultIBVersion("1.2.3-rc1"), new DefaultIBVersion("1.2.2"),
-        new DefaultIBVersion("1.2.2-rc2"), new DefaultIBVersion("1.2.2-rc1"),
+    final IBVersion[] array = new DefaultIBVersion[] { new DefaultIBVersion(UNODOSTRES),
+        new DefaultIBVersion(UNODOSTRES + RC3), new DefaultIBVersion(UNODOSTRES + RC2),
+        new DefaultIBVersion(UNODOSTRES + RC1), new DefaultIBVersion(_1_2_2),
+        new DefaultIBVersion(_1_2_2 + RC2), new DefaultIBVersion(_1_2_2 + RC1),
         new DefaultIBVersion("1.2.0") };
     final int len = array.length;
     final List<IBVersion> list = new ArrayList<>(len);
@@ -61,42 +74,42 @@ public class DefaultIBVersionTest {
 
   @Test
   public void testApi() {
-    assertEquals("2.2", new DefaultIBVersion("2.2.2").getApiVersion().toString());
+    assertEquals("2.2", new DefaultIBVersion(_2_2_2).getApiVersion().toString());
   }
 
   @Test
   public void compareTo_test2() {
     assertTrue("2.0.0 is > 1.0.0",
-        new DefaultIBVersion("2.0.0").compareTo(new DefaultIBVersion("1.0.0")) > 0);
+        new DefaultIBVersion(_2_0_0).compareTo(new DefaultIBVersion(_1_0_0)) > 0);
     assertTrue("1.0.0 == 1.0.0",
-        new DefaultIBVersion("1.0.0").compareTo(new DefaultIBVersion("1.0.0")) == 0);
+        new DefaultIBVersion(_1_0_0).compareTo(new DefaultIBVersion(_1_0_0)) == 0);
   }
 
   @Test
   public void compareTo_without_path_or_minor() {
-    assertTrue(new DefaultIBVersion("1.2.3", IBVersionType.LOOSE).isGreaterThan("1.2"));
-    assertTrue(new DefaultIBVersion("1.3", IBVersionType.LOOSE).isGreaterThan("1.2.3"));
-    assertTrue(new DefaultIBVersion("1.2.3", IBVersionType.LOOSE).isGreaterThan("1"));
-    assertTrue(new DefaultIBVersion("2", IBVersionType.LOOSE).isGreaterThan("1.2.3"));
+    assertTrue(new DefaultIBVersion(UNODOSTRES, IBVersionType.LOOSE).isGreaterThan("1.2"));
+    assertTrue(new DefaultIBVersion("1.3", IBVersionType.LOOSE).isGreaterThan(UNODOSTRES));
+    assertTrue(new DefaultIBVersion(UNODOSTRES, IBVersionType.LOOSE).isGreaterThan("1"));
+    assertTrue(new DefaultIBVersion("2", IBVersionType.LOOSE).isGreaterThan(UNODOSTRES));
   }
 
   @Test
   public void diff() {
-    final IBVersion sem = new DefaultIBVersion("1.2.3-beta.4+sha899d8g79f87");
-    assertEquals(VersionDiff.NONE, sem.diff("1.2.3-beta.4+sha899d8g79f87"));
+    final IBVersion sem = new DefaultIBVersion(UNODOSTRES + "-beta.4+sha899d8g79f87");
+    assertEquals(VersionDiff.NONE, sem.diff(UNODOSTRES + "-beta.4+sha899d8g79f87"));
     assertEquals(VersionDiff.MAJOR, sem.diff("2.3.4-alpha.5+sha32iddfu987"));
     assertEquals(VersionDiff.MINOR, sem.diff("1.3.4-alpha.5+sha32iddfu987"));
     assertEquals(VersionDiff.PATCH, sem.diff("1.2.4-alpha.5+sha32iddfu987"));
-    assertEquals(VersionDiff.SUFFIX, sem.diff("1.2.3-alpha.4+sha32iddfu987"));
-    assertEquals(VersionDiff.SUFFIX, sem.diff("1.2.3-beta.5+sha32iddfu987"));
-    assertEquals(VersionDiff.BUILD, sem.diff("1.2.3-beta.4+sha32iddfu987"));
+    assertEquals(VersionDiff.SUFFIX, sem.diff(UNODOSTRES + "-alpha.4+sha32iddfu987"));
+    assertEquals(VersionDiff.SUFFIX, sem.diff(UNODOSTRES + "-beta.5+sha32iddfu987"));
+    assertEquals(VersionDiff.BUILD, sem.diff(UNODOSTRES + "-beta.4+sha32iddfu987"));
   }
 
   @Test
   public void getValue_returns_the_original_value_trimmed_and_with_the_same_case() {
     final String version = "  1.2.3-BETA.11+sHa.0nSFGKjkjsdf  ";
     final IBVersion ibVersionImpl = new DefaultIBVersion(version);
-    assertEquals("1.2.3-BETA.11+sHa.0nSFGKjkjsdf", ibVersionImpl.getValue());
+    assertEquals(UNODOSTRES + "-BETA.11+sHa.0nSFGKjkjsdf", ibVersionImpl.getValue());
   }
 
   @Test
@@ -110,56 +123,75 @@ public class DefaultIBVersionTest {
   @Test
   public void isLowerThan_test() {
 
-    assertFalse(new DefaultIBVersion("1.0.0-alpha.1").isLowerThan("1.0.0-alpha"));
-    assertFalse(new DefaultIBVersion("1.0.0-alpha.beta").isLowerThan("1.0.0-alpha.1"));
+    assertFalse(new DefaultIBVersion(_1_0_0_ALPHA_1).isLowerThan("1.0.0-alpha"));
+    assertFalse(new DefaultIBVersion("1.0.0-alpha.beta").isLowerThan(_1_0_0_ALPHA_1));
     assertFalse(new DefaultIBVersion("1.0.0-beta").isLowerThan("1.0.0-alpha.beta"));
     assertFalse(new DefaultIBVersion("1.0.0-beta.2").isLowerThan("1.0.0-beta"));
     assertFalse(new DefaultIBVersion("1.0.0-beta.11").isLowerThan("1.0.0-beta.2"));
     assertFalse(new DefaultIBVersion("1.0.0-rc.1").isLowerThan("1.0.0-beta.11"));
-    assertFalse(new DefaultIBVersion("1.0.0").isLowerThan("1.0.0-rc.1"));
+    assertFalse(new DefaultIBVersion(_1_0_0).isLowerThan("1.0.0-rc.1"));
 
-    assertTrue(new DefaultIBVersion("1.0.0-alpha").isLowerThan("1.0.0-alpha.1"));
-    assertTrue(new DefaultIBVersion("1.0.0-alpha.1").isLowerThan("1.0.0-alpha.beta"));
+    assertTrue(new DefaultIBVersion("1.0.0-alpha").isLowerThan(_1_0_0_ALPHA_1));
+    assertTrue(new DefaultIBVersion(_1_0_0_ALPHA_1).isLowerThan("1.0.0-alpha.beta"));
     assertTrue(new DefaultIBVersion("1.0.0-alpha.beta").isLowerThan("1.0.0-beta"));
     assertTrue(new DefaultIBVersion("1.0.0-beta").isLowerThan("1.0.0-beta.2"));
     assertTrue(new DefaultIBVersion("1.0.0-beta.2").isLowerThan("1.0.0-beta.11"));
     assertTrue(new DefaultIBVersion("1.0.0-beta.11").isLowerThan("1.0.0-rc.1"));
-    assertTrue(new DefaultIBVersion("1.0.0-rc.1").isLowerThan("1.0.0"));
+    assertTrue(new DefaultIBVersion("1.0.0-rc.1").isLowerThan(_1_0_0));
 
-    assertFalse(new DefaultIBVersion("1.0.0").isLowerThan("1.0.0"));
+    assertFalse(new DefaultIBVersion(_1_0_0).isLowerThan(_1_0_0));
     assertFalse(new DefaultIBVersion("1.0.0-alpha.12").isLowerThan("1.0.0-alpha.12"));
   }
 
   @Test
   public void isStable_test() {
-    assertTrue(new DefaultIBVersion("1.2.3+sHa.0nSFGKjkjsdf").isStable());
-    assertTrue(new DefaultIBVersion("1.2.3").isStable());
-    assertFalse(new DefaultIBVersion("1.2.3-BETA.11+sHa.0nSFGKjkjsdf").isStable());
+    assertTrue(new DefaultIBVersion(UNODOSTRES + "+sHa.0nSFGKjkjsdf").isStable());
+    assertTrue(new DefaultIBVersion(UNODOSTRES).isStable());
+    assertFalse(new DefaultIBVersion(UNODOSTRES + "-BETA.11+sHa.0nSFGKjkjsdf").isStable());
     assertFalse(new DefaultIBVersion("0.1.2+sHa.0nSFGKjkjsdf").isStable());
     assertFalse(new DefaultIBVersion("0.1.2").isStable());
   }
 
   @Before
   public void setUp() throws Exception {
-    v = new DefaultIBVersion("1.0.0");
+    v = new DefaultIBVersion(_1_0_0);
     v1 = new DefaultIBVersion("1.2.0");
-    v2 = new DefaultIBVersion("2.2.0");
+    v2 = new DefaultIBVersion(_2_2_0);
   }
 
   @Test
   public void statisfies_works_will_all_the_types() {
 
     for (final IBVersionType type : IBVersionType.values()) {
-      final String version = "1.2.3";
+      final String version = UNODOSTRES;
       final IBVersion semver = new DefaultIBVersion(version, type);
-      assertTrue(semver.satisfies("1.2.3"));
-      assertFalse(semver.satisfies("4.5.6"));
+      assertTrue(semver.satisfies(UNODOSTRES));
+      assertFalse(semver.satisfies(FOFISIX));
     }
 
     final IBVersionRequirement req = DefaultIBVersion.DefaultIBVersionRequirement
-        .buildLoose("1.2.3");
+        .buildLoose(UNODOSTRES);
 
-    assertTrue("CVR really satisfies, like Snickers", new DefaultIBVersion("1.2.3+123").satisfies(req));
+    assertTrue("CVR really satisfies, like a candy bar", new DefaultIBVersion(UNODOSTRES + "+123").satisfies(req));
+  }
+  @Test
+  public void strict_satisfies() {
+
+    for (final IBVersionType type : IBVersionType.values()) {
+      final String version = UNODOSTRES;
+      final IBVersion semver = new DefaultIBVersion(version, type);
+      assertTrue(semver.satisfies(UNODOSTRES));
+      assertFalse(semver.satisfies(FOFISIX));
+    }
+
+    final IBVersionRequirement req = DefaultIBVersion.DefaultIBVersionRequirement
+        .buildStrict(UNODOSTRES);
+
+    assertTrue("CVR really satisfies, like a candy bar", new DefaultIBVersion(UNODOSTRES + "+123").satisfies(req));
+    final IBVersionRequirement req2 = DefaultIBVersion.DefaultIBVersionRequirement
+        .buildStrict(new DefaultIBVersion(UNODOSTRES));
+
+    assertTrue("CVR really satisfies, like a candy bar", new DefaultIBVersion(UNODOSTRES + "+123").satisfies(req2));
   }
 
   @Test
@@ -179,8 +211,8 @@ public class DefaultIBVersionTest {
   @Test
   public void testIBVersionRangeImpl() {
     final DefaultIBVersionRange testRange = new DefaultIBVersion.DefaultIBVersionRange(
-        new DefaultIBVersion("1.0.0"), RangeOperator.GTE);
-    assertTrue("version range GTE 1.0.0 satisfied by String 1.0.0", testRange.isSatisfiedBy("1.0.0"));
+        new DefaultIBVersion(_1_0_0), RangeOperator.GTE);
+    assertTrue("version range GTE 1.0.0 satisfied by String 1.0.0", testRange.isSatisfiedBy(_1_0_0));
     assertFalse("version range GTE 1.0.0 not satisfied by String 0.9.900", testRange.isSatisfiedBy("0.9.900"));
     assertTrue("version range GTE 1.0.0 satisfied by IBVersion(1.0.0)", testRange.isSatisfiedBy(v));
     assertFalse("version range GTE 1.0.0 not satisfied by IBVersion(0.9.9)",
@@ -191,7 +223,7 @@ public class DefaultIBVersionTest {
   @Test(expected = IBVersionException.class)
   public void testEquals() {
 
-    assertNotEquals("Null semver != nonnull", new DefaultIBVersion(null), new DefaultIBVersion("1.0.0"));
+    assertNotEquals("Null semver != nonnull", new DefaultIBVersion(null), new DefaultIBVersion(_1_0_0));
     assertNotEquals("Null semver == null", new DefaultIBVersion(null), new DefaultIBVersion(null));
   }
 
@@ -229,21 +261,21 @@ public class DefaultIBVersionTest {
     assertTrue("v1 is equal to '1.1.0'", v1.isGreaterThan(new DefaultIBVersion("1.1.0")));
     assertFalse("1.1.0 is less than 1.2.0'", new DefaultIBVersion("1.1.0").isGreaterThan(v1));
     assertTrue("1.1 is greater than 1",
-        new DefaultIBVersion("1.1").isGreaterThan(new DefaultIBVersion("1")));
+        new DefaultIBVersion(_1_1).isGreaterThan(new DefaultIBVersion("1")));
     assertFalse("1.1 is greater than 1",
-        new DefaultIBVersion("1").isGreaterThan(new DefaultIBVersion("1.1")));
-    assertTrue("1.2.3 is greater than 1.2.0", new DefaultIBVersion("1.2.3").isGreaterThan(v1));
+        new DefaultIBVersion("1").isGreaterThan(new DefaultIBVersion(_1_1)));
+    assertTrue(UNODOSTRES + " is greater than 1.2.0", new DefaultIBVersion(UNODOSTRES).isGreaterThan(v1));
   }
 
   @Test
   public void testIsStable() {
     assertFalse("0.9.2 is not stable", new DefaultIBVersion("0.9.2").isStable());
-    assertTrue("1.0.0 is stable", new DefaultIBVersion("1.0.0").isStable());
+    assertTrue("1.0.0 is stable", new DefaultIBVersion(_1_0_0).isStable());
   }
 
   @Test
   public void testNexts() {
-    assertEquals("Next major from 1.2.0 is 2.0.0", new DefaultIBVersion("2.0.0"), v1.nextMajor());
+    assertEquals("Next major from 1.2.0 is 2.0.0", new DefaultIBVersion(_2_0_0), v1.nextMajor());
     assertEquals("Next minor from 1.2.0 is 1.3.0", new DefaultIBVersion("1.3.0"), v1.nextMinor());
     assertEquals("Next patch from 1.2.0 is 1.2.1", new DefaultIBVersion("1.2.1"), v1.nextPatch());
 
@@ -269,49 +301,49 @@ public class DefaultIBVersionTest {
 
     assertEquals("With IncMajor from 1", new DefaultIBVersion("2"),
         new DefaultIBVersion("1").withIncMajor());
-    assertEquals("With IncMinor from 1.0", new DefaultIBVersion("1.1"),
+    assertEquals("With IncMinor from 1.0", new DefaultIBVersion(_1_1),
         new DefaultIBVersion("1.0").withIncMinor());
 
   }
 
   @Test
   public void withClearedBuild_test() {
-    final IBVersion semver = new DefaultIBVersion("1.2.3-Beta.4+sha123456789");
-    semver.withClearedBuild().isEqualTo("1.2.3-Beta.4");
+    final IBVersion semver = new DefaultIBVersion(UNODOSTRES + "-Beta.4+sha123456789");
+    semver.withClearedBuild().isEqualTo(UNODOSTRES + "-Beta.4");
   }
 
   @Test
   public void withClearedSuffix_test() {
-    final IBVersion semver = new DefaultIBVersion("1.2.3-Beta.4+SHA123456789");
-    semver.withClearedSuffix().isEqualTo("1.2.3+SHA123456789");
+    final IBVersion semver = new DefaultIBVersion(UNODOSTRES + "-Beta.4+SHA123456789");
+    semver.withClearedSuffix().isEqualTo(UNODOSTRES + "+SHA123456789");
   }
 
   @Test
   public void withClearedSuffixAndBuild_test() {
-    final IBVersion semver = new DefaultIBVersion("1.2.3-Beta.4+SHA123456789");
-    semver.withClearedSuffixAndBuild().isEqualTo("1.2.3");
+    final IBVersion semver = new DefaultIBVersion(UNODOSTRES + "-Beta.4+SHA123456789");
+    semver.withClearedSuffixAndBuild().isEqualTo(UNODOSTRES);
   }
   @Test
   public void testCocoapodsReq1() {
     IBVersionRequirement req = DefaultIBVersion.DefaultIBVersionRequirement.buildCocoapods("~> 1.2");
-    DefaultIBVersion version = new DefaultIBVersion("1.2.3");
-    DefaultIBVersion version2 = new DefaultIBVersion("1.1");
+    DefaultIBVersion version = new DefaultIBVersion(UNODOSTRES);
+    DefaultIBVersion version2 = new DefaultIBVersion(_1_1);
     assertTrue(req.isSatisfiedBy(version, IBVersionType.COCOAPODS));
     assertFalse(req.isSatisfiedBy(version2, IBVersionType.COCOAPODS));
   }
   @Test
   public void testIvyReq1() {
     IBVersionRequirement req = DefaultIBVersion.DefaultIBVersionRequirement.buildIvy("1.2.+");
-    DefaultIBVersion version = new DefaultIBVersion("1.2.3");
-    DefaultIBVersion version2 = new DefaultIBVersion("1.1");
+    DefaultIBVersion version = new DefaultIBVersion(UNODOSTRES);
+    DefaultIBVersion version2 = new DefaultIBVersion(_1_1);
     assertTrue(req.isSatisfiedBy(version, IBVersionType.IVY));
     assertFalse(req.isSatisfiedBy(version2, IBVersionType.IVY));
   }
   @Test
   public void testNPMReq1() {
     IBVersionRequirement req = DefaultIBVersion.DefaultIBVersionRequirement.buildNPM("1.x");
-    DefaultIBVersion version = new DefaultIBVersion("1.2.3");
-    DefaultIBVersion version2 = new DefaultIBVersion("0.1");
+    DefaultIBVersion version = new DefaultIBVersion(UNODOSTRES);
+    DefaultIBVersion version2 = new DefaultIBVersion(_0_1);
     assertTrue(req.isSatisfiedBy(version, IBVersionType.NPM));
     assertFalse(req.isSatisfiedBy(version2, IBVersionType.NPM));
   }
@@ -319,12 +351,12 @@ public class DefaultIBVersionTest {
   public void testLooseReq1() {
     IBVersionRequirement req = DefaultIBVersion.DefaultIBVersionRequirement.buildLoose("1");
     DefaultIBVersion version = new DefaultIBVersion("1");
-    DefaultIBVersion version2 = new DefaultIBVersion("0.1");
+    DefaultIBVersion version2 = new DefaultIBVersion(_0_1);
     assertTrue(req.isSatisfiedBy(version, IBVersionType.LOOSE));
     assertFalse(req.isSatisfiedBy(version2, IBVersionType.LOOSE));
     IBVersionRequirement sreq = DefaultIBVersion.DefaultIBVersionRequirement.buildLoose(new Semver("1",SemverType.LOOSE));
     DefaultIBVersion sversion = new DefaultIBVersion("1");
-    DefaultIBVersion sversion2 = new DefaultIBVersion("0.1");
+    DefaultIBVersion sversion2 = new DefaultIBVersion(_0_1);
     assertTrue(sreq.isSatisfiedBy(sversion, IBVersionType.LOOSE));
     assertFalse(sreq.isSatisfiedBy(sversion2, IBVersionType.LOOSE));
   }
