@@ -29,8 +29,7 @@
   <description>APIs for dealing with data streams</description>
   <!-- URL for site gen -->
   <properties>
-    <test.coverage.percentage.required>99</test.coverage.percentage.required> <!--100 actually -->
-    <jacoco.max.missed.classes>0</jacoco.max.missed.classes>
+    <test.coverage.percentage.required>81</test.coverage.percentage.required> <!--100 actually -->
   </properties>
   <url>${github.url.base}/${project.artifactId}</url>
   <dependencies>
@@ -161,7 +160,7 @@
           <artifactId>jacoco-maven-plugin</artifactId>
           <configuration>
             <excludes>
-              <exclude>org/infrastructurebuilder/util/artifacts/model/**/*</exclude>
+              <exclude>org/infrastructurebuilder/data/model/**/*</exclude>
             </excludes>
           </configuration>
         </plugin>

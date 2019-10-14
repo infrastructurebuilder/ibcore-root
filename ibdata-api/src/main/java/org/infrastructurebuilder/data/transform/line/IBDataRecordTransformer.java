@@ -36,9 +36,7 @@ public interface IBDataRecordTransformer<I, O> extends Function<I, O> {
    */
   public String getHint();
 
-  default boolean respondsTo(Object o) {
-    return false;
-  }
+  boolean respondsTo(Object o);
 
   IBDataRecordTransformer<I, O> configure(Map<String, String> cms);
 

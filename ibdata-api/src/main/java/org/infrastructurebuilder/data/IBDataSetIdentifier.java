@@ -15,23 +15,14 @@
  */
 package org.infrastructurebuilder.data;
 
-import static org.infrastructurebuilder.data.IBDataException.cet;
-
-import java.net.URL;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Supplier;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.infrastructurebuilder.util.artifacts.Checksum;
-import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
 import org.infrastructurebuilder.util.artifacts.GAV;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
-import org.w3c.dom.Document;
-
+import static org.infrastructurebuilder.util.IBUtils.*;
 /**
  * This is the top-level interface that describes a DataSet.
  *
@@ -43,10 +34,16 @@ import org.w3c.dom.Document;
  *
  */
 public interface IBDataSetIdentifier {
-  public final static DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-  public final static Supplier<DocumentBuilder> builderSupplier = () -> cet
-      .withReturningTranslation(() -> factory.newDocumentBuilder());
-  public final static Supplier<Document> emptyDocumentSupplier = () -> builderSupplier.get().newDocument();
+
+  //
+  // Comparator Work
+  //
+  public final static Comparator<IBDataSetIdentifier> IBDataSetIdentifierComparator = Comparator
+      //  Check UUID
+      .comparing(IBDataSetIdentifier::getId,nullSafeUUIDComparator)
+      // Check Date
+      .thenComparing(IBDataSetIdentifier::getCreationDate,nullSafeDateComparator);
+
 
   String getGroupId();
   String getArtifactId();
@@ -64,39 +61,16 @@ public interface IBDataSetIdentifier {
 
   Date getCreationDate();
 
-  Object getMetadata();
+  Object getMetadata();  // The actually working type is either Document or Xpp3Dom, depending on source
+
   /**
    * Possibly null representation of where this dataset currently exists.
    * This value should be nulled out prior to persisting the model, and must
-   * be set by hand when deserializing it.
+   * be set when deserializing it.
    *
    * @return
    */
   String getPath();
 
-  default Checksum getIdentifierChecksum() {
-    return ChecksumBuilder.newInstance()
-        // Group
-        .addString(getGroupId())
-        // artifact
-        .addString(getArtifactId())
-        // version
-        .addString(getVersion())
-        //
-        .addString(getName())
-        //
-        .addString(getDescription())
-        //
-        .addDate(getCreationDate())
-        // fin
-        .asChecksum();
-  }
 
-  default Optional<URL> pathAsURL() {
-    return org.infrastructurebuilder.util.IBUtils.nullSafeURLMapper.apply(getPath());
-  }
-
-  default Document getMetadataAsDocument() {
-    return IBMetadataUtils.fromXpp3Dom.apply(getMetadata());
-  }
 }

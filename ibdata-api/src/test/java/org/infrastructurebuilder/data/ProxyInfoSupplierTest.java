@@ -15,32 +15,26 @@
  */
 package org.infrastructurebuilder.data;
 
-import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
+import static org.junit.Assert.*;
 
-import java.util.Optional;
+import org.junit.Before;
+import org.junit.Test;
 
-public class DefaultIBDataTransformationError implements IBDataTransformationError {
+public class ProxyInfoSupplierTest {
 
-  private final Optional<Throwable> e;
-  private final Optional<String> message;
+  private static final String ABCD = "abcd";
+  private ProxyInfoSupplier p;
 
-  DefaultIBDataTransformationError() {
-    this(empty(), empty());
+  @Before
+  public void setUp() throws Exception {
+    p = new ProxyInfoSupplier();
   }
 
-  public DefaultIBDataTransformationError(Optional<Throwable> e, Optional<String> message) {
-    this.e = requireNonNull(e);
-    this.message = requireNonNull(message);
+  @Test
+  public void testGet() {
+    Object k = ABCD;
+    p.setT(k);
+    assertEquals(ABCD, p.get());
   }
 
-  @Override
-  public Optional<String> getMessage() {
-    return message;
-  }
-
-  @Override
-  public Optional<Throwable> getError() {
-    return e;
-  }
 }

@@ -26,6 +26,7 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 import org.infrastructurebuilder.data.IBDataException;
+import org.infrastructurebuilder.data.IBDataModelUtils;
 import org.infrastructurebuilder.util.config.WorkingPathSupplier;
 import org.junit.Before;
 import org.junit.Test;

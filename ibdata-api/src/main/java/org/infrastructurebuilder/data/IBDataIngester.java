@@ -18,6 +18,7 @@ package org.infrastructurebuilder.data;
 import java.util.List;
 import java.util.SortedMap;
 
+import org.infrastructurebuilder.util.LoggerEnabled;
 import org.infrastructurebuilder.util.files.IBChecksumPathType;
 
 /**
@@ -26,7 +27,7 @@ import org.infrastructurebuilder.util.files.IBChecksumPathType;
  * @author mykel.alvis
  *
  */
-public interface IBDataIngester {
+public interface IBDataIngester extends LoggerEnabled {
 
   /**
    *

@@ -16,10 +16,15 @@
       <value>${project.groupId}.model</value>
     </default>
   </defaults>
+  <versionDefinition>
+    <type>field</type>
+    <value>modelVersion</value>
+  </versionDefinition>
   <classes>
   <!-- MODEL -->
     <class xml.tagName="dataSet" rootElement="true"
-      java.clone.hook="cloneHook" java.clone="deep">
+      java.clone.hook="org.infrastructurebuilder.data.IBDataModelUtils.mutatingDataSetCloneHook"
+      java.clone="deep">
       <name>DataSet</name>
       <description>
         <![CDATA[
@@ -123,26 +128,40 @@
         </field>
       </fields>
       <codeSegments>
+
         <codeSegment>
           <version>1.0.0+</version>
           <code>
             <![CDATA[
-   public final String relativizePath(DataStream s)
-   {
-      return pathAsURL().map(u -> {
-        String u1 = u.toExternalForm();
-        String s2 = s.getPath();
-        return (s2.startsWith(u1)) ? s2.substring(u1.length()): s2;
-      }).orElse(s.getPath());
-    }
-    public void cloneHook(DataSet ds)
-    {
-      ds.getStreams().forEach(s -> s.setPath(this.relativizePath(s)));
-      return ;
-    }
+  // Default constructor (Must do this if you supply a constructor)
+  public DataSet() {
+  }
   ]]>
           </code>
         </codeSegment>
+
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  // Copy constructor
+  public DataSet(DataSet ds) {
+    this.setArtifactId(ds.getArtifactId());
+    this.setCreationDate(ds.getCreationDate());
+    this.setDataSetDescription(ds.getDataSetDescription());
+    this.setDataSetName(ds.getDataSetName());
+    this.setGroupId(ds.getGroupId());
+    this.setMetadata(ds.getMetadata());
+    this.setModelVersion(ds.getModelVersion());
+    this.setPath(ds.getPath());
+    this.setStreams(ds.getStreams().stream().map(DataStream::new).collect(java.util.stream.Collectors.toList()));
+    this.setUuid(ds.getUuid());
+    this.setVersion(ds.getVersion());
+  }
+  ]]>
+          </code>
+        </codeSegment>
+
         <codeSegment>
           <version>1.0.0+</version>
           <code>
@@ -174,15 +193,6 @@
           <version>1.0.0+</version>
           <code>
             <![CDATA[
-            //
-            // Comparator Work
-            //
-  private static java.util.Comparator<org.infrastructurebuilder.data.IBDataSetIdentifier> IBDataSetIdentifierComparator = java.util.Comparator
-      //  Check UUID
-      .comparing(org.infrastructurebuilder.data.IBDataSetIdentifier::getId, org.infrastructurebuilder.util.IBUtils.nullSafeUUIDComparator)
-      // Check Date
-      .thenComparing(org.infrastructurebuilder.data.IBDataSetIdentifier::getCreationDate, org.infrastructurebuilder.util.IBUtils.nullSafeDateComparator);
-
   @Override
   public int compareTo(org.infrastructurebuilder.data.IBDataSetIdentifier that) {
     return IBDataSetIdentifierComparator.compare(this, that);
@@ -199,14 +209,16 @@
             //
   @Override
   public java.util.UUID getId() {
-     return org.infrastructurebuilder.data.IBDataException.cet.withReturningTranslation(() -> java.util.UUID.fromString(getUuid()));
+     return org.infrastructurebuilder.data.IBDataModelUtils.safeMapUUID.apply(getUuid()).get();
   }            ]]>
           </code>
         </codeSegment>
       </codeSegments>
 
     </class>
-    <class xml.tagName="dataStream" java.clone="deep">
+    <class xml.tagName="dataStream"
+      java.clone.hook="org.infrastructurebuilder.data.IBDataModelUtils.mutatingDataStreamCloneHook"
+      java.clone="deep">
       <name>DataStream</name>
       <version>1.0.0+</version>
       <interfaces>
@@ -293,20 +305,9 @@
           <version>1.0.0+</version>
           <code>
             <![CDATA[
-  public void cloneHook(DataStream ds) {
-    return ;
+            // Default constructor
+  public DataStream() {
   }
-
-  ]]>
-          </code>
-        </codeSegment>
-
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-
-
             ]]>
           </code>
         </codeSegment>
@@ -314,15 +315,27 @@
           <version>1.0.0+</version>
           <code>
             <![CDATA[
-            //
-            // Comparator Work
-            //
-  private static java.util.Comparator<org.infrastructurebuilder.data.IBDataStreamIdentifier> ibDataStreamComparator = java.util.Comparator
-      //  Check UUID
-      .comparing(org.infrastructurebuilder.data.IBDataStreamIdentifier::getId, org.infrastructurebuilder.util.IBUtils.nullSafeUUIDComparator)
-      // Check Date
-      .thenComparing(org.infrastructurebuilder.data.IBDataStreamIdentifier::getCreationDate, org.infrastructurebuilder.util.IBUtils.nullSafeDateComparator);
+            // "Copy constructor"
+  public DataStream(DataStream ds) {
+    this.setCreationDate(ds.getCreationDate());
+    this.setDataStreamDescription(ds.getDataStreamDescription());
+    this.setDataStreamName(ds.getDataStreamName());
+    this.setMetadata(ds.getMetadata());
+    this.setMimeType(ds.getMimeType());
+    this.setPath(ds.getPath());
+    this.setSha512(ds.getSha512());
+    this.setSourceURL(ds.getSourceURL());
+    this.setUuid(ds.getUuid());
+  }
+            ]]>
+          </code>
+        </codeSegment>
 
+
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
   @Override
   public int compareTo(org.infrastructurebuilder.data.IBDataStreamIdentifier that) {
     return ibDataStreamComparator.compare(this, that);
@@ -340,7 +353,7 @@
             //
   @Override
   public java.util.UUID getId() {
-     return org.infrastructurebuilder.data.IBDataException.cet.withReturningTranslation(() -> java.util.UUID.fromString(getUuid()));
+     return org.infrastructurebuilder.data.IBDataModelUtils.safeMapUUID.apply(getUuid()).get();
   }            ]]>
           </code>
         </codeSegment>
@@ -351,20 +364,9 @@
             // Typed source url access
   @Override
   public java.util.Optional<java.net.URL> getURL() {
-    return java.util.Optional.ofNullable(getSourceURL()).map(u -> org.infrastructurebuilder.data.IBDataException.cet.withReturningTranslation(() -> new java.net.URL(u)));
-  }
-  ]]>
-          </code>
-        </codeSegment>
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-  @Override
-  public org.w3c.dom.Document getMetadataAsDocument() {
-    return org.infrastructurebuilder.data.IBMetadataUtils.fromXpp3Dom.apply( getMetadata());
-  }
+    return org.infrastructurebuilder.data.IBDataModelUtils.safeMapURL.apply(getSourceURL());
 
+  }
   ]]>
           </code>
         </codeSegment>

@@ -18,7 +18,9 @@ package org.infrastructurebuilder.data;
 import java.util.List;
 import java.util.Map;
 
-public interface IBDataTransformer {
+import org.infrastructurebuilder.util.LoggerEnabled;
+
+public interface IBDataTransformer extends LoggerEnabled {
 
   /**
    * This should return the Named hint of the IBDataStreamTransformationSupplier that created id (or some derivative thereof)

@@ -17,10 +17,11 @@ package org.infrastructurebuilder.data;
 
 import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.data.IBDataException.cet;
-import static org.infrastructurebuilder.util.IBUtils.nullSafeURLMapper;
+import static org.infrastructurebuilder.util.IBUtils.*;
 
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
@@ -38,6 +39,11 @@ import org.w3c.dom.Document;
  *
  */
 public interface IBDataStreamIdentifier extends ChecksumEnabled {
+  public final static Comparator<IBDataStreamIdentifier> ibDataStreamComparator = Comparator
+      //  Check UUID
+      .comparing(IBDataStreamIdentifier::getId, nullSafeUUIDComparator)
+      // Check Date
+      .thenComparing(IBDataStreamIdentifier::getCreationDate, nullSafeDateComparator);
 
   /**
    * <i>Usually</i> this will return the "data stream id", which a UUID generated from the bytes of a Checksum of the contents of the stream in question.

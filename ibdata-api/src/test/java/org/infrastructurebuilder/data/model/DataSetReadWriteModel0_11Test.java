@@ -15,6 +15,7 @@
  */
 package org.infrastructurebuilder.data.model;
 
+import static org.infrastructurebuilder.data.IBMetadataUtilsTest.TEST_INPUT_0_11_XML;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -34,7 +35,6 @@ import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3Writer;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.junit.Before;
 import org.junit.Test;
-
 public class DataSetReadWriteModel0_11Test {
 
   private DataStream ds;
@@ -92,7 +92,7 @@ public class DataSetReadWriteModel0_11Test {
 
     reader = new IBDataSourceModelXpp3ReaderEx();
     dsis = new DataSetInputSource();
-    try (InputStream in = getClass().getResourceAsStream("/test-input-0.11.xml")) {
+    try (InputStream in = getClass().getResourceAsStream(TEST_INPUT_0_11_XML)) {
       DataSet read = reader.read(in, true, dsis);
       assertEquals("310dc0e2-109d-4237-9729-e266176e1c7a", read.getId().toString());
     }
@@ -101,7 +101,7 @@ public class DataSetReadWriteModel0_11Test {
   @Test
   public void testReader() throws IOException, XmlPullParserException {
     IBDataSourceModelXpp3Reader reader = new IBDataSourceModelXpp3Reader();
-    try (InputStream in = getClass().getResourceAsStream("/test-input-0.11.xml")) {
+    try (InputStream in = getClass().getResourceAsStream(TEST_INPUT_0_11_XML)) {
       DataSet read = reader.read(in, true);
       assertEquals("310dc0e2-109d-4237-9729-e266176e1c7a", read.getId().toString());
     }

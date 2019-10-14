@@ -17,6 +17,7 @@ package org.infrastructurebuilder.data;
 
 import java.util.function.Supplier;
 
+import org.infrastructurebuilder.util.LoggerEnabled;
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 
 /**
@@ -27,7 +28,7 @@ import org.infrastructurebuilder.util.config.ConfigMapSupplier;
  * @author mykel.alvis
  *
  */
-public interface IBDataTransformerSupplier<T> extends Supplier<IBDataTransformer> {
+public interface IBDataTransformerSupplier<T> extends Supplier<IBDataTransformer>, LoggerEnabled {
 //  public final static String UNCONFIGURABLEKEY_FINALIZER_KEY = "<!-- FINALIZER -->";
 
   /**
