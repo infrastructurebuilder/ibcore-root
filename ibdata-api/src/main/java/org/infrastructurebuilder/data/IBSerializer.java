@@ -20,6 +20,14 @@ import static org.infrastructurebuilder.data.IBDataException.cet;
 import java.nio.file.Path;
 import java.util.Optional;
 
+/**
+ * Currently unused. Could be a consistent interface with serializers
+ * @author mykel.alvis
+ *
+ * @param <T>
+ * @param <C>
+ * @param <S> The type of serializer that this returns.
+ */
 public interface IBSerializer<T, C, S extends AutoCloseable> extends AutoCloseable {
 
   IBSerializer<T, C, S> toPath(Path p);

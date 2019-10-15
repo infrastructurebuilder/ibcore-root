@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data.model;
+package org.infrastructurebuilder.data;
 
+import static org.infrastructurebuilder.util.IBUtils.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.createDirectories;
 import static java.nio.file.Files.move;
 import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
+import static java.util.Objects.requireNonNull;
 import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.infrastructurebuilder.data.IBDataException.cet;
 import static org.infrastructurebuilder.data.IBMetadataUtils.IBDATA;
@@ -36,13 +39,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.infrastructurebuilder.data.IBDataException;
-import org.infrastructurebuilder.data.IBDataStreamSupplier;
-import org.infrastructurebuilder.data.IBMetadataUtils;
+import org.infrastructurebuilder.data.model.DataSet;
+import org.infrastructurebuilder.data.model.DataSetInputSource;
+import org.infrastructurebuilder.data.model.DataStream;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3ReaderEx;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3Writer;
 import org.infrastructurebuilder.util.artifacts.Checksum;
@@ -52,22 +56,62 @@ import org.infrastructurebuilder.util.files.IBChecksumPathType;
 import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
 
 public class IBDataModelUtils {
+  public final static IBDataSourceModelXpp3Writer xpp3Writer = new IBDataSourceModelXpp3Writer();
 
   public final static void writeDataSet(DataSet ds, Path target) {
-    try (Writer writer = IBDataException.cet.withReturningTranslation(
-        () -> Files.newBufferedWriter(target.resolve(IBDATA).resolve(IBDATASET_XML), UTF_8, CREATE_NEW))) {
-      cet.withTranslation(() -> new IBDataSourceModelXpp3Writer().write(writer, ds.clone()));
-    } catch (IOException e) {
+    try (Writer writer = Files.newBufferedWriter(target.resolve(IBDATA).resolve(IBDATASET_XML), UTF_8, CREATE_NEW)) {
+      xpp3Writer.write(writer, ds.clone());
+    } catch (Throwable e) { // Catch anything and translate it to an IBDataException
       throw new IBDataException(e);
     }
   }
+
+  public final static void mutatingDataSetCloneHook(DataSet ds) {
+    ds.getStreams().forEach(s -> s.setPath(relativizePath(ds, s)));
+  }
+
+  public final static void mutatingDataStreamCloneHook(DataStream s) {
+    //    ds.getStreams().forEach(s -> s.setPath(relativizePath(ds, s)));
+  }
+
+  public final static String relativizePath(DataSet ds, DataStream s) {
+    return nullSafeURLMapper.apply(ds.getPath()).map(u -> {
+      String u1 = u.toExternalForm();
+      String s2 = s.getPath();
+      return (s2.startsWith(u1)) ? s2.substring(u1.length()) : s2;
+    }).orElse(s.getPath());
+  }
+
+  public final static Function<String, Optional<UUID>> safeMapUUID = (s) -> cet
+      .withReturningTranslation(() -> ofNullable(s).map(UUID::fromString));
+
+  public final static Function<String, Optional<URL>> safeMapURL = (s) -> ofNullable(s)
+      .map(u -> cet.withReturningTranslation(() -> new URL(u)));
+
+  public final static Function<IBDataSetIdentifier, Checksum> dataSetIdentifierChecksum = (ds) -> {
+    return ChecksumBuilder.newInstance()
+        // Group
+        .addString(ds.getGroupId())
+        // artifact
+        .addString(ds.getArtifactId())
+        // version
+        .addString(ds.getVersion())
+        //
+        .addString(ds.getName())
+        //
+        .addString(ds.getDescription())
+        //
+        .addDate(ds.getCreationDate())
+        // fin
+        .asChecksum();
+  };
 
   public final static Checksum fromPathDSAndStream(Path workingPath, DataSet ds) {
     return ChecksumBuilder.newInstance(of(workingPath))
         // Checksum of data of streams
         .addChecksum(new Checksum(ds.getStreams().stream().map(s -> s.getChecksum()).collect(toList())))
         // Checksum of stream metadata
-        .addChecksum(ds.getIdentifierChecksum()).asChecksum();
+        .addChecksum(dataSetIdentifierChecksum.apply(ds)).asChecksum();
   }
 
   public final static Function<? super InputStream, ? extends DataSet> mapInputStreamToDataSet = (in) -> {
@@ -93,18 +137,17 @@ public class IBDataModelUtils {
    * @return A location suitable for archive generation
    * @throws IOException
    */
-  public final static IBChecksumPathType forceToFinalizedPath(Path workingPath, DataSet finalData,
+  public final static IBChecksumPathType forceToFinalizedPath(Date creationDate, Path workingPath, DataSet finalData,
       List<IBDataStreamSupplier> ibdssList, TypeToExtensionMapper t2e) throws IOException {
 
     // This archive is about to be created
-    finalData.setCreationDate(new Date()); // That is now
+    finalData.setCreationDate(requireNonNull(creationDate)); // That is now
     Path newWorkingPath = workingPath.getParent().resolve(UUID.randomUUID().toString());
     // We're moving everything to a new path
     Files.createDirectories(newWorkingPath);
     finalData.setStreams(
         // The list of streams
-        ibdssList.stream()
-            .map(dss -> dss.relocateTo(newWorkingPath, t2e))
+        ibdssList.stream().map(dss -> dss.relocateTo(newWorkingPath, t2e))
             // Fetch the IBDS
             .map(IBDataStreamSupplier::get)
             // Map the IBDataStream to a DataStream object

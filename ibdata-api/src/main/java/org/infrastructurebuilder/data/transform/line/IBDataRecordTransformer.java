@@ -15,7 +15,11 @@
  */
 package org.infrastructurebuilder.data.transform.line;
 
+import static java.util.Optional.empty;
+
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -36,10 +40,25 @@ public interface IBDataRecordTransformer<I, O> extends Function<I, O> {
    */
   public String getHint();
 
-  default boolean respondsTo(Object o) {
-    return false;
-  }
+  boolean respondsTo(Object o);
 
   IBDataRecordTransformer<I, O> configure(Map<String, String> cms);
+
+  /**
+   * Return a new type that this transformer produces.
+   * @return new type that this transformer produces as output or "empty()" if  pass-thru (i.e. the original type should be retained)
+   */
+  default Optional<String> produces() {
+    return empty();
+  }
+
+  /**
+   * Return an OPTIONAL LIST (I know, but it does the job), of types that this record transformer can accept
+   * This is a coordination effort between types of record transformers.
+   * @return empty if any type is acceptable (as with a pass thru)
+   */
+  default Optional<List<String>> accepts() {
+    return empty();
+  }
 
 }

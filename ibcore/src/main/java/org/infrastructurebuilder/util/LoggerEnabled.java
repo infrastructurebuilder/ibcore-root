@@ -13,14 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data;
+package org.infrastructurebuilder.util;
 
-import java.util.function.Supplier;
-
-import org.infrastructurebuilder.util.LoggerEnabled;
-import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 import org.slf4j.Logger;
 
-public interface IBDataIngesterSupplier extends Supplier<IBDataIngester>, LoggerEnabled {
-  IBDataIngesterSupplier config(ConfigMapSupplier cms);
+public interface LoggerEnabled {
+  Logger getLog();
 }
