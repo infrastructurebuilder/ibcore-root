@@ -48,6 +48,7 @@ import java.util.Optional;
 public class IBMetadataUtils {
   public static final String APPLICATION_IBDATA_ARCHIVE = "application/ibdata-archive";
   public final static String UNCONFIGURABLE = "<!-- UNCONFIGURABLE -->";
+  public static final String PASS_THRU = UNCONFIGURABLE + "passthru";
   public final static String IBDATA_WORKING_PATH_SUPPLIER = "ibdata-working-path-supplier";
   public final static String CACHE_DIRECTORY_CONFIG_ITEM = UNCONFIGURABLE + ".cachePath";
   public final static String TRANSFORMERSLIST = UNCONFIGURABLE + ".transformers";

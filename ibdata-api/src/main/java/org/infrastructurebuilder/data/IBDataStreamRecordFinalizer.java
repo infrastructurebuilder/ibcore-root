@@ -15,10 +15,13 @@
  */
 package org.infrastructurebuilder.data;
 
+import static java.util.Optional.empty;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -43,4 +46,12 @@ public interface IBDataStreamRecordFinalizer<T> extends Supplier<InputStream>, A
   IBDataStreamSupplier finalizeRecord(IBDataStreamIdentifier ds);
 
   Path getWorkingPath();
+
+  default Optional<List<String>> accepts() {
+    return empty();
+  }
+
+  default Optional<String> produces() {
+    return empty();
+  }
 }
