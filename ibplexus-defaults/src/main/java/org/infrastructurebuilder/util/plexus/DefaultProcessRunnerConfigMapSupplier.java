@@ -18,11 +18,11 @@ package org.infrastructurebuilder.util.plexus;
 import static org.infrastructurebuilder.util.plexus.ProcessRunnerSupplier.PROCESS_NAMESPACE;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.inject.Named;
 
+import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 import org.infrastructurebuilder.util.config.DefaultConfigMapSupplier;
 
@@ -30,17 +30,17 @@ import org.infrastructurebuilder.util.config.DefaultConfigMapSupplier;
 public class DefaultProcessRunnerConfigMapSupplier extends DefaultConfigMapSupplier {
 
   public static final String PROCESSRUNNERCONFIG = "processrunnerconfig";
-  private final Map<String, String> configMap;
+  private final ConfigMap configMap;
 
   public DefaultProcessRunnerConfigMapSupplier(final ConfigMapSupplier cms) {
-    final Map<String, String> tempMap = cms.get();
-    configMap = Collections
-        .unmodifiableMap(tempMap.entrySet().stream().filter(e -> e.getKey().startsWith(PROCESS_NAMESPACE))
-            .collect(Collectors.toMap(k -> k.getKey().toString(), v -> v.getValue().toString())));
+    final ConfigMap tempMap = cms.get();
+    configMap = new ConfigMap(
+        Collections.unmodifiableMap(tempMap.entrySet().stream().filter(e -> e.getKey().startsWith(PROCESS_NAMESPACE))
+            .collect(Collectors.toMap(k -> k.getKey().toString(), v -> v.getValue()))));
   }
 
   @Override
-  public Map<String, String> get() {
+  public ConfigMap get() {
     return configMap;
   }
 }

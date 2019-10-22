@@ -19,6 +19,7 @@ import static org.junit.Assert.*;
 
 import java.util.Map;
 
+import org.infrastructurebuilder.util.config.ConfigMap;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,7 +50,7 @@ public class IBDataRecordTransformerTest {
       }
 
       @Override
-      public IBDataRecordTransformer<Object, Object> configure(Map<String, String> cms) {
+      public IBDataRecordTransformer<Object, Object> configure(ConfigMap cms) {
         // TODO Auto-generated method stub
         return null;
       }

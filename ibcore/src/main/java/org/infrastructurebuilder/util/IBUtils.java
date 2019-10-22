@@ -87,6 +87,7 @@ import org.infrastructurebuilder.util.artifacts.GAV;
 import org.infrastructurebuilder.util.artifacts.IBVersion;
 import org.infrastructurebuilder.util.artifacts.JSONOutputEnabled;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultIBVersion;
+import org.infrastructurebuilder.util.config.ConfigMap;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;

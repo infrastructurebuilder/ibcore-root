@@ -15,16 +15,18 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import java.util.Collections;
+import static java.util.Collections.list;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toMap;
+
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultConfigMapSupplier implements ConfigMapSupplier {
 
-  private final ConcurrentHashMap<String, String> map = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
   private final Optional<ConfigMapSupplier> init;
 
   public DefaultConfigMapSupplier() {
@@ -33,27 +35,39 @@ public class DefaultConfigMapSupplier implements ConfigMapSupplier {
 
   public DefaultConfigMapSupplier(ConfigMapSupplier init) {
     this.init = Optional.ofNullable(init);
-    this.init.ifPresent(i -> map.putAll(i.get()));
+    //    if (this.init.isPresent()) {
+    //      ConfigMap c = this.init.get().get();
+    //    }
+    //    this.init.ifPresent(i -> map.putAll(i.get()));
   }
 
   @Override
-  public ConfigMapSupplier addConfiguration(final Map<String, String> add) {
-    Objects.requireNonNull(add).forEach((k, v) -> {
+  public ConfigMapSupplier addConfiguration(final Map<String, Object> add) {
+    requireNonNull(add).forEach((k, v) -> {
       addValue(k, v);
     });
     return this;
   }
 
   @Override
+  public ConfigMapSupplier addConfiguration(ConfigMap add) {
+    return addConfiguration(add.keySet().stream().collect(toMap(k -> k, v -> add.get(v))));
+  }
+
+  @Override
+  public ConfigMapSupplier addConfiguration(ConfigMapSupplier add) {
+    return addConfiguration(add.get());
+  }
+
+  @Override
   public ConfigMapSupplier addConfiguration(final Properties add) {
-    Collections.list(Objects.requireNonNull(add).propertyNames()).forEach(n -> {
+    for (String n : requireNonNull(add).stringPropertyNames())
       addValue(n.toString(), add.getProperty(n.toString()));
-    });
     return this;
   }
 
   @Override
-  public ConfigMapSupplier addValue(final String key, final String value) {
+  public ConfigMapSupplier addValue(final String key, final Object value) {
     synchronized (map) {
       if (!map.containsKey(key)) {
         map.put(key, value);
@@ -62,29 +76,49 @@ public class DefaultConfigMapSupplier implements ConfigMapSupplier {
     return this;
   }
 
-  @Override
-  public Map<String, String> get() {
-    return Collections.unmodifiableMap(map);
+  public final Map<String, Object> asMap() {
+    Map<String,Object> o = new ConcurrentHashMap<>();
+    if (init.isPresent()) {
+      o.putAll(init.get().asMap());
+    }
+    o.putAll(map);
+    return o;
   }
 
   @Override
-  public ConfigMapSupplier overrideConfiguration(final Map<String, String> over) {
-    Objects.requireNonNull(over).forEach((k, v) -> {
+  public ConfigMap get() {
+    return new ConfigMap(asMap());
+  }
+
+  @Override
+  public ConfigMapSupplier overrideConfigurationString(final Map<String, String> over) {
+    return overrideConfiguration(over.entrySet().stream().collect(toMap(k -> k.getKey(), v -> v)));
+  }
+
+  @Override
+  public ConfigMapSupplier overrideConfiguration(final Map<String, Object> over) {
+    requireNonNull(over).forEach((k, v) -> {
       overrideValue(k, v);
     });
     return this;
   }
 
   @Override
+  public ConfigMapSupplier overrideConfiguration(final ConfigMap over) {
+    return overrideConfiguration(
+        requireNonNull(over).entrySet().stream().collect(toMap(k -> k.getKey(), v -> v.getValue())));
+  }
+
+  @Override
   public ConfigMapSupplier overrideConfiguration(final Properties over) {
-    Collections.list(Objects.requireNonNull(over).propertyNames()).forEach(n -> {
+    list(requireNonNull(over).propertyNames()).forEach(n -> {
       overrideValue(n.toString(), over.getProperty(n.toString()));
     });
     return this;
   }
 
   @Override
-  public ConfigMapSupplier overrideValue(final String key, final String value) {
+  public ConfigMapSupplier overrideValue(final String key, final Object value) {
     synchronized (map) {
       map.put(key, value);
     }
@@ -92,7 +126,7 @@ public class DefaultConfigMapSupplier implements ConfigMapSupplier {
   }
 
   @Override
-  public ConfigMapSupplier overrideValueDefault(final String key, final String value, final String defaultValue) {
+  public ConfigMapSupplier overrideValueDefault(final String key, final Object value, final String defaultValue) {
     synchronized (map) {
       map.put(key, Optional.ofNullable(value).orElse(defaultValue));
     }
@@ -100,7 +134,7 @@ public class DefaultConfigMapSupplier implements ConfigMapSupplier {
   }
 
   @Override
-  public ConfigMapSupplier overrideValueDefaultBlank(final String key, final String value) {
+  public ConfigMapSupplier overrideValueDefaultBlank(final String key, final Object value) {
     overrideValueDefault(key, value, "");
     return this;
   }
@@ -108,6 +142,14 @@ public class DefaultConfigMapSupplier implements ConfigMapSupplier {
   @Override
   public String toString() {
     return "DefaultConfigMapSupplier [map=" + map + "]";
+  }
+
+  @Override
+  public void addConfigurationMap(Map<String, String> getenv) {
+    Map<String, Object> i = requireNonNull(getenv).entrySet().stream()
+        .collect(toMap(k -> k.getKey(), v -> v.getValue()));
+    this.addConfiguration(i);
+
   }
 
 }

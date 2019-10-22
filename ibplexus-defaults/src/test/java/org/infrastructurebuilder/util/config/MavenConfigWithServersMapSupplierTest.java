@@ -65,14 +65,14 @@ public class MavenConfigWithServersMapSupplierTest extends MavenConfigMapSupplie
 
   @Test
   public void testNoSettings() {
-    final Map<String, String> map = cms2.get();
+    final ConfigMap map = cms2.get();
     for (String key: map.keySet()) {
       assertFalse(key.startsWith(MAVEN_SETTINGS_SERVER_NAMESPACE));
     }
   }
   @Test
   public void testSetSettings() {
-    final Map<String, String> map = cms.get();
+    final ConfigMap map = cms.get();
     assertEquals(map.get(ns + USERNAME), USERNAME);
     assertEquals(map.get(ns + PASSPHRASE), PASSPHRASE);
     assertEquals(map.get(ns + PASSWORD), PASSWORD);

@@ -16,9 +16,12 @@
 package org.infrastructurebuilder.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
@@ -52,27 +55,20 @@ public class SettingsProxyTest {
 
   @Test
   public void testGetServersAsJSON() {
-    String jp = "{" + "  \"ABC\": {\n" +
-        "    \"principal\": \"ABC\",\n" +
-        "    \"id\": \"ABC\"\n" +
-        "  },\n" +
-        "  \"DEF\": {\n" +
-        "    \"principal\": \"DEF\",\n" +
-        "    \"id\": \"DEF\"\n" +
-        "  }"
-        + "}";
-     JSONObject k = sp.getServersAsJSON();
-     JSONAssert.assertEquals(new JSONObject(jp), k, JSONCompareMode.STRICT);
+    String jp = "{" + "  \"ABC\": {\n" + "    \"principal\": \"ABC\",\n" + "    \"id\": \"ABC\"\n" + "  },\n"
+        + "  \"DEF\": {\n" + "    \"principal\": \"DEF\",\n" + "    \"id\": \"DEF\"\n" + "  }" + "}";
+    JSONObject k = sp.getServersAsJSON();
+    JSONAssert.assertEquals(new JSONObject(jp), k, JSONCompareMode.STRICT);
   }
 
   @Test
   public void testGetActiveProfiles() {
-    assertEquals(0,sp.getActiveProfiles().size());
+    assertEquals(0, sp.getActiveProfiles().size());
   }
 
   @Test
   public void testGetProfileAsMap() {
-    assertEquals(0,sp.getProfilesAsMap().size());
+    assertEquals(0, sp.getProfilesAsMap().size());
   }
 
   @Test
@@ -80,5 +76,36 @@ public class SettingsProxyTest {
     assertNotNull(sp.getServer(ABC));
   }
 
+  @Test
+  public void testLocalRepo() {
+    Path k = sp.getLocalRepository();
+    assertEquals(".", k.toString());
+  }
+
+  @Test
+  public void testGetMirror() {
+    assertFalse(sp.getMirror("ABC").isPresent());
+  }
+  @Test
+  public void testGetMirrorOf() {
+    assertFalse(sp.getMirrorOf("ABC").isPresent());
+  }
+  @Test
+  public void tstOffile() {
+    assertFalse(sp.isOffline());
+  }
+  @Test
+  public void testActiveProxy() {
+    assertFalse(sp.getActiveProxy().isPresent());
+  }
+  @Test
+  public void testPluginReg() {
+    assertFalse(sp.isUsePluginRegistry());
+  }
+
+  @Test
+  public void testIsInteractive() {
+    assertFalse(sp.isInteractiveMode());
+  }
 
 }

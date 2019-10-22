@@ -16,16 +16,15 @@
 package org.infrastructurebuilder.data.ingest;
 
 import java.nio.file.Path;
-import java.util.Map;
 
 import org.infrastructurebuilder.data.IBDataIngester;
-import org.infrastructurebuilder.util.LoggerSupplier;
+import org.infrastructurebuilder.util.config.ConfigMap;
 import org.slf4j.Logger;
 
 abstract public class AbstractIBDataIngester implements IBDataIngester {
 
   private final Path workingPath;
-  private final Map<String, String> config;
+  private final ConfigMap config;
   private final Logger log;
 
   /**
@@ -33,7 +32,7 @@ abstract public class AbstractIBDataIngester implements IBDataIngester {
    * @param log
    * @param config
    */
-  public AbstractIBDataIngester(Path workingPath, Logger log, Map<String, String> config) {
+  public AbstractIBDataIngester(Path workingPath, Logger log, ConfigMap config) {
     this.workingPath = workingPath;
     this.log = log;
     this.config = config;
@@ -44,7 +43,7 @@ abstract public class AbstractIBDataIngester implements IBDataIngester {
     return log;
   }
 
-  protected Map<String, String> getConfig() {
+  protected ConfigMap getConfig() {
     return config;
   }
 

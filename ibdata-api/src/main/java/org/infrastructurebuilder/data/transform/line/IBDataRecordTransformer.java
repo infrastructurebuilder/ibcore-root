@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
+import org.infrastructurebuilder.util.config.ConfigMap;
+
 /**
  * For ease of use making a component that does this. Some concrete class would be injected into an IBDataTransformer
  * @author mykel.alvis
@@ -42,7 +44,7 @@ public interface IBDataRecordTransformer<I, O> extends Function<I, O> {
 
   boolean respondsTo(Object o);
 
-  IBDataRecordTransformer<I, O> configure(Map<String, String> cms);
+  IBDataRecordTransformer<I, O> configure(ConfigMap cms);
 
   /**
    * Return a new type that this transformer produces.

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.infrastructurebuilder.util.LoggerEnabled;
+import org.infrastructurebuilder.util.config.ConfigMap;
 
 public interface IBDataTransformer extends LoggerEnabled {
 
@@ -43,7 +44,7 @@ public interface IBDataTransformer extends LoggerEnabled {
    * @param map
    * @return
    */
-  default IBDataTransformer configure(Map<String, String> map) {
+  default IBDataTransformer configure(ConfigMap map) {
     return this;
   }
 

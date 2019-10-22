@@ -79,12 +79,11 @@ public class MavenConfigMapSupplierTest {
 
   @Test
   public void testSetMavenProject() {
-    final Map<String, String> map = getCms().get();
+    final ConfigMap map = getCms().get();
     assertTrue(map.size() >= properties.size());
-    for (final Object p : properties.keySet()) {
-      final String key = p.toString();
-      final String val = map.get(key);
-      final String pVal = properties.getProperty(key);
+    for (final String p : properties.stringPropertyNames()) {
+      final String val = map.get(p);
+      final String pVal = properties.getProperty(p);
       assertEquals(val, pVal);
     }
     assertTrue(map.containsKey("user.home"));

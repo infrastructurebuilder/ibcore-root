@@ -32,6 +32,7 @@ import org.codehaus.plexus.logging.Logger;
 import org.infrastructurebuilder.util.DefaultProcessRunner;
 import org.infrastructurebuilder.util.ProcessException;
 import org.infrastructurebuilder.util.ProcessRunner;
+import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 import org.infrastructurebuilder.util.logging.SLF4JFromMavenLogger;
 
@@ -42,7 +43,7 @@ public class DefaultProcessRunnerSupplier implements ProcessRunnerSupplier {
   private final Optional<PrintStream> addl;
 
   private final Path buildDir;
-  private final Map<String, String> cfgMap;
+  private final ConfigMap cfgMap;
   private final Optional<Long> interimSleep;
   private final Optional<org.slf4j.Logger> logger;
   private final Optional<Path> relativeRoot;

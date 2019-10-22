@@ -26,6 +26,7 @@ import java.util.SortedMap;
 import org.infrastructurebuilder.data.IBDataSetIdentifier;
 import org.infrastructurebuilder.data.IBDataSourceSupplier;
 import org.infrastructurebuilder.data.IBDataStreamSupplier;
+import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +42,7 @@ public class AbstractIBDataIngesterTest {
   @Before
   public void setUp() throws Exception {
     p = wps.get();
-    i = new AbstractIBDataIngester(p, log, new HashMap<>()) {
+    i = new AbstractIBDataIngester(p, log, new ConfigMap()) {
       @Override
       public List<IBDataStreamSupplier> ingest(IBDataSetIdentifier dsi, SortedMap<String, IBDataSourceSupplier> dss) {
         return Collections.emptyList();

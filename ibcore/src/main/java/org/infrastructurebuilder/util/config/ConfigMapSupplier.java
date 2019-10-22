@@ -19,28 +19,39 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.function.Supplier;
 
-public interface ConfigMapSupplier extends Supplier<Map<String, String>> {
+public interface ConfigMapSupplier extends Supplier<ConfigMap> {
   public static final String MAVEN = "maven"; // This one is implemented in ibcore-plexus
 
-  ConfigMapSupplier addConfiguration(Map<String, String> add);
+  ConfigMapSupplier addConfiguration(ConfigMapSupplier add);
+
+  ConfigMapSupplier addConfiguration(Map<String, Object> add);
+  ConfigMapSupplier addConfiguration(ConfigMap add);
 
   ConfigMapSupplier addConfiguration(Properties add);
 
-  ConfigMapSupplier addValue(String key, String value);
+  ConfigMapSupplier addValue(String key, Object  value);
 
   /**
    * The contract for ConfigMapSupplier is that "OVERRIDES" should <code>return this;</code>
    * @param over
    * @return
    */
-  ConfigMapSupplier overrideConfiguration(Map<String, String> over);
+  ConfigMapSupplier overrideConfiguration(Map<String, Object> over);
 
   ConfigMapSupplier overrideConfiguration(Properties over);
 
-  ConfigMapSupplier overrideValue(String key, String value);
+  ConfigMapSupplier overrideValue(String key, Object value);
 
-  ConfigMapSupplier overrideValueDefault(String key, String value, String defaultValue);
+  ConfigMapSupplier overrideValueDefault(String key, Object  value, String defaultValue);
 
-  ConfigMapSupplier overrideValueDefaultBlank(String key, String value);
+  ConfigMapSupplier overrideValueDefaultBlank(String key, Object  value);
 
+  /** Transfer map. You shouldn't use this method unless there's a need */
+  Map<String,Object> asMap();
+
+  ConfigMapSupplier overrideConfigurationString(Map<String, String> over);
+
+  void addConfigurationMap(Map<String, String> getenv);
+
+  ConfigMapSupplier overrideConfiguration(ConfigMap over);
 }

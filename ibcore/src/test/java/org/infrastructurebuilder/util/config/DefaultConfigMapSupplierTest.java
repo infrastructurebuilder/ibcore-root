@@ -17,6 +17,7 @@ package org.infrastructurebuilder.util.config;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,23 +29,31 @@ import org.junit.Test;
 public class DefaultConfigMapSupplierTest {
 
   private ConfigMapSupplier supplier;
+  private ConfigMap val;
 
   @Before
   public void setUp() throws Exception {
     supplier = new DefaultConfigMapSupplier();
+    val = new ConfigMap();
   }
 
   @Test
+  public void testEntrySet() {
+    assertEquals(0,supplier.get().entrySet().size());
+  }
+
+
+  @Test
   public void testAdd() {
-    final Map<String, String> m = new HashMap<>();
+    final Map<String, Object> m = new HashMap<>();
     m.put("X", "Y");
     m.put("A", "B");
-    supplier.addConfiguration(m);
-    Map<String, String> k = supplier.get();
+    supplier.addConfiguration(new ConfigMap(m));
+    ConfigMap k = supplier.get();
     assertEquals(2, k.size());
     assertEquals("Y", k.get("X"));
     assertEquals("B", k.get("A"));
-    final Map<String, String> n = new HashMap<>();
+    final Map<String, Object> n = new HashMap<>();
     n.put("X", "Z");
     n.put("A", "CC");
     n.put("Q", "M");
@@ -54,6 +63,9 @@ public class DefaultConfigMapSupplierTest {
     assertEquals("Y", k.get("X"));
     assertEquals("B", k.get("A"));
     assertEquals("M", k.get("Q"));
+
+    assertTrue(k.containsKey("Q"));
+    assertEquals("FAKE", k.getOrDefault("FAKE", "FAKE"));
   }
 
   @Test
@@ -61,8 +73,9 @@ public class DefaultConfigMapSupplierTest {
     final Properties m = new Properties();
     m.setProperty("X", "Y");
     m.setProperty("A", "B");
-    supplier.addConfiguration(m);
-    Map<String, String> k = supplier.get();
+    ConfigMap mm = new ConfigMap(m);
+    supplier.addConfiguration(mm);
+    ConfigMap k = supplier.get();
     assertEquals(2, k.size());
     assertEquals("Y", k.get("X"));
     assertEquals("B", k.get("A"));
@@ -82,29 +95,29 @@ public class DefaultConfigMapSupplierTest {
   public void testDefaultValue() {
     supplier.overrideValueDefaultBlank("X", "Y");
     supplier.overrideValueDefault("A", null, "");
-    final Map<String, String> m = supplier.get();
+    final ConfigMap m = supplier.get();
     assertNotNull(m);
     assertEquals("", m.get("A"));
   }
 
   @Test
   public void testGet() {
-    final Map<String, String> m = supplier.get();
+    final ConfigMap m = supplier.get();
     assertNotNull(m);
     assertNotNull(supplier.toString());
   }
 
   @Test
   public void testOverride() {
-    final Map<String, String> m = new HashMap<>();
+    final Map<String, Object> m = new HashMap<>();
     m.put("X", "Y");
     m.put("A", "B");
     supplier.addConfiguration(m);
-    Map<String, String> k = supplier.get();
+    ConfigMap k = supplier.get();
     assertEquals(2, k.size());
     assertEquals("Y", k.get("X"));
     assertEquals("B", k.get("A"));
-    final Map<String, String> n = new HashMap<>();
+    final Map<String, Object> n = new HashMap<>();
     n.put("X", "Z");
     n.put("A", "CC");
     n.put("Q", "M");
@@ -122,7 +135,7 @@ public class DefaultConfigMapSupplierTest {
     m.setProperty("X", "Y");
     m.setProperty("A", "B");
     supplier.addConfiguration(m);
-    Map<String, String> k = supplier.get();
+    ConfigMap k = supplier.get();
     assertEquals(2, k.size());
     assertEquals("Y", k.get("X"));
     assertEquals("B", k.get("A"));
@@ -136,13 +149,6 @@ public class DefaultConfigMapSupplierTest {
     assertEquals("Z", k.get("X"));
     assertEquals("CC", k.get("A"));
     assertEquals("M", k.get("Q"));
-  }
-
-  @Test(expected = UnsupportedOperationException.class)
-  public void testUnmodifiable() {
-    final Map<String, String> m = supplier.get();
-    assertNotNull(m);
-    m.put("X", "Y");
   }
 
 }

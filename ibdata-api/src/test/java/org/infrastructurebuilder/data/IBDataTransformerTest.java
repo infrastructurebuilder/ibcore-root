@@ -20,6 +20,7 @@ import static org.junit.Assert.*;
 import java.util.HashMap;
 import java.util.List;
 
+import org.infrastructurebuilder.util.config.ConfigMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -56,7 +57,7 @@ public class IBDataTransformerTest {
   @Test
   public void test() {
     assertTrue(i.respondsTo(null));
-    assertEquals(i, i.configure(new HashMap<>()));
+    assertEquals(i, i.configure(new ConfigMap()));
   }
 
 }

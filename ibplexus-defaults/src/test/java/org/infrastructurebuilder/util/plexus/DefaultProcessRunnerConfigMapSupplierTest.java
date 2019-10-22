@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
 
+import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.DefaultConfigMapSupplier;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +39,7 @@ public class DefaultProcessRunnerConfigMapSupplierTest {
 
   @Test
   public void testGet() {
-    final Map<String, String> g = d.get();
+    final ConfigMap g = d.get();
     assertEquals(g.size(), 1);
     assertEquals(g.get(PROCESS_NAMESPACE + "X"), "B");
   }

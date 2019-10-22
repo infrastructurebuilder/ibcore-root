@@ -20,15 +20,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Build;
-import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.sisu.Nullable;
@@ -62,10 +59,9 @@ public class MavenConfigMapSupplier extends DefaultConfigMapSupplier {
     IBException.cet.withTranslation(() -> Files.createDirectories(workingDir));
     super.overrideValue("workingDir", workingDir.toString());
 
-    super.addConfiguration(System.getenv());
-    super.overrideConfiguration(IBUtils.getMapStringStringfromMapObjectObject(System.getProperties()));
-    super.overrideConfiguration(
-        IBUtils.getMapStringStringfromMapObjectObject(Objects.requireNonNull(mavenProject).getProperties()));
+    super.addConfigurationMap(System.getenv());
+    super.overrideConfiguration(System.getProperties());
+    super.overrideConfiguration(Objects.requireNonNull(mavenProject).getProperties());
   }
 
 }

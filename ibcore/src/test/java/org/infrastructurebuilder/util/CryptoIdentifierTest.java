@@ -78,6 +78,15 @@ public class CryptoIdentifierTest {
   }
 
   @Test
+  public void testAsChecksum() {
+    assertEquals("9fcdceafb7a624626a8dcf106bcc37dde77f117e3a92f380d1e35bfb2d02554c8a8b6f927d317a40a830036b88805424b730bb7367f7b12c345bd027644f837b", j.asChecksum().toString());
+  }
+
+  @Test
+  public void testAsJSON() {
+    assertNotNull(j.asJSON());
+  }
+  @Test
   public void testGetValidationIdentifier() {
     assertFalse(i.getValidationIdentifier().isPresent());
   }
