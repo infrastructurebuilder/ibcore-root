@@ -29,7 +29,7 @@
 	<!-- URL for site gen -->
   <url>${github.url.base}/${project.artifactId}</url>
   <properties>
-    <test.coverage.percentage.required>95</test.coverage.percentage.required>
+    <test.coverage.percentage.required>90</test.coverage.percentage.required>
     <jacoco.max.missed.classes>3</jacoco.max.missed.classes>
   </properties>
   <dependencies>

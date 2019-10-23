@@ -15,23 +15,17 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import static java.util.Objects.requireNonNull;
+abstract public class AbstractCMSConfigurableSupplier<T> extends AbstractConfigurableSupplier<T, ConfigMapSupplier> implements CMSConfigurableSupplier<T> {
 
-abstract public class AbstractConfigurableSupplier<T, C> implements ConfigurableSupplier<T, C> {
-
-  private final C config;
-
-  public AbstractConfigurableSupplier(C config) {
-    this.config = config;
+  public AbstractCMSConfigurableSupplier(ConfigMapSupplier config) {
+    super(config);
   }
 
-  public T get() {
-    return configuredType(requireNonNull(this.config, "AbstractConfigurableSupplier config"));
+  @Override
+  public ConfigurableSupplier<T, ConfigMapSupplier> configure(ConfigMapSupplier config) {
+    return getConfiguredSupplier(config);
   }
 
-  protected abstract T configuredType(C config);
 
-  public C getConfig() {
-    return this.config;
-  }
+  abstract public AbstractCMSConfigurableSupplier<T> getConfiguredSupplier(ConfigMapSupplier cms);
 }

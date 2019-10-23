@@ -13,25 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.config;
+package org.infrastructurebuilder.util.files;
 
-import static java.util.Objects.requireNonNull;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Paths;
 
-abstract public class AbstractConfigurableSupplier<T, C> implements ConfigurableSupplier<T, C> {
+import org.infrastructurebuilder.util.artifacts.Checksum;
 
-  private final C config;
+public class ThrowingIBChecksumType extends BasicIBChecksumPathType {
 
-  public AbstractConfigurableSupplier(C config) {
-    this.config = config;
+  public ThrowingIBChecksumType() throws IOException {
+    super(Paths.get("."), new Checksum(), "doesnt/matter");
   }
 
-  public T get() {
-    return configuredType(requireNonNull(this.config, "AbstractConfigurableSupplier config"));
+  @Override
+  public InputStream get() {
+    return new ThrowingInputStream(IOException.class);
   }
 
-  protected abstract T configuredType(C config);
-
-  public C getConfig() {
-    return this.config;
-  }
 }

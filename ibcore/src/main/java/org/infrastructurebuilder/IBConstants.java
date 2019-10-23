@@ -32,9 +32,17 @@ public interface IBConstants {
 
   public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
   public final static String TEXT_PLAIN = "text/plain";
-  public static final String AVRO_BINARY = ".avro";
-  public static final String APPLICATION_PDF = "application/pdf";
+  /** These aren't real MIME types (AFAIK) Move them to IBConstants */
+  public static final String AVRO_BINARY = "avro/binary";
   public static final String TEXT_CSV = "text/csv";
+  public static final String TEXT_TSV = "text/tab-separated-values";
+  public static final String TEXT_PSV = "text/pipe-separated-values";
+  public static final String APPLICATION_XLS = "application/msexcel";
+  public static final String APPLICATION_XLSX = "application//vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+  public static final String APPLICATION_ACCESS = "application/msaccess";
+  public static final String APPLICATION_MSWORD = "application/msword";
+  public static final String APPLICATION_MSWORDX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+  public static final String APPLICATION_PDF = "application/pdf";
   public static final String APPLICATION_ZIP = "application/zip";
   public static final String APPLICATION_XML = "application/xml";
 

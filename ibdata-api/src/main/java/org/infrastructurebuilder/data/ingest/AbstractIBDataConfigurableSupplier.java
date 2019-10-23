@@ -15,17 +15,31 @@
  */
 package org.infrastructurebuilder.data.ingest;
 
-import org.infrastructurebuilder.data.IBDataIngester;
-import org.infrastructurebuilder.data.IBDataIngesterSupplier;
+import org.infrastructurebuilder.util.IBLoggerEnabled;
 import org.infrastructurebuilder.util.LoggerSupplier;
+import org.infrastructurebuilder.util.config.AbstractCMSConfigurableSupplier;
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 import org.infrastructurebuilder.util.config.PathSupplier;
+import org.slf4j.Logger;
 
-abstract public class AbstractIBDataIngesterSupplier extends AbstractIBDataConfigurableSupplier<IBDataIngester>
-    implements IBDataIngesterSupplier {
+public abstract class AbstractIBDataConfigurableSupplier<T> extends AbstractCMSConfigurableSupplier<T>
+    implements IBLoggerEnabled {
+  private final PathSupplier wps;
+  private final LoggerSupplier log;
 
-  protected AbstractIBDataIngesterSupplier(PathSupplier wps, LoggerSupplier log, ConfigMapSupplier config) {
-    super(wps, log, config);
+  public AbstractIBDataConfigurableSupplier(PathSupplier wps, LoggerSupplier log, ConfigMapSupplier config) {
+    super(config);
+    this.wps = wps;
+    this.log = log;
+  }
+
+  @Override
+  public Logger getLog() {
+    return log.get();
+  }
+
+  protected PathSupplier getWps() {
+    return wps;
   }
 
 }

@@ -51,8 +51,8 @@ public class DefaultConfigMapSupplierTest {
     supplier.addConfiguration(new ConfigMap(m));
     ConfigMap k = supplier.get();
     assertEquals(2, k.size());
-    assertEquals("Y", k.get("X"));
-    assertEquals("B", k.get("A"));
+    assertEquals("Y", k.getString("X"));
+    assertEquals("B", k.getString("A"));
     final Map<String, Object> n = new HashMap<>();
     n.put("X", "Z");
     n.put("A", "CC");
@@ -60,9 +60,9 @@ public class DefaultConfigMapSupplierTest {
     supplier.addConfiguration(n);
     k = supplier.get();
     assertEquals(3, k.size());
-    assertEquals("Y", k.get("X"));
-    assertEquals("B", k.get("A"));
-    assertEquals("M", k.get("Q"));
+    assertEquals("Y", k.getString("X"));
+    assertEquals("B", k.getString("A"));
+    assertEquals("M", k.getString("Q"));
 
     assertTrue(k.containsKey("Q"));
     assertEquals("FAKE", k.getOrDefault("FAKE", "FAKE"));
@@ -77,8 +77,8 @@ public class DefaultConfigMapSupplierTest {
     supplier.addConfiguration(mm);
     ConfigMap k = supplier.get();
     assertEquals(2, k.size());
-    assertEquals("Y", k.get("X"));
-    assertEquals("B", k.get("A"));
+    assertEquals("Y", k.getString("X"));
+    assertEquals("B", k.getString("A"));
     final Properties n = new Properties();
     n.setProperty("X", "Z");
     n.setProperty("A", "CC");
@@ -86,9 +86,9 @@ public class DefaultConfigMapSupplierTest {
     supplier.addConfiguration(n);
     k = supplier.get();
     assertEquals(3, k.size());
-    assertEquals("Y", k.get("X"));
-    assertEquals("B", k.get("A"));
-    assertEquals("M", k.get("Q"));
+    assertEquals("Y", k.getString("X"));
+    assertEquals("B", k.getString("A"));
+    assertEquals("M", k.getString("Q"));
   }
 
   @Test
@@ -97,7 +97,7 @@ public class DefaultConfigMapSupplierTest {
     supplier.overrideValueDefault("A", null, "");
     final ConfigMap m = supplier.get();
     assertNotNull(m);
-    assertEquals("", m.get("A"));
+    assertEquals("", m.getString("A"));
   }
 
   @Test
@@ -115,8 +115,8 @@ public class DefaultConfigMapSupplierTest {
     supplier.addConfiguration(m);
     ConfigMap k = supplier.get();
     assertEquals(2, k.size());
-    assertEquals("Y", k.get("X"));
-    assertEquals("B", k.get("A"));
+    assertEquals("Y", k.getString("X"));
+    assertEquals("B", k.getString("A"));
     final Map<String, Object> n = new HashMap<>();
     n.put("X", "Z");
     n.put("A", "CC");
@@ -124,9 +124,9 @@ public class DefaultConfigMapSupplierTest {
     supplier.overrideConfiguration(n);
     k = supplier.get();
     assertEquals(3, k.size());
-    assertEquals("Z", k.get("X"));
-    assertEquals("CC", k.get("A"));
-    assertEquals("M", k.get("Q"));
+    assertEquals("Z", k.getString("X"));
+    assertEquals("CC", k.getString("A"));
+    assertEquals("M", k.getString("Q"));
   }
 
   @Test
@@ -137,8 +137,8 @@ public class DefaultConfigMapSupplierTest {
     supplier.addConfiguration(m);
     ConfigMap k = supplier.get();
     assertEquals(2, k.size());
-    assertEquals("Y", k.get("X"));
-    assertEquals("B", k.get("A"));
+    assertEquals("Y", k.getString("X"));
+    assertEquals("B", k.getString("A"));
     final Properties n = new Properties();
     n.setProperty("X", "Z");
     n.setProperty("A", "CC");
@@ -146,9 +146,16 @@ public class DefaultConfigMapSupplierTest {
     supplier.overrideConfiguration(n);
     k = supplier.get();
     assertEquals(3, k.size());
-    assertEquals("Z", k.get("X"));
-    assertEquals("CC", k.get("A"));
-    assertEquals("M", k.get("Q"));
+    assertEquals("Z", k.getString("X"));
+    assertEquals("CC", k.getString("A"));
+    assertEquals("M", k.getString("Q"));
+  }
+
+  @Test
+  public void testPutonConfigMap() {
+    ConfigMap k = supplier.get();
+    k.put("A", "B");
+    assertEquals("B",k.getString("A"));
   }
 
 }

@@ -13,25 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.config;
+package org.infrastructurebuilder.data;
 
-import static java.util.Objects.requireNonNull;
+import org.infrastructurebuilder.data.model.DataSet;
 
-abstract public class AbstractConfigurableSupplier<T, C> implements ConfigurableSupplier<T, C> {
+public interface DataSetEnabled {
 
-  private final C config;
+  DataSet asDataSet();
 
-  public AbstractConfigurableSupplier(C config) {
-    this.config = config;
-  }
-
-  public T get() {
-    return configuredType(requireNonNull(this.config, "AbstractConfigurableSupplier config"));
-  }
-
-  protected abstract T configuredType(C config);
-
-  public C getConfig() {
-    return this.config;
-  }
 }

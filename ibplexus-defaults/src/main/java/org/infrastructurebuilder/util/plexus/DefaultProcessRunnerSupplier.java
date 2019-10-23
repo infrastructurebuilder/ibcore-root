@@ -54,15 +54,15 @@ public class DefaultProcessRunnerSupplier implements ProcessRunnerSupplier {
     cfgMap = Objects.requireNonNull(cms, "ConfigMapSupplier to DefaultProcessRunnerSupplier").get();
     this.logger = Optional.of(new SLF4JFromMavenLogger(Objects.requireNonNull(logger)));
 
-    addl = Optional.ofNullable(cfgMap.get(PROCESS_EXECUTOR_SYSTEM_OUT)).map(Boolean::new)
+    addl = Optional.ofNullable(cfgMap.getString(PROCESS_EXECUTOR_SYSTEM_OUT)).map(Boolean::new)
         .flatMap(b -> Optional.ofNullable(b ? System.out : null));
-    final Path p = Paths.get(Objects.requireNonNull(cfgMap.get(PROCESS_TARGET))).toAbsolutePath().normalize();
+    final Path p = Paths.get(Objects.requireNonNull(cfgMap.getString(PROCESS_TARGET))).toAbsolutePath().normalize();
     if (!Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS))
-      throw new ProcessException("Directory " + cfgMap.get(PROCESS_TARGET) + " is not a valid location");
+      throw new ProcessException("Directory " + cfgMap.getString(PROCESS_TARGET) + " is not a valid location");
     buildDir = ProcessException.pet.withReturningTranslation(() -> Files.createDirectories(p));
     scratchDir = buildDir.resolve("process-runner-" + UUID.randomUUID());
-    relativeRoot = Optional.ofNullable(cfgMap.get(PROCESS_EXECUTOR_RELATIVE_ROOT)).map(Paths::get);
-    interimSleep = Optional.ofNullable(cfgMap.get(PROCESS_EXECUTOR_INTERIM_SLEEP)).map(Long::new);
+    relativeRoot = Optional.ofNullable(cfgMap.getString(PROCESS_EXECUTOR_RELATIVE_ROOT)).map(Paths::get);
+    interimSleep = Optional.ofNullable(cfgMap.getString(PROCESS_EXECUTOR_INTERIM_SLEEP)).map(Long::new);
   }
 
   @Override

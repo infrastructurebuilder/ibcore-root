@@ -143,29 +143,36 @@ public class IBDataModelUtils {
     // This archive is about to be created
     finalData.setCreationDate(requireNonNull(creationDate)); // That is now
     Path newWorkingPath = workingPath.getParent().resolve(UUID.randomUUID().toString());
+    finalData
+        .setPath(cet.withReturningTranslation(() -> newWorkingPath.toAbsolutePath().toUri().toURL().toExternalForm()));
     // We're moving everything to a new path
     Files.createDirectories(newWorkingPath);
     finalData.setStreams(
         // The list of streams
-        ibdssList.stream().map(dss -> dss.relocateTo(newWorkingPath, t2e))
+        ibdssList.stream()
+            // Relocate the stream
+            .map(dss -> dss.relocateTo(newWorkingPath, t2e))
             // Fetch the IBDS
             .map(IBDataStreamSupplier::get)
             // Map the IBDataStream to a DataStream object
             .map(toDataStream)
             // to list
             .collect(toList()));
+//    finalData.getStreams().stream().forEach(dss -> dss.setPath(IBDataModelUtils.relativizePath(finalData, dss)));
     // The id of the archive is based on the checksum of the data within it
-    Checksum dsChecksum = IBDataModelUtils.fromPathDSAndStream(newWorkingPath, finalData);
+    Checksum dsChecksum = fromPathDSAndStream(newWorkingPath, finalData);
     finalData.setUuid(dsChecksum.asUUID().get().toString());
     // We're going to relocate the entire directory to a named UUID-backed directory
     Path newTarget = workingPath.getParent().resolve(finalData.getUuid());
     move(newWorkingPath, newTarget, ATOMIC_MOVE);
+    finalData.setPath(newTarget.toAbsolutePath().toUri().toURL().toExternalForm());
     // Create the IBDATA dir so that we can write the metadata xml
     createDirectories(newTarget.resolve(IBDATA));
     // Clear the path so that it doesn't persist in the metadata xml
-    finalData.setPath(null);
+    DataSet finalData2 = finalData.clone(); // Executes the clone hook, including relativizing the path
+    finalData2.setPath(null);
     // write the dataset to disk
-    IBDataModelUtils.writeDataSet(finalData, newTarget);
+    IBDataModelUtils.writeDataSet(finalData2, newTarget);
     // newTarget now points to a valid DataSet with metadata and referenced streams
     return DefaultIBChecksumPathType.from(newTarget, dsChecksum, IBMetadataUtils.APPLICATION_IBDATA_ARCHIVE);
   }

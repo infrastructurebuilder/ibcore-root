@@ -15,6 +15,7 @@
  */
 package org.infrastructurebuilder.util.config;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -25,7 +26,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.function.Function;
 
-public class ConfigMap {
+public class ConfigMap implements Map<String,Object> {
   private final Map<String, Object> config;
 
   public ConfigMap(Map<String, Object> c) {
@@ -41,11 +42,16 @@ public class ConfigMap {
     p.stringPropertyNames().forEach(k -> this.config.put(k,  p.getProperty(k)));
   }
 
-  public final String get(String key) {
-    return (String) getObject(key);
+  public ConfigMap(ConfigMap configuration) {
+    config = new HashMap<>();
+    config.putAll(configuration.config);
   }
 
-  public final Object getObject(String key) {
+  public final String getString(String key) {
+    return (String) get(key);
+  }
+
+  public final Object get(String key) {
     return this.config.get(key);
   }
 
@@ -66,6 +72,57 @@ public class ConfigMap {
   }
 
   public String getOrDefault(String key, String defaultValue) {
-    return config.getOrDefault(key, defaultValue).toString();
+    return getObjectOrDefault(key, defaultValue).toString();
+  }
+
+  public Object getObjectOrDefault(String key, Object defaultValue) {
+    return config.getOrDefault(key, defaultValue);
+  }
+
+  @Override
+  public boolean isEmpty() {
+    // TODO Auto-generated method stub
+    return config.isEmpty();
+  }
+
+  @Override
+  public boolean containsKey(Object key) {
+    // TODO Auto-generated method stub
+    return config.containsKey(key);
+  }
+
+  @Override
+  public boolean containsValue(Object value) {
+    return config.containsValue(value);
+  }
+
+  @Override
+  public Object get(Object key) {
+    return config.get(key);
+  }
+
+  @Override
+  public Object put(String key, Object value) {
+    return config.put(key, value);
+  }
+
+  @Override
+  public Object remove(Object key) {
+    return config.remove(key);
+  }
+
+  @Override
+  public void putAll(Map<? extends String, ? extends Object> m) {
+    config.putAll(m);
+  }
+
+  @Override
+  public void clear() {
+    config.clear();
+  }
+
+  @Override
+  public Collection<Object> values() {
+    return config.values();
   }
 }

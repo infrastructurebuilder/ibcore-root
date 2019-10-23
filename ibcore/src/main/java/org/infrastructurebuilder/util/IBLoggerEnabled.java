@@ -18,5 +18,5 @@ package org.infrastructurebuilder.util;
 import org.slf4j.Logger;
 
 public interface IBLoggerEnabled {
-  Logger getLogger();
+  Logger getLog();
 }

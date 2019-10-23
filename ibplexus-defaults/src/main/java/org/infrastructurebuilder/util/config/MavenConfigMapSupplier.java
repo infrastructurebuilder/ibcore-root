@@ -40,7 +40,7 @@ public class MavenConfigMapSupplier extends DefaultConfigMapSupplier {
       @Nullable MojoExecution execution) {
 
     final Build build = mavenProject.getBuild();
-
+/*
     super.overrideValueDefaultBlank("project.build.directory", build.getDirectory());
     super.overrideValueDefaultBlank("project.build.outputDirectory", build.getOutputDirectory());
     super.overrideValueDefaultBlank("project.build.testOutputDirectory", build.getTestOutputDirectory());
@@ -62,6 +62,7 @@ public class MavenConfigMapSupplier extends DefaultConfigMapSupplier {
     super.addConfigurationMap(System.getenv());
     super.overrideConfiguration(System.getProperties());
     super.overrideConfiguration(Objects.requireNonNull(mavenProject).getProperties());
+    */
   }
 
 }

@@ -13,52 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data;
+package org.infrastructurebuilder.util.config;
 
 import static org.junit.Assert.*;
 
-import java.util.HashMap;
-import java.util.List;
-
-import org.infrastructurebuilder.data.transform.Transformer;
-import org.infrastructurebuilder.util.config.ConfigMap;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
 
-public class IBDataTransformerTest {
+public class AbstractCMSConfigurableSupplierTest {
 
-  private IBDataTransformer i;
+  private DefaultConfigMapSupplier cms;
+  private AbstractCMSConfigurableSupplier<String> l;
 
   @Before
   public void setUp() throws Exception {
-    i = new IBDataTransformer() {
+    cms = new DefaultConfigMapSupplier();
+    cms.addValue("B", "C");
+    cms.addValue("A", "G");
+    l = new AbstractCMSConfigurableSupplier<String>(cms) {
 
       @Override
-      public Logger getLog() {
+      public AbstractCMSConfigurableSupplier<String> getConfiguredSupplier(ConfigMapSupplier cms) {
         // TODO Auto-generated method stub
-        return null;
+        return this;
       }
 
       @Override
-      public IBDataTransformationResult transform(Transformer t, IBDataSet ds, List<IBDataStream> suppliedStreams,
-          boolean failOnError) {
-        // TODO Auto-generated method stub
-        return null;
-      }
-
-      @Override
-      public String getHint() {
-        // TODO Auto-generated method stub
-        return null;
+      protected String configuredType(ConfigMapSupplier config) {
+        return config.get().getString("A");
       }
     };
   }
 
   @Test
   public void test() {
-    assertTrue(i.respondsTo(null));
-    assertEquals(i, i.configure(new ConfigMap()));
+    assertEquals("G", l.configure(cms).get());
   }
 
 }

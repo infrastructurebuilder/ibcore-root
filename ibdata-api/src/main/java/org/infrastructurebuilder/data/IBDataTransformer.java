@@ -18,6 +18,7 @@ package org.infrastructurebuilder.data;
 import java.util.List;
 import java.util.Map;
 
+import org.infrastructurebuilder.data.transform.Transformer;
 import org.infrastructurebuilder.util.LoggerEnabled;
 import org.infrastructurebuilder.util.config.ConfigMap;
 
@@ -56,5 +57,5 @@ public interface IBDataTransformer extends LoggerEnabled {
    * @param failOnError fail if any error occurs, otherwise return all errors in the result
    * @return
    */
-  IBDataTransformationResult transform(IBDataSet ds, List<IBDataStream> suppliedStreams, boolean failOnError);
+  IBDataTransformationResult transform(Transformer t, IBDataSet ds, List<IBDataStream> suppliedStreams, boolean failOnError);
 }

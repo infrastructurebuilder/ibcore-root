@@ -73,12 +73,12 @@ public class MavenConfigWithServersMapSupplierTest extends MavenConfigMapSupplie
   @Test
   public void testSetSettings() {
     final ConfigMap map = cms.get();
-    assertEquals(map.get(ns + USERNAME), USERNAME);
-    assertEquals(map.get(ns + PASSPHRASE), PASSPHRASE);
-    assertEquals(map.get(ns + PASSWORD), PASSWORD);
-    assertEquals(map.get(ns + PRIVATEKEY), PRIVATEKEY);
+    assertEquals(map.getString(ns + USERNAME), USERNAME);
+    assertEquals(map.getString(ns + PASSPHRASE), PASSPHRASE);
+    assertEquals(map.getString(ns + PASSWORD), PASSWORD);
+    assertEquals(map.getString(ns + PRIVATEKEY), PRIVATEKEY);
 
-    assertEquals(map.get(ns2 + PRIVATEKEY ), PRIVATEKEY +"2");
+    assertEquals(map.getString(ns2 + PRIVATEKEY ), PRIVATEKEY +"2");
   }
 
 }

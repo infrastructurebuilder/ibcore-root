@@ -113,6 +113,9 @@ public class IBUtils {
     return ofNullable(s).map(u -> cet.withReturningTranslation(() -> new URL(u)));
   };
 
+  public final static Function<Object, Optional<String>> nullSafeObjectToString = (o) -> {
+    return ofNullable(o).map(k -> k.toString());
+  };
   /**
    * Map a Map/String,String to a Properties object
    */

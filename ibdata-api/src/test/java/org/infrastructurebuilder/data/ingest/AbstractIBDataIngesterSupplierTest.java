@@ -28,6 +28,7 @@ import org.infrastructurebuilder.data.IBDataIngesterSupplier;
 import org.infrastructurebuilder.data.IBDataSetIdentifier;
 import org.infrastructurebuilder.data.IBDataSourceSupplier;
 import org.infrastructurebuilder.data.IBDataStreamSupplier;
+import org.infrastructurebuilder.util.config.AbstractCMSConfigurableSupplier;
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 import org.infrastructurebuilder.util.config.DefaultConfigMapSupplier;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
@@ -52,14 +53,12 @@ public class AbstractIBDataIngesterSupplierTest {
     i = new AbstractIBDataIngesterSupplier(wps,() -> log, cms) {
 
       @Override
-      public IBDataIngesterSupplier config(ConfigMapSupplier cms) {
-        // TODO Auto-generated method stub
+      public AbstractCMSConfigurableSupplier<IBDataIngester> getConfiguredSupplier(ConfigMapSupplier cms) {
         return this;
       }
 
       @Override
-      public IBDataIngester get() {
-        // TODO Auto-generated method stub
+      protected IBDataIngester configuredType(ConfigMapSupplier config) {
         return null;
       }
     };

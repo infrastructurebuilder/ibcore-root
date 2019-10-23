@@ -41,7 +41,7 @@ public class DefaultProcessRunnerConfigMapSupplierTest {
   public void testGet() {
     final ConfigMap g = d.get();
     assertEquals(g.size(), 1);
-    assertEquals(g.get(PROCESS_NAMESPACE + "X"), "B");
+    assertEquals(g.getString(PROCESS_NAMESPACE + "X"), "B");
   }
 
 }
