@@ -48,7 +48,7 @@ public class ConfigMap implements Map<String,Object> {
   }
 
   public final String getString(String key) {
-    return (String) get(key);
+    return Optional.ofNullable(get(key)).map(Object::toString).orElse(null);
   }
 
   public final Object get(String key) {

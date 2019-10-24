@@ -24,12 +24,14 @@ public class IdentifiedAndWeightedComparatorTest {
 
   private IdentifiedAndWeighted i1, i2, i3;
   private IdentifiedAndWeightedComparator c;
+  private IdentifiedAndWeighted i4;
 
   @Before
   public void setUp() throws Exception {
     i1 = new IC2("A", 1);
     i2 = new IC2("B", 1);
     i3 = new IC2("A", 2);
+    i4 = new IC3();
     c = new IdentifiedAndWeightedComparator();
   }
 
@@ -41,6 +43,10 @@ public class IdentifiedAndWeightedComparatorTest {
     assertTrue(c.compare(i2, i1) > 0);
     assertTrue(c.compare(i1, i3) < 0);
     assertTrue(c.compare(i3, i1) > 0);
+    assertEquals(new Integer(2), i3.getWeight());
+    assertEquals("A", i3.getId());
+    assertEquals(new Integer(0),i4.getWeight());
+    assertNotNull(i4.getId());
 
   }
 
@@ -63,6 +69,10 @@ public class IdentifiedAndWeightedComparatorTest {
     public Integer getWeight() {
       return this.weight;
     }
+
+  }
+
+  public final static class IC3 implements IdentifiedAndWeighted {
 
   }
 }

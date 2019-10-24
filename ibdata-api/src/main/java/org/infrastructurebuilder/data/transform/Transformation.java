@@ -34,7 +34,9 @@ import org.infrastructurebuilder.util.config.ConfigMap;
 
 public class Transformation implements DataSetEnabled {
 
-  private String id = "default";
+  public static final String DEFAULT = "default";
+  public static final String DEFAULT_TRANSFORM = "default-transform";
+  private String id = DEFAULT;
   private List<Transformer> transformers = new ArrayList<>();
   private String finalizer = null;
   private Map<String, String> finalizerConfig = new HashMap<>();
@@ -73,7 +75,7 @@ public class Transformation implements DataSetEnabled {
   }
 
   public String getFinalizer() {
-    return ofNullable(finalizer).orElse("default-transform");
+    return ofNullable(finalizer).orElse(DEFAULT_TRANSFORM);
   }
 
   public ConfigMap getFinalizerConfig() {

@@ -92,7 +92,7 @@ public class DefaultConfigMapSupplier implements ConfigMapSupplier {
 
   @Override
   public ConfigMapSupplier overrideConfigurationString(final Map<String, String> over) {
-    return overrideConfiguration(over.entrySet().stream().collect(toMap(k -> k.getKey(), v -> v)));
+    return overrideConfiguration(over.entrySet().stream().collect(toMap(k -> k.getKey(), v -> v.getValue())));
   }
 
   @Override

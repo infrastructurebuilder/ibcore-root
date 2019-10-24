@@ -66,7 +66,14 @@ public class DefaultConfigMapSupplierTest {
 
     assertTrue(k.containsKey("Q"));
     assertEquals("FAKE", k.getOrDefault("FAKE", "FAKE"));
+
+    Map<String, String> over = new HashMap<>();
+    over.put("X", "Z");
+    supplier.overrideConfigurationString(over);
+    ConfigMap v2 = supplier.get();
+    assertEquals("Z",v2.getString("X"));
   }
+
 
   @Test
   public void testAddProperties() {

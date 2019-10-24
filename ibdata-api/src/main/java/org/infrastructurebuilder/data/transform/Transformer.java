@@ -103,6 +103,10 @@ public class Transformer implements Cloneable {
     return failOnAnyError;
   }
 
+  public void setFailOnAnyError(boolean failOnAnyError) {
+    this.failOnAnyError = failOnAnyError;
+  }
+
   public ConfigMapSupplier getConfigurationAsConfigMapSupplier(ConfigMapSupplier defaults) {
     return new DefaultConfigMapSupplier(defaults).addConfiguration(this.configuration);
   }
