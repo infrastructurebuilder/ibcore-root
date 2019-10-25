@@ -26,7 +26,13 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 public interface IBDataStreamRecordFinalizer<T> extends Supplier<InputStream>, AutoCloseable {
+  public final static String NUMBER_OF_ROWS_TO_SKIP_PARAM = "numberOfRowsToSkip";
+
   String getId();
+
+  default int getNumberOfRowsToSkip() {
+    return 0;
+  }
 
   /**
    * This method actually writes the final transformation.
@@ -41,7 +47,6 @@ public interface IBDataStreamRecordFinalizer<T> extends Supplier<InputStream>, A
    * @throws IOException
    */
   OutputStream getWriterTarget() throws IOException;
-
 
   IBDataStreamSupplier finalizeRecord(IBDataStreamIdentifier ds);
 

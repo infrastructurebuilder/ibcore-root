@@ -33,7 +33,7 @@ public interface IBDataTransformerSupplier<T> extends Supplier<IBDataTransformer
 
   /**
    * Return a NEW INSTANCE of IBDataTransformerSupplier.  Methods implementing this must not
-   * <code>return this;</code> under any circumstances
+   * <code>return this;</code>
    *
    * @param cms
    * @return
@@ -43,7 +43,7 @@ public interface IBDataTransformerSupplier<T> extends Supplier<IBDataTransformer
   /**
    *
    * Return a NEW INSTANCE of IBDataTransformerSupplier.  Methods implementing this must not
-   * <code>return this;</code> under any circumstances
+   * <code>return this;</code>
    *
    * This method must be called before <code>configure()</code>
    *

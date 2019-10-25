@@ -48,7 +48,7 @@ public interface IBDataSpecificStreamFactory {
    * @param ds The stream to read the objects from
    * @return A Stream of Objects.  All should be the same type, but not necessarily knowable ahead of time
    */
-  Optional<Stream<Object>> from(IBDataStream ds);
+  Optional<Stream<? extends Object>> from(IBDataStream ds);
 
   default boolean respondsTo(String mimeType) {
     return getRespondTypes().contains(mimeType);

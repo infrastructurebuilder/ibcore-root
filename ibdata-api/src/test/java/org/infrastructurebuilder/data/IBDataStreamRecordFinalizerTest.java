@@ -41,6 +41,10 @@ public class IBDataStreamRecordFinalizerTest {
       }
 
       @Override
+      public int getNumberOfRowsToSkip() {
+        return IBDataStreamRecordFinalizer.super.getNumberOfRowsToSkip();
+      }
+      @Override
       public void close() throws Exception {
         // TODO Auto-generated method stub
 
@@ -76,6 +80,11 @@ public class IBDataStreamRecordFinalizerTest {
         return null;
       }
     };
+  }
+
+  @Test
+  public void testSkipRows() {
+    assertEquals(0,i.getNumberOfRowsToSkip());
   }
 
   @Test
