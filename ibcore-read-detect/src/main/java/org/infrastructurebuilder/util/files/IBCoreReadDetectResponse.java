@@ -16,16 +16,15 @@
 package org.infrastructurebuilder.util.files;
 
 import static org.infrastructurebuilder.IBException.cet;
+import static org.infrastructurebuilder.util.IBUtils.moveAtomic;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.infrastructurebuilder.IBException;
 import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 
@@ -43,7 +42,8 @@ public class IBCoreReadDetectResponse {
         Checksum k = IBUtils.copyAndDigest(source, outs);
         Optional<Path> newTarget = targetDir.map(td -> td.resolve(k.asUUID().get().toString()));
         newTarget.ifPresent(nt -> {
-          IBException.cet.withTranslation(() -> Files.move(target, nt, StandardCopyOption.ATOMIC_MOVE));
+          cet.withTranslation(() -> outs.close());
+          cet.withTranslation(() -> moveAtomic(target, nt));
         });
         IBChecksumPathType cpt = new DefaultIBChecksumPathType(Files.exists(target) ? target : newTarget.get(), k);
         return cpt;
