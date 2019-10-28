@@ -50,7 +50,7 @@ public interface IBDataRecordTransformer<I, O> extends Function<I, O> {
    * Return a new type that this transformer produces.
    * @return new type that this transformer produces as output or "empty()" if  pass-thru (i.e. the original type should be retained)
    */
-  default Optional<String> produces() {
+  default Optional<String> produces() {  // FIXME Value is currently not used during execution
     return empty();
   }
 

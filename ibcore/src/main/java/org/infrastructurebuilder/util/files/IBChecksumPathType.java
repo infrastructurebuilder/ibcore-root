@@ -22,8 +22,9 @@ import java.util.function.Supplier;
 
 import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.infrastructurebuilder.util.artifacts.JSONOutputEnabled;
 
-public interface IBChecksumPathType extends Supplier<InputStream> {
+public interface IBChecksumPathType extends Supplier<InputStream>, JSONOutputEnabled {
 
   /**
    * @return Non-null Path to this result

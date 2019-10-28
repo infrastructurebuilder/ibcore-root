@@ -19,11 +19,13 @@ import static java.util.Objects.requireNonNull;
 import static javax.xml.parsers.DocumentBuilderFactory.newInstance;
 import static org.infrastructurebuilder.data.IBDataException.cet;
 import static org.infrastructurebuilder.data.IBMetadataUtils.emptyDocumentSupplier;
+import static org.infrastructurebuilder.data.IBMetadataUtils.stringifyDocument;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -167,4 +169,11 @@ public class IBMetadataUtils {
   //  throw new MojoFailureException("Failed to acquire metadata", e);
   //}
   //}
+  /**
+   * FIXME Move this to IBMetadataUtils
+   * Function to compare W3c Dcoument instances (by string compare, like a filthy animal
+   */
+  public final static BiFunction<Document, Document, Boolean> w3cDocumentEqualser = (lhs, rhs) -> {
+    return stringifyDocument.apply(lhs).equals(stringifyDocument.apply(rhs));
+  };
 }
