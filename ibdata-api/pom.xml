@@ -29,7 +29,7 @@
   <description>APIs for dealing with data streams</description>
   <!-- URL for site gen -->
   <properties>
-    <test.coverage.percentage.required>73</test.coverage.percentage.required> <!--100 actually -->
+    <test.coverage.percentage.required>72</test.coverage.percentage.required>
     <jacoco.max.missed.classes>2</jacoco.max.missed.classes>
   </properties>
   <url>${github.url.base}/${project.artifactId}</url>

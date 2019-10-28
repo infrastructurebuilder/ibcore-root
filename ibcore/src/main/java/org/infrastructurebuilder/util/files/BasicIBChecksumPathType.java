@@ -117,4 +117,26 @@ public class BasicIBChecksumPathType implements IBChecksumPathType {
     return this.json;
   }
 
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + (checksum.hashCode());
+    result = prime * result + (path.hashCode());
+    result = prime * result + (type.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    BasicIBChecksumPathType other = (BasicIBChecksumPathType) obj;
+    return checksum.equals(other.checksum) && path.equals(other.path) && type.equals(other.type);
+  }
+
 }

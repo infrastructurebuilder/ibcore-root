@@ -27,9 +27,12 @@ import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.IBUtilsTest;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.WorkingPathSupplier;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 public class BasicIBChecksumPathTypeTest {
 
@@ -94,4 +97,28 @@ public class BasicIBChecksumPathTypeTest {
     assertEquals(c1.getChecksum(), b.getChecksum());
   }
 
+  @Test
+  public void testAsJSON() {
+    String q = "{\n"
+        + "  \"checksum\": \"0bd4468980d90ef4d5e1e39bf30b93670492d282c518da95334df7bcad7ba8e0afe377a97d8fd64b4b6fd452b5d60ee9ee665e2fa5ecb13d8d51db8794011f3e\",\n"
+        + "  \"type\": \"ABC\"\n"
+        + "}";
+    JSONObject j = new JSONObject(q);
+    j.put("path", path.toString());
+    JSONAssert.assertEquals(j, c1.asJSON(), true);
+    assertEquals(c1, new BasicIBChecksumPathType(j));
+  }
+
+  @Test
+  public void testEqualsHash() {
+    BasicIBChecksumPathType c3 = new BasicIBChecksumPathType(path, checksum, "ABC");
+
+    assertEquals(c1.hashCode(), c1.hashCode());
+    assertEquals(c1,c1);
+    assertNotEquals( c1,"");
+    assertNotEquals(c1,c2);
+    assertNotEquals(c1,null);
+    assertEquals(c1,c3);
+    assertEquals(c1.hashCode(), c3.hashCode());
+  }
 }
