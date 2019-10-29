@@ -15,7 +15,7 @@
  */
 package org.infrastructurebuilder.util.config;
 
-//@javax.inject.Named(IBMetadataUtils.IBDATA_WORKING_PATH_SUPPLIER)
+//@javax.inject.Named(IBDATA_WORKING_PATH_SUPPLIER)
 @javax.inject.Singleton
 public class SingletonLateBindingPathSupplier extends AbstractPathSupplierHolder {
 //  public static final String SINGLETON_LATE_BINDING_PATH_SUPPLIER = "singleton-late-binding-path-supplier";

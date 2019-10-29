@@ -115,7 +115,6 @@ import org.infrastructurebuilder.util.artifacts.IBVersion;
 import org.infrastructurebuilder.util.artifacts.JSONOutputEnabled;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
-import org.infrastructurebuilder.util.config.WorkingPathSupplier;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

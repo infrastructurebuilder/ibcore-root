@@ -15,8 +15,9 @@
  */
 package org.infrastructurebuilder.util;
 
-import static org.infrastructurebuilder.util.Layout.*;
-import static org.junit.Assert.*;
+import static org.infrastructurebuilder.util.Layout.DEFAULT;
+import static org.infrastructurebuilder.util.Layout.LEGACY;
+import static org.junit.Assert.assertEquals;
 
 import java.net.URL;
 import java.util.Arrays;

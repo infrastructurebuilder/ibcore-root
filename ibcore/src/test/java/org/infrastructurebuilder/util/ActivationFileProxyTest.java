@@ -15,11 +15,13 @@
  */
 package org.infrastructurebuilder.util;
 
-import static org.junit.Assert.*;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Path;
-import static java.util.Optional.*;
-
 import java.util.Optional;
 import java.util.UUID;
 

@@ -15,8 +15,9 @@
  */
 package org.infrastructurebuilder.data.model;
 
-import static org.infrastructurebuilder.data.IBMetadataUtils.IBDATA;
-import static org.infrastructurebuilder.data.IBMetadataUtils.IBDATASET_XML;
+
+import static org.infrastructurebuilder.data.IBDataConstants.IBDATA;
+import static org.infrastructurebuilder.data.IBDataConstants.IBDATASET_XML;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;

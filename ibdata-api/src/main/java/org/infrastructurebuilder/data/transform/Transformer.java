@@ -20,16 +20,12 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
-import org.codehaus.plexus.util.xml.Xpp3DomUtils;
 import org.infrastructurebuilder.IBConstants;
-import org.infrastructurebuilder.data.IBDataException;
 import org.infrastructurebuilder.data.IBDataStream;
 import org.infrastructurebuilder.data.IBMetadataUtils;
 import org.infrastructurebuilder.util.config.ConfigMap;
@@ -65,6 +61,14 @@ public class Transformer implements Cloneable {
       this.targetStreamMetadata  = o.targetStreamMetadata;
     }
     this.transformation = t;
+  }
+
+
+
+  @Override
+  public String toString() {
+    return "Transformer [id=" + id + ", hint=" + hint + ", failOnAnyError=" + failOnAnyError + ", targetMimeType="
+        + targetMimeType + "]";
   }
 
   public String getId() {

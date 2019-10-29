@@ -15,9 +15,7 @@
  */
 package org.infrastructurebuilder.data.transform.line;
 
-import static org.junit.Assert.*;
-
-import java.util.Map;
+import static org.junit.Assert.assertFalse;
 
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.junit.Before;

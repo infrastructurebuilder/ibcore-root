@@ -17,11 +17,11 @@ package org.infrastructurebuilder.data;
 
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static org.infrastructurebuilder.data.IBDataConstants.APPLICATION_IBDATA_ARCHIVE;
 
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.util.artifacts.Checksum;
@@ -66,7 +66,7 @@ public interface IBDataSet extends IBDataSetIdentifier {
 
   default IBChecksumPathType asChecksumType() {
     Checksum c = new Checksum();
-    return DefaultIBChecksumPathType.from(Paths.get(getPath()), c, IBMetadataUtils.APPLICATION_IBDATA_ARCHIVE);
+    return DefaultIBChecksumPathType.from(Paths.get(getPath()), c, APPLICATION_IBDATA_ARCHIVE);
   }
 
   default List<IBDataStream> asStreamsList() {

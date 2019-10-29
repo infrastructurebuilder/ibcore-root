@@ -15,11 +15,12 @@
  */
 package org.infrastructurebuilder.data;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import java.util.HashMap;
 import java.util.List;
 
+import org.infrastructurebuilder.data.transform.Transformation;
 import org.infrastructurebuilder.data.transform.Transformer;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.junit.Before;

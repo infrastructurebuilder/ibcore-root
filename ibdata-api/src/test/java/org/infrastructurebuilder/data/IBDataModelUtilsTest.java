@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 package org.infrastructurebuilder.data;
-
+import static org.infrastructurebuilder.data.IBDataConstants.IBDATA;
+import static org.infrastructurebuilder.data.IBDataConstants.IBDATASET_XML;
 import static org.infrastructurebuilder.data.IBDataModelUtils.forceToFinalizedPath;
 import static org.infrastructurebuilder.data.IBMetadataUtilsTest.TEST_INPUT_0_11_XML;
 import static org.junit.Assert.assertEquals;
@@ -53,7 +54,7 @@ public class IBDataModelUtilsTest extends AbstractModelTest {
   @Test(expected = IBDataException.class)
   public void testWriteDataSet() throws IOException {
     Path w = wps.get();
-    Path target = w.resolve(IBMetadataUtils.IBDATA).resolve(IBMetadataUtils.IBDATASET_XML);
+    Path target = w.resolve(IBDATA).resolve(IBDATASET_XML);
     Files.createDirectories(target.getParent());
     Files.createFile(target);
     IBDataModelUtils.writeDataSet(new DataSet(), w);

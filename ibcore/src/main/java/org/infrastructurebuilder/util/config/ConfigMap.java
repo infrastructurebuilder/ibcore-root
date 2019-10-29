@@ -18,13 +18,9 @@ package org.infrastructurebuilder.util.config;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
-import java.util.function.Function;
 
 public class ConfigMap implements Map<String,Object> {
   private final Map<String, Object> config;

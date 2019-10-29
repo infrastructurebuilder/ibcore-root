@@ -17,7 +17,6 @@ package org.infrastructurebuilder.data;
 
 import org.infrastructurebuilder.util.LoggerEnabled;
 import org.infrastructurebuilder.util.config.CMSConfigurableSupplier;
-import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 
 public interface IBDataIngesterSupplier extends CMSConfigurableSupplier<IBDataIngester>, LoggerEnabled {
 }

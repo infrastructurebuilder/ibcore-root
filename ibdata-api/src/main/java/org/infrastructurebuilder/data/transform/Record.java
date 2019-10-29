@@ -16,7 +16,7 @@
 package org.infrastructurebuilder.data.transform;
 
 import static java.util.Objects.requireNonNull;
-import static org.infrastructurebuilder.data.IBMetadataUtils.MAP_SPLITTER;
+import static org.infrastructurebuilder.data.IBDataConstants.MAP_SPLITTER;
 
 import java.util.List;
 import java.util.Map;

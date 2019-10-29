@@ -16,7 +16,6 @@
 package org.infrastructurebuilder.util.artifacts;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 import java.util.Optional;
 

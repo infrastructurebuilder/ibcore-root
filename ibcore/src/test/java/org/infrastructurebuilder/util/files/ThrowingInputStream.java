@@ -17,8 +17,6 @@ package org.infrastructurebuilder.util.files;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.NoSuchAlgorithmException;
-import java.util.Optional;
 
 public class ThrowingInputStream extends InputStream {
 

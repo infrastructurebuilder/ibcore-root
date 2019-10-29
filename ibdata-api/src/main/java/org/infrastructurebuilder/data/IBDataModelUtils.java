@@ -15,7 +15,6 @@
  */
 package org.infrastructurebuilder.data;
 
-import static org.infrastructurebuilder.util.IBUtils.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.createDirectories;
 import static java.nio.file.Files.move;
@@ -25,10 +24,12 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static org.infrastructurebuilder.data.IBDataConstants.APPLICATION_IBDATA_ARCHIVE;
+import static org.infrastructurebuilder.data.IBDataConstants.IBDATA;
+import static org.infrastructurebuilder.data.IBDataConstants.IBDATASET_XML;
 import static org.infrastructurebuilder.data.IBDataException.cet;
-import static org.infrastructurebuilder.data.IBMetadataUtils.IBDATA;
-import static org.infrastructurebuilder.data.IBMetadataUtils.IBDATASET_XML;
 import static org.infrastructurebuilder.data.IBMetadataUtils.toDataStream;
+import static org.infrastructurebuilder.util.IBUtils.nullSafeURLMapper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,13 +37,11 @@ import java.io.Writer;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.data.model.DataSet;
 import org.infrastructurebuilder.data.model.DataSetInputSource;
@@ -174,7 +173,7 @@ public class IBDataModelUtils {
     // write the dataset to disk
     IBDataModelUtils.writeDataSet(finalData2, newTarget);
     // newTarget now points to a valid DataSet with metadata and referenced streams
-    return DefaultIBChecksumPathType.from(newTarget, dsChecksum, IBMetadataUtils.APPLICATION_IBDATA_ARCHIVE);
+    return DefaultIBChecksumPathType.from(newTarget, dsChecksum, APPLICATION_IBDATA_ARCHIVE);
   }
 
 }

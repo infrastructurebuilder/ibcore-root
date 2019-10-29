@@ -16,8 +16,8 @@
 package org.infrastructurebuilder.data.transform;
 
 import static java.util.stream.Collectors.toList;
-import static org.infrastructurebuilder.data.IBMetadataUtils.RECORD_SPLITTER;
-import static org.infrastructurebuilder.data.IBMetadataUtils.TRANSFORMERSLIST;
+import static org.infrastructurebuilder.data.IBDataConstants.RECORD_SPLITTER;
+import static org.infrastructurebuilder.data.IBDataConstants.TRANSFORMERSLIST;
 
 import java.util.ArrayList;
 import java.util.List;

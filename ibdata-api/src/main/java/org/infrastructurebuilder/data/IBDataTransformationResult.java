@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.infrastructurebuilder.util.config.PathSupplier;
+
 /**
  *
  * Supplies the result of a transformation.
@@ -35,4 +37,5 @@ import java.util.function.Supplier;
  */
 public interface IBDataTransformationResult extends Supplier<Optional<IBDataSet>>{
   List<IBDataTransformationError> getErrors();
+  PathSupplier getWorkingPathSupplier();
 }

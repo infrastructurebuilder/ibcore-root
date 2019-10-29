@@ -15,18 +15,11 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 import java.util.Optional;
 
 import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
-import org.junit.Before;
-import org.junit.Test;
-
-
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
 

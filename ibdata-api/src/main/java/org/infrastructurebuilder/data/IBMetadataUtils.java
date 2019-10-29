@@ -18,13 +18,12 @@ package org.infrastructurebuilder.data;
 import static java.util.Objects.requireNonNull;
 import static javax.xml.parsers.DocumentBuilderFactory.newInstance;
 import static org.infrastructurebuilder.data.IBDataException.cet;
-import static org.infrastructurebuilder.data.IBMetadataUtils.emptyDocumentSupplier;
-import static org.infrastructurebuilder.data.IBMetadataUtils.stringifyDocument;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -37,7 +36,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
-import org.codehaus.plexus.util.StringInputStream;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.infrastructurebuilder.data.model.DataStream;
@@ -45,23 +43,7 @@ import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
-import java.util.Optional;
-
 public class IBMetadataUtils {
-  public static final String APPLICATION_IBDATA_ARCHIVE = "application/ibdata-archive";
-  public final static String UNCONFIGURABLE = "<!-- UNCONFIGURABLE -->";
-  public static final String PASS_THRU = UNCONFIGURABLE + "passthru";
-  public final static String IBDATA_WORKING_PATH_SUPPLIER = "ibdata-working-path-supplier";
-  public final static String CACHE_DIRECTORY_CONFIG_ITEM = UNCONFIGURABLE + ".cachePath";
-  public final static String TRANSFORMERSLIST = UNCONFIGURABLE + ".transformers";
-  public final static String RECORD_SPLITTER = ",";
-  public final static String MAP_SPLITTER = "|";
-  public final static String WORKING_PATH_CONFIG_ITEM = UNCONFIGURABLE + ".workingPath";
-
-  public static final String IBDATA = "IBDATA-INF";
-  public static final String IBDATA_DIR = "/" + IBDATA + "/";
-  public static final String IBDATASET_XML = "ibdataset.xml";
-  public static final String IBDATA_IBDATASET_XML = IBDATA_DIR + IBDATASET_XML;
 
   public final static DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
   public final static Supplier<DocumentBuilder> builderSupplier = () -> cet

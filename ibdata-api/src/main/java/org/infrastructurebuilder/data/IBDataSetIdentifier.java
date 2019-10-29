@@ -15,6 +15,9 @@
  */
 package org.infrastructurebuilder.data;
 
+import static org.infrastructurebuilder.util.IBUtils.nullSafeDateComparator;
+import static org.infrastructurebuilder.util.IBUtils.nullSafeUUIDComparator;
+
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Optional;
@@ -22,7 +25,6 @@ import java.util.UUID;
 
 import org.infrastructurebuilder.util.artifacts.GAV;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
-import static org.infrastructurebuilder.util.IBUtils.*;
 /**
  * This is the top-level interface that describes a DataSet.
  *

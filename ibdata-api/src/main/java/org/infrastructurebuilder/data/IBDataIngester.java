@@ -19,10 +19,9 @@ import java.util.List;
 import java.util.SortedMap;
 
 import org.infrastructurebuilder.util.LoggerEnabled;
-import org.infrastructurebuilder.util.files.IBChecksumPathType;
 
 /**
- * Instances of this need to Inject a  Named(IBMetadataUtils.IBDATA_WORKING_PATH_SUPPLIER) WorkingPathSupplier wps
+ * Instances of this need to Inject a  Named(IBDATA_WORKING_PATH_SUPPLIER) WorkingPathSupplier wps
  * if they need working paths.  The ingester mojo will configure that path properly.
  * @author mykel.alvis
  *

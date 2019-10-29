@@ -16,7 +16,6 @@
 package org.infrastructurebuilder.data;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.net.URL;
 import java.util.Optional;

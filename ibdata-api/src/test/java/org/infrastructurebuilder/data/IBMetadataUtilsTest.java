@@ -19,11 +19,11 @@ import static java.util.Optional.empty;
 import static org.infrastructurebuilder.data.IBMetadataUtils.asChecksum;
 import static org.infrastructurebuilder.data.IBMetadataUtils.builderSupplier;
 import static org.infrastructurebuilder.data.IBMetadataUtils.emptyDocumentSupplier;
-import static org.infrastructurebuilder.data.IBMetadataUtils.*;
+import static org.infrastructurebuilder.data.IBMetadataUtils.toDataStream;
+import static org.infrastructurebuilder.data.IBMetadataUtils.translateToXpp3Dom;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;

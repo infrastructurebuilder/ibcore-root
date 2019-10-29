@@ -15,8 +15,6 @@
  */
 package org.infrastructurebuilder.data;
 
-import static org.junit.Assert.*;
-
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;

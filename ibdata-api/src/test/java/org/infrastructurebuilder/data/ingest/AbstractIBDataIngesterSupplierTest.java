@@ -15,19 +15,11 @@
  */
 package org.infrastructurebuilder.data.ingest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.SortedMap;
 
 import org.infrastructurebuilder.data.IBDataIngester;
-import org.infrastructurebuilder.data.IBDataIngesterSupplier;
-import org.infrastructurebuilder.data.IBDataSetIdentifier;
-import org.infrastructurebuilder.data.IBDataSourceSupplier;
-import org.infrastructurebuilder.data.IBDataStreamSupplier;
 import org.infrastructurebuilder.util.config.AbstractCMSConfigurableSupplier;
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 import org.infrastructurebuilder.util.config.DefaultConfigMapSupplier;

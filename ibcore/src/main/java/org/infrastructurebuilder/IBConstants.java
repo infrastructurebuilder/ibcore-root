@@ -23,7 +23,6 @@ import java.util.Locale;
 import java.util.Optional;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 public interface IBConstants {
 

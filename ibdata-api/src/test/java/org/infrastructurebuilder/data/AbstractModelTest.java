@@ -16,6 +16,7 @@
 package org.infrastructurebuilder.data;
 
 import static java.util.stream.Collectors.toList;
+import static org.infrastructurebuilder.data.IBDataConstants.IBDATA;
 import static org.infrastructurebuilder.data.IBMetadataUtilsTest.TEST_INPUT_0_11_XML;
 import static org.infrastructurebuilder.data.IBMetadataUtilsTest.TEST_INPUT_0_11_XML_CHECKSUM;
 
@@ -26,7 +27,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -210,7 +210,7 @@ public class AbstractModelTest {
     stream.setUuid(stream.getChecksum().asUUID().get().toString());
 
     full_0_11 = wps.get();
-    ibd = full_0_11.resolve(IBMetadataUtils.IBDATA);
+    ibd = full_0_11.resolve(IBDATA);
     Path ibd_o11_1 = ibd.resolve(O11_1);
     Path ibd_o11_2 = ibd.resolve(O11_2);
     Files.createDirectories(ibd);

@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
@@ -46,6 +45,13 @@ public class Transformation implements DataSetEnabled {
   private Xpp3Dom metadata;
 
 
+  @Override
+  public String toString() {
+    return "Transformation [id=" + id + ", transformers=" + transformers + ", finalizer=" + finalizer + ", groupId="
+        + groupId + ", artifactId=" + artifactId + ", version=" + version + ", name=" + name + ", metadata=" + metadata
+        + "]";
+  }
+
   public void setId(String id) {
     this.id = id;
   }
@@ -66,6 +72,34 @@ public class Transformation implements DataSetEnabled {
     this.metadata = (Xpp3Dom) IBMetadataUtils.translateToXpp3Dom.apply(metadata);
   }
 
+  public void setArtifactId(String artifactId) {
+    this.artifactId = artifactId;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public void setGroupId(String groupId) {
+    this.groupId = groupId;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public void setVersion(String version) {
+    this.version = version;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
   public String getId() {
     return id;
   }
@@ -83,13 +117,12 @@ public class Transformation implements DataSetEnabled {
 
   }
 
-  public void injectRequird(String groupId, String artifactId, String version, String name, String description) {
-    this.groupId = groupId;
-    this.artifactId = artifactId;
-    this.version = version;
-    this.name = name;
-    this.description = description;
-    this.metadata = new Xpp3Dom("metadata"); // FIXME Where do we make metadata happen for a transformer
+  public void forceDefaults(String groupId, String artifactId, String version) {
+   setGroupId(groupId);
+   setArtifactId(artifactId);
+   setVersion(version);
+    if (this.metadata == null)
+      this.metadata = new Xpp3Dom("metadata"); // FIXME Where do we make metadata happen for a transformer
   }
 
   @Override
@@ -103,4 +136,5 @@ public class Transformation implements DataSetEnabled {
     dsi.setMetadata(metadata);
     return dsi;
   }
+
 }

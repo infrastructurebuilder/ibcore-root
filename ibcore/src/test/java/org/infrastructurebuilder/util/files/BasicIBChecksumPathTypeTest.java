@@ -15,20 +15,21 @@
  */
 package org.infrastructurebuilder.util.files;
 
-import static org.infrastructurebuilder.IBConstants.*;
-import static org.infrastructurebuilder.util.IBUtilsTest.*;
-import static org.junit.Assert.*;
+import static org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM;
+import static org.infrastructurebuilder.util.IBUtilsTest.TESTFILE;
+import static org.infrastructurebuilder.util.IBUtilsTest.TESTFILE_CHECKSUM;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.UUID;
 
 import org.infrastructurebuilder.util.IBUtils;
-import org.infrastructurebuilder.util.IBUtilsTest;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.WorkingPathSupplier;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.JSONOutputEnabled;
 

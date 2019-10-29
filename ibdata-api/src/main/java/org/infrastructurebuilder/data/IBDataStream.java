@@ -17,7 +17,6 @@ package org.infrastructurebuilder.data;
 
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.util.files.TypeToExtensionMapper;

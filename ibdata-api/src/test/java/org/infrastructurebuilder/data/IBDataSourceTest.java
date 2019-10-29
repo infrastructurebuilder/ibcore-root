@@ -15,7 +15,7 @@
  */
 package org.infrastructurebuilder.data;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.net.URL;
 import java.nio.file.Path;
