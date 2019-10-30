@@ -20,6 +20,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -30,20 +32,29 @@ import org.apache.maven.model.Build;
 import org.apache.maven.model.Model;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
+import org.joor.Reflect;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
+
+import static org.mockito.Mockito.*;
 public class MavenConfigMapSupplierTest {
 
   public static Map<String, String> m, n;
   public static MavenProject mp;
-  public static MavenSession ms;
-  public static MojoExecution me;
   public static Model mm;
   public static Properties properties;
   public static Path target;
   public static Path testClasses;
+
+  public static MavenSession ms;
+  public static MojoExecution me;
+  @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
@@ -69,8 +80,14 @@ public class MavenConfigMapSupplierTest {
     mp.setModel(mm);
     mp.setBuild(b);
 
-    ms = null;
-    me = null;
+    ms = mock(MavenSession.class);
+    me = mock(MojoExecution.class);
+    when(ms.getGoals()).thenReturn(Arrays.asList("A","B"));
+    when (ms.getStartTime()).thenReturn(new Date());
+    when(me.getExecutionId()).thenReturn("A");
+    when(me.getGoal()).thenReturn("B");
+    when(me.getLifecyclePhase()).thenReturn("compile");
+
   }
 
 
