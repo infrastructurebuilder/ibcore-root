@@ -16,7 +16,7 @@
 package org.infrastructurebuilder.util.files;
 
 import static org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM;
-import static org.infrastructurebuilder.util.files.IBCoreReadDetectResponse.copyToDeletedOnExitTempChecksumAndPath;
+import static org.infrastructurebuilder.util.files.DefaultIBChecksumPathType.copyToDeletedOnExitTempChecksumAndPath;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -56,7 +56,6 @@ public class IBCoreReadDetectResponseTest {
 
   @Test
   public void testCopyToDeletedOnExitTempChecksumAndPathWithTarget() throws IOException {
-    new IBCoreReadDetectResponse();
     try (InputStream ins = getClass().getResourceAsStream("/testfile.test")) {
       IBChecksumPathType cset = copyToDeletedOnExitTempChecksumAndPath(Optional.of(this.wps.get()), "A", "B", ins);
       assertEquals(7, cset.getPath().toFile().length());
@@ -69,7 +68,6 @@ public class IBCoreReadDetectResponseTest {
 
   @Test
   public void testCopyToDeletedOnExitTempChecksumAndPathWithoutTarget() throws IOException {
-    new IBCoreReadDetectResponse();
     try (InputStream ins = getClass().getResourceAsStream("/testfile.test")) {
       IBChecksumPathType cset = copyToDeletedOnExitTempChecksumAndPath(Optional.empty(), "A", "B", ins);
       assertEquals(7, cset.getPath().toFile().length());
