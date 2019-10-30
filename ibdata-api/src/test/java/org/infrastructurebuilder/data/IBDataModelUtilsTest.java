@@ -41,10 +41,6 @@ public class IBDataModelUtilsTest extends AbstractModelTest {
   }
 
   @Test
-  public void testStreamCloneHook() {
-    IBDataModelUtils.mutatingDataStreamCloneHook(null);
-  }
-  @Test
   public void testMapInputStreamToDataSet() throws IOException {
     InputStream t = getClass().getResourceAsStream(TEST_INPUT_0_11_XML);
     DataSet ds = IBDataModelUtils.mapInputStreamToDataSet.apply(t);

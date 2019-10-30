@@ -65,14 +65,6 @@ public class IBDataModelUtils {
     }
   }
 
-  public final static void mutatingDataSetCloneHook(DataSet ds) {
-    ds.getStreams().forEach(s -> s.setPath(relativizePath(ds, s)));
-  }
-
-  public final static void mutatingDataStreamCloneHook(DataStream s) {
-    //    ds.getStreams().forEach(s -> s.setPath(relativizePath(ds, s)));
-  }
-
   public final static String relativizePath(DataSet ds, DataStream s) {
     return nullSafeURLMapper.apply(ds.getPath()).map(u -> {
       String u1 = u.toExternalForm();
