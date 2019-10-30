@@ -166,6 +166,42 @@
           <version>1.0.0+</version>
           <code>
             <![CDATA[
+  // Hashcode and equals
+  @Override
+  public int hashCode() {
+    return java.util.Objects.hash(artifactId, creationDate, dataSetDescription, dataSetName, groupId, metadata, modelEncoding,
+        modelVersion, path, streams, uuid, version);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    DataSet other = (DataSet) obj;
+    return java.util.Objects.equals(artifactId, other.artifactId) && java.util.Objects.equals(creationDate, other.creationDate)
+        && java.util.Objects.equals(dataSetDescription, other.dataSetDescription)
+        && java.util.Objects.equals(dataSetName, other.dataSetName) && java.util.Objects.equals(groupId, other.groupId)
+        && java.util.Objects.equals(metadata, other.metadata) && java.util.Objects.equals(modelEncoding, other.modelEncoding)
+        && java.util.Objects.equals(modelVersion, other.modelVersion) && java.util.Objects.equals(path, other.path)
+        && java.util.Objects.equals(streams, other.streams) && java.util.Objects.equals(uuid, other.uuid)
+        && java.util.Objects.equals(version, other.version);
+  }
+
+  ]]>
+          </code>
+        </codeSegment>
+
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
   @Override
   public java.util.Optional<String> getName() {
     return java.util.Optional.ofNullable(getDataSetName());
@@ -311,6 +347,7 @@
             ]]>
           </code>
         </codeSegment>
+
         <codeSegment>
           <version>1.0.0+</version>
           <code>
@@ -327,6 +364,44 @@
     this.setSourceURL(ds.getSourceURL());
     this.setUuid(ds.getUuid());
   }
+            ]]>
+          </code>
+        </codeSegment>
+
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+            // hash and equals
+
+
+  @Override
+  public int hashCode() {
+    return java.util.Objects.hash(creationDate, dataStreamDescription, dataStreamName, metadata, mimeType, path, sha512,
+        sourceURL, uuid);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    DataStream other = (DataStream) obj;
+    return java.util.Objects.equals(creationDate, other.creationDate)
+        && java.util.Objects.equals(dataStreamDescription, other.dataStreamDescription)
+        && java.util.Objects.equals(dataStreamName, other.dataStreamName) && java.util.Objects.equals(metadata, other.metadata)
+        && java.util.Objects.equals(mimeType, other.mimeType) && java.util.Objects.equals(path, other.path)
+        && java.util.Objects.equals(sha512, other.sha512) && java.util.Objects.equals(sourceURL, other.sourceURL)
+        && java.util.Objects.equals(uuid, other.uuid);
+  }
+
+
             ]]>
           </code>
         </codeSegment>
