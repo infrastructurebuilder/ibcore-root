@@ -15,6 +15,9 @@
  */
 package org.infrastructurebuilder.util.config;
 
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.joining;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,7 +43,6 @@ public class MavenConfigMapSupplier extends DefaultConfigMapSupplier {
       @Nullable MojoExecution execution) {
 
     final Build build = mavenProject.getBuild();
-/*
     super.overrideValueDefaultBlank("project.build.directory", build.getDirectory());
     super.overrideValueDefaultBlank("project.build.outputDirectory", build.getOutputDirectory());
     super.overrideValueDefaultBlank("project.build.testOutputDirectory", build.getTestOutputDirectory());
@@ -55,6 +57,16 @@ public class MavenConfigMapSupplier extends DefaultConfigMapSupplier {
     super.overrideValueDefaultBlank("project.groupId", mavenProject.getGroupId());
     super.overrideValueDefaultBlank("project.version", mavenProject.getVersion());
 
+    ofNullable(session).ifPresent(s -> {
+      super.overrideValueDefaultBlank("maven.session.goals.list", s.getGoals().stream().collect(joining()));
+      super.overrideValueDefaultBlank("maven.session.start", s.getStartTime());
+    });
+    ofNullable(execution).ifPresent(e -> {
+      super.overrideValueDefaultBlank("maven.execution.id", e.getExecutionId());
+      super.overrideValueDefaultBlank("maven.execution.goal", e.getGoal());
+      super.overrideValueDefaultBlank("maven.execution.phase", e.getLifecyclePhase());
+    });
+
     final Path workingDir = Paths.get(build.getDirectory()).resolve(UUID.randomUUID().toString());
     IBException.cet.withTranslation(() -> Files.createDirectories(workingDir));
     super.overrideValue("workingDir", workingDir.toString());
@@ -62,7 +74,6 @@ public class MavenConfigMapSupplier extends DefaultConfigMapSupplier {
     super.addConfigurationMap(System.getenv());
     super.overrideConfiguration(System.getProperties());
     super.overrideConfiguration(Objects.requireNonNull(mavenProject).getProperties());
-    */
   }
 
 }
