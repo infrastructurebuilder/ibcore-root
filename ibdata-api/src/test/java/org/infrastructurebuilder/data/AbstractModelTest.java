@@ -82,6 +82,9 @@ public class AbstractModelTest {
     public FakeIBDataStream(DataStream ds, Path p) {
       super(ds);
       this.localPath = p;
+
+      Checksum c = new Checksum(p);
+      setSha512(c.toString());
     }
 
     public Path getLocalPath() {
@@ -153,6 +156,7 @@ public class AbstractModelTest {
       return super.asChecksum();
     }
 
+
     @Override
     public IBDataStreamSupplier relocateTo(Path newWorkingPath, TypeToExtensionMapper t2e) {
       return this;
@@ -189,6 +193,8 @@ public class AbstractModelTest {
     finalData.setDataSetDescription(DESC);
     finalData.setDataSetName(NAME);
 
+
+
     stream = new DataStream();
     stream.setCreationDate(now);
     stream.setDataStreamDescription(DESC);
@@ -211,8 +217,8 @@ public class AbstractModelTest {
 
     full_0_11 = wps.get();
     ibd = full_0_11.resolve(IBDATA);
-    Path ibd_o11_1 = ibd.resolve(O11_1);
-    Path ibd_o11_2 = ibd.resolve(O11_2);
+    Path ibd_o11_1 = full_0_11.resolve(O11_1);
+    Path ibd_o11_2 = full_0_11.resolve(O11_2);
     Files.createDirectories(ibd);
     Path t = wps.getTestClasses();
     Path o11_1 = t.resolve(O11_1);

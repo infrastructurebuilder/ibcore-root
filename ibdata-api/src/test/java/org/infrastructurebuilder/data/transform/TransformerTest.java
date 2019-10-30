@@ -15,13 +15,20 @@
  */
 package org.infrastructurebuilder.data.transform;
 
+import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.infrastructurebuilder.IBConstants;
+import org.infrastructurebuilder.data.IBMetadataUtils;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,13 +38,18 @@ public class TransformerTest {
   private Transformer t, t1;
   private Transformer t2;
   private Transformation transformation;
+  private DataStreamMatcher dsm;
+  private List<DataStreamMatcher> sources;
 
   @Before
   public void setUp() throws Exception {
     transformation = new Transformation();
     t = new Transformer();
     t2 = new Transformer(t, transformation);
-  }
+    dsm = new DataStreamMatcher();
+    dsm.setCreationDate(new Date());
+    sources = Arrays.asList(dsm );
+ }
 
   @Test
   public void testSimpleGetSet() {
@@ -60,10 +72,31 @@ public class TransformerTest {
     assertNull(t.getTransformation());
     t1 = t.copy(transformation);
     assertEquals(transformation, t1.getTransformation());
+
+    t.setSources(sources);
+    assertEquals(sources, t.getSources());
+
+    XmlPlexusConfiguration p = new XmlPlexusConfiguration("metadata");
+    t.setTargetStreamMetadata(p);
+    assertEquals(p, t.getTargetStreamMetadata());
+
+    assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><metadata/>", IBMetadataUtils.stringifyDocument.apply(t.getTargetStreamMetadataAsDocument()));
   }
 
   @Test(expected = NullPointerException.class)
   public void testSetConfiguration() {
     t.setConfiguration(null);
+  }
+
+  @Test
+  public void testToString() {
+    assertNotNull(t.toString());
+  }
+
+  @Test
+  public void testMAtching() {
+    assertEquals(emptyList(),t.asMatchingStreams(emptyList()));
+    t.setSources(sources);
+    assertEquals(emptyList(),t.asMatchingStreams(emptyList()));
   }
 }

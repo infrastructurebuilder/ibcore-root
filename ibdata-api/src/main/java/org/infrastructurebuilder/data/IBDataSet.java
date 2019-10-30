@@ -50,7 +50,7 @@ public interface IBDataSet extends IBDataSetIdentifier {
    */
   default Optional<Checksum> getDataChecksum() {
     return ofNullable(getStreamSuppliers().size() > 0
-        ? new Checksum(asStreamsList().stream().map(IBDataStream::get).map(Checksum::new).collect(toList()))
+        ? new Checksum(asStreamsList().stream().map(ss -> new Checksum(ss.get())).collect(toList()))
         : null);
   }
 

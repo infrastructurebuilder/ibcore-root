@@ -21,20 +21,27 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.infrastructurebuilder.data.IBDataEngine;
+import org.infrastructurebuilder.data.IBDataSet;
+import org.infrastructurebuilder.data.IBDataStream;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3Reader;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3ReaderEx;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3Writer;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.junit.Before;
 import org.junit.Test;
+
 public class DataSetReadWriteModel0_11Test {
 
   private DataStream ds;
@@ -62,7 +69,36 @@ public class DataSetReadWriteModel0_11Test {
     set.setCreationDate(new Date());
     set.setDataSetDescription("setDescription");
     set.setModelEncoding("UTF-8");
-    set.setModelVersion(IBDataEngine.API_ENGINE_VERSION.toString());
+    IBDataEngine ibDataEngine = new IBDataEngine() {
+
+      @Override
+      public List<UUID> getAvailableIds() {
+        return Collections.emptyList();
+      }
+
+      @Override
+      public Optional<IBDataSet> fetchDataSetById(UUID id) {
+        return Optional.empty();
+      }
+
+      @Override
+      public Optional<IBDataStream> fetchDataStreamById(UUID id) {
+        return Optional.empty();
+      }
+
+      @Override
+      public Optional<IBDataStream> fetchDataStreamByMetadataPatternMatcher(Map<String, Pattern> patternMap) {
+        return Optional.empty();
+      }
+
+      @Override
+      public int prepopulate() {
+        return 0;
+      }
+
+    };
+    ibDataEngine.fetchDataStreamByMetadataPatternMatcherFromStrings(Collections.emptyMap());
+    set.setModelVersion(ibDataEngine.getEngineAPIVersion().toString());
     set.setUuid(UUID.randomUUID().toString());
     ds = new DataStream();
     ds.setDataStreamDescription("description 1");

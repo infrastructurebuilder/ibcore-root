@@ -53,6 +53,10 @@ public class RecordTransformer extends Transformer {
     this.recordFinalizer = recordFinalizer;
   }
 
+  public void setRecordFinalizerConfig(ConfigMap recordFinalizerConfig) {
+    this.recordFinalizerConfig = recordFinalizerConfig;
+  }
+
   public String getRecordFinalizer() {
     return recordFinalizer;
   }
