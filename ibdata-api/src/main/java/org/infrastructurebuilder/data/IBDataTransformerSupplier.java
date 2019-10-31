@@ -29,16 +29,6 @@ import org.infrastructurebuilder.util.config.ConfigMapSupplier;
  *
  */
 public interface IBDataTransformerSupplier<T> extends Supplier<IBDataTransformer>, LoggerEnabled {
-//  public final static String UNCONFIGURABLEKEY_FINALIZER_KEY = "<!-- FINALIZER -->";
-
-  /**
-   * Return a NEW INSTANCE of IBDataTransformerSupplier.  Methods implementing this must not
-   * <code>return this;</code>
-   *
-   * @param cms
-   * @return
-   */
-  IBDataTransformerSupplier<T> configure(ConfigMapSupplier cms);
 
   /**
    *
@@ -55,4 +45,13 @@ public interface IBDataTransformerSupplier<T> extends Supplier<IBDataTransformer
    */
 
   IBDataTransformerSupplier<T> withFinalizer(IBDataStreamRecordFinalizer<?> ts2);
+  /**
+   * Return a NEW INSTANCE of IBDataTransformerSupplier.  Methods implementing this must not
+   * <code>return this;</code>
+   *
+   * @param cms
+   * @return
+   */
+  IBDataTransformerSupplier<T> configure(ConfigMapSupplier cms);
+
 }

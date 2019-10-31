@@ -25,6 +25,7 @@ import java.util.function.Supplier;
 
 import org.infrastructurebuilder.util.BasicCredentials;
 import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.files.IBChecksumPathType;
 import org.w3c.dom.Document;
 
@@ -53,6 +54,7 @@ public interface IBDataSource extends Supplier<Optional<IBChecksumPathType>> {
 
   Optional<String> getDescription();
 
+  Optional<ConfigMap> getAdditionalConfig();
   /**
    * This is really a descriptive value, although it needs to be unique as well
    * @return
@@ -70,5 +72,8 @@ public interface IBDataSource extends Supplier<Optional<IBChecksumPathType>> {
   IBDataSource withDescription(String description);
 
   IBDataSource withDownloadCacheDirectory(Path cacheDir);
+
+  IBDataSource withAdditionalConfig(ConfigMap config);
+
 
 }
