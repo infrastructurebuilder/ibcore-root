@@ -27,7 +27,6 @@ import java.util.UUID;
 import org.infrastructurebuilder.data.model.DataSet;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class IBDataSetTest extends AbstractModelTest {
@@ -48,7 +47,7 @@ public class IBDataSetTest extends AbstractModelTest {
 
   @Test
   public void testGetStreamSuppliers() {
-    assertEquals("183d3030-6dae-4f33-acde-79eacbaa8c2d", ds.getStreamSuppliers().get(0).getId().toString());
+    assertEquals("183d3030-6dae-4f33-acde-79eacbaa8c2d", ds.getStreamSuppliers().get(0).get().getId().toString());
   }
 
   @Test

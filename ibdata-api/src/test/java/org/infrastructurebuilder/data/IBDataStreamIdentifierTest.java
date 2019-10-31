@@ -16,12 +16,10 @@
 package org.infrastructurebuilder.data;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Path;
 import java.util.Optional;
 import java.util.UUID;
 

@@ -39,7 +39,7 @@ import org.infrastructurebuilder.util.files.IBChecksumPathType;
  */
 public interface IBDataSet extends IBDataSetIdentifier {
 
-  List<IBDataStreamSupplier> getStreamSuppliers();
+  List<Supplier<IBDataStream>> getStreamSuppliers();
 
   /**
    * Get the aggregated checksum of all the checksums of all the data streams.

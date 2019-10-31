@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -70,9 +71,8 @@ public class IBDataStreamRecordFinalizerTest {
       }
 
       @Override
-      public IBDataStreamSupplier finalizeRecord(IBDataStreamIdentifier ds) {
-        // TODO Auto-generated method stub
-        return null;
+      public Supplier<IBDataStream> finalizeRecord(IBDataStreamIdentifier ds) {
+        return () -> null;
       }
 
       @Override

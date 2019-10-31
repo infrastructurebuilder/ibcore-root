@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
@@ -132,7 +133,7 @@ public class AbstractModelTest {
 
   }
 
-  public final static class FakeIBDataStreamSupplier extends DataStream implements IBDataStreamSupplier {
+  public final static class FakeIBDataStreamSupplier extends DataStream implements Supplier<IBDataStream> {
 
     private IBDataStream stream;
 
@@ -157,11 +158,6 @@ public class AbstractModelTest {
     }
 
 
-    @Override
-    public IBDataStreamSupplier relocateTo(Path newWorkingPath, TypeToExtensionMapper t2e) {
-      return this;
-    }
-
   }
 
   public final static class FakeIBDataSet extends DataSet implements IBDataSet {
@@ -176,7 +172,7 @@ public class AbstractModelTest {
     }
 
     @Override
-    public List<IBDataStreamSupplier> getStreamSuppliers() {
+    public List<Supplier<IBDataStream>> getStreamSuppliers() {
       return suppliers.stream().collect(toList());
     }
   }

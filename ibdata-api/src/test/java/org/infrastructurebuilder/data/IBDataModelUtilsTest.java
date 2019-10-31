@@ -27,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.infrastructurebuilder.data.model.DataSet;
 import org.infrastructurebuilder.util.IBUtils;
@@ -67,7 +68,7 @@ public class IBDataModelUtilsTest extends AbstractModelTest {
     Path workingPath = wps.get();
     Path tPath = workingPath.getParent().resolve("75b331e0-faaa-3464-9219-2ca72f0ad31e");
     IBUtils.deletePath(tPath); // Fails if exists
-    List<IBDataStreamSupplier> ibdssList = new ArrayList<>();
+    List<Supplier<IBDataStream>> ibdssList = new ArrayList<>();
     TypeToExtensionMapper t2e = new FakeTypeToExtensionMapper();
     IBChecksumPathType v = forceToFinalizedPath(now, workingPath, finalData, ibdssList, t2e);
     assertEquals(tPath, v.getPath());

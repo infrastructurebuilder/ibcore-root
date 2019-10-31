@@ -15,14 +15,14 @@
  */
 package org.infrastructurebuilder.data.transform;
 
-import static org.infrastructurebuilder.data.transform.Record.*;
-import static org.junit.Assert.*;
+import static org.infrastructurebuilder.data.transform.Record.FIELD_KEY;
+import static org.infrastructurebuilder.data.transform.Record.FIELD_MAP;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.data.IBDataConstants;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.junit.After;

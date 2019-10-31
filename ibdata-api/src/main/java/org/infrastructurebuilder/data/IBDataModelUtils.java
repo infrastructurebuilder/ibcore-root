@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.infrastructurebuilder.data.model.DataSet;
 import org.infrastructurebuilder.data.model.DataSetInputSource;
@@ -129,7 +130,7 @@ public class IBDataModelUtils {
    * @throws IOException
    */
   public final static IBChecksumPathType forceToFinalizedPath(Date creationDate, Path workingPath, DataSet finalData,
-      List<IBDataStreamSupplier> ibdssList, TypeToExtensionMapper t2e) throws IOException {
+      List<Supplier<IBDataStream>> ibdssList, TypeToExtensionMapper t2e) throws IOException {
 
     // This archive is about to be created
     finalData.setCreationDate(requireNonNull(creationDate)); // That is now
@@ -141,10 +142,10 @@ public class IBDataModelUtils {
     finalData.setStreams(
         // The list of streams
         ibdssList.stream()
+            // Fetch the IBDS
+            .map(Supplier::get)
             // Relocate the stream
             .map(dss -> dss.relocateTo(newWorkingPath, t2e))
-            // Fetch the IBDS
-            .map(IBDataStreamSupplier::get)
             // Map the IBDataStream to a DataStream object
             .map(toDataStream)
             // to list
