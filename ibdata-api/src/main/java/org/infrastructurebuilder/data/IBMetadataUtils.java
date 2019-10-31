@@ -73,7 +73,7 @@ public class IBMetadataUtils {
     return writer.toString();
   });
 
-  public final static Function<Object, Object> translateToXpp3Dom = (document) -> cet.withReturningTranslation(() -> {
+  public final static Function<Object, Xpp3Dom> translateToXpp3Dom = (document) -> cet.withReturningTranslation(() -> {
     if (document instanceof Xpp3Dom)
       return (Xpp3Dom) document;
     else if (document instanceof Document) {
