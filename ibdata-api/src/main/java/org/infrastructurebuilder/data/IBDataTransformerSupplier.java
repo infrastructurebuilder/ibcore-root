@@ -28,7 +28,7 @@ import org.infrastructurebuilder.util.config.ConfigMapSupplier;
  * @author mykel.alvis
  *
  */
-public interface IBDataTransformerSupplier<T> extends Supplier<IBDataTransformer>, LoggerEnabled {
+public interface IBDataTransformerSupplier extends Supplier<IBDataTransformer> {
 
   /**
    *
@@ -44,7 +44,7 @@ public interface IBDataTransformerSupplier<T> extends Supplier<IBDataTransformer
    * @return
    */
 
-  IBDataTransformerSupplier<T> withFinalizer(IBDataStreamRecordFinalizer<?> ts2);
+  IBDataTransformerSupplier withFinalizer(IBDataStreamRecordFinalizer<?> ts2);
   /**
    * Return a NEW INSTANCE of IBDataTransformerSupplier.  Methods implementing this must not
    * <code>return this;</code>
@@ -52,6 +52,6 @@ public interface IBDataTransformerSupplier<T> extends Supplier<IBDataTransformer
    * @param cms
    * @return
    */
-  IBDataTransformerSupplier<T> configure(ConfigMapSupplier cms);
+  IBDataTransformerSupplier configure(ConfigMapSupplier cms);
 
 }

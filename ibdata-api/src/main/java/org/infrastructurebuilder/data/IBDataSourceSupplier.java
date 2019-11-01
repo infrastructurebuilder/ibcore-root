@@ -24,6 +24,4 @@ import java.util.function.Supplier;
  */
 public interface IBDataSourceSupplier extends Supplier<IBDataSource>, Comparable<IBDataSourceSupplier> {
 
-  String getId();
-
 }

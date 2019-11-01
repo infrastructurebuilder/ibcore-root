@@ -37,8 +37,7 @@ import org.w3c.dom.Document;
 /**
  * Configuration Bean for plugin
  *
- * Inbound metadata is XmlPlexusConfiguration
- * Outbound is Document
+ * Inbound metadata is XmlPlexusConfiguration transformed to Xpp3Dom (because it's easy)
  * @author mykel.alvis
  *
  */
@@ -48,7 +47,7 @@ public class DefaultIBDataSetIdentifier implements IBDataSetIdentifier {
   private String description = null;
   private String path = null;
   private UUID id = null;
-  private String groupId = null, artifactId = null, version = null;
+  private String groupId = null, artifactId = null, version = null; // Not actually params.  Injected by ingestion process
 
   private List<DefaultIBDataStreamIdentifierConfigBean> streams = new ArrayList<>();
 
@@ -131,18 +130,6 @@ public class DefaultIBDataSetIdentifier implements IBDataSetIdentifier {
     this.id = id;
   }
 
-  public void setGroupId(String groupId) {
-    this.groupId = groupId;
-  }
-
-  public void setArtifactId(String artifactId) {
-    this.artifactId = artifactId;
-  }
-
-  public void setVersion(String version) {
-    this.version = version;
-  }
-
   @Override
   public String getGroupId() {
     return Optional.ofNullable(this.groupId).orElseThrow(() -> new IBDataException("No groupId set"));
@@ -165,8 +152,8 @@ public class DefaultIBDataSetIdentifier implements IBDataSetIdentifier {
   }
 
   public DataSet asDataSet() {
-
     DataSet ds = new DataSet();
+    // Use getters of this object to set these, please
     ds.setGroupId(getGroupId());
     ds.setArtifactId(getArtifactId());
     ds.setVersion(getVersion());

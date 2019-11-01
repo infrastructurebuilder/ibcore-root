@@ -18,16 +18,22 @@ package org.infrastructurebuilder.data;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.infrastructurebuilder.data.transform.Transformer;
 import org.infrastructurebuilder.util.config.ConfigMap;
+import org.infrastructurebuilder.util.config.PathSupplier;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class IBDataTransformerTest {
 
+  public final static Logger log = LoggerFactory.getLogger(IBDataTransformerTest.class);
   private IBDataTransformer i;
 
   @Before
@@ -36,21 +42,33 @@ public class IBDataTransformerTest {
 
       @Override
       public Logger getLog() {
-        // TODO Auto-generated method stub
-        return null;
+        return log;
       }
 
       @Override
       public IBDataTransformationResult transform(Transformer t, IBDataSet ds, List<IBDataStream> suppliedStreams,
           boolean failOnError) {
-        // TODO Auto-generated method stub
-        return null;
+        return new IBDataTransformationResult() {
+          @Override
+          public Optional<IBDataSet> get() {
+            return Optional.empty();
+          }
+
+          @Override
+          public PathSupplier getWorkingPathSupplier() {
+            return () -> Paths.get(".");
+          }
+
+          @Override
+          public List<IBDataTransformationError> getErrors() {
+            return Collections.emptyList();
+          }
+        };
       }
 
       @Override
       public String getHint() {
-        // TODO Auto-generated method stub
-        return null;
+        return "dummy";
       }
     };
   }

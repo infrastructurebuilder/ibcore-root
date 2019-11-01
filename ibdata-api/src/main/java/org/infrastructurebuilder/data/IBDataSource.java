@@ -33,10 +33,10 @@ import org.w3c.dom.Document;
  * An IBDataSource understands where a data stream originates and how to acquire it.
  * Furthermore, it actually acquires that datastream.
  *
- * An IBDataSource always returns a Path pointer to some acquired tempfile.
+ * An IBDataSource always returns a Path pointer to some acquired file.
  * The contract for IBDataSource:
  *          1. An IBData
- *          1. the Path supplied is to the same temp file every time.
+ *          1. the Path supplied is to the same file every time.
  *
  * @author mykel.alvis
  *
