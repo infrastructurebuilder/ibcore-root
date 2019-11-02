@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import org.infrastructurebuilder.util.config.ConfigMap;
+import org.slf4j.Logger;
 
 /**
  * For ease of use making a component that does this. Some concrete class would be injected into an IBDataTransformer
@@ -44,6 +45,8 @@ public interface IBDataRecordTransformer<I, O> extends Function<I, O> {
   boolean respondsTo(Object o);
 
   IBDataRecordTransformer<I, O> configure(ConfigMap cms);
+
+  Logger getLogger();
 
   /**
    * Return a new type that this transformer produces.
