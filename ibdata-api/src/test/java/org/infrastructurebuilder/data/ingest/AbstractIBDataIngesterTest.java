@@ -21,10 +21,11 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import java.util.SortedMap;
+import java.util.function.Supplier;
 
 import org.infrastructurebuilder.data.IBDataSetIdentifier;
 import org.infrastructurebuilder.data.IBDataSourceSupplier;
-import org.infrastructurebuilder.data.IBDataStreamSupplier;
+import org.infrastructurebuilder.data.IBDataStream;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
 import org.junit.Before;
@@ -43,7 +44,7 @@ public class AbstractIBDataIngesterTest {
     p = wps.get();
     i = new AbstractIBDataIngester(p, log, new ConfigMap()) {
       @Override
-      public List<IBDataStreamSupplier> ingest(IBDataSetIdentifier dsi, SortedMap<String, IBDataSourceSupplier> dss) {
+      public List<Supplier<IBDataStream>> ingest(Ingestion ingest, IBDataSetIdentifier dsi, SortedMap<String, IBDataSourceSupplier> dss) {
         return Collections.emptyList();
       }
     };

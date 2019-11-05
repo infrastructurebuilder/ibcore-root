@@ -15,21 +15,25 @@
  */
 package org.infrastructurebuilder.data;
 
+import static org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM;
 import static org.junit.Assert.assertEquals;
 
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.util.BasicCredentials;
 import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.files.IBChecksumPathType;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 public class IBDataSourceTest {
+  public final static Logger log = LoggerFactory.getLogger(IBDataSourceTest.class);
 
   private IBDataSource i;
 
@@ -38,82 +42,65 @@ public class IBDataSourceTest {
     i = new IBDataSource() {
 
       @Override
+      public Logger getLog() {
+        return log;
+      }
+
+      @Override
       public Optional<IBChecksumPathType> get() {
-        // TODO Auto-generated method stub
         return null;
       }
 
       @Override
-      public IBDataSource withTargetPath(Path targetPath) {
-        // TODO Auto-generated method stub
-        return null;
-      }
-
-      @Override
-      public IBDataSource withName(String name) {
-        // TODO Auto-generated method stub
-        return null;
-      }
-
-      @Override
-      public IBDataSource withDownloadCacheDirectory(Path cacheDir) {
-        // TODO Auto-generated method stub
-        return null;
-      }
-
-      @Override
-      public IBDataSource withDescription(String description) {
-        // TODO Auto-generated method stub
-        return null;
-      }
-
-      @Override
-      public URL getSourceURL() {
-        // TODO Auto-generated method stub
+      public String getSourceURL() {
         return null;
       }
 
       @Override
       public Optional<String> getName() {
-        // TODO Auto-generated method stub
-        return null;
+        return Optional.empty();
       }
 
       @Override
       public Optional<Document> getMetadata() {
-        // TODO Auto-generated method stub
-        return null;
+        return Optional.empty();
       }
 
       @Override
       public String getId() {
-        // TODO Auto-generated method stub
         return null;
       }
 
       @Override
       public Optional<String> getDescription() {
-        // TODO Auto-generated method stub
-        return null;
+        return Optional.empty();
       }
 
       @Override
       public Optional<BasicCredentials> getCredentials() {
-        // TODO Auto-generated method stub
-        return null;
+        return Optional.empty();
       }
 
       @Override
       public Optional<Checksum> getChecksum() {
-        // TODO Auto-generated method stub
-        return null;
+        return Optional.empty();
+      }
+
+      @Override
+      public Optional<ConfigMap> getAdditionalConfig() {
+        return Optional.empty();
+      }
+
+      @Override
+      public IBDataSource withAdditionalConfig(ConfigMap config) {
+        return this;
       }
     };
   }
 
   @Test
   public void testGetMimeType() {
-    assertEquals(IBConstants.APPLICATION_OCTET_STREAM, i.getMimeType().get());
+    assertEquals(APPLICATION_OCTET_STREAM, i.getMimeType().get());
   }
 
 }

@@ -24,7 +24,9 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.util.BasicCredentials;
+import org.infrastructurebuilder.util.IBLoggerEnabled;
 import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.files.IBChecksumPathType;
 import org.w3c.dom.Document;
 
@@ -32,16 +34,19 @@ import org.w3c.dom.Document;
  * An IBDataSource understands where a data stream originates and how to acquire it.
  * Furthermore, it actually acquires that datastream.
  *
- * An IBDataSource always returns a Path pointer to some acquired tempfile.
+ * An IBDataSource always returns `IBChecksumPathType` which is a path to an acquired file with type and a checksum.
  * The contract for IBDataSource:
  *          1. An IBData
- *          1. the Path supplied is to the same temp file every time.
+ *          1. the Path supplied is to the same file every time.
  *
  * @author mykel.alvis
  *
  */
-public interface IBDataSource extends Supplier<Optional<IBChecksumPathType>> {
-  URL getSourceURL();
+public interface IBDataSource extends Supplier<Optional<IBChecksumPathType>>, IBLoggerEnabled {
+  public static final String TARGET_PATH = "Source-Target-Path";
+  public static final String CACHE_DIR = "Source-Cache-Directory";
+
+  String getSourceURL();
 
   Optional<BasicCredentials> getCredentials();
 
@@ -53,22 +58,19 @@ public interface IBDataSource extends Supplier<Optional<IBChecksumPathType>> {
 
   Optional<String> getDescription();
 
+  Optional<ConfigMap> getAdditionalConfig();
+
   /**
    * This is really a descriptive value, although it needs to be unique as well
    * @return
    */
   String getId();
 
-  default Optional<String> getMimeType() {
+
+  default Optional<String> getMimeType() { // FIXME I think this is polluting downstream
     return of(APPLICATION_OCTET_STREAM);
   }
 
-  IBDataSource withTargetPath(Path targetPath);
-
-  IBDataSource withName(String name);
-
-  IBDataSource withDescription(String description);
-
-  IBDataSource withDownloadCacheDirectory(Path cacheDir);
+  IBDataSource withAdditionalConfig(ConfigMap config);
 
 }

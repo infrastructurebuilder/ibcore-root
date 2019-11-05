@@ -36,13 +36,11 @@ public class IBDataTypedStreamSupplierSupplierTest {
 
       @Override
       public List<String> getRespondsToTypes() {
-        // TODO Auto-generated method stub
         return Arrays.asList("A","C");
       }
 
       @Override
       public Optional<IBDataSpecificStreamFactory> from(IBDataStream ds) {
-        // TODO Auto-generated method stub
         return null;
       }
     };

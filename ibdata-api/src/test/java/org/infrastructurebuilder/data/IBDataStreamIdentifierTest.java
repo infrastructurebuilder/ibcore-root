@@ -16,7 +16,9 @@
 package org.infrastructurebuilder.data;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,13 +30,13 @@ import org.junit.Test;
 public class IBDataStreamIdentifierTest extends AbstractModelTest {
 
   private UUID id;
-  private URL url;
+  private String url;
   private URL paU;
 
   @Before
   public void setUp() throws Exception {
     super.setUp();
-    url = new URL(SOURCE_URL);
+    url = SOURCE_URL;
   }
 
   @Test
@@ -56,4 +58,14 @@ public class IBDataStreamIdentifierTest extends AbstractModelTest {
     assertEquals(STREAM_ID, stream.getId().toString());
   }
 
+  @Test
+  public void testPathAsURLMore() throws MalformedURLException {
+    String filePath = "/cf031c5a-3a34-3175-8140-26819803d395.csv";
+    stream.setPath(filePath);
+    String p = wps.getTestClasses().resolve("test.jar").toAbsolutePath().toUri().toURL().toExternalForm();
+    String p2 = p + "!" + IBDataConstants.IBDATA_IBDATASET_XML;
+    finalData.setPath(p);
+    Optional<URL> q = stream.pathAsURL(finalData);
+    assertTrue(q.get().toExternalForm().endsWith("test.jar!" + filePath));
+  }
 }

@@ -28,6 +28,9 @@ import org.json.JSONObject;
 
 public class DefaultCryptoIdentifier implements CryptoIdentifier {
 
+  private static final String IDENTIFIERS = "identifiers";
+  private static final String VALIDATION_IDENTIFIERS = "validation-identifiers";
+  private static final String TYPE = "type";
   private final String type;
   private final String validationIdentifier;
   private final String id;
@@ -43,21 +46,19 @@ public class DefaultCryptoIdentifier implements CryptoIdentifier {
 
   @Override
   public JSONObject asJSON() {
-    // TODO Auto-generated method stub
     return JSONBuilder.newInstance().addString("id", getId())
         // type
-        .addString("type", getType())
+        .addString(TYPE, getType())
         // identifiers
-        .addString("validation-identifiers", getValidationIdentifier())
+        .addString(VALIDATION_IDENTIFIERS, getValidationIdentifier())
         //
-        .addSetString("identifiers", getIdentifiers())
+        .addSetString(IDENTIFIERS, getIdentifiers())
         //
         .asJSON();
   }
 
   @Override
   public Checksum asChecksum() {
-    // TODO Auto-generated method stub
     return ChecksumBuilder.newInstance()
         // ID
         .addString(getId())

@@ -48,7 +48,7 @@ public interface IBDataStreamRecordFinalizer<T> extends Supplier<InputStream>, A
    */
   OutputStream getWriterTarget() throws IOException;
 
-  IBDataStreamSupplier finalizeRecord(IBDataStreamIdentifier ds);
+  Supplier<IBDataStream> finalizeRecord(IBDataStreamIdentifier ds);
 
   Path getWorkingPath();
 

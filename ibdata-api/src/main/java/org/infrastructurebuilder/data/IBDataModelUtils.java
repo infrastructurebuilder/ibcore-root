@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.infrastructurebuilder.data.model.DataSet;
 import org.infrastructurebuilder.data.model.DataSetInputSource;
@@ -65,19 +66,11 @@ public class IBDataModelUtils {
     }
   }
 
-  public final static void mutatingDataSetCloneHook(DataSet ds) {
-    ds.getStreams().forEach(s -> s.setPath(relativizePath(ds, s)));
-  }
-
-  public final static void mutatingDataStreamCloneHook(DataStream s) {
-    //    ds.getStreams().forEach(s -> s.setPath(relativizePath(ds, s)));
-  }
-
   public final static String relativizePath(DataSet ds, DataStream s) {
     return nullSafeURLMapper.apply(ds.getPath()).map(u -> {
       String u1 = u.toExternalForm();
-      String s2 = s.getPath();
-      return (s2.startsWith(u1)) ? s2.substring(u1.length()) : s2;
+      String s2P = s.getPath();
+      return ofNullable(s2P).map(s2 -> (s2.startsWith(u1)) ? s2.substring(u1.length()) : s2).orElse(null);
     }).orElse(s.getPath());
   }
 
@@ -137,7 +130,7 @@ public class IBDataModelUtils {
    * @throws IOException
    */
   public final static IBChecksumPathType forceToFinalizedPath(Date creationDate, Path workingPath, DataSet finalData,
-      List<IBDataStreamSupplier> ibdssList, TypeToExtensionMapper t2e) throws IOException {
+      List<Supplier<IBDataStream>> ibdssList, TypeToExtensionMapper t2e) throws IOException {
 
     // This archive is about to be created
     finalData.setCreationDate(requireNonNull(creationDate)); // That is now
@@ -149,15 +142,15 @@ public class IBDataModelUtils {
     finalData.setStreams(
         // The list of streams
         ibdssList.stream()
+            // Fetch the IBDS
+            .map(Supplier::get)
             // Relocate the stream
             .map(dss -> dss.relocateTo(newWorkingPath, t2e))
-            // Fetch the IBDS
-            .map(IBDataStreamSupplier::get)
             // Map the IBDataStream to a DataStream object
             .map(toDataStream)
             // to list
             .collect(toList()));
-//    finalData.getStreams().stream().forEach(dss -> dss.setPath(IBDataModelUtils.relativizePath(finalData, dss)));
+    //    finalData.getStreams().stream().forEach(dss -> dss.setPath(IBDataModelUtils.relativizePath(finalData, dss)));
     // The id of the archive is based on the checksum of the data within it
     Checksum dsChecksum = fromPathDSAndStream(newWorkingPath, finalData);
     finalData.setUuid(dsChecksum.asUUID().get().toString());

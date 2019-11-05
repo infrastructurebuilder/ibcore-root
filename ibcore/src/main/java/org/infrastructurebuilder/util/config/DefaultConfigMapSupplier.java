@@ -17,6 +17,8 @@ package org.infrastructurebuilder.util.config;
 
 import static java.util.Collections.list;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 
 import java.util.Map;
@@ -27,18 +29,18 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DefaultConfigMapSupplier implements ConfigMapSupplier {
 
   private final ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
-  private final Optional<ConfigMapSupplier> init;
+  private final Optional<ConfigMap> init;
 
   public DefaultConfigMapSupplier() {
-    this(null);
+    this.init = empty();
   }
 
   public DefaultConfigMapSupplier(ConfigMapSupplier init) {
-    this.init = Optional.ofNullable(init);
-    //    if (this.init.isPresent()) {
-    //      ConfigMap c = this.init.get().get();
-    //    }
-    //    this.init.ifPresent(i -> map.putAll(i.get()));
+    this.init = ofNullable(init).map(ConfigMapSupplier::get);
+  }
+
+  public DefaultConfigMapSupplier(ConfigMap init) {
+    this.init= ofNullable(init);
   }
 
   @Override
@@ -77,9 +79,9 @@ public class DefaultConfigMapSupplier implements ConfigMapSupplier {
   }
 
   public final Map<String, Object> asMap() {
-    Map<String,Object> o = new ConcurrentHashMap<>();
+    Map<String, Object> o = new ConcurrentHashMap<>();
     if (init.isPresent()) {
-      o.putAll(init.get().asMap());
+      o.putAll(init.get());
     }
     o.putAll(map);
     return o;
@@ -128,7 +130,7 @@ public class DefaultConfigMapSupplier implements ConfigMapSupplier {
   @Override
   public ConfigMapSupplier overrideValueDefault(final String key, final Object value, final String defaultValue) {
     synchronized (map) {
-      map.put(key, Optional.ofNullable(value).orElse(defaultValue));
+      map.put(key, ofNullable(value).orElse(defaultValue));
     }
     return this;
   }

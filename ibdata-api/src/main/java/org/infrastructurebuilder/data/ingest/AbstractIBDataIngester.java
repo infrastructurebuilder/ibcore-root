@@ -51,5 +51,10 @@ abstract public class AbstractIBDataIngester implements IBDataIngester {
     return workingPath;
   }
 
+  @Override
+  public AbstractIBDataIngester configure(ConfigMap map) {
+    return this;
+  }
+
 
 }

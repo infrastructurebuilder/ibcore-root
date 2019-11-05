@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +38,6 @@ public class IBDataStreamRecordFinalizerTest {
 
       @Override
       public InputStream get() {
-        // TODO Auto-generated method stub
         return null;
       }
 
@@ -47,37 +47,31 @@ public class IBDataStreamRecordFinalizerTest {
       }
       @Override
       public void close() throws Exception {
-        // TODO Auto-generated method stub
 
       }
 
       @Override
       public String getId() {
-        // TODO Auto-generated method stub
         return null;
       }
 
       @Override
       public Optional<IBDataTransformationError> writeRecord(Object recordToWrite) {
-        // TODO Auto-generated method stub
         return null;
       }
 
       @Override
       public OutputStream getWriterTarget() throws IOException {
-        // TODO Auto-generated method stub
         return null;
       }
 
       @Override
-      public IBDataStreamSupplier finalizeRecord(IBDataStreamIdentifier ds) {
-        // TODO Auto-generated method stub
-        return null;
+      public Supplier<IBDataStream> finalizeRecord(IBDataStreamIdentifier ds) {
+        return () -> null;
       }
 
       @Override
       public Path getWorkingPath() {
-        // TODO Auto-generated method stub
         return null;
       }
     };

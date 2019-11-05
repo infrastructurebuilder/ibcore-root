@@ -18,6 +18,7 @@ package org.infrastructurebuilder.data.transform.line;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
+import org.slf4j.Logger;
 
 /**
  * IMPORTANT!  READ THIS!
@@ -29,6 +30,8 @@ import org.infrastructurebuilder.util.config.ConfigMapSupplier;
  */
 public interface IBDataRecordTransformerSupplier<I, O> extends Supplier<IBDataRecordTransformer<I,O>> {
   String getHint();
+
+  Logger getLogger();
 
   IBDataRecordTransformerSupplier<I, O> configure(ConfigMapSupplier cms);
 

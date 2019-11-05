@@ -34,7 +34,6 @@ public class AbstractCMSConfigurableSupplierTest {
 
       @Override
       public AbstractCMSConfigurableSupplier<String> getConfiguredSupplier(ConfigMapSupplier cms) {
-        // TODO Auto-generated method stub
         return this;
       }
 

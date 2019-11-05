@@ -13,18 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data;
+package org.infrastructurebuilder.data.ingest;
 
-import java.nio.file.Path;
-import java.util.UUID;
-import java.util.function.Supplier;
+import org.infrastructurebuilder.data.IBDataSourceSupplier;
 
-import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
+public interface IBDataSourceSupplierMapper {
 
-public interface IBDataStreamSupplier extends Supplier<IBDataStream> {
+  boolean respondsTo(DefaultIBDataStreamIdentifierConfigBean v);
 
-  UUID getId();
-
-  IBDataStreamSupplier relocateTo(Path newWorkingPath, TypeToExtensionMapper t2e);
+  IBDataSourceSupplier getSupplierFor(DefaultIBDataStreamIdentifierConfigBean v);
 
 }

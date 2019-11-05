@@ -19,9 +19,11 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.infrastructurebuilder.data.IBDataConstants.APPLICATION_IBDATA_ARCHIVE;
 
+import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.util.artifacts.Checksum;
@@ -37,7 +39,7 @@ import org.infrastructurebuilder.util.files.IBChecksumPathType;
  */
 public interface IBDataSet extends IBDataSetIdentifier {
 
-  List<IBDataStreamSupplier> getStreamSuppliers();
+  List<Supplier<IBDataStream>> getStreamSuppliers();
 
   /**
    * Get the aggregated checksum of all the checksums of all the data streams.
@@ -48,7 +50,7 @@ public interface IBDataSet extends IBDataSetIdentifier {
    */
   default Optional<Checksum> getDataChecksum() {
     return ofNullable(getStreamSuppliers().size() > 0
-        ? new Checksum(asStreamsList().stream().map(IBDataStream::getChecksum).collect(toList()))
+        ? new Checksum(asStreamsList().stream().map(ss -> new Checksum(ss.get())).collect(toList()))
         : null);
   }
 

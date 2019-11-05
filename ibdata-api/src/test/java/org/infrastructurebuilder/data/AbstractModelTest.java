@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
@@ -82,6 +83,9 @@ public class AbstractModelTest {
     public FakeIBDataStream(DataStream ds, Path p) {
       super(ds);
       this.localPath = p;
+
+      Checksum c = new Checksum(p);
+      setSha512(c.toString());
     }
 
     public Path getLocalPath() {
@@ -122,14 +126,12 @@ public class AbstractModelTest {
 
     @Override
     public IBDataStream relocateTo(Path newWorkingPath, TypeToExtensionMapper t2e) {
-
-      // TODO Auto-generated method stub
       return null;
     }
 
   }
 
-  public final static class FakeIBDataStreamSupplier extends DataStream implements IBDataStreamSupplier {
+  public final static class FakeIBDataStreamSupplier extends DataStream implements Supplier<IBDataStream> {
 
     private IBDataStream stream;
 
@@ -153,10 +155,6 @@ public class AbstractModelTest {
       return super.asChecksum();
     }
 
-    @Override
-    public IBDataStreamSupplier relocateTo(Path newWorkingPath, TypeToExtensionMapper t2e) {
-      return this;
-    }
 
   }
 
@@ -172,7 +170,7 @@ public class AbstractModelTest {
     }
 
     @Override
-    public List<IBDataStreamSupplier> getStreamSuppliers() {
+    public List<Supplier<IBDataStream>> getStreamSuppliers() {
       return suppliers.stream().collect(toList());
     }
   }
@@ -188,6 +186,8 @@ public class AbstractModelTest {
     finalData.setModelVersion("1.0");
     finalData.setDataSetDescription(DESC);
     finalData.setDataSetName(NAME);
+
+
 
     stream = new DataStream();
     stream.setCreationDate(now);
@@ -211,8 +211,8 @@ public class AbstractModelTest {
 
     full_0_11 = wps.get();
     ibd = full_0_11.resolve(IBDATA);
-    Path ibd_o11_1 = ibd.resolve(O11_1);
-    Path ibd_o11_2 = ibd.resolve(O11_2);
+    Path ibd_o11_1 = full_0_11.resolve(O11_1);
+    Path ibd_o11_2 = full_0_11.resolve(O11_2);
     Files.createDirectories(ibd);
     Path t = wps.getTestClasses();
     Path o11_1 = t.resolve(O11_1);

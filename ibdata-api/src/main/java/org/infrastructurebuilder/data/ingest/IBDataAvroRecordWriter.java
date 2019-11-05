@@ -13,16 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data;
+package org.infrastructurebuilder.data.ingest;
 
-import java.util.function.Supplier;
+import org.infrastructurebuilder.util.files.IBChecksumPathType;
 
-/**
- * Supplies the config for, specifically, an ingestion
- * @author mykel.alvis
- *
- */
-public interface IBDataSourceSupplier extends Supplier<IBDataSource>, Comparable<IBDataSourceSupplier> {
-  String getId();
+public interface IBDataAvroRecordWriter<R> {
+
+  IBChecksumPathType writeRecords(Iterable<R> result);
 
 }

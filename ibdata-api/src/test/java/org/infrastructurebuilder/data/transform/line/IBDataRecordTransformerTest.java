@@ -20,8 +20,12 @@ import static org.junit.Assert.assertFalse;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class IBDataRecordTransformerTest {
+
+  private final static Logger log = LoggerFactory.getLogger(IBDataRecordTransformerTest.class);
 
   private IBDataRecordTransformer<Object, Object> i;
 
@@ -31,26 +35,27 @@ public class IBDataRecordTransformerTest {
 
       @Override
       public Object apply(Object t) {
-        // TODO Auto-generated method stub
-        return null;
+        return t;
       }
 
       @Override
       public String getHint() {
-        // TODO Auto-generated method stub
-        return null;
+        return "very-dumb";
       }
 
       @Override
       public boolean respondsTo(Object o) {
-        // TODO Auto-generated method stub
         return false;
       }
 
       @Override
       public IBDataRecordTransformer<Object, Object> configure(ConfigMap cms) {
-        // TODO Auto-generated method stub
-        return null;
+        return this;
+      }
+
+      @Override
+      public Logger getLogger() {
+        return log;
       }
     };
   }

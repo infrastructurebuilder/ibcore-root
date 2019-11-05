@@ -47,8 +47,8 @@ public class ConfigMap implements Map<String,Object> {
     return Optional.ofNullable(get(key)).map(Object::toString).orElse(null);
   }
 
-  public final Object get(String key) {
-    return this.config.get(key);
+  public final <T> T get(String key) {
+    return (T) this.config.get(key);
   }
 
   public final Set<String> keySet() {
@@ -71,19 +71,17 @@ public class ConfigMap implements Map<String,Object> {
     return getObjectOrDefault(key, defaultValue).toString();
   }
 
-  public Object getObjectOrDefault(String key, Object defaultValue) {
-    return config.getOrDefault(key, defaultValue);
+  public <T> T getObjectOrDefault(String key, T defaultValue) {
+    return (T) config.getOrDefault(key, defaultValue);
   }
 
   @Override
   public boolean isEmpty() {
-    // TODO Auto-generated method stub
     return config.isEmpty();
   }
 
   @Override
   public boolean containsKey(Object key) {
-    // TODO Auto-generated method stub
     return config.containsKey(key);
   }
 

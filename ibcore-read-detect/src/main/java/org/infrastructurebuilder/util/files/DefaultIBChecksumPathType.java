@@ -15,19 +15,48 @@
  */
 package org.infrastructurebuilder.util.files;
 
+import static org.infrastructurebuilder.IBException.cet;
+import static org.infrastructurebuilder.util.IBUtils.moveAtomic;
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 
 import org.apache.tika.Tika;
 import org.infrastructurebuilder.IBException;
+import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 
 public class DefaultIBChecksumPathType extends BasicIBChecksumPathType implements IBChecksumPathType {
-  public final static Tika tika = new Tika();
+  private final static Tika tika = new Tika();
+
+  public final static IBChecksumPathType copyToDeletedOnExitTempChecksumAndPath(Optional<Path> targetDir, String prefix,
+      String suffix, final InputStream source) {
+    return cet.withReturningTranslation(() -> {
+      Path target = Objects.requireNonNull(targetDir).isPresent()
+          ? Files.createTempFile(targetDir.get(), prefix, suffix)
+          : Files.createTempFile(prefix, suffix);
+      if (!targetDir.isPresent())
+        target.toFile().deleteOnExit();
+      try (OutputStream outs = Files.newOutputStream(target)) {
+        Checksum k = IBUtils.copyAndDigest(source, outs);
+        Optional<Path> newTarget = targetDir.map(td -> td.resolve(k.asUUID().get().toString()));
+        newTarget.ifPresent(nt -> {
+          cet.withTranslation(() -> outs.close());
+          cet.withTranslation(() -> moveAtomic(target, nt));
+        });
+        IBChecksumPathType cpt = new DefaultIBChecksumPathType(Files.exists(target) ? target : newTarget.get(), k);
+        return cpt;
+      }
+    });
+  }
+
   public final static Function<Path, String> toType = (path) -> {
     synchronized (tika) { // FIXME Unnecessary
       try (InputStream ins = Files.newInputStream(path, StandardOpenOption.READ)) {

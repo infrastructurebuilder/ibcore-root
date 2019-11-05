@@ -73,7 +73,7 @@ public class IBMetadataUtils {
     return writer.toString();
   });
 
-  public final static Function<Object, Object> translateToXpp3Dom = (document) -> cet.withReturningTranslation(() -> {
+  public final static Function<Object, Xpp3Dom> translateToXpp3Dom = (document) -> cet.withReturningTranslation(() -> {
     if (document instanceof Xpp3Dom)
       return (Xpp3Dom) document;
     else if (document instanceof Document) {
@@ -98,7 +98,7 @@ public class IBMetadataUtils {
     requireNonNull(ibds).getName().ifPresent(ds::setDataStreamName);
     ds.setCreationDate(ibds.getCreationDate());
     ibds.getDescription().ifPresent(ds::setDataStreamDescription);
-    ibds.getURL().ifPresent(u -> ds.setSourceURL(u.toExternalForm()));
+    ibds.getURL().ifPresent(u -> ds.setSourceURL(u));
     ds.setMetadata(IBMetadataUtils.translateToXpp3Dom.apply((Object) ibds.getMetadata()));
     ds.setMimeType(ibds.getMimeType());
     ds.setSha512(ibds.getChecksum().toString());
@@ -106,53 +106,8 @@ public class IBMetadataUtils {
     ds.setPath(ibds.getPath());
     return ds;
   };
-  //public final static Document extractDatasetMetadataTheHardWay(final Xpp3Dom xpp) throws MojoFailureException {
-  ////    Xpp3Dom xpp = getMojo().getConfiguration();
-  //
-  //final XPath xPath = XPathFactory.newInstance().newXPath();
-  //final Document document = IBMetadataUtils.fromXpp3Dom.apply(xpp);
-  //try {
-  //  final NodeList nodeList = (NodeList) xPath.compile("/configuration/ingestionConfig/dataSet/metadata")
-  //      .evaluate(document, XPathConstants.NODESET);
-  //  switch (nodeList.getLength()) {
-  //  case 0:
-  //    return IBDataSetIdentifier.emptyDocumentSupplier.get();
-  //  case 1:
-  //    final Node nNode = nodeList.item(1);
-  //    final Document d = IBDataSetIdentifier.emptyDocumentSupplier.get();
-  //    d.appendChild(d.importNode(nNode, true));
-  //    return d;
-  //  default:
-  //    throw new MojoFailureException("Too many metadata nodes for DataSet");
-  //  }
-  //} catch (final XPathExpressionException e) {
-  //  throw new MojoFailureException("Failed to acquire metadata", e);
-  //}
-  //}
-  //
-  //public final static Map<String, Document> extractDatastreamsMetadataTheHardWay(final Xpp3Dom xpp)
-  //  throws MojoFailureException {
-  //final XPath xPath = XPathFactory.newInstance().newXPath();
-  //final Document document = IBMetadataUtils.fromXpp3Dom.apply(xpp);
-  //try {
-  //  final NodeList nodeList = (NodeList) xPath.compile("/configuration/ingestionConfig/dataSet/streams/id")
-  //      .evaluate(document, XPathConstants.NODESET);
-  //  final Map<String, Document> dMap = new HashMap<>();
-  //  for (int i = 0; i < nodeList.getLength(); ++i) {
-  //    final Node nNode = nodeList.item(i);
-  //
-  //    final String key = "default";
-  //    final Document d = IBDataSetIdentifier.emptyDocumentSupplier.get();
-  //    d.appendChild(d.importNode(nNode, true));
-  //    dMap.putIfAbsent(key, d);
-  //  }
-  //  return dMap;
-  //} catch (final XPathExpressionException e) {
-  //  throw new MojoFailureException("Failed to acquire metadata", e);
-  //}
-  //}
+
   /**
-   * FIXME Move this to IBMetadataUtils
    * Function to compare W3c Dcoument instances (by string compare, like a filthy animal
    */
   public final static BiFunction<Document, Document, Boolean> w3cDocumentEqualser = (lhs, rhs) -> {

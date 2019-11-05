@@ -19,11 +19,15 @@ import java.util.function.Supplier;
 
 public class TSupplier<T> implements Supplier<T> {
 
-
   private T t;
 
+  public TSupplier() {
+    this.t = null;
+  }
+
   public void setT(T t) {
-    this.t = t;
+    if (this.t == null) // You can only set it once
+      this.t = t;
   }
 
   @Override

@@ -25,6 +25,7 @@ import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 
 public class MavenConfigWithServersMapSupplierTest extends MavenConfigMapSupplierTest {
 
@@ -34,7 +35,7 @@ public class MavenConfigWithServersMapSupplierTest extends MavenConfigMapSupplie
   private static final String USERNAME = "username";
   private MavenConfigWithServersMapSupplier cms;
   private Settings s;
-  private String ns,ns2;
+  private String ns, ns2;
   private MavenConfigWithServersMapSupplier cms2;
 
   @Before
@@ -42,34 +43,34 @@ public class MavenConfigWithServersMapSupplierTest extends MavenConfigMapSupplie
     s = new Settings();
     final Server server = new Server();
     ns = MAVEN_SETTINGS_SERVER_NAMESPACE + "id.";
-   server.setId("id");
-   server.setUsername(USERNAME);
-   server.setPassphrase(PASSPHRASE);
-   server.setPassword(PASSWORD);
-   server.setPrivateKey(PRIVATEKEY);
-   s.addServer(server);
+    server.setId("id");
+    server.setUsername(USERNAME);
+    server.setPassphrase(PASSPHRASE);
+    server.setPassword(PASSWORD);
+    server.setPrivateKey(PRIVATEKEY);
+    s.addServer(server);
 
-   final Server server2 = new Server();
-   ns2 = MAVEN_SETTINGS_SERVER_NAMESPACE + "id2.";
-  server2.setId("id2");
-  server2.setUsername(USERNAME + "2");
-  server2.setPassphrase(PASSPHRASE + "2");
-  server2.setPassword(PASSWORD + "2");
-  server2.setPrivateKey(PRIVATEKEY + "2");
-  s.addServer(server2);
+    final Server server2 = new Server();
+    ns2 = MAVEN_SETTINGS_SERVER_NAMESPACE + "id2.";
+    server2.setId("id2");
+    server2.setUsername(USERNAME + "2");
+    server2.setPassphrase(PASSPHRASE + "2");
+    server2.setPassword(PASSWORD + "2");
+    server2.setPrivateKey(PRIVATEKEY + "2");
+    s.addServer(server2);
 
-    cms = new MavenConfigWithServersMapSupplier(mp,s, ms, me);
-    cms2 = new MavenConfigWithServersMapSupplier(mp,new Settings(), ms, me);
+    cms = new MavenConfigWithServersMapSupplier(mp, s, ms, me);
+    cms2 = new MavenConfigWithServersMapSupplier(mp, new Settings(), ms, me);
   }
-
 
   @Test
   public void testNoSettings() {
     final ConfigMap map = cms2.get();
-    for (String key: map.keySet()) {
+    for (String key : map.keySet()) {
       assertFalse(key.startsWith(MAVEN_SETTINGS_SERVER_NAMESPACE));
     }
   }
+
   @Test
   public void testSetSettings() {
     final ConfigMap map = cms.get();
@@ -78,7 +79,7 @@ public class MavenConfigWithServersMapSupplierTest extends MavenConfigMapSupplie
     assertEquals(map.getString(ns + PASSWORD), PASSWORD);
     assertEquals(map.getString(ns + PRIVATEKEY), PRIVATEKEY);
 
-    assertEquals(map.getString(ns2 + PRIVATEKEY ), PRIVATEKEY +"2");
+    assertEquals(map.getString(ns2 + PRIVATEKEY), PRIVATEKEY + "2");
   }
 
 }

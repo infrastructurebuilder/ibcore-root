@@ -35,4 +35,11 @@ public interface IBDataConstants {
   public static final String ANY_TYPE = "*ANY*";
   public static final String IBDATA_WORKING_DIRECTORY = "ibdata.working.directory";
 
+  public final static String TIMESTAMP_FORMATTER = "timestamp.formatter";
+  public final static String TIME_FORMATTER = "time.formatter";
+  public final static String DATE_FORMATTER = "date.formatter";
+
+  public final static String LOCALE_LANGUAGE_PARAM = "locale.language";
+  public final static String LOCALE_REGION_PARAM = "locale.region";
+
 }

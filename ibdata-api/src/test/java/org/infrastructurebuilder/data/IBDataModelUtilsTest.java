@@ -14,21 +14,31 @@
  * limitations under the License.
  */
 package org.infrastructurebuilder.data;
+
 import static org.infrastructurebuilder.data.IBDataConstants.IBDATA;
 import static org.infrastructurebuilder.data.IBDataConstants.IBDATASET_XML;
-import static org.infrastructurebuilder.data.IBDataModelUtils.forceToFinalizedPath;
+import static org.infrastructurebuilder.data.IBDataModelUtils.*;
 import static org.infrastructurebuilder.data.IBMetadataUtilsTest.TEST_INPUT_0_11_XML;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.infrastructurebuilder.data.model.DataSet;
+import org.infrastructurebuilder.data.model.DataStream;
 import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.files.IBChecksumPathType;
 import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
@@ -40,10 +50,6 @@ public class IBDataModelUtilsTest extends AbstractModelTest {
     new IBDataModelUtils();
   }
 
-  @Test
-  public void testStreamCloneHook() {
-    IBDataModelUtils.mutatingDataStreamCloneHook(null);
-  }
   @Test
   public void testMapInputStreamToDataSet() throws IOException {
     InputStream t = getClass().getResourceAsStream(TEST_INPUT_0_11_XML);
@@ -61,9 +67,34 @@ public class IBDataModelUtilsTest extends AbstractModelTest {
   }
 
   @Test
+  public void testSafeMapURL() throws Exception {
+    assertFalse(safeMapURL.apply(null).isPresent());
+    assertTrue(safeMapURL.apply("https://www.google.com").isPresent());
+  }
+
+  @Test(expected = IBDataException.class)
+  public void testSafeMapURLFail() throws Exception {
+    assertTrue(safeMapURL.apply("nope").isPresent());
+  }
+
+  @Test
   public void testFromPathDSAndStream() {
 
     //    fail("Not yet implemented");
+  }
+
+  @Test
+  public void testRelPath() throws MalformedURLException {
+    Path p = wps.getTestClasses();
+    DataSet set = new DataSet();
+    DataStream stream = new DataStream();
+    String v = relativizePath(set, stream);
+    assertNull(v);
+    String uP = p.toUri().toURL().toExternalForm();
+    set.setPath(uP);
+    assertNull(relativizePath(set, stream));
+    stream.setPath(uP + File.separator + "X");
+    assertEquals(File.separator + "X", relativizePath(set, stream));
   }
 
   @Test
@@ -71,7 +102,7 @@ public class IBDataModelUtilsTest extends AbstractModelTest {
     Path workingPath = wps.get();
     Path tPath = workingPath.getParent().resolve("75b331e0-faaa-3464-9219-2ca72f0ad31e");
     IBUtils.deletePath(tPath); // Fails if exists
-    List<IBDataStreamSupplier> ibdssList = new ArrayList<>();
+    List<Supplier<IBDataStream>> ibdssList = new ArrayList<>();
     TypeToExtensionMapper t2e = new FakeTypeToExtensionMapper();
     IBChecksumPathType v = forceToFinalizedPath(now, workingPath, finalData, ibdssList, t2e);
     assertEquals(tPath, v.getPath());

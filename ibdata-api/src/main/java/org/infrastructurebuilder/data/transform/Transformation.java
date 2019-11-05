@@ -44,7 +44,6 @@ public class Transformation implements DataSetEnabled {
   private String groupId, artifactId, version, name, description;
   private Xpp3Dom metadata;
 
-
   @Override
   public String toString() {
     return "Transformation [id=" + id + ", transformers=" + transformers + ", finalizer=" + finalizer + ", groupId="
@@ -118,9 +117,9 @@ public class Transformation implements DataSetEnabled {
   }
 
   public void forceDefaults(String groupId, String artifactId, String version) {
-   setGroupId(groupId);
-   setArtifactId(artifactId);
-   setVersion(version);
+    setGroupId(groupId);
+    setArtifactId(artifactId);
+    setVersion(version);
     if (this.metadata == null)
       this.metadata = new Xpp3Dom("metadata"); // FIXME Where do we make metadata happen for a transformer
   }

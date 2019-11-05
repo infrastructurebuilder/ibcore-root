@@ -42,19 +42,16 @@ public class IBSerializerTest {
 
       @Override
       public IBSerializer<Object, Object, InputStream> toPath(Path p) {
-        // TODO Auto-generated method stub
         return null;
       }
 
       @Override
       public IBSerializer<Object, Object, InputStream> withSerializationConfiguration(Object c) {
-        // TODO Auto-generated method stub
         return null;
       }
 
       @Override
       public Optional<InputStream> getSerializer() {
-        // TODO Auto-generated method stub
         return Optional.of(IBDataException.cet.withReturningTranslation(() -> Files.newInputStream(p)));
       }
     };

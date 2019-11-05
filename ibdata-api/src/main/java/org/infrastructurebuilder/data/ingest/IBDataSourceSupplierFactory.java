@@ -13,27 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.config;
+package org.infrastructurebuilder.data.ingest;
 
-import java.nio.file.Path;
+import java.util.SortedMap;
 
-import javax.inject.Named;
+import org.infrastructurebuilder.data.IBDataSourceSupplier;
 
-@Named(LateBindingPathSupplier.LATE_BINDING_PATH_SUPPLIER)
-public class LateBindingPathSupplier extends TSupplier<Path> implements PathSupplier {
+public interface IBDataSourceSupplierFactory {
 
-  public static final String LATE_BINDING_PATH_SUPPLIER = "late-binding-path-supplier";
-
-  public LateBindingPathSupplier() {
-    setT(null);
-  }
-
-  private LateBindingPathSupplier(Path p) {
-    setT(p);
-  }
-
-  PathSupplier withLateBoundPath(Path p) {
-    return new LateBindingPathSupplier(p);
-  }
+  SortedMap<String, IBDataSourceSupplier> mapIngestionToSourceSuppliers(Ingestion i);
 
 }

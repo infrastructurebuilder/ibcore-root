@@ -56,9 +56,11 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
 
   /**
    * The source of this stream.  Optional, but HIGHLY important
+   *
+   * Note that this might be a JDBC URL as well, so it can't be an ACTUAL java.net.URL (yet)
    * @return Optional URL of the underlying stream
    */
-  Optional<URL> getURL();
+  Optional<String> getURL();
 
   /**
    * @return Optional Name supplied at creation time
@@ -123,7 +125,7 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
   default Checksum getMetadataChecksum() {
     return ChecksumBuilder.newInstance()
         // URL
-        .addString(getURL().map(URL::toExternalForm))
+        .addString(getURL())
         // Name
         .addString(getName())
         // Desc

@@ -17,8 +17,11 @@ package org.infrastructurebuilder.data;
 
 import java.util.List;
 import java.util.SortedMap;
+import java.util.function.Supplier;
 
+import org.infrastructurebuilder.data.ingest.Ingestion;
 import org.infrastructurebuilder.util.LoggerEnabled;
+import org.infrastructurebuilder.util.config.ConfigMap;
 
 /**
  * Instances of this need to Inject a  Named(IBDATA_WORKING_PATH_SUPPLIER) WorkingPathSupplier wps
@@ -28,6 +31,7 @@ import org.infrastructurebuilder.util.LoggerEnabled;
  */
 public interface IBDataIngester extends LoggerEnabled {
 
+  IBDataIngester configure(ConfigMap map);
   /**
    *
    * Reads a source and returns a calculated set of attributes.  Since the result of any write action is
@@ -38,5 +42,5 @@ public interface IBDataIngester extends LoggerEnabled {
    * @param dss
    * @return
    */
-  List<IBDataStreamSupplier> ingest(IBDataSetIdentifier dsi, SortedMap<String,IBDataSourceSupplier> dss);
+  List<Supplier<IBDataStream>> ingest(Ingestion i, IBDataSetIdentifier dsi, SortedMap<String,IBDataSourceSupplier> dss);
 }
