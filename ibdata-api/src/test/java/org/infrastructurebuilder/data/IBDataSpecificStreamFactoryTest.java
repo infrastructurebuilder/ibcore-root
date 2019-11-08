@@ -29,19 +29,19 @@ import org.junit.Test;
 
 public class IBDataSpecificStreamFactoryTest {
 
-  private IBDataSpecificStreamFactory i;
+  private IBDataSpecificStreamFactory<Object> i;
 
   @Before
   public void setUp() throws Exception {
-    i = new IBDataSpecificStreamFactory() {
+    i = new IBDataSpecificStreamFactory<Object>() {
 
       @Override
       public List<String> getRespondTypes() {
-        return Arrays.asList("A","B");
+        return Arrays.asList("A", "B");
       }
 
       @Override
-      public Optional<Stream<? extends Object>> from(IBDataStream ds) {
+      public Optional<Stream<Object>> from(IBDataStream ds) {
         // TODO Auto-generated method stub
         return null;
       }
@@ -50,9 +50,8 @@ public class IBDataSpecificStreamFactoryTest {
 
   @Test
   public void testGetWeight() {
-    assertEquals(0,i.getWeight());
+    assertEquals(0, i.getWeight());
   }
-
 
   @Test
   public void testRespondsTo() {

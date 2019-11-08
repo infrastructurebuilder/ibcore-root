@@ -26,7 +26,7 @@ import java.util.stream.Stream;
  * @author mykel.alvis
  *
  */
-public interface IBDataSpecificStreamFactory {
+public interface IBDataSpecificStreamFactory<T> {
 
   /**
    * Order of use. Higher numbers are ahead of lower numbers
@@ -47,7 +47,7 @@ public interface IBDataSpecificStreamFactory {
    * @param ds The stream to read the objects from
    * @return A Stream of Objects.  All should be the same type, but not necessarily knowable ahead of time
    */
-  Optional<Stream<? extends Object>> from(IBDataStream ds);
+  Optional<Stream<T>> from(IBDataStream ds);
 
   default boolean respondsTo(String mimeType) {
     return getRespondTypes().contains(mimeType);
