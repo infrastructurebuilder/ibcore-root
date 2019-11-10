@@ -26,7 +26,7 @@ import java.util.Objects;
 
 import org.infrastructurebuilder.util.config.ConfigMap;
 
-abstract public class Formatters {
+public class Formatters {
   public final static String DEFAULT_TIME_FORMATTER = "HH:mm";
   public final static String DEFAULT_DATE_FORMATTER = "MM-dd-yy";
   public final static DateTimeFormatter DEFAULT_TIMESTAMP_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
