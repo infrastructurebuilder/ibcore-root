@@ -18,7 +18,6 @@ package org.infrastructurebuilder.data.ingest;
 import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.data.IBMetadataUtils.translateToXpp3Dom;
 
-import java.net.URL;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;

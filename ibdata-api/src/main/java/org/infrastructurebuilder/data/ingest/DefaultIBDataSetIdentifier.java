@@ -20,6 +20,7 @@ import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.data.IBMetadataUtils.translateToXpp3Dom;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -148,10 +149,11 @@ public class DefaultIBDataSetIdentifier implements IBDataSetIdentifier {
     return Optional.ofNullable(this.version).orElseThrow(() -> new IBDataException("No version set"));
   }
 
-  public final void injectGAV(String groupId, String artifactId, String version) {
+  public final DefaultIBDataSetIdentifier injectGAV(String groupId, String artifactId, String version) {
     this.groupId = requireNonNull(groupId);
     this.artifactId = requireNonNull(artifactId);
     this.version = requireNonNull(version);
+    return this;
   }
 
   public DataSet asDataSet() {
@@ -162,8 +164,9 @@ public class DefaultIBDataSetIdentifier implements IBDataSetIdentifier {
     ds.setVersion(getVersion());
     ds.setDataSetName(getName().orElse(null));
     ds.setDataSetDescription(getDescription().orElse(null));
-    ds.setMetadata(IBMetadataUtils.translateToXpp3Dom.apply(getMetadata()));
+    ds.setMetadata(translateToXpp3Dom.apply(getMetadata()));
     return ds;
   }
+
 
 }

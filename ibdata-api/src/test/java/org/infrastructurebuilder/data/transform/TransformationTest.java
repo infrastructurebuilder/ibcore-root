@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.data.model.DataSet;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.junit.Before;
@@ -77,7 +77,7 @@ public class TransformationTest {
     assertEquals(NAME, t.getName());
     t.setDescription(DESC);
     assertEquals(DESC, t.getDescription());
-    XmlPlexusConfiguration x = new XmlPlexusConfiguration("A");
+    Xpp3Dom x = new Xpp3Dom("A");
     t.setMetadata(x);
     DataSet s = t.asDataSet();
     assertEquals("A", s.getGroupId());

@@ -27,5 +27,5 @@ public interface IBDataDataStreamRecordFinalizerSupplier<T> extends Supplier<IBD
    * @param cms
    * @return
    */
-  IBDataDataStreamRecordFinalizerSupplier<T> config(ConfigMapSupplier cms);
+  IBDataDataStreamRecordFinalizerSupplier<T> configure(ConfigMapSupplier cms);
 }

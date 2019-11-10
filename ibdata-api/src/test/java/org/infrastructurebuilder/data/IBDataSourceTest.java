@@ -18,8 +18,6 @@ package org.infrastructurebuilder.data;
 import static org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM;
 import static org.junit.Assert.assertEquals;
 
-import java.net.URL;
-import java.nio.file.Path;
 import java.util.Optional;
 
 import org.infrastructurebuilder.util.BasicCredentials;

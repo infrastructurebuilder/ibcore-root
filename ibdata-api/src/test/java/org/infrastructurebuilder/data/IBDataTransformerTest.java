@@ -16,7 +16,7 @@
 package org.infrastructurebuilder.data;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.nio.file.Paths;
 import java.util.Collections;
@@ -75,7 +75,7 @@ public class IBDataTransformerTest {
 
   @Test
   public void test() {
-    assertTrue(i.respondsTo(null));
+    assertFalse(i.respondsTo(null));
     assertEquals(i, i.configure(new ConfigMap()));
   }
 

@@ -20,11 +20,9 @@ import static org.infrastructurebuilder.data.IBDataConstants.IBDATA;
 import static org.infrastructurebuilder.data.IBMetadataUtilsTest.TEST_INPUT_0_11_XML;
 import static org.infrastructurebuilder.data.IBMetadataUtilsTest.TEST_INPUT_0_11_XML_CHECKSUM;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -37,7 +35,6 @@ import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.data.model.DataSet;
 import org.infrastructurebuilder.data.model.DataStream;
-import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.GAV;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
@@ -46,19 +43,19 @@ import org.junit.Before;
 
 public class AbstractModelTest {
 
-  private static final String O11_2 = "183d3030-6dae-4f33-acde-79eacbaa8c2d.txt";
-  private static final String O11_1 = "0dfb7bc9-73aa-4f7e-b735-cbccfa052733.txt";
-  protected static final String SOURCE_URL = "http://www.example.com";
-  protected static final String VERSION = "1.0.0";
-  protected static final String ARTIFACT = "Y";
-  protected static final String GROUP = "X";
-  protected static final String DESC = "desc";
-  protected static final String NAME = "name";
-  protected static final String METADATA_CHECKSUM = "fa2ab560f631546a2f5d1aa6f4c1ec9d00d988010bf9b80d1a195f1537b8e15ae3cf94bdb52c1774d969ab0b6452b91f03531b062aac410deec2c75a2d580ac2";
+  public static final String O11_2 = "183d3030-6dae-4f33-acde-79eacbaa8c2d.txt";
+  public static final String O11_1 = "0dfb7bc9-73aa-4f7e-b735-cbccfa052733.txt";
+  public static final String SOURCE_URL = "http://www.example.com";
+  public static final String VERSION = "1.0.0";
+  public static final String ARTIFACT = "Y";
+  public static final String GROUP = "X";
+  public static final String DESC = "desc";
+  public static final String NAME = "name";
+  public static final String METADATA_CHECKSUM = "fa2ab560f631546a2f5d1aa6f4c1ec9d00d988010bf9b80d1a195f1537b8e15ae3cf94bdb52c1774d969ab0b6452b91f03531b062aac410deec2c75a2d580ac2";
   //  protected static final String STREAM_METADATA_CHECKSUM = "d709f80dc9d4d9fda60631dfa8390a746d4816b5076884ae7bb1fdd5d21489773a44eb0cef038f4b7c27b6c20ba2a0e4bf37ccbab265d47c02806aeda1a03777";
-  protected static final String STREAM_CHECKSUM =TEST_INPUT_0_11_XML_CHECKSUM ;
-  protected static final String STREAM_ID="98a51489-93fd-372d-86c2-4b7d0268608a";
-  protected static final String STREAM_METADATA_CHECKSUM = "3b2c63ccb53069e8b0472ba50053fcae7d1cc84ef774ff2b01c8a0658637901b7d91e71534243b5d29ee246e925efb985b4dbd7330ab1ab251d1e1b8848b9c49";
+  public static final String STREAM_CHECKSUM =TEST_INPUT_0_11_XML_CHECKSUM ;
+  public static final String STREAM_ID="98a51489-93fd-372d-86c2-4b7d0268608a";
+  public static final String STREAM_METADATA_CHECKSUM = "3b2c63ccb53069e8b0472ba50053fcae7d1cc84ef774ff2b01c8a0658637901b7d91e71534243b5d29ee246e925efb985b4dbd7330ab1ab251d1e1b8848b9c49";
 
   protected final TestingPathSupplier wps = new TestingPathSupplier();
   protected DataSet finalData;
@@ -76,60 +73,7 @@ public class AbstractModelTest {
     }
   }
 
-  public final static class FakeIBDataStream extends DataStream implements IBDataStream {
 
-    private final Path localPath;
-
-    public FakeIBDataStream(DataStream ds, Path p) {
-      super(ds);
-      this.localPath = p;
-
-      Checksum c = new Checksum(p);
-      setSha512(c.toString());
-    }
-
-    public Path getLocalPath() {
-      return localPath;
-    }
-
-    private List<InputStream> opened = new ArrayList<>();
-
-    @Override
-    public InputStream get() {
-      InputStream ins = IBDataException.cet
-          .withReturningTranslation(() -> Files.newInputStream(getLocalPath(), StandardOpenOption.READ));
-      opened.add(ins);
-      return ins;
-    }
-
-    @Override
-    public void close() throws Exception {
-      this.opened.forEach(s -> {
-        try {
-          s.close();
-        } catch (IOException e) {
-
-        }
-      });
-      this.opened.clear();
-    }
-
-    @Override
-    public Checksum asChecksum() {
-      return super.asChecksum();
-    }
-
-    @Override
-    public Checksum getChecksum() {
-      return super.getChecksum();
-    }
-
-    @Override
-    public IBDataStream relocateTo(Path newWorkingPath, TypeToExtensionMapper t2e) {
-      return null;
-    }
-
-  }
 
   public final static class FakeIBDataStreamSupplier extends DataStream implements Supplier<IBDataStream> {
 
@@ -149,12 +93,6 @@ public class AbstractModelTest {
     public UUID getId() {
       return stream.getId();
     }
-
-    @Override
-    public Checksum asChecksum() {
-      return super.asChecksum();
-    }
-
 
   }
 
@@ -220,17 +158,6 @@ public class AbstractModelTest {
     Files.copy(o11_1, full_0_11.resolve(O11_1));
     Files.copy(o11_2, full_0_11.resolve(O11_2));
     o11Paths = Arrays.asList(ibd_o11_1.toAbsolutePath(), ibd_o11_2.toAbsolutePath());
-  }
-
-  public final static class DS2 extends DataSet {
-    @Override
-    public Date getCreationDate() {
-      throw new RuntimeException("Whoopsy!");
-    }
-  }
-
-  public AbstractModelTest() {
-    super();
   }
 
 }

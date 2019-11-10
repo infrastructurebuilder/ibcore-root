@@ -57,6 +57,16 @@ public class IBDataRecordTransformerTest {
       public Logger getLogger() {
         return log;
       }
+      @Override
+      public Class<Object> getInboundClass() {
+        return Object.class;
+      }
+
+      @Override
+      public Class<Object> getOutboundClass() {
+        return getInboundClass();
+      }
+
     };
   }
 

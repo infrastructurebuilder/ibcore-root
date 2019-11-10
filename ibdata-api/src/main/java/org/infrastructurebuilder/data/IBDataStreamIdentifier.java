@@ -48,7 +48,7 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
 
   /**
    * <i>Usually</i> this will return the "data stream id", which a UUID generated from the bytes of a Checksum of the contents of the stream in question.
-   * This IS NULLABLE, but only temporarily.  It may not be available, as there might not have been a computed checksum for something that hasn't been
+   * This IS OCCASIONALLY NULL, but only temporarily.  It may not be available, as there might not have been a computed checksum for something that hasn't been
    * calculated yet.
    * @return A UUID from the Checksum of the contents of the stream or null.  Null simply means there has not been a calculation on the contents yet.
    */

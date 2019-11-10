@@ -68,7 +68,7 @@ public class ConfigMap implements Map<String,Object> {
   }
 
   public String getOrDefault(String key, String defaultValue) {
-    return getObjectOrDefault(key, defaultValue).toString();
+    return Optional.ofNullable(getObjectOrDefault(key, defaultValue)).map(Object::toString).orElse(null);
   }
 
   public <T> T getObjectOrDefault(String key, T defaultValue) {

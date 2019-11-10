@@ -21,12 +21,13 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.infrastructurebuilder.data.IBDataStream;
+import org.infrastructurebuilder.data.IBDataStreamIdentifier;
 import org.infrastructurebuilder.data.model.DataStream;
 
 public class DataStreamMatcher extends DataStream {
   private static final long serialVersionUID = 933423703865650592L;
 
-  boolean matches(IBDataStream ds) {
+  boolean matches(IBDataStreamIdentifier ds) {
     return Optional.ofNullable(ds).map(d -> {
       boolean retVal = true;
       retVal &= matchString(getMimeType(), ds.getMimeType());

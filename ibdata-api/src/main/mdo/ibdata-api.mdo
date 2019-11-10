@@ -23,8 +23,7 @@
   <classes>
   <!-- MODEL -->
     <class xml.tagName="dataSet" rootElement="true"
-      java.clone.hook="mutatingDataSetCloneHook"
-      java.clone="deep">
+      java.clone.hook="mutatingDataSetCloneHook" java.clone="deep">
       <name>DataSet</name>
       <description>
         <![CDATA[
@@ -274,8 +273,7 @@
 
     </class>
     <class xml.tagName="dataStream"
-      java.clone.hook="mutatingDataStreamCloneHook"
-      java.clone="deep">
+      java.clone.hook="mutatingDataStreamCloneHook" java.clone="deep">
       <name>DataStream</name>
       <version>1.0.0+</version>
       <interfaces>
@@ -507,10 +505,17 @@
           <version>1.0.0+</version>
           <code>
             <![CDATA[
+  private java.util.Optional<String> getValidatedSha512() {
+    if (this.sha512 != null  && this.sha512.length() != 128)
+      throw  new org.infrastructurebuilder.data.IBDataException("sha512 length must be 128 ");
+    return java.util.Optional.ofNullable(getSha512());
+  }
             // Checksum
   @Override
   public org.infrastructurebuilder.util.artifacts.Checksum getChecksum() {
-    return new org.infrastructurebuilder.util.artifacts.Checksum(getSha512());
+    return getValidatedSha512()
+      .map(org.infrastructurebuilder.util.artifacts.Checksum::new)
+      .orElseThrow(() -> new org.infrastructurebuilder.data.IBDataException("No sha512 available"));
   }
   ]]>
           </code>

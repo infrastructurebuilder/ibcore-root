@@ -17,6 +17,7 @@ package org.infrastructurebuilder.data.transform;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static org.infrastructurebuilder.data.IBMetadataUtils.translateToXpp3Dom;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,7 +25,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.data.IBDataStream;
 import org.infrastructurebuilder.data.IBMetadataUtils;
@@ -43,7 +44,7 @@ public class Transformer implements Cloneable {
   private boolean failOnAnyError = true;
   private List<DataStreamMatcher> sources = new ArrayList<>();
   private String targetMimeType = IBConstants.APPLICATION_OCTET_STREAM;
-  private XmlPlexusConfiguration targetStreamMetadata;
+  private Xpp3Dom targetStreamMetadata;
   private final Transformation transformation;
 
   public Transformer() {
@@ -123,11 +124,11 @@ public class Transformer implements Cloneable {
     this.sources = sources;
   }
 
-  public void setTargetStreamMetadata(XmlPlexusConfiguration targetStreamMetadata) {
-    this.targetStreamMetadata = targetStreamMetadata;
+  public void setTargetStreamMetadata(Object targetStreamMetadata) {
+    this.targetStreamMetadata = translateToXpp3Dom.apply(targetStreamMetadata);
   }
 
-  public XmlPlexusConfiguration getTargetStreamMetadata() {
+  public Xpp3Dom getTargetStreamMetadata() {
     return targetStreamMetadata;
   }
 

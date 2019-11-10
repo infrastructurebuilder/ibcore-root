@@ -44,6 +44,12 @@ public interface IBDataRecordTransformer<I, O> extends Function<I, O> {
 
   boolean respondsTo(Object o);
 
+  Class<I> getInboundClass();
+
+  Class<O> getOutboundClass();
+
+
+
   IBDataRecordTransformer<I, O> configure(ConfigMap cms);
 
   Logger getLogger();

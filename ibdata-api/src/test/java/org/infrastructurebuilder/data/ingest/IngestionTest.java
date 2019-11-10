@@ -62,7 +62,7 @@ public class IngestionTest {
     targetDs = new DataSet();
     i = new Ingestion();
 
-    DefaultIBDataSetIdentifier ids = i.getDataSet();
+    DefaultIBDataSetIdentifier ids = (DefaultIBDataSetIdentifier) i.getDataSet();
     ids.injectGAV("A", "B", "1.0.0-SNAPSHOT");
     ids.setMetadata(metadata);
     ids.setName("name");

@@ -31,7 +31,7 @@ import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
  * A DataSet is a group of common metadata that holds a set of DataStreams
  *
  * Under nearly every circumstance, one might think of a DataSet as an archive (a jar or zip file),
- * since an archive can only have a single DataSet metadata file
+ * since in version 1.0.0 of the model, an archive has only a single DataSet metadata file
  * @author mykel.alvis
  *
  */
