@@ -17,7 +17,6 @@ package org.infrastructurebuilder.data;
 
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.util.LoggerEnabled;
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 
 /**

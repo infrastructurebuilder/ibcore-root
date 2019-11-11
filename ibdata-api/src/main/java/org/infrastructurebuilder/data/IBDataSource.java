@@ -18,8 +18,6 @@ package org.infrastructurebuilder.data;
 import static java.util.Optional.of;
 import static org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM;
 
-import java.net.URL;
-import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.Supplier;
 

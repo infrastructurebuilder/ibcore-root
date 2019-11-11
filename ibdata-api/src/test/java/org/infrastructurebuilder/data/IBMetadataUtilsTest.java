@@ -23,6 +23,7 @@ import static org.infrastructurebuilder.data.IBMetadataUtils.toDataStream;
 import static org.infrastructurebuilder.data.IBMetadataUtils.translateToXpp3Dom;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -91,5 +92,14 @@ public class IBMetadataUtilsTest {
         .apply(builderSupplier.get().parse(new ByteArrayInputStream("<meta><xyx/></meta>".getBytes()))));
     assertNotNull(translateToXpp3Dom.apply(emptyDocumentSupplier.get()));
     assertNotNull(translateToXpp3Dom.apply(new Xpp3Dom("metadata")));
+  }
+
+  @Test
+  public void testW3cEqualser() {
+    String ls = "<metadata/>";
+    String rs = ls;
+    Document l = IBMetadataUtils.fromXpp3Dom.apply(ls);
+    Document r = IBMetadataUtils.fromXpp3Dom.apply(rs);
+    assertTrue(IBMetadataUtils.w3cDocumentEqualser.apply(l, r));
   }
 }

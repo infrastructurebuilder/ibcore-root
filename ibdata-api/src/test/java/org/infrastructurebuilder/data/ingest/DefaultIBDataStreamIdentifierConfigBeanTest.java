@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -30,6 +31,8 @@ import java.util.Properties;
 import java.util.UUID;
 
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.infrastructurebuilder.data.IBDataException;
 import org.infrastructurebuilder.data.IBDataSourceSupplier;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
 import org.junit.After;
@@ -39,6 +42,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class DefaultIBDataStreamIdentifierConfigBeanTest {
+  public static final String CHECKSUM = "3b2c63ccb53069e8b0472ba50053fcae7d1cc84ef774ff2b01c8a0658637901b7d91e71534243b5d29ee246e925efb985b4dbd7330ab1ab251d1e1b8848b9c49";
+  private static final String HTTPURL = "http://www.google.com";
   private TestingPathSupplier wps;
   private Properties properties;
   private Path target;
@@ -133,28 +138,54 @@ public class DefaultIBDataStreamIdentifierConfigBeanTest {
     assertNotNull(ds.asDataSet());
 
   }
+
   @Test
   public void testDSIGettersSetters() {
     ds.setStreams(Collections.emptyList());
     Date d = ds.getCreationDate();
     UUID id = UUID.randomUUID();
-    ds.setId(id );
+    ds.setId(id);
     assertEquals(id, ds.getId());
     assertEquals(d, ds.getCreationDate());
     assertEquals(0, ds.getStreams().size());
 
   }
+
+  @Test
+  public void testchecksum() {
+    ds3.setSha512(null);
+    assertNull(ds3.getChecksum());
+    ds3.setSha512(CHECKSUM);
+    assertEquals(CHECKSUM, ds3.getChecksum().toString());
+  }
+
+  @Test(expected = IBDataException.class)
+  public void testBADchecksum() {
+    ds3.setSha512(null);
+    assertNull(ds3.getChecksum());
+    ds3.setSha512("ABCD");
+  }
+
+  @Test
+  public void testGetURL() {
+    ds3.setUrl(null);
+    assertFalse(ds3.getURL().isPresent());
+    ds3.setUrl(HTTPURL);
+    assertEquals(HTTPURL, ds3.getURL().get());
+
+  }
+
   @Test
   public void testCopy() {
-    assertNotEquals( ds3.hashCode(), 0);
+    assertNotEquals(ds3.hashCode(), 0);
     DefaultIBDataStreamIdentifierConfigBean d3a = ds3.copy();
     assertEquals(d3a, ds3);
     assertFalse(d3a == ds3);
     d3a.setUrl("https://www.somethingelse.com");
     assertNotEquals(d3a, ds3);
     assertEquals(d3a, d3a);
-    assertNotEquals( ds3, "S");
-    assertNotEquals( ds3, null);
+    assertNotEquals(ds3, "S");
+    assertNotEquals(ds3, null);
   }
 
 }

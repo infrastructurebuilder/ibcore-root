@@ -16,7 +16,6 @@
 package org.infrastructurebuilder.data;
 
 import java.util.List;
-import java.util.Map;
 
 import org.infrastructurebuilder.data.transform.Transformer;
 import org.infrastructurebuilder.util.LoggerEnabled;
@@ -36,7 +35,7 @@ public interface IBDataTransformer extends LoggerEnabled {
    * @return
    */
   default boolean respondsTo(IBDataStream i) {
-    return true;
+    return i != null;
   }
 
   /**

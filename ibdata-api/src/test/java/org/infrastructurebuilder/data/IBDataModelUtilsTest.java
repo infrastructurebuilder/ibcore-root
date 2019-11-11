@@ -17,7 +17,9 @@ package org.infrastructurebuilder.data;
 
 import static org.infrastructurebuilder.data.IBDataConstants.IBDATA;
 import static org.infrastructurebuilder.data.IBDataConstants.IBDATASET_XML;
-import static org.infrastructurebuilder.data.IBDataModelUtils.*;
+import static org.infrastructurebuilder.data.IBDataModelUtils.forceToFinalizedPath;
+import static org.infrastructurebuilder.data.IBDataModelUtils.relativizePath;
+import static org.infrastructurebuilder.data.IBDataModelUtils.safeMapURL;
 import static org.infrastructurebuilder.data.IBMetadataUtilsTest.TEST_INPUT_0_11_XML;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -29,12 +31,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.data.model.DataSet;

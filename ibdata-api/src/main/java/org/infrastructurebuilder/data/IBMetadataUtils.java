@@ -35,7 +35,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.infrastructurebuilder.data.model.DataStream;
@@ -74,7 +73,7 @@ public class IBMetadataUtils {
   });
 
   public final static Function<Object, Xpp3Dom> translateToXpp3Dom = (document) -> cet.withReturningTranslation(() -> {
-    if (document instanceof Xpp3Dom)
+    if (document instanceof Xpp3Dom || document == null)
       return (Xpp3Dom) document;
     else if (document instanceof Document) {
       Document d = (Document) document;
@@ -82,11 +81,8 @@ public class IBMetadataUtils {
         return Xpp3DomBuilder.build(new StringReader(stringifyDocument.apply(d)));
       else
         return new Xpp3Dom("metadata");
-    } else if (document instanceof XmlPlexusConfiguration || document instanceof String) {
-      return Xpp3DomBuilder.build(new StringReader(document.toString()), true);
     } else
-
-      return null;
+      return Xpp3DomBuilder.build(new StringReader(document.toString()), true);
   });
 
   public final static Function<Document, Checksum> asChecksum = (metadata) -> {

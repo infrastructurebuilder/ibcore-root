@@ -18,23 +18,13 @@ package org.infrastructurebuilder.data.ingest;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
-import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.infrastructurebuilder.data.DataSetEnabled;
-import org.infrastructurebuilder.data.IBDataException;
 import org.infrastructurebuilder.data.IBDataSetIdentifier;
-import org.infrastructurebuilder.data.IBMetadataUtils;
 import org.infrastructurebuilder.data.model.DataSet;
 import org.infrastructurebuilder.util.config.ConfigMap;
-import org.w3c.dom.Document;
 
 public class Ingestion implements DataSetEnabled {
 
@@ -74,75 +64,5 @@ public class Ingestion implements DataSetEnabled {
     this.dataSet = dataSet;
   }
 
-//  public static class IngestionDataSet {
-//
-//    private String name = "default";
-//    private String description = null;
-//    private String path = null;
-//    private UUID id = null;
-//
-//    private List<DefaultIBDataStreamIdentifierConfigBean> streams = new ArrayList<>();
-//
-//    private XmlPlexusConfiguration metadata;
-//
-//    public IngestionDataSet() {
-//    }
-//
-//    public UUID getId() {
-//      return ofNullable(this.id).orElse(UUID.randomUUID());
-//    }
-//
-//    public Optional<String> getName() {
-//      return ofNullable(this.name);
-//    }
-//
-//    public Optional<String> getDescription() {
-//      return ofNullable(this.description);
-//    }
-//
-//    public Date getCreationDate() {
-//      return new Date();
-//    }
-//
-//    public Document getMetadata() {
-//      return IBMetadataUtils.fromXpp3Dom.apply(metadata);
-//    }
-//
-//    public List<DefaultIBDataStreamIdentifierConfigBean> getStreams() {
-//
-//      return streams.stream().collect(Collectors.toList());
-//    }
-//
-//    public void setMetadata(XmlPlexusConfiguration metadata) {
-//      this.metadata = metadata;
-//    }
-//
-//    public void setDescription(String description) {
-//      this.description = description;
-//    }
-//
-//    public void setStreams(List<DefaultIBDataStreamIdentifierConfigBean> stream2s) {
-//      this.streams = stream2s;
-//
-//    }
-//
-//    public void setName(String name) {
-//      this.name = name;
-//    }
-//
-//    public String getPath() {
-//      return this.path;
-//    }
-//
-//    public void setPath(String path) {
-//      this.path = path;
-//    }
-//
-//    public IBDataSetIdentifier asDataSetIdentifier() {
-//      throw new IBDataException("Not implemented");
-//      //      return new DefaultIBDataSetIdentifier(this);
-//    }
-//
-//  }
 
 }

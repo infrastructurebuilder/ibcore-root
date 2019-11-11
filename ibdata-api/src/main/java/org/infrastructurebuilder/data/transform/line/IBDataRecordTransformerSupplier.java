@@ -28,7 +28,7 @@ import org.slf4j.Logger;
  * @author mykel.alvis
  *
  */
-public interface IBDataRecordTransformerSupplier<I, O> extends Supplier<IBDataRecordTransformer<I,O>> {
+public interface IBDataRecordTransformerSupplier<I, O> extends Supplier<IBDataRecordTransformer<I, O>> {
   String getHint();
 
   Logger getLogger();

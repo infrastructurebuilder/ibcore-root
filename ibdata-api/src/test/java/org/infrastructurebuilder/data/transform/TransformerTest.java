@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.data.IBMetadataUtils;
 import org.infrastructurebuilder.util.config.ConfigMap;
@@ -76,7 +76,7 @@ public class TransformerTest {
     t.setSources(sources);
     assertEquals(sources, t.getSources());
 
-    XmlPlexusConfiguration p = new XmlPlexusConfiguration("metadata");
+    Xpp3Dom p = new Xpp3Dom("metadata");
     t.setTargetStreamMetadata(p);
     assertEquals(p, t.getTargetStreamMetadata());
 
