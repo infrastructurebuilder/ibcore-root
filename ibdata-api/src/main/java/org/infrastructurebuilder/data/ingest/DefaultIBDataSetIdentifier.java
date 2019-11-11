@@ -165,6 +165,7 @@ public class DefaultIBDataSetIdentifier implements IBDataSetIdentifier {
     ds.setDataSetName(getName().orElse(null));
     ds.setDataSetDescription(getDescription().orElse(null));
     ds.setMetadata(translateToXpp3Dom.apply(getMetadata()));
+    ds.setPath(getPath());
     return ds;
   }
 

@@ -26,6 +26,7 @@ import java.util.UUID;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.IBConstants;
+import org.infrastructurebuilder.data.IBDataException;
 import org.infrastructurebuilder.data.IBDataStreamIdentifier;
 import org.infrastructurebuilder.data.IBMetadataUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
@@ -147,6 +148,8 @@ public class DefaultIBDataStreamIdentifierConfigBean implements IBDataStreamIden
   }
 
   public void setSha512(String checksum) {
+    if (checksum != null && checksum.length() != 128)
+      throw new IBDataException("Sha512s are 128 hex characters");
     this.sha512 = checksum;
   }
 

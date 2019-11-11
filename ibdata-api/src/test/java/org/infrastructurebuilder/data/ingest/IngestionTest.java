@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.infrastructurebuilder.data.model.DataSet;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -38,6 +39,7 @@ public class IngestionTest {
   private DataSet targetDs;
   private final XmlPlexusConfiguration metadata = new XmlPlexusConfiguration("metadata");
   BiFunction<? extends DataSet, ? extends DataSet, Boolean> equalser;
+  private DefaultIBDataSetIdentifier ids;
 
   @Before
   public void setUp() throws Exception {
@@ -54,15 +56,24 @@ public class IngestionTest {
       return Objects.equals(lhs.getArtifactId(), rhs.getArtifactId())
           // ArtifactId
           && Objects.equals(lhs.getArtifactId(), rhs.getArtifactId())
-          // Version (Maybe we want to convert to IBVersions to do the comparison?)
+      // Version (Maybe we want to convert to IBVersions to do the comparison?)
           && Objects.equals(lhs.getVersion(), rhs.getVersion());
     };
 
     fc = new HashMap<>();
     targetDs = new DataSet();
+    targetDs.setGroupId("A");
+    targetDs.setArtifactId("B");
+    targetDs.setVersion("1.0.0-SNAPSHOT");
+    targetDs.setDataSetName("name");
+    targetDs.setDataSetDescription("description");
+    targetDs.setPath("/");
+    targetDs.setMetadata(new Xpp3Dom("metadata"));
+    targetDs.setModelEncoding("UTF-8");
+    targetDs.setModelVersion("1.0.0");
     i = new Ingestion();
 
-    DefaultIBDataSetIdentifier ids = (DefaultIBDataSetIdentifier) i.getDataSet();
+     ids = (DefaultIBDataSetIdentifier) i.getDataSet();
     ids.injectGAV("A", "B", "1.0.0-SNAPSHOT");
     ids.setMetadata(metadata);
     ids.setName("name");
@@ -77,11 +88,6 @@ public class IngestionTest {
     assertEquals(DEFAULT, i.getId());
   }
 
-  @Ignore // Need .equals to work properly
-  @Test
-  public void testGetDataSet() {
-    assertEquals(ds, i.getDataSet());
-  }
 
   @Test
   public void testGetIngester() {
@@ -98,10 +104,11 @@ public class IngestionTest {
     assertEquals(0, i.getFinalizerConfig().size());
   }
 
-  @Ignore // Need .equals to work properly
   @Test
   public void testAsDataSet() {
     assertEquals(targetDs, i.asDataSet());
+    i.setDataSet(ids);
+    assertEquals(targetDs, ids.asDataSet());
   }
 
 }
