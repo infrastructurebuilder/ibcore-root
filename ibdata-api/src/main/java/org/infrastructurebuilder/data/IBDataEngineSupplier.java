@@ -17,6 +17,10 @@ package org.infrastructurebuilder.data;
 
 import java.util.function.Supplier;
 
+import org.slf4j.Logger;
+
 public interface IBDataEngineSupplier extends Supplier<IBDataEngine> {
   String getLocalId();
+
+  Logger getLog();
 }

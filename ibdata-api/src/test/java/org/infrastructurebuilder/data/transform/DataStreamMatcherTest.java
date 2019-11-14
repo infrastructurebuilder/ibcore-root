@@ -24,11 +24,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.infrastructurebuilder.data.FakeIBDataStream;
+import org.infrastructurebuilder.util.config.TestingPathSupplier;
 import org.junit.Before;
 import org.junit.Test;
 
 public class DataStreamMatcherTest {
 
+  public final static TestingPathSupplier wps = new TestingPathSupplier();
   private static final String A = "A";
   private DataStreamMatcher dsm;
   private FakeIBDataStream ds;
@@ -43,8 +45,8 @@ public class DataStreamMatcherTest {
     dsm.setDataStreamDescription(A);
     dsm.setDataStreamName(A);
     dsm.setMimeType(A);
-    ds = new FakeIBDataStream(Paths.get("."), Optional.empty());
-    ds.setCreationDate(now );
+    ds = new FakeIBDataStream(wps.getTestClasses().resolve("test-metadata.xml"), Optional.empty());
+    ds.setCreationDate(now);
     ds.setDataStreamDescription(A);
     ds.setUuid(id);
     ds.setDataStreamName(A);

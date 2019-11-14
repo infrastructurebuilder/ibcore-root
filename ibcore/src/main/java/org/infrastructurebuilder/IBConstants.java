@@ -30,8 +30,7 @@ public interface IBConstants {
   public final static String IBDATA_SUFFIX = ".ibdata";
 
   public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
-  public final static String TEXT_PLAIN = "text/plain";
-  /** These aren't real MIME types (AFAIK) Move them to IBConstants */
+  public static final String TEXT_PLAIN = "text/plain";
   public static final String AVRO_BINARY = "avro/binary";
   public static final String TEXT_CSV = "text/csv";
   public static final String TEXT_TSV = "text/tab-separated-values";
@@ -44,6 +43,21 @@ public interface IBConstants {
   public static final String APPLICATION_PDF = "application/pdf";
   public static final String APPLICATION_ZIP = "application/zip";
   public static final String APPLICATION_XML = "application/xml";
+
+  public static final String DEFAULT_EXTENSION = ".bin";
+  public static final String AVRO = ".avro";
+  public static final String PDF = ".pdf";
+  public static final String PSV = ".psv";
+  public static final String DOCX = ".docx";
+  public static final String DOC = ".doc";
+  public static final String MDB = ".mdb";
+  public static final String XLSX = ".xlsx";
+  public static final String XLS = ".xls";
+  public static final String TSV = ".tsv";
+  public static final String CSV = ".csv";
+  public static final String ZIP = ".zip";
+  public static final String TXT = ".txt";
+  public static final String XML = ".xml";
 
   public static final String _SHA512 = "sha512";
   public static final String ASC_EXT = ".asc";

@@ -65,7 +65,7 @@ public interface IBDataSource extends Supplier<Optional<IBChecksumPathType>>, IB
   String getId();
 
 
-  default Optional<String> getMimeType() { // FIXME I think this is polluting downstream
+  default Optional<String> getMimeType() { // FIXME I think this might be polluting downstream
     return of(APPLICATION_OCTET_STREAM);
   }
 

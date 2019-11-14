@@ -42,8 +42,7 @@ public class IBDataSpecificStreamFactoryTest {
 
       @Override
       public Optional<Stream<Object>> from(IBDataStream ds) {
-        // TODO Auto-generated method stub
-        return null;
+        return Optional.empty();
       }
     };
   }

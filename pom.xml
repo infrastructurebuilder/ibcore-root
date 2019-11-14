@@ -20,10 +20,10 @@
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibparent</artifactId>
-    <version>18</version>
+    <version>19</version>
   </parent>
   <artifactId>ibcore-root</artifactId>
-  <version>0.12.1-SNAPSHOT</version>
+  <version>0.13.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>${project.artifactId}</name>
   <description>InfrastructureBuilder Common</description>
@@ -41,7 +41,7 @@
     </site>
   </distributionManagement>
   <properties>
-    <error.version>18</error.version>
+    <error.version>19</error.version>
     <iblog.version>0.10.0</iblog.version>
 
     <!--  FIXME Move version in newer parent release -->

@@ -25,10 +25,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.data.model.DataStream;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
@@ -49,6 +52,13 @@ public class FakeIBDataStream extends DataStream implements IBDataStream {
     this.localPath = p;
     this.throwMeOnClose = throwMeOnClose;
     this.throwMeOnRelocate = throwMeOnRelocate;
+    this.setSha512(new Checksum(p).toString());
+    this.setCreationDate(new Date());
+    this.setDataStreamDescription("desc");
+    this.setDataStreamName("name");
+    this.setMetadata(new Xpp3Dom("metadata"));
+    this.setPath(".");
+    this.setMimeType(IBConstants.APPLICATION_OCTET_STREAM);
   }
 
   public FakeIBDataStream(DataStream ds, Path p) {
