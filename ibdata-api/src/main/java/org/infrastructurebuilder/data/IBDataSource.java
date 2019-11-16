@@ -15,11 +15,10 @@
  */
 package org.infrastructurebuilder.data;
 
-import static java.util.Optional.of;
-import static org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM;
-
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.util.BasicCredentials;
 import org.infrastructurebuilder.util.IBLoggerEnabled;
@@ -34,13 +33,16 @@ import org.w3c.dom.Document;
  *
  * An IBDataSource always returns `IBChecksumPathType` which is a path to an acquired file with type and a checksum.
  * The contract for IBDataSource:
- *          1. An IBData
+ *          1. An IBDataSource should produce the same value for a get() call every time. This means cacheing the results
  *          1. the Path supplied is to the same file every time.
+ *          1. The list of IBChecksumPathTypes is called for getMimeType().  This should probably be removed.
+ *
+ *
  *
  * @author mykel.alvis
  *
  */
-public interface IBDataSource extends Supplier<Optional<IBChecksumPathType>>, IBLoggerEnabled {
+public interface IBDataSource extends Supplier<List<IBChecksumPathType>>, IBLoggerEnabled {
   public static final String TARGET_PATH = "Source-Target-Path";
   public static final String CACHE_DIR = "Source-Cache-Directory";
 
@@ -65,8 +67,8 @@ public interface IBDataSource extends Supplier<Optional<IBChecksumPathType>>, IB
   String getId();
 
 
-  default Optional<String> getMimeType() { // FIXME I think this might be polluting downstream
-    return of(APPLICATION_OCTET_STREAM);
+  default List<String> getMimeType() { // FIXME I think this might be polluting downstream
+    return get().stream().map(IBChecksumPathType::getType).collect(Collectors.toList());
   }
 
   IBDataSource withAdditionalConfig(ConfigMap config);

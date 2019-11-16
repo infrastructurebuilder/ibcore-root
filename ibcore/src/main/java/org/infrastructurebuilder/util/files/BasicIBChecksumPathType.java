@@ -21,6 +21,7 @@ import static org.infrastructurebuilder.IBException.cet;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.OpenOption;
@@ -29,6 +30,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.StringJoiner;
 
 import org.infrastructurebuilder.util.IBUtils;
@@ -44,10 +46,15 @@ public class BasicIBChecksumPathType implements IBChecksumPathType {
   protected final Checksum checksum;
   protected final Path path;
   protected final String type;
+  protected final Optional<URL> sourceURL;
   private final OpenOption[] readOptions;
   private final JSONObject json;
 
   public BasicIBChecksumPathType(Path path, Checksum checksum, String type) {
+    this(path, checksum, type, Optional.empty());
+  }
+
+  public BasicIBChecksumPathType(Path path, Checksum checksum, String type, Optional<URL> sourceURL) {
     super();
     this.path = requireNonNull(path);
     List<OpenOption> o = new ArrayList<>();
@@ -60,6 +67,7 @@ public class BasicIBChecksumPathType implements IBChecksumPathType {
     this.readOptions = o.toArray(new OpenOption[o.size()]);
     this.checksum = requireNonNull(checksum);
     this.type = requireNonNull(type);
+    this.sourceURL = requireNonNull(sourceURL);
 
     this.json = JSONBuilder.newInstance()
         //

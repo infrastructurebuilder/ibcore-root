@@ -18,11 +18,17 @@ package org.infrastructurebuilder.data;
 import static org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM;
 import static org.junit.Assert.assertEquals;
 
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.infrastructurebuilder.util.BasicCredentials;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.ConfigMap;
+import org.infrastructurebuilder.util.config.TestingPathSupplier;
+import org.infrastructurebuilder.util.files.DefaultIBChecksumPathType;
 import org.infrastructurebuilder.util.files.IBChecksumPathType;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,11 +38,13 @@ import org.w3c.dom.Document;
 
 public class IBDataSourceTest {
   public final static Logger log = LoggerFactory.getLogger(IBDataSourceTest.class);
+  public static final TestingPathSupplier wps = new TestingPathSupplier();
 
   private IBDataSource i;
 
   @Before
   public void setUp() throws Exception {
+    Path p = wps.getTestClasses().resolve("test.jar");
     i = new IBDataSource() {
 
       @Override
@@ -45,8 +53,8 @@ public class IBDataSourceTest {
       }
 
       @Override
-      public Optional<IBChecksumPathType> get() {
-        return null;
+      public List<IBChecksumPathType> get() {
+        return Arrays.asList(DefaultIBChecksumPathType.from(p, new Checksum(p), APPLICATION_OCTET_STREAM));
       }
 
       @Override
@@ -98,7 +106,7 @@ public class IBDataSourceTest {
 
   @Test
   public void testGetMimeType() {
-    assertEquals(APPLICATION_OCTET_STREAM, i.getMimeType().get());
+    assertEquals(Arrays.asList(APPLICATION_OCTET_STREAM), i.getMimeType());
   }
 
 }

@@ -17,7 +17,9 @@ package org.infrastructurebuilder.util.files;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.util.artifacts.Checksum;
@@ -47,5 +49,9 @@ public interface IBChecksumPathType extends Supplier<InputStream>, JSONOutputEna
    * @throws IOException
    */
   IBChecksumPathType moveTo(Path target) throws IOException;
+
+  default Optional<URL> getSourceURL() {
+    return Optional.empty();
+  }
 
 }
