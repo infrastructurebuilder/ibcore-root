@@ -16,11 +16,12 @@
 package org.infrastructurebuilder.data.ingest;
 
 import org.infrastructurebuilder.data.IBDataSourceSupplier;
+import org.infrastructurebuilder.data.IBDataStreamIdentifier;
 
 public interface IBDataSourceSupplierMapper {
 
   boolean respondsTo(DefaultIBDataStreamIdentifierConfigBean v);
 
-  IBDataSourceSupplier getSupplierFor(DefaultIBDataStreamIdentifierConfigBean v);
+  IBDataSourceSupplier getSupplierFor(String temporaryId, IBDataStreamIdentifier v);
 
 }

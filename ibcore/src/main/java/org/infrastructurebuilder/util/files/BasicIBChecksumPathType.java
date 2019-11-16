@@ -47,14 +47,15 @@ public class BasicIBChecksumPathType implements IBChecksumPathType {
   protected final Path path;
   protected final String type;
   protected final Optional<URL> sourceURL;
+  protected final Optional<String> name;
   private final OpenOption[] readOptions;
   private final JSONObject json;
 
   public BasicIBChecksumPathType(Path path, Checksum checksum, String type) {
-    this(path, checksum, type, Optional.empty());
+    this(path, checksum, type, Optional.empty(), Optional.empty());
   }
 
-  public BasicIBChecksumPathType(Path path, Checksum checksum, String type, Optional<URL> sourceURL) {
+  public BasicIBChecksumPathType(Path path, Checksum checksum, String type, Optional<URL> sourceURL, Optional<String> name) {
     super();
     this.path = requireNonNull(path);
     List<OpenOption> o = new ArrayList<>();
@@ -68,6 +69,7 @@ public class BasicIBChecksumPathType implements IBChecksumPathType {
     this.checksum = requireNonNull(checksum);
     this.type = requireNonNull(type);
     this.sourceURL = requireNonNull(sourceURL);
+    this.name = requireNonNull(name);
 
     this.json = JSONBuilder.newInstance()
         //
@@ -88,6 +90,15 @@ public class BasicIBChecksumPathType implements IBChecksumPathType {
     this(Paths.get(requireNonNull(j).getString(PATH)), new Checksum(j.getString(CHECKSUM)), j.getString(TYPE));
   }
 
+  @Override
+  public Optional<URL> getSourceURL() {
+    return this.sourceURL;
+  }
+
+  @Override
+  public Optional<String> getSourceName() {
+    return this.name;
+  }
   @Override
   public Path getPath() {
     return path;

@@ -54,4 +54,8 @@ public interface IBChecksumPathType extends Supplier<InputStream>, JSONOutputEna
     return Optional.empty();
   }
 
+  default Optional<String> getSourceName() {
+    return Optional.empty();
+  }
+
 }

@@ -19,10 +19,12 @@ import static org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM;
 import static org.infrastructurebuilder.util.IBUtilsTest.TESTFILE;
 import static org.infrastructurebuilder.util.IBUtilsTest.TESTFILE_CHECKSUM;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.UUID;
 
@@ -121,5 +123,50 @@ public class BasicIBChecksumPathTypeTest {
     assertNotEquals(c1,null);
     assertEquals(c1,c3);
     assertEquals(c1.hashCode(), c3.hashCode());
+  }
+
+  @Test
+  public void testRootInterfaceSourceURL() {
+    IBChecksumPathType q = new IBChecksumPathType() {
+
+      @Override
+      public InputStream get() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+      @Override
+      public JSONObject asJSON() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+      @Override
+      public Path getPath() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+      @Override
+      public Checksum getChecksum() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+      @Override
+      public String getType() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+      @Override
+      public IBChecksumPathType moveTo(Path target) throws IOException {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+    };
+    assertFalse(q.getSourceURL().isPresent());
+    assertFalse(q.getSourceName().isPresent());
   }
 }

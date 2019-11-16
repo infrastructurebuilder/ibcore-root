@@ -106,7 +106,7 @@ public class IBDataSourceTest {
 
   @Test
   public void testGetMimeType() {
-    assertEquals(Arrays.asList(APPLICATION_OCTET_STREAM), i.getMimeType());
+    assertEquals(APPLICATION_OCTET_STREAM, i.getMimeType().get());
   }
 
 }

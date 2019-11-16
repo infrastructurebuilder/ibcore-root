@@ -15,10 +15,12 @@
  */
 package org.infrastructurebuilder.data;
 
+import static java.util.Optional.of;
+import static org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.util.BasicCredentials;
 import org.infrastructurebuilder.util.IBLoggerEnabled;
@@ -66,9 +68,8 @@ public interface IBDataSource extends Supplier<List<IBChecksumPathType>>, IBLogg
    */
   String getId();
 
-
-  default List<String> getMimeType() { // FIXME I think this might be polluting downstream
-    return get().stream().map(IBChecksumPathType::getType).collect(Collectors.toList());
+  default Optional<String> getMimeType() { // FIXME I think this might be polluting downstream
+    return of(APPLICATION_OCTET_STREAM);
   }
 
   IBDataSource withAdditionalConfig(ConfigMap config);
