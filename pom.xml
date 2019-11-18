@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibparent</artifactId>
-    <version>19</version>
+    <version>20</version>
   </parent>
   <artifactId>ibcore-root</artifactId>
   <version>0.14.0-SNAPSHOT</version>
@@ -41,7 +41,7 @@
     </site>
   </distributionManagement>
   <properties>
-    <error.version>19</error.version>
+    <error.version>20</error.version>
     <iblog.version>0.10.0</iblog.version>
 
     <!--  FIXME Move version in newer parent release -->
