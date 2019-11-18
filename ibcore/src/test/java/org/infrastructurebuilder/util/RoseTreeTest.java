@@ -147,7 +147,7 @@ public class RoseTreeTest {
     final RoseTest rose3 = new RoseTest(new X(testJson0), Collections.emptyList());
     final RoseTest rose4 = new RoseTest(new X(testJson0), Collections.emptyList());
     assertEquals("Equals not same ", rose3, rose4);
-    assertNotEquals("Different hash codes?", rose3.hashCode(), rose4.hashCode());
+    assertEquals("Different hash codes?", rose3.hashCode(), rose4.hashCode());
     assertNotEquals("Not equal to null?", rose3, null);
   }
 

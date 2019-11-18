@@ -15,9 +15,11 @@
  */
 package org.infrastructurebuilder.data;
 
+import static org.infrastructurebuilder.IBConstants.*;
 import static org.infrastructurebuilder.data.IBDataConstants.IBDATA;
 import static org.infrastructurebuilder.data.IBDataConstants.IBDATASET_XML;
 import static org.infrastructurebuilder.data.IBDataModelUtils.forceToFinalizedPath;
+import static org.infrastructurebuilder.data.IBDataModelUtils.getStructuredSupplyTypeClass;
 import static org.infrastructurebuilder.data.IBDataModelUtils.relativizePath;
 import static org.infrastructurebuilder.data.IBDataModelUtils.safeMapURL;
 import static org.infrastructurebuilder.data.IBMetadataUtilsTest.TEST_INPUT_0_11_XML;
@@ -37,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.data.model.DataSet;
 import org.infrastructurebuilder.data.model.DataStream;
 import org.infrastructurebuilder.util.IBUtils;
@@ -45,6 +48,8 @@ import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
 import org.junit.Test;
 
 public class IBDataModelUtilsTest extends AbstractModelTest {
+  private static final String ORG_APACHE_AVRO_GENERIC_INDEXED_RECORD2 = ORG_APACHE_AVRO_GENERIC_INDEXED_RECORD;
+
   @Test
   public void test() {
     new IBDataModelUtils();
@@ -108,6 +113,17 @@ public class IBDataModelUtilsTest extends AbstractModelTest {
     assertEquals(tPath, v.getPath());
     assertNotNull(v.get());
 
+  }
+
+  @Test
+  public void testTypeStreamMapper() {
+    assertEquals(ORG_APACHE_AVRO_GENERIC_INDEXED_RECORD2, getStructuredSupplyTypeClass(AVRO_BINARY).get());
+    assertEquals(ORG_W3C_DOM_NODE, getStructuredSupplyTypeClass(APPLICATION_XML).get());
+    assertEquals(JAVA_LANG_STRING, getStructuredSupplyTypeClass(TEXT_CSV).get());
+    assertEquals(JAVA_LANG_STRING, getStructuredSupplyTypeClass(TEXT_PLAIN).get());
+    assertEquals(JAVA_LANG_STRING, getStructuredSupplyTypeClass(TEXT_PSV).get());
+    assertEquals(JAVA_LANG_STRING, getStructuredSupplyTypeClass(TEXT_TSV).get());
+    assertFalse(getStructuredSupplyTypeClass(IBConstants.APPLICATION_OCTET_STREAM).isPresent());
   }
 
 }

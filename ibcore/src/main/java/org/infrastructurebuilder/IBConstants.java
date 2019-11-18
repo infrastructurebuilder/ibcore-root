@@ -44,6 +44,11 @@ public interface IBConstants {
   public static final String APPLICATION_ZIP = "application/zip";
   public static final String APPLICATION_XML = "application/xml";
 
+
+  public static final String JAVA_LANG_STRING = "java.lang.String";
+  public static final String ORG_W3C_DOM_NODE = "org.w3c.dom.Node";
+  public static final String ORG_APACHE_AVRO_GENERIC_INDEXED_RECORD = "org.apache.avro.generic.IndexedRecord";
+
   public static final String DEFAULT_EXTENSION = ".bin";
   public static final String AVRO = ".avro";
   public static final String PDF = ".pdf";

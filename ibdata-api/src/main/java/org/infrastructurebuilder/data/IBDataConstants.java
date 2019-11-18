@@ -32,6 +32,7 @@ public interface IBDataConstants {
   public static final String IBDATA_IBDATASET_XML = IBDATA_DIR + IBDATASET_XML;
   public final static String INGESTION_TARGET = "IBDATA_INGESTION_TARGET_@3123";
   public final static String TRANSFORMATION_TARGET = "IBDATA_TRANSFORMATION_TARGET_@3123";
+  public final static String MARKER_FILE= ".ibdatamarker.xml";;
   public static final String ANY_TYPE = "*ANY*";
   public static final String IBDATA_WORKING_DIRECTORY = "ibdata.working.directory";
 

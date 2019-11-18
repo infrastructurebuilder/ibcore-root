@@ -52,7 +52,7 @@ public interface IBDataStreamRecordFinalizer<T> extends Supplier<InputStream>, A
 
   Path getWorkingPath();
 
-  default Optional<List<String>> accepts() {
+  default Optional<List<Class<?>>> accepts() {
     return empty();
   }
 

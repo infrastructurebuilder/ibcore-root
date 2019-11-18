@@ -166,10 +166,7 @@ public class Checksum implements Comparable<Checksum>, Supplier<Optional<UUID>> 
 
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + (b == null ? 0 : b.hashCode());
-    return result;
+    return Objects.hash(toString());
   }
 
   @Override

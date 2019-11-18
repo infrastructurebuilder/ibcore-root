@@ -500,6 +500,8 @@ public class IBUtils {
   }
 
   public static byte[] hexStringToByteArray(final String s) {
+    if (s == null)
+      return null;
 
     if (s.length() % 2 == 1) {
       throw new IllegalArgumentException("Not a hex string");

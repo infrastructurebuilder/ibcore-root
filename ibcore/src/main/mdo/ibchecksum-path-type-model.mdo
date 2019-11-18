@@ -1,0 +1,301 @@
+<model xmlns="http://codehaus-plexus.github.io/MODELLO/1.8.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://codehaus-plexus.github.io/MODELLO/1.8.0 http://codehaus-plexus.github.io/modello/xsd/modello-1.8.0.xsd"
+  java.suppressAllWarnings="false"
+  xml.namespace="https://resources.infrastructurebuilder.org/IBDataSet/${apiVersion}"
+  xml.schemaLocation="https://resources.infrastructurebuilder.org/xsd/IBDataSet-${apiVersion}"
+  xsd.namespace="https://resources.infrastructurebuilder.org/IBDataSet/${apiVersion}"
+  xsd.targetNamespace="https://resources.infrastructurebuilder.org/IBDataSet/${apiVersion}">
+  <id>checksum</id>
+  <name>IBChecksumPathTypeModel</name> <!--  Must be a single (no spaces, no dashes, no periods) identifier in order to create reader/writer -->
+  <description>Model for IBChecksumPathType, which underpins IBData among others</description>
+
+  <defaults>
+    <default>
+      <key>package</key>
+      <value>${project.groupId}.util.files.model</value>
+    </default>
+  </defaults>
+
+  <classes>
+  <!-- MODEL -->
+    <class xml.tagName="iBChecksumPathTypeModel"
+      rootElement="true">
+      <name>IBChecksumPathTypeModel</name>
+      <description>Iterim persistence data for IBChecksumPathType</description>
+      <version>1.0.0+</version>
+      <interfaces>
+        <interface>
+          <![CDATA[org.infrastructurebuilder.util.files.IBChecksumPathType]]>
+        </interface>
+        <!--
+        <interface>
+          <![CDATA[java.lang.Comparable<org.infrastructurebuilder.util.files.IBChecksumPathType>]]>
+        </interface>
+         -->
+      </interfaces>
+      <fields>
+
+
+        <field>
+          <name>filePath</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Path to the described file.  IBChecksumType requires this be non-null, but the persistence model may not, because the source can be the means for acquiring the data.</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>fileChecksum</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Evaluated Checksum of the file</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>type</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <defaultValue>application/octet-stream</defaultValue>
+          <description>MIME type of file</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>source</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Source URL (to be evaluated as a URL)</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>name</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Optional name data</description>
+          <type>String</type>
+        </field>
+      </fields>
+      <codeSegments>
+
+        <codeSegment>
+          <version>1.0.0+</version>
+          <comment>This is the value used for getPath( and is the means for executing the get() call</comment>
+          <code>
+            <![CDATA[
+    private  java.nio.file.Path path;
+  ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+    public IBChecksumPathTypeModel() {
+      this(null,null,null, null, null);
+    }
+  ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <code>
+            <![CDATA[
+    protected IBChecksumPathTypeModel(
+      String filePath,
+      String checksum,
+      String type,
+      String source,
+      String name
+      ) {
+      super();
+      this.filePath = filePath;
+      this.fileChecksum = checksum;
+      this.type = type;
+      this.source = source;
+      this.name = name;
+      this.path = null;
+    }
+  ]]>
+        </code>
+        </codeSegment>
+
+        <codeSegment>
+          <version>1.0.0+</version>
+          <comment>HashCode using methods</comment>
+          <code>
+            <![CDATA[
+    @Override
+    public int hashCode() {
+      return defaultHashCode();
+    }
+  ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <comment>equals() using methods</comment>
+          <code>
+            <![CDATA[
+   @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      return defaultEquals(obj);
+    }  ]]>
+          </code>
+        </codeSegment>
+
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+    @Override
+    public String toString() {
+      java.util.StringJoiner sj = new java.util.StringJoiner("|")
+        .add(getType())
+        .add(getChecksum().asUUID().get().toString())
+        .add(getPath().toString());
+      getSourceURL().ifPresent(u -> sj.add(u.toExternalForm()));
+      getSourceName().ifPresent(sj::add);
+      return sj.toString();
+    }
+
+  ]]>
+          </code>
+        </codeSegment>
+
+        <codeSegment>
+          <version>1.0.0+</version>
+          <comment>Fetch the path from the sourceURL (if present) or the filePath.  Otherwise die.</comment>
+          <code>
+            <![CDATA[
+    @Override
+    public java.nio.file.Path getPath() {
+      if (this.path == null && getSourceURL().isPresent()) {
+        this.path = java.nio.file.Paths.get(org.infrastructurebuilder.IBException.cet
+            .withReturningTranslation(() -> getSourceURL().get().toURI()));
+      }
+      if (this.path == null && this.getFilePath() != null) {
+        this.path = java.nio.file.Paths.get(getFilePath());
+      }
+      return java.util.Optional.ofNullable(path).orElseThrow(() -> new org.infrastructurebuilder.IBException("No available path"));
+    }
+  ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+    @Override
+    public org.infrastructurebuilder.util.files.IBChecksumPathType moveTo(java.nio.file.Path target) throws java.io.IOException {
+      org.infrastructurebuilder.util.IBUtils.moveAtomic(getPath(), target);
+      return new IBChecksumPathTypeModel(target.toAbsolutePath().toString(),getFileChecksum(), getType(), getSource(), getName());
+    }
+  ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+    @Override
+    public java.util.Optional<java.net.URL> getSourceURL() {
+      return java.util.Optional.ofNullable(getSource()).map(u -> org.infrastructurebuilder.IBException.cet.withReturningTranslation(() -> new java.net.URL(u)));
+    }
+  ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+    @Override
+    public java.util.Optional<String> getSourceName() {
+      return java.util.Optional.ofNullable(getName());
+    }
+  ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+    @Override
+    public org.infrastructurebuilder.util.artifacts.Checksum getChecksum() {
+      return new org.infrastructurebuilder.util.artifacts.Checksum(getFileChecksum());
+    }
+  ]]>
+          </code>
+        </codeSegment>
+      </codeSegments>
+    </class>
+    <class locationTracker="locations" java.clone="shallow">
+      <name>IBCPTInputLocation</name>
+      <version>1.0.0+</version>
+      <fields>
+        <!-- line, column and source fields are auto-generated by Modello -->
+      </fields>
+      <codeSegments>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+
+  @Override
+  public String toString()
+  {
+      return getLineNumber() + " : " + getColumnNumber() + ", " + getSource();
+  }
+            ]]>
+          </code>
+        </codeSegment>
+      </codeSegments>
+    </class>
+    <class sourceTracker="source" java.clone="shallow">
+      <name>IBCPTInputSource</name>
+      <version>1.0.0+</version>
+      <fields>
+        <field>
+          <name>modelId</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description>
+            <![CDATA[
+            The identifier of the deployment model in the format {@code <groupId>:<artifactId>:<version>}.
+            ]]>
+          </description>
+        </field>
+        <field>
+          <name>location</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description>
+            <![CDATA[
+            The path/URL of the deployment model or {@code null} if unknown.
+            ]]>
+          </description>
+        </field>
+      </fields>
+      <codeSegments>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  @Override
+  public String toString()
+  {
+      return getModelId() + " " + getLocation();
+  }
+            ]]>
+          </code>
+        </codeSegment>
+      </codeSegments>
+    </class>
+  </classes>
+</model>

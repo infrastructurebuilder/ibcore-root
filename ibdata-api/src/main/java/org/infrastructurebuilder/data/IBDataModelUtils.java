@@ -21,9 +21,19 @@ import static java.nio.file.Files.move;
 import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static org.infrastructurebuilder.IBConstants.APPLICATION_XML;
+import static org.infrastructurebuilder.IBConstants.AVRO_BINARY;
+import static org.infrastructurebuilder.IBConstants.JAVA_LANG_STRING;
+import static org.infrastructurebuilder.IBConstants.ORG_APACHE_AVRO_GENERIC_INDEXED_RECORD;
+import static org.infrastructurebuilder.IBConstants.ORG_W3C_DOM_NODE;
+import static org.infrastructurebuilder.IBConstants.TEXT_CSV;
+import static org.infrastructurebuilder.IBConstants.TEXT_PLAIN;
+import static org.infrastructurebuilder.IBConstants.TEXT_PSV;
+import static org.infrastructurebuilder.IBConstants.TEXT_TSV;
 import static org.infrastructurebuilder.data.IBDataConstants.APPLICATION_IBDATA_ARCHIVE;
 import static org.infrastructurebuilder.data.IBDataConstants.IBDATA;
 import static org.infrastructurebuilder.data.IBDataConstants.IBDATASET_XML;
@@ -54,6 +64,7 @@ import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
 import org.infrastructurebuilder.util.files.DefaultIBChecksumPathType;
 import org.infrastructurebuilder.util.files.IBChecksumPathType;
 import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
+import org.infrastructurebuilder.util.files.model.IBChecksumPathTypeModel;
 
 public class IBDataModelUtils {
   public final static IBDataSourceModelXpp3Writer xpp3Writer = new IBDataSourceModelXpp3Writer();
@@ -167,6 +178,35 @@ public class IBDataModelUtils {
     IBDataModelUtils.writeDataSet(finalData2, newTarget);
     // newTarget now points to a valid DataSet with metadata and referenced streams
     return DefaultIBChecksumPathType.from(newTarget, dsChecksum, APPLICATION_IBDATA_ARCHIVE);
+  }
+
+  /**
+   * "remodel" the existing result into an IBChecksumPathTypeModel
+   * Eventually, this will probably be how moveTo relocates URLs that aren't concrete physical file paths (like paths into archives)
+   *
+   * @param theResult
+   * @return
+   */
+  public final static IBChecksumPathTypeModel remodel(IBChecksumPathType theResult) {
+    if (theResult instanceof IBChecksumPathTypeModel)
+      return (IBChecksumPathTypeModel) theResult;
+    throw new IBDataException("Cannot cast to model");
+  }
+
+  public static Optional<String> getStructuredSupplyTypeClass(String t) {
+    switch (t) {
+    case AVRO_BINARY:
+      return of(ORG_APACHE_AVRO_GENERIC_INDEXED_RECORD);
+    case APPLICATION_XML:
+      return of(ORG_W3C_DOM_NODE);
+    case TEXT_CSV:
+    case TEXT_PLAIN:
+    case TEXT_PSV:
+    case TEXT_TSV:
+      return of(JAVA_LANG_STRING);
+    default: // FIXME there are other types to return
+      return empty();
+    }
   }
 
 }

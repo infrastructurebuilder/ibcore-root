@@ -33,7 +33,7 @@ import org.infrastructurebuilder.IBException;
 import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 
-public class DefaultIBChecksumPathType extends BasicIBChecksumPathType implements IBChecksumPathType {
+public class DefaultIBChecksumPathType extends BasicIBChecksumPathType  {
   private final static Tika tika = new Tika();
 
   public final static IBChecksumPathType copyToDeletedOnExitTempChecksumAndPath(Optional<Path> targetDir, String prefix,

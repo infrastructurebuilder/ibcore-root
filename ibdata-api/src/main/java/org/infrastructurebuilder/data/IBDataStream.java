@@ -15,8 +15,19 @@
  */
 package org.infrastructurebuilder.data;
 
+import static org.infrastructurebuilder.IBConstants.APPLICATION_XML;
+import static org.infrastructurebuilder.IBConstants.AVRO_BINARY;
+import static org.infrastructurebuilder.IBConstants.JAVA_LANG_STRING;
+import static org.infrastructurebuilder.IBConstants.ORG_APACHE_AVRO_GENERIC_INDEXED_RECORD;
+import static org.infrastructurebuilder.IBConstants.ORG_W3C_DOM_NODE;
+import static org.infrastructurebuilder.IBConstants.TEXT_CSV;
+import static org.infrastructurebuilder.IBConstants.TEXT_PLAIN;
+import static org.infrastructurebuilder.IBConstants.TEXT_PSV;
+import static org.infrastructurebuilder.IBConstants.TEXT_TSV;
+
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
@@ -27,6 +38,7 @@ import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
  *
  */
 public interface IBDataStream extends Supplier<InputStream>, AutoCloseable, IBDataStreamIdentifier {
+
   /**
    * Relocate the local stream to some new parent location according to data checksum.  How this happens
    * depends mostly on how the stream is stored in the given instance of the DSS.

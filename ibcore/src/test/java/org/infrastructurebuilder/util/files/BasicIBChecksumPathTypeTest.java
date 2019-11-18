@@ -31,6 +31,7 @@ import java.util.UUID;
 import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.WorkingPathSupplier;
+import org.infrastructurebuilder.util.files.model.IBChecksumPathTypeModel;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
@@ -101,71 +102,23 @@ public class BasicIBChecksumPathTypeTest {
   }
 
   @Test
-  public void testAsJSON() {
-    String q = "{\n"
-        + "  \"checksum\": \"0bd4468980d90ef4d5e1e39bf30b93670492d282c518da95334df7bcad7ba8e0afe377a97d8fd64b4b6fd452b5d60ee9ee665e2fa5ecb13d8d51db8794011f3e\",\n"
-        + "  \"type\": \"ABC\"\n"
-        + "}";
-    JSONObject j = new JSONObject(q);
-    j.put("path", path.toString());
-    JSONAssert.assertEquals(j, c1.asJSON(), true);
-    assertEquals(c1, new BasicIBChecksumPathType(j));
-  }
-
-  @Test
   public void testEqualsHash() {
     BasicIBChecksumPathType c3 = new BasicIBChecksumPathType(path, checksum, "ABC");
-
+    c1.hashCode();
+    c1.hashCode();
+    c1.hashCode();
     assertEquals(c1.hashCode(), c1.hashCode());
-    assertEquals(c1,c1);
-    assertNotEquals( c1,"");
-    assertNotEquals(c1,c2);
-    assertNotEquals(c1,null);
-    assertEquals(c1,c3);
+    assertEquals(c1, c1);
+    assertNotEquals(c1, "");
+    assertNotEquals(c1, c2);
+    assertNotEquals(c1, null);
+    assertEquals(c1, c3);
     assertEquals(c1.hashCode(), c3.hashCode());
   }
 
   @Test
   public void testRootInterfaceSourceURL() {
-    IBChecksumPathType q = new IBChecksumPathType() {
-
-      @Override
-      public InputStream get() {
-        // TODO Auto-generated method stub
-        return null;
-      }
-
-      @Override
-      public JSONObject asJSON() {
-        // TODO Auto-generated method stub
-        return null;
-      }
-
-      @Override
-      public Path getPath() {
-        // TODO Auto-generated method stub
-        return null;
-      }
-
-      @Override
-      public Checksum getChecksum() {
-        // TODO Auto-generated method stub
-        return null;
-      }
-
-      @Override
-      public String getType() {
-        // TODO Auto-generated method stub
-        return null;
-      }
-
-      @Override
-      public IBChecksumPathType moveTo(Path target) throws IOException {
-        // TODO Auto-generated method stub
-        return null;
-      }
-
-    };
+    IBChecksumPathType q = new IBChecksumPathTypeModel();
     assertFalse(q.getSourceURL().isPresent());
     assertFalse(q.getSourceName().isPresent());
   }
