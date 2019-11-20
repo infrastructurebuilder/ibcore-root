@@ -13,11 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util;
+package org.infrastructurebuilder.data;
 
-public interface ExecutionEnabled<T, C, E, R> {
-  ExecutionEnabled<T, C, E, R> configure(C cms);
+import java.util.Optional;
+import java.util.function.Supplier;
 
-  ExecutionResponse<E, R> execute();
+/**
+ * A class for encapuslating Jooq dialects and possibly other types
+ * The Supplier provides a reference for the name of the IBDataDatabaseDialect instance,
+ * which should be loadable via DI
+ * @author mykel.alvis
+ *
+ * Translation mapping for various tools used within IBData
+ *
+ * @author mykel.alvis
+ *
+ */
+public interface IBDatabaseDialect extends Supplier<String> {
+  Optional<String> hibernateDialectClass();
 
+  String liquibaseDatabaseClass();
+
+  Optional<String> springDbName();
 }

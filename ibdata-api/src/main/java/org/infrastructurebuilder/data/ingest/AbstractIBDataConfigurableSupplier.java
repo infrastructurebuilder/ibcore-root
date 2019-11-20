@@ -25,17 +25,10 @@ import org.slf4j.Logger;
 public abstract class AbstractIBDataConfigurableSupplier<T> extends AbstractCMSConfigurableSupplier<T>
     implements IBLoggerEnabled {
   private final PathSupplier wps;
-  private final LoggerSupplier log;
 
   public AbstractIBDataConfigurableSupplier(PathSupplier wps, LoggerSupplier log, ConfigMapSupplier config) {
-    super(config);
+    super(config, log);
     this.wps = wps;
-    this.log = log;
-  }
-
-  @Override
-  public Logger getLog() {
-    return log.get();
   }
 
   protected PathSupplier getWps() {

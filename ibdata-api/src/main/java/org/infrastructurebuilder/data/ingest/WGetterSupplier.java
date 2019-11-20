@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util;
+package org.infrastructurebuilder.data.ingest;
 
-public interface ExecutionEnabled<T, C, E, R> {
-  ExecutionEnabled<T, C, E, R> configure(C cms);
+import java.util.function.Supplier;
 
-  ExecutionResponse<E, R> execute();
+public interface WGetterSupplier extends Supplier<WGetter> {
 
 }

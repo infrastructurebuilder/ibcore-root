@@ -17,12 +17,17 @@ package org.infrastructurebuilder.util.config;
 
 import static java.util.Objects.requireNonNull;
 
+import org.infrastructurebuilder.util.LoggerSupplier;
+import org.slf4j.Logger;
+
 abstract public class AbstractConfigurableSupplier<T, C> implements ConfigurableSupplier<T, C> {
 
   private final C config;
+  private final LoggerSupplier loggerSupplier;
 
-  public AbstractConfigurableSupplier(C config) {
+  public AbstractConfigurableSupplier(C config, LoggerSupplier l) {
     this.config = config;
+    this.loggerSupplier = requireNonNull(l);
   }
 
   public T get() {
@@ -33,5 +38,10 @@ abstract public class AbstractConfigurableSupplier<T, C> implements Configurable
 
   public C getConfig() {
     return this.config;
+  }
+
+  @Override
+  public Logger getLog() {
+    return this.loggerSupplier.get();
   }
 }

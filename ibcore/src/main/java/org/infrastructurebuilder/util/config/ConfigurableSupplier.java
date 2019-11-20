@@ -17,6 +17,8 @@ package org.infrastructurebuilder.util.config;
 
 import java.util.function.Supplier;
 
-public interface ConfigurableSupplier<T,C> extends Supplier<T> {
+import org.infrastructurebuilder.util.LoggerEnabled;
+
+public interface ConfigurableSupplier<T,C> extends Supplier<T>, LoggerEnabled {
   ConfigurableSupplier<T,C> configure(C config);
 }

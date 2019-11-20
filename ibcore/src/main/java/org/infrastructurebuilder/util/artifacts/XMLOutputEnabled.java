@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util;
+package org.infrastructurebuilder.util.artifacts;
 
-public interface ExecutionEnabled<T, C, E, R> {
-  ExecutionEnabled<T, C, E, R> configure(C cms);
+import org.w3c.dom.Document;
 
-  ExecutionResponse<E, R> execute();
+public interface XMLOutputEnabled {
+  Document asXML();
 
 }

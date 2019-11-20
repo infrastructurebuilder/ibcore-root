@@ -46,7 +46,8 @@ import org.w3c.dom.Document;
  */
 public interface IBDataSource extends Supplier<List<IBChecksumPathType>>, IBLoggerEnabled {
   public static final String TARGET_PATH = "Source-Target-Path";
-  public static final String CACHE_DIR = "Source-Cache-Directory";
+  public static final String SPLIT_ZIPS_CONFIG = "Source-Split-Zips";
+//  public static final String CACHE_DIR = "Source-Cache-Directory";
 
   String getSourceURL();
 
@@ -61,6 +62,10 @@ public interface IBDataSource extends Supplier<List<IBChecksumPathType>>, IBLogg
   Optional<String> getDescription();
 
   Optional<ConfigMap> getAdditionalConfig();
+
+  default boolean isExpandArchives() {
+    return false;
+  }
 
   /**
    * This is really a descriptive value, although it needs to be unique as well

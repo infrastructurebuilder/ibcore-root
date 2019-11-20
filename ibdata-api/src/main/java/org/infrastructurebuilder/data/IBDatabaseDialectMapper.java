@@ -13,39 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util;
+package org.infrastructurebuilder.data;
 
 import java.util.Optional;
 
-public class MultiType<T, E extends Throwable> {
+public interface IBDatabaseDialectMapper {
 
-  final Optional<E> e;
-  final Optional<T> t;
-
-  public MultiType(final E thrown) {
-    this(null, thrown);
-  }
-
-  public MultiType(final T typed, final E thrown) {
-    this.t = Optional.ofNullable(typed);
-    this.e = Optional.ofNullable(thrown);
-  }
-
-  public Optional<E> getException() {
-    return e;
-  }
 
   /**
-   * Use getT() instead
-   * @return
+   * Return an IBDataDatabaseDriverSupplier instance associated with the given key, if available
+   * @param key Non-null key
+   * @return non-null some IBDataDatabaseDriverSupplier instance, if available
+   * @deprecated  This isn't necessary
    */
-  @Deprecated
-  public Optional<T> getReturnedType() {
-    return t;
-  }
+  Optional<IBDataDatabaseDriverSupplier> getSupplier(String key);
 
-  public Optional<T> getT() {
-    return getReturnedType();
-  }
+  /**
+   * Return an IBDataDatabaseDriverSupplier for a given jdbc URL, if available
+   * @param jdbcURL
+   * @return a (disposable) instance if available and empty() otherwise
+   */
+  Optional<IBDataDatabaseDriverSupplier> getSupplierForURL(String jdbcURL);
 
 }

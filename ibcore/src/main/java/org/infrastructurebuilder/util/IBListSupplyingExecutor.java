@@ -15,9 +15,29 @@
  */
 package org.infrastructurebuilder.util;
 
-public interface ExecutionEnabled<T, C, E, R> {
-  ExecutionEnabled<T, C, E, R> configure(C cms);
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Supplier;
 
-  ExecutionResponse<E, R> execute();
+import org.slf4j.Logger;
 
+public interface IBListSupplyingExecutor<T, C> extends Supplier<List<T>> {
+
+  Logger getLog();
+
+  default List<String> getRequiredConfigItems() {
+    return Collections.emptyList();
+  }
+
+  default List<String> getOptionalConfigItems() {
+    return Collections.emptyList();
+  }
+
+  default IBListSupplyingExecutor<T, C> configure() {
+    return this;
+  }
+
+  default IBListSupplyingExecutor<T, C> configure(Supplier<C> config) {
+    return this;
+  }
 }

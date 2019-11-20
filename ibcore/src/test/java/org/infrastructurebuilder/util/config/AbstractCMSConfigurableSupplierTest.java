@@ -19,8 +19,11 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AbstractCMSConfigurableSupplierTest {
+  private final static Logger log = LoggerFactory.getLogger(AbstractCMSConfigurableSupplierTest.class);
 
   private DefaultConfigMapSupplier cms;
   private AbstractCMSConfigurableSupplier<String> l;
@@ -30,7 +33,7 @@ public class AbstractCMSConfigurableSupplierTest {
     cms = new DefaultConfigMapSupplier();
     cms.addValue("B", "C");
     cms.addValue("A", "G");
-    l = new AbstractCMSConfigurableSupplier<String>(cms) {
+    l = new AbstractCMSConfigurableSupplier<String>(cms, () -> log) {
 
       @Override
       public AbstractCMSConfigurableSupplier<String> getConfiguredSupplier(ConfigMapSupplier cms) {

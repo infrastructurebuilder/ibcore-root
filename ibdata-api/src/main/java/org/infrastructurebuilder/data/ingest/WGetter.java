@@ -13,11 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util;
+package org.infrastructurebuilder.data.ingest;
 
-public interface ExecutionEnabled<T, C, E, R> {
-  ExecutionEnabled<T, C, E, R> configure(C cms);
+import java.nio.file.Path;
+import java.util.Optional;
 
-  ExecutionResponse<E, R> execute();
+import org.infrastructurebuilder.util.BasicCredentials;
+import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.infrastructurebuilder.util.files.IBChecksumPathType;
+
+public interface WGetter {
+
+  Optional<IBChecksumPathType> collectCacheAndCopyToChecksumNamedFile(Optional<BasicCredentials> creds,
+      Path outputPath, String sourceString, Optional<Checksum> checksum, Optional<String> type, boolean interactiveMode,
+      int retries, int readTimeOut, boolean skipCache);
 
 }
