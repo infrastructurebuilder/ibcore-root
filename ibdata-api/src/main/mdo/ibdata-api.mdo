@@ -353,6 +353,16 @@
           <description>Describes a path to the stream</description>
           <type>String</type>
         </field>
+        <field>
+          <name>structuredDataDescriptor</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Optional DataStreamStructuredMetadata element for datastream</description>
+          <association>
+            <type>DataStreamStructuredMetadata</type>
+            <multiplicity>1</multiplicity>
+          </association>
+        </field>
 
       </fields>
       <codeSegments>
@@ -521,7 +531,6 @@
           </code>
         </codeSegment>
       </codeSegments>
-
     </class>
     <class locationTracker="locations" java.clone="shallow">
       <name>DataSetInputLocation</name>
@@ -581,6 +590,129 @@
         return getModelId() + " " + getLocation();
     }
             ]]>
+          </code>
+        </codeSegment>
+      </codeSegments>
+    </class>
+
+    <class xml.tagName="structuredFieldMetadata" java.clone="deep">
+      <name>StructuredFieldMetadata</name>
+      <version>1.0.0+</version>
+      <interfaces>
+        <interface>
+          <![CDATA[org.infrastructurebuilder.data.IBDataStructuredDataFieldMetadata]]>
+        </interface>
+      </interfaces>
+      <fields>
+        <field>
+          <name>index</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Describes the field within the structured metadata that this SFM describes, from a base of 0.  Default value set to -1 to ensure setting proper index</description>
+          <type>int</type>
+          <defaultValue>-1</defaultValue>
+        </field>
+        <field>
+          <name>iBDataStructuredDataMetadataType</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>"name()" of an enumerated type from IBDataStructuredDataMetadataType. Not required, but strongly encouraged.</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>enumerations</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Shows the list of (ordinal) enums that this field posseses.  If not present, this is not assumed to not be an enum</description>
+          <association>
+            <type>String</type>
+            <multiplicity>*</multiplicity>
+          </association>
+        </field>
+        <field>
+          <name>max</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Describes the "maximum length" of the data in the field. This is mostly useful for string (i.e. targeted to varchar) types. Length -2 means unset (for nullability purposes)</description>
+          <type>int</type>
+          <defaultValue>-2</defaultValue>
+        </field>
+        <field>
+          <name>min</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Describes the "minimum length" of the data in the field.  Assume an actually null field has a -1 length. Length -2 means unset (for nullability purposes)</description>
+          <type>int</type>
+          <defaultValue>-2</defaultValue>
+        </field>
+      </fields>
+      <codeSegments>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+    public void setType(org.infrastructurebuilder.data.IBDataStructuredDataMetadataType t) {
+        this.setIBDataStructuredDataMetadataType(java.util.Objects.requireNonNull(t, "IBDataStructuredDataMetadataType is null").name());
+    }            ]]>
+          </code>
+        </codeSegment>
+<!--
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+            // Clone hooks
+
+  private void mutatingDataStreamStructuredMetadataCloneHook(DataStreamStructuredMetadata s) {
+  }
+
+  ]]>
+          </code>
+        </codeSegment>
+ -->
+      </codeSegments>
+    </class>
+
+    <class xml.tagName="dataStreamStructuredMetadata"
+      java.clone.hook="mutatingDataStreamStructuredMetadataCloneHook"
+      java.clone="deep">
+      <name>DataStreamStructuredMetadata</name>
+      <version>1.0.0+</version>
+      <interfaces>
+        <interface>
+          <![CDATA[org.infrastructurebuilder.data.IBDataStructuredDataMetadata]]>
+        </interface>
+      </interfaces>
+      <fields>
+        <field>
+          <name>uuid</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>UUID identifier of the datastream that this metadata references</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>fields</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>List of structured data for a given field. </description>
+          <association>
+            <type>StructuredFieldMetadata</type>
+            <multiplicity>*</multiplicity>
+          </association>
+        </field>
+      </fields>
+      <codeSegments>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+            // Clone hooks
+
+  public void mutatingDataStreamStructuredMetadataCloneHook(DataStreamStructuredMetadata s) {
+  }
+
+  ]]>
           </code>
         </codeSegment>
       </codeSegments>

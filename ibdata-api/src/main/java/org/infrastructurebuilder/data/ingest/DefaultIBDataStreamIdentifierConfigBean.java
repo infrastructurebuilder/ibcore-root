@@ -98,10 +98,17 @@ public class DefaultIBDataStreamIdentifierConfigBean implements IBDataStreamIden
     return ofNullable(mimeType).orElse(IBConstants.APPLICATION_OCTET_STREAM);
   }
 
+  /**
+   * Overrides the (non-nullable) getChecksum() so that we can have null checksums here
+   */
   @Override
   public Checksum getChecksum() {
     return (sha512 != null) ? new Checksum(sha512) : null;
+  }
 
+  @Override
+  public String getSha512() {
+    return sha512;
   }
 
   @Override

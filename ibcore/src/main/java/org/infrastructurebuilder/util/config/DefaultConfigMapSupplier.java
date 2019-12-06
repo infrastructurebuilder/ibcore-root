@@ -57,11 +57,6 @@ public class DefaultConfigMapSupplier implements ConfigMapSupplier {
   }
 
   @Override
-  public ConfigMapSupplier addConfiguration(ConfigMapSupplier add) {
-    return addConfiguration(add.get());
-  }
-
-  @Override
   public ConfigMapSupplier addConfiguration(final Properties add) {
     for (String n : requireNonNull(add).stringPropertyNames())
       addValue(n.toString(), add.getProperty(n.toString()));

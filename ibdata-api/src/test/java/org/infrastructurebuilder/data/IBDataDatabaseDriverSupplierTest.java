@@ -24,13 +24,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import javax.sql.DataSource;
+
 import org.infrastructurebuilder.util.BasicCredentials;
 import org.infrastructurebuilder.util.artifacts.GAV;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class IBDataDatabaseDriverSupplierTest {
 
+  private final static Logger log = LoggerFactory.getLogger(IBDataDatabaseDriverSupplierTest.class);
   private static final String HINT = "hint";
   private IBDataDatabaseDriverSupplier d;
 
@@ -64,8 +69,13 @@ public class IBDataDatabaseDriverSupplierTest {
       }
 
       @Override
-      public Optional<Supplier<Connection>> getDataSourceSupplier(String jdbcURL, Optional<BasicCredentials> creds) {
+      public Optional<Supplier<DataSource>> getDataSourceSupplier2(String jdbcURL, Optional<BasicCredentials> creds) {
         return empty();
+      }
+
+      @Override
+      public Logger getLog() {
+        return log;
       }
 
     };

@@ -39,9 +39,21 @@ public class DefaultConfigMapSupplierTest {
 
   @Test
   public void testEntrySet() {
-    assertEquals(0,supplier.get().entrySet().size());
+    assertEquals(0, supplier.get().entrySet().size());
   }
 
+  @Test
+  public void testAdd2() {
+    final Map<String, Object> m = new HashMap<>();
+    m.put("X", "Y");
+    m.put("A", "B");
+    supplier.addConfiguration(m);
+    ConfigMap k = supplier.get();
+    assertEquals(2, k.size());
+    assertEquals("Y", k.getString("X"));
+    assertEquals("B", k.getString("A"));
+
+  }
 
   @Test
   public void testAdd() {
@@ -71,9 +83,8 @@ public class DefaultConfigMapSupplierTest {
     over.put("X", "Z");
     supplier.overrideConfigurationString(over);
     ConfigMap v2 = supplier.get();
-    assertEquals("Z",v2.getString("X"));
+    assertEquals("Z", v2.getString("X"));
   }
-
 
   @Test
   public void testAddProperties() {
@@ -135,6 +146,27 @@ public class DefaultConfigMapSupplierTest {
     assertEquals("CC", k.getString("A"));
     assertEquals("M", k.getString("Q"));
   }
+  @Test
+  public void testOverride2() {
+    final Map<String, Object> m = new HashMap<>();
+    m.put("X", "Y");
+    m.put("A", "B");
+    supplier.addConfiguration(m);
+    ConfigMap k = supplier.get();
+    assertEquals(2, k.size());
+    assertEquals("Y", k.getString("X"));
+    assertEquals("B", k.getString("A"));
+    final Map<String, Object> n = new HashMap<>();
+    n.put("X", "Z");
+    n.put("A", "CC");
+    n.put("Q", "M");
+    supplier.overrideConfiguration(new ConfigMap(n));
+    k = supplier.get();
+    assertEquals(3, k.size());
+    assertEquals("Z", k.getString("X"));
+    assertEquals("CC", k.getString("A"));
+    assertEquals("M", k.getString("Q"));
+  }
 
   @Test
   public void testOverrideProperties() {
@@ -162,7 +194,7 @@ public class DefaultConfigMapSupplierTest {
   public void testPutonConfigMap() {
     ConfigMap k = supplier.get();
     k.put("A", "B");
-    assertEquals("B",k.getString("A"));
+    assertEquals("B", k.getString("A"));
   }
 
 }

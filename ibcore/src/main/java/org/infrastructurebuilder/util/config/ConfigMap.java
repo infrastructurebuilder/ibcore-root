@@ -47,6 +47,10 @@ public class ConfigMap implements Map<String,Object> {
     return Optional.ofNullable(get(key)).map(Object::toString).orElse(null);
   }
 
+  public final boolean getParsedBoolean(String key, boolean defaultValue) {
+    return Optional.ofNullable(getString(key)).map(Boolean::parseBoolean).orElse(defaultValue);
+  }
+
   public final <T> T get(String key) {
     return (T) this.config.get(key);
   }

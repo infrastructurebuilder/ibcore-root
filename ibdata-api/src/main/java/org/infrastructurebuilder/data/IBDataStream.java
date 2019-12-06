@@ -15,16 +15,6 @@
  */
 package org.infrastructurebuilder.data;
 
-import static org.infrastructurebuilder.IBConstants.APPLICATION_XML;
-import static org.infrastructurebuilder.IBConstants.AVRO_BINARY;
-import static org.infrastructurebuilder.IBConstants.JAVA_LANG_STRING;
-import static org.infrastructurebuilder.IBConstants.ORG_APACHE_AVRO_GENERIC_INDEXED_RECORD;
-import static org.infrastructurebuilder.IBConstants.ORG_W3C_DOM_NODE;
-import static org.infrastructurebuilder.IBConstants.TEXT_CSV;
-import static org.infrastructurebuilder.IBConstants.TEXT_PLAIN;
-import static org.infrastructurebuilder.IBConstants.TEXT_PSV;
-import static org.infrastructurebuilder.IBConstants.TEXT_TSV;
-
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Optional;
@@ -46,5 +36,7 @@ public interface IBDataStream extends Supplier<InputStream>, AutoCloseable, IBDa
    * @return a new or updated IBDataStreamSupplier
    */
   IBDataStream relocateTo(Path newWorkingPath, TypeToExtensionMapper t2e);
+
+  Optional<IBDataStructuredDataMetadata> getIBDataStructuredDataMetadata();
 
 }

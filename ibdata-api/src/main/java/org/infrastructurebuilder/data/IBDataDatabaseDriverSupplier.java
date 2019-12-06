@@ -15,13 +15,15 @@
  */
 package org.infrastructurebuilder.data;
 
-import java.sql.Connection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import javax.sql.DataSource;
+
 import org.infrastructurebuilder.util.BasicCredentials;
 import org.infrastructurebuilder.util.artifacts.GAV;
+import org.slf4j.Logger;
 
 /**
  * Supplies the class name for the driver to make a Connection using a given JDBC URL
@@ -31,6 +33,7 @@ import org.infrastructurebuilder.util.artifacts.GAV;
  */
 public interface IBDataDatabaseDriverSupplier {
 
+  Logger getLog();
   /**
    * Return a list of coordinates that must be in the classpath in order to load the driver
    * @return List of GAV items in order of required insertion into the (new) classpath that the driver will be created from
@@ -57,5 +60,6 @@ public interface IBDataDatabaseDriverSupplier {
 
   boolean respondsTo(String jdbcURL);
 
-  Optional<Supplier<Connection>> getDataSourceSupplier(String jdbcURL, Optional<BasicCredentials> creds);
+//  Optional<Supplier<Connection>> getDataSourceSupplier(String jdbcURL, Optional<BasicCredentials> creds);
+  Optional<Supplier<DataSource>> getDataSourceSupplier2(String jdbcURL, Optional<BasicCredentials> creds);
 }

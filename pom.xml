@@ -42,7 +42,7 @@
   </distributionManagement>
   <properties>
     <iblog.version>0.10.0</iblog.version>
-    <ib.exceptions.version>23</ib.exceptions.version>
+    <ib.exceptions.version>25-SNAPSHOT</ib.exceptions.version>
 
     <!--  FIXME Move version in newer parent release -->
     <ib.versioning.support.plugin.version>0.12.0</ib.versioning.support.plugin.version>

@@ -74,6 +74,13 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
   Optional<String> getDescription();
 
   /**
+   * Mapper for field in the model.  This allows us to extract some logic from the modello model.
+   * Users should not rely on this.
+   * @return
+   */
+  String getSha512();
+
+  /**
    * This is a checksum of the underlying file (used to calculate the UUID in getId()).
    * It only contains a checksum for the file, not the metadata. See getMetadataChecksum() to get checksums of all elements
    *
@@ -82,7 +89,11 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
    *
    * @return  Checksum of the contents of the underlying file or throw NullPointerException
    */
-  Checksum getChecksum();
+  default Checksum getChecksum() {
+    return ofNullable(getSha512()).filter(s -> s.length() == 128) // Length of a sha512
+        .map(org.infrastructurebuilder.util.artifacts.Checksum::new)
+        .orElseThrow(() -> new org.infrastructurebuilder.data.IBDataException("No sha512 available"));
+  }
 
   /**
    * The "creation date", which is VERY CLOSE to when this file was downloaded.

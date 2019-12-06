@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 public interface ConfigMapSupplier extends Supplier<ConfigMap> {
   public static final String MAVEN = "maven"; // This one is implemented in ibcore-plexus
 
-  ConfigMapSupplier addConfiguration(ConfigMapSupplier add);
+//  ConfigMapSupplier addConfiguration(ConfigMapSupplier add);
 
   ConfigMapSupplier addConfiguration(Map<String, Object> add);
   ConfigMapSupplier addConfiguration(ConfigMap add);

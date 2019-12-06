@@ -15,24 +15,26 @@
  */
 package org.infrastructurebuilder.data;
 
+import static java.util.stream.Collectors.toMap;
+import static org.infrastructurebuilder.data.IBDataModelUtils.safeMapUUID;
+
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
+import java.util.UUID;
+import java.util.function.Function;
 
-/**
- * A class for encapsulating Jooq dialects and possibly other types
- * The Supplier provides a reference for the name of the IBDataDatabaseDialect instance,
- * which should be loadable via DI
- * @author mykel.alvis
- *
- * Translation mapping for various tools used within IBData
- *
- * @author mykel.alvis
- *
- */
-public interface IBDatabaseDialect extends Supplier<String> {
-  Optional<String> hibernateDialectClass();
+public interface IBDataStructuredDataMetadata {
+  String getUuid();
 
-  String liquibaseDatabaseClass();
+  default Optional<UUID> getId() {
+    return safeMapUUID.apply(getUuid());
+  }
 
-  Optional<String> springDbName();
+  List<? extends IBDataStructuredDataFieldMetadata> getFields();
+
+  default Map<Integer, ? extends IBDataStructuredDataFieldMetadata> getFieldMap() {
+    return getFields().stream().collect(toMap(k -> k.getIndex(), Function.identity()));
+  }
+
 }
