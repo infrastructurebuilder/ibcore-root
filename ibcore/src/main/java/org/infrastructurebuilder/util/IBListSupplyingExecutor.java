@@ -33,10 +33,6 @@ public interface IBListSupplyingExecutor<T, C> extends Supplier<List<T>> {
     return Collections.emptyList();
   }
 
-  default IBListSupplyingExecutor<T, C> configure() {
-    return this;
-  }
-
   default IBListSupplyingExecutor<T, C> configure(Supplier<C> config) {
     return this;
   }

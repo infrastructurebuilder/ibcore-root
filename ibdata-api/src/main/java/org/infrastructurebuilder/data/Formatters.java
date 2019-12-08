@@ -41,7 +41,7 @@ public class Formatters {
   public Formatters(ConfigMap config) {
     df = Objects.requireNonNull(config).getOrDefault(DATE_FORMATTER, DEFAULT_DATE_FORMATTER);
     tf = config.getOrDefault(TIME_FORMATTER, DEFAULT_TIME_FORMATTER);
-    ts = ofNullable(config.getObjectOrDefault(TIMESTAMP_FORMATTER, null)).map(Object::toString)
+    ts = ofNullable(config.getOrDefault(TIMESTAMP_FORMATTER, null)).map(Object::toString)
         .map(DateTimeFormatter::ofPattern).orElse(DEFAULT_TIMESTAMP_FORMATTER);
 
   }

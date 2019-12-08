@@ -22,7 +22,9 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 
-public class ConfigMap implements Map<String,Object> {
+import org.infrastructurebuilder.IBException;
+
+public class ConfigMap implements Map<String, Object> {
   private final Map<String, Object> config;
 
   public ConfigMap(Map<String, Object> c) {
@@ -35,7 +37,7 @@ public class ConfigMap implements Map<String,Object> {
 
   public ConfigMap(Properties p) {
     this.config = new HashMap<>();
-    p.stringPropertyNames().forEach(k -> this.config.put(k,  p.getProperty(k)));
+    p.stringPropertyNames().forEach(k -> this.config.put(k, p.getProperty(k)));
   }
 
   public ConfigMap(ConfigMap configuration) {
@@ -71,12 +73,13 @@ public class ConfigMap implements Map<String,Object> {
     return config.containsKey(key);
   }
 
-  public String getOrDefault(String key, String defaultValue) {
-    return Optional.ofNullable(getObjectOrDefault(key, defaultValue)).map(Object::toString).orElse(null);
+  public <T> T getOrDefault(String key, T defaultValue) {
+    return (T) config.getOrDefault(key, defaultValue);
   }
 
-  public <T> T getObjectOrDefault(String key, T defaultValue) {
-    return (T) config.getOrDefault(key, defaultValue);
+  public <T> T getRequired(String key) {
+    return (T) Optional.ofNullable(config.getOrDefault(key, null))
+        .orElseThrow(() -> new IBException("Value " + key + " not available"));
   }
 
   @Override

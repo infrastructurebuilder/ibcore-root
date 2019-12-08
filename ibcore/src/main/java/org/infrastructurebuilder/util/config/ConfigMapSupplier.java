@@ -51,7 +51,5 @@ public interface ConfigMapSupplier extends Supplier<ConfigMap> {
 
   ConfigMapSupplier overrideConfigurationString(Map<String, String> over);
 
-  void addConfigurationMap(Map<String, String> getenv);
-
   ConfigMapSupplier overrideConfiguration(ConfigMap over);
 }

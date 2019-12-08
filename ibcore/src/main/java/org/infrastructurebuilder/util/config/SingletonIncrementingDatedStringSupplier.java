@@ -15,36 +15,12 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import java.util.EmptyStackException;
-import java.util.Stack;
-import java.util.UUID;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
-/**
- * This isn't what I thought it was.  I think I forgot to implement this properly
- * @author mykel.alvis
- *
- */
-public class ConsecutiveIDSupplier implements IdentifierSupplier {
-
-  private final Stack<String> s = new Stack<>();
-  private final String id;
-
-  public ConsecutiveIDSupplier() {
-    id = UUID.randomUUID().toString();
-    s.push(id);
-  }
-
-  @Override
-  public String get() {
-    try {
-      return s.pop();
-    } catch (final EmptyStackException e) {
-      return UUID.randomUUID().toString();
-    }
-  }
-
-  public String getId() {
-    return id;
-  }
+@Named(SingletonIncrementingDatedStringSupplier.SINGLEDTON_INCREMENTING_DATED_STRING_SUPPLIER)
+@Singleton
+public class SingletonIncrementingDatedStringSupplier extends IncrementingDatedStringSupplier {
+  static final String SINGLEDTON_INCREMENTING_DATED_STRING_SUPPLIER = "singledton-incrementing-dated-string-supplier";
 
 }

@@ -73,12 +73,7 @@ public class IBListSupplyingExecutorTest {
     assertFalse(q == q2); // It is a different instance
     assertEquals(theList, q2.get().get(0));
     HandCraftedEnvSupplier newConfig = new HandCraftedEnvSupplier();
-    assertEquals(0, this.e.configure().configure(newConfig).get().get(0).size());
-  }
-
-  @Test
-  public void testConfigureWOConfig() {
-    assertTrue(this.e == this.e.configure());
+    assertEquals(0, this.e.configure(newConfig).get().get(0).size());
   }
 
   @Test

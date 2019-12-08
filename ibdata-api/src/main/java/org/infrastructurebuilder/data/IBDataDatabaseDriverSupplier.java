@@ -60,6 +60,5 @@ public interface IBDataDatabaseDriverSupplier {
 
   boolean respondsTo(String jdbcURL);
 
-//  Optional<Supplier<Connection>> getDataSourceSupplier(String jdbcURL, Optional<BasicCredentials> creds);
-  Optional<Supplier<DataSource>> getDataSourceSupplier2(String jdbcURL, Optional<BasicCredentials> creds);
+  Optional<Supplier<DataSource>> getDataSourceSupplier(String jdbcURL, Optional<BasicCredentials> creds);
 }
