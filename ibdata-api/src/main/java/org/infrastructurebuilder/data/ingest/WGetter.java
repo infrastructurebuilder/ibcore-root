@@ -33,10 +33,11 @@ public interface WGetter {
    * Convenience method for use outside of this class. Allows us to use the same sort of collector for lists
    * of expanded archives in multiple occasions.  Maybe we move this to it's own component next
    *
-   * @param tempPath Optional path to write temp files
+   * @param tempPath path to write temp files
    * @param source Path of the archive we're expanding
    * @return List of expanded read, typed, and renamed files, not including the original.
    */
-  List<IBChecksumPathType> expand(Optional<Path> tempPath, Path source);
+
+  List<IBChecksumPathType> expand(Path tempPath, Path source);
 
 }

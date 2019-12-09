@@ -44,6 +44,7 @@ public class DefaultIBDataStreamIdentifierConfigBean implements IBDataStreamIden
   private String path;
   private Date creationDate;
   private UUID id;
+  private boolean expandArchives;
 
   public DefaultIBDataStreamIdentifierConfigBean() {
   }
@@ -73,6 +74,10 @@ public class DefaultIBDataStreamIdentifierConfigBean implements IBDataStreamIden
     return temporaryId;
   }
 
+  public void setTemporaryId(String temporaryId) {
+    this.temporaryId = temporaryId;
+  }
+
   @Override
   public Optional<String> getURL() {
     return ofNullable(url);
@@ -95,11 +100,12 @@ public class DefaultIBDataStreamIdentifierConfigBean implements IBDataStreamIden
 
   @Override
   public String getMimeType() {
-    return ofNullable(mimeType).orElse(IBConstants.APPLICATION_OCTET_STREAM);
+    return mimeType;
   }
 
   /**
-   * Overrides the (non-nullable) getChecksum() so that we can have null checksums here
+   * Overrides the (non-nullable) getChecksum() so that we can have null checksums
+   * here
    */
   @Override
   public Checksum getChecksum() {
@@ -160,6 +166,14 @@ public class DefaultIBDataStreamIdentifierConfigBean implements IBDataStreamIden
     this.sha512 = checksum;
   }
 
+  public void setExpandArchives(boolean expandArchives) {
+    this.expandArchives = expandArchives;
+  }
+
+  public boolean isExpandArchives() {
+    return expandArchives;
+  }
+
   @Override
   public int hashCode() {
     return Objects.hash(creationDate, description, id, metadata, mimeType, name, path, sha512, temporaryId, url);
@@ -179,10 +193,10 @@ public class DefaultIBDataStreamIdentifierConfigBean implements IBDataStreamIden
     DefaultIBDataStreamIdentifierConfigBean other = (DefaultIBDataStreamIdentifierConfigBean) obj;
     return Objects.equals(getCreationDate(), other.getCreationDate())
         && Objects.equals(getDescription(), other.getDescription()) && Objects.equals(getId(), other.getId())
-        && Objects.equals(getMetadata().toString(), other.getMetadata().toString()) && Objects.equals(getMimeType(), other.getMimeType())
-        && Objects.equals(getName(), other.getName()) && Objects.equals(getPath(), other.getPath())
-        && Objects.equals(getChecksum(), other.getChecksum()) && Objects.equals(getTemporaryId(), other.getTemporaryId())
-        && Objects.equals(url, other.url);
+        && Objects.equals(getMetadata().toString(), other.getMetadata().toString())
+        && Objects.equals(getMimeType(), other.getMimeType()) && Objects.equals(getName(), other.getName())
+        && Objects.equals(getPath(), other.getPath()) && Objects.equals(getChecksum(), other.getChecksum())
+        && Objects.equals(getTemporaryId(), other.getTemporaryId()) && Objects.equals(url, other.url);
   }
 
 }

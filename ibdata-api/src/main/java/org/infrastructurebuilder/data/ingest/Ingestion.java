@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.infrastructurebuilder.data.DataSetEnabled;
-import org.infrastructurebuilder.data.IBDataSetIdentifier;
 import org.infrastructurebuilder.data.model.DataSet;
 import org.infrastructurebuilder.util.config.ConfigMap;
 
@@ -64,5 +63,8 @@ public class Ingestion implements DataSetEnabled {
     this.dataSet = dataSet;
   }
 
+  boolean isExpand(String tempId) {
+    return dataSet.getStreams().stream().filter(ds -> ds.getTemporaryId().equals(tempId)).findFirst().map(ff -> ff.isExpandArchives()).orElse(false);
+  }
 
 }

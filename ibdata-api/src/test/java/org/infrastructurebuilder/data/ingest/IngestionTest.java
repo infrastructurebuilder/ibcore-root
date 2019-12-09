@@ -16,8 +16,12 @@
 package org.infrastructurebuilder.data.ingest;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -43,8 +47,11 @@ public class IngestionTest {
 
   @Before
   public void setUp() throws Exception {
-    // FIXME Create local .equals() for DataSet. See <a href="https://github.com/infrastructurebuilder/ibcore-root/issues/4"> this issue</a>.
-    // Eventually this BiFunction should be static and move to (probably) IBDataSetIdentifier
+    // FIXME Create local .equals() for DataSet. See <a
+    // href="https://github.com/infrastructurebuilder/ibcore-root/issues/4"> this
+    // issue</a>.
+    // Eventually this BiFunction should be static and move to (probably)
+    // IBDataSetIdentifier
     equalser = (lhs, target) -> {
       if (target == null)
         return false;
@@ -73,7 +80,7 @@ public class IngestionTest {
     targetDs.setModelVersion("1.0.0");
     i = new Ingestion();
 
-     ids = (DefaultIBDataSetIdentifier) i.getDataSet();
+    ids = (DefaultIBDataSetIdentifier) i.getDataSet();
     ids.injectGAV("A", "B", "1.0.0-SNAPSHOT");
     ids.setMetadata(metadata);
     ids.setName("name");
@@ -87,7 +94,6 @@ public class IngestionTest {
   public void testGetId() {
     assertEquals(DEFAULT, i.getId());
   }
-
 
   @Test
   public void testGetIngester() {
@@ -109,6 +115,23 @@ public class IngestionTest {
     assertEquals(targetDs, i.asDataSet());
     i.setDataSet(ids);
     assertEquals(targetDs, ids.asDataSet());
+
+  }
+
+  @Test
+  public void testIsExpands() {
+    DefaultIBDataStreamIdentifierConfigBean s1 = new DefaultIBDataStreamIdentifierConfigBean(),
+        s2 = new DefaultIBDataStreamIdentifierConfigBean();
+    s1.setTemporaryId("s1");
+    s2.setTemporaryId("s2");
+    s1.setExpandArchives(true);
+    s2.setExpandArchives(false);
+    List<DefaultIBDataStreamIdentifierConfigBean> stream2s = Arrays.asList(s1, s1, s2);
+    ids.setStreams(stream2s);
+    i.setDataSet(ids);
+    assertTrue(i.isExpand("s1"));
+    assertFalse(i.isExpand("s2"));
+
   }
 
 }

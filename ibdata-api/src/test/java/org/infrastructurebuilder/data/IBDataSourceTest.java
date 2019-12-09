@@ -102,6 +102,10 @@ public class IBDataSourceTest {
       public IBDataSource withAdditionalConfig(ConfigMap config) {
         return this;
       }
+      @Override
+      public Optional<String> getMimeType() {
+        return Optional.of(APPLICATION_OCTET_STREAM);
+      }
     };
   }
 

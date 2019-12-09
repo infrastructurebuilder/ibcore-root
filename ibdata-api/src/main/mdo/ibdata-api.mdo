@@ -511,6 +511,8 @@
           </code>
         </codeSegment>
 
+<!--
+
         <codeSegment>
           <version>1.0.0+</version>
           <code>
@@ -530,6 +532,7 @@
   ]]>
           </code>
         </codeSegment>
+-->
       </codeSegments>
     </class>
     <class locationTracker="locations" java.clone="shallow">

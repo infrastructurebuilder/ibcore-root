@@ -186,4 +186,8 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
     return IBMetadataUtils.fromXpp3Dom.apply(getMetadata());
   }
 
+  default boolean isExpandArchives() {
+    return false;
+  }
+
 }

@@ -30,14 +30,15 @@ import org.infrastructurebuilder.util.files.IBChecksumPathType;
 import org.w3c.dom.Document;
 
 /**
- * An IBDataSource understands where a data stream originates and how to acquire it.
- * Furthermore, it actually acquires that datastream.
+ * An IBDataSource understands where a data stream originates and how to acquire
+ * it. Furthermore, it actually acquires that datastream.
  *
- * An IBDataSource always returns `IBChecksumPathType` which is a path to an acquired file with type and a checksum.
- * The contract for IBDataSource:
- *          1. An IBDataSource should produce the same value for a get() call every time. This means cacheing the results
- *          1. the Path supplied is to the same file every time.
- *          1. The list of IBChecksumPathTypes is called for getMimeType().  This should probably be removed.
+ * An IBDataSource always returns `IBChecksumPathType` which is a path to an
+ * acquired file with type and a checksum. The contract for IBDataSource: 1. An
+ * IBDataSource should produce the same value for a get() call every time. This
+ * means cacheing the results 1. the Path supplied is to the same file every
+ * time. 1. The list of IBChecksumPathTypes is called for getMimeType(). This
+ * should probably be removed.
  *
  *
  *
@@ -46,7 +47,7 @@ import org.w3c.dom.Document;
  */
 public interface IBDataSource extends Supplier<List<IBChecksumPathType>>, IBLoggerEnabled {
   public static final String TARGET_PATH = "Source-Target-Path";
-  public static final String SPLIT_ZIPS_CONFIG = "Source-Split-Zips";
+//  public static final String SPLIT_ZIPS_CONFIG = "Source-Split-Zips";
 //  public static final String CACHE_DIR = "Source-Cache-Directory";
 
   String getSourceURL();
@@ -69,13 +70,12 @@ public interface IBDataSource extends Supplier<List<IBChecksumPathType>>, IBLogg
 
   /**
    * This is really a descriptive value, although it needs to be unique as well
+   *
    * @return
    */
   String getId();
 
-  default Optional<String> getMimeType() { // FIXME I think this might be polluting downstream
-    return of(APPLICATION_OCTET_STREAM);
-  }
+  Optional<String> getMimeType();
 
   IBDataSource withAdditionalConfig(ConfigMap config);
 

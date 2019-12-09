@@ -68,4 +68,10 @@ public class IBDataStreamIdentifierTest extends AbstractModelTest {
     Optional<URL> q = stream.pathAsURL(finalData);
     assertTrue(q.get().toExternalForm().endsWith("test.jar!" + filePath));
   }
+
+  @Test
+  public void testChecksum() {
+    stream.getChecksum();
+
+  }
 }

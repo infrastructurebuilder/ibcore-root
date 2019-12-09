@@ -16,23 +16,23 @@
 package org.infrastructurebuilder.util.files;
 
 import static org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM;
+import static org.infrastructurebuilder.IBConstants.TEXT_PLAIN;
 import static org.infrastructurebuilder.util.files.DefaultIBChecksumPathType.copyToDeletedOnExitTempChecksumAndPath;
+import static org.infrastructurebuilder.util.files.DefaultIBChecksumPathType.copyToTempChecksumAndPath;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.IBException;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
-import org.infrastructurebuilder.util.config.WorkingPathSupplier;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -60,24 +60,23 @@ public class IBCoreReadDetectResponseTest {
 
   @Test
   public void testCopyToDeletedOnExitTempChecksumAndPathWithTarget() throws IOException {
-    IBChecksumPathType cset = copyToDeletedOnExitTempChecksumAndPath(Optional.of(this.wps.get()), "A", "B",
+    IBChecksumPathType cset = copyToTempChecksumAndPath(this.wps.get(),
         this.wps.getTestClasses().resolve(TESTFILE_TEST));
     assertEquals(7, cset.getPath().toFile().length());
     assertEquals(EXPECTED, cset.getChecksum().toString());
-    assertEquals("text/plain", cset.getType());
+    assertEquals(TEXT_PLAIN, cset.getType());
     assertEquals(EXPECTED, new Checksum(cset.get()).toString());
     assertTrue(cset.getPath().toString().startsWith(this.wps.getRoot().toString()));
   }
 
   @Test
   public void testCopyToDeletedOnExitTempChecksumAndPathWithoutTarget() throws IOException {
-    try (InputStream ins = getClass().getResourceAsStream("/" + TESTFILE_TEST)) {
-      IBChecksumPathType cset = copyToDeletedOnExitTempChecksumAndPath(Optional.empty(), "A", "B", ins);
+    try (InputStream ins = Files.newInputStream(this.wps.getTestClasses().resolve(TESTFILE_TEST))) {
+      IBChecksumPathType cset = copyToDeletedOnExitTempChecksumAndPath(wps.get(), "A", "B", ins);
       assertEquals(7, cset.getPath().toFile().length());
       assertEquals(EXPECTED, cset.getChecksum().toString());
-      assertEquals("text/plain", cset.getType());
+      assertEquals(TEXT_PLAIN, cset.getType());
       assertEquals(EXPECTED, new Checksum(cset.get()).toString());
-      assertFalse(cset.getPath().toString().startsWith(this.wps.getRoot().toString()));
     }
   }
 
@@ -85,7 +84,7 @@ public class IBCoreReadDetectResponseTest {
   public void testSecondarConstructor() {
     Path f = this.wps.getTestClasses().resolve(TESTFILE_TEST);
     DefaultIBChecksumPathType g = new DefaultIBChecksumPathType(f, new Checksum(f), Optional.empty());
-    assertEquals(IBConstants.TEXT_PLAIN, g.getType());
+    assertEquals(TEXT_PLAIN, g.getType());
   }
 
 }

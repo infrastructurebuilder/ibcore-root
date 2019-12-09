@@ -44,6 +44,7 @@ public interface IBConstants {
   public static final String APPLICATION_PDF = "application/pdf";
   public static final String APPLICATION_ZIP = "application/zip";
   public static final String APPLICATION_XML = "application/xml";
+  public static final String APPLICATION_VND_OASIS_SPREADSHEET = "application/vnd.oasis.opendocument.spreadsheet";
 
 
   public static final String JAVA_LANG_STRING = "java.lang.String";
@@ -64,6 +65,8 @@ public interface IBConstants {
   public static final String ZIP = ".zip";
   public static final String TXT = ".txt";
   public static final String XML = ".xml";
+  public static final String ODS = ".ods";
+
 
   public static final String _SHA512 = "sha512";
   public static final String ASC_EXT = ".asc";
