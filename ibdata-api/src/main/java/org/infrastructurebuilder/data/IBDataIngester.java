@@ -42,5 +42,5 @@ public interface IBDataIngester extends LoggerEnabled {
    * @param dss
    * @return
    */
-  List<Supplier<IBDataStream>> ingest(Ingestion i, IBDataSetIdentifier dsi, SortedMap<String,IBDataSourceSupplier> dss);
+  List<Supplier<IBDataStream>> ingest(SortedMap<String,IBDataSourceSupplier> dss);
 }

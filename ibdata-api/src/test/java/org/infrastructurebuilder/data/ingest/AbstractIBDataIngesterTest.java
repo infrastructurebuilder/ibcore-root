@@ -44,7 +44,7 @@ public class AbstractIBDataIngesterTest {
     p = wps.get();
     i = new AbstractIBDataIngester(p, log, new ConfigMap()) {
       @Override
-      public List<Supplier<IBDataStream>> ingest(Ingestion ingest, IBDataSetIdentifier dsi, SortedMap<String, IBDataSourceSupplier> dss) {
+      public List<Supplier<IBDataStream>> ingest(SortedMap<String, IBDataSourceSupplier> dss) {
         return Collections.emptyList();
       }
     };

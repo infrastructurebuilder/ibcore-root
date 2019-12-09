@@ -41,6 +41,7 @@ public interface IBConstants {
   public static final String APPLICATION_ACCESS = "application/msaccess";
   public static final String APPLICATION_MSWORD = "application/msword";
   public static final String APPLICATION_MSWORDX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+  public static final String APPLICATION_PPTX = "application/vnd.ms-powerpoint";
   public static final String APPLICATION_PDF = "application/pdf";
   public static final String APPLICATION_ZIP = "application/zip";
   public static final String APPLICATION_XML = "application/xml";
@@ -66,6 +67,7 @@ public interface IBConstants {
   public static final String TXT = ".txt";
   public static final String XML = ".xml";
   public static final String ODS = ".ods";
+  public static final String PPT = ".ppt";
 
 
   public static final String _SHA512 = "sha512";
