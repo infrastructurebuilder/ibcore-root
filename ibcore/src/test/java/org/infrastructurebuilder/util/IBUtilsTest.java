@@ -98,6 +98,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.SortedSet;
 import java.util.StringJoiner;
 import java.util.StringTokenizer;
 import java.util.UUID;
@@ -240,6 +241,12 @@ public class IBUtilsTest {
     final Stream<JSONObject> y = asStream(a);
     final List<JSONObject> x = y.collect(toList());
     assertEquals("Lists equal", asList(objects), x);
+  }
+
+  @Test
+  public void testWalkPath() {
+    SortedSet<Path> l = IBUtils.allFilesInTree(wps.getTestClasses());
+    assertTrue(l.size() > 5);
   }
 
   @Test

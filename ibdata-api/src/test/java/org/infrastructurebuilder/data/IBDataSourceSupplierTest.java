@@ -13,47 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data;
-
-import static org.junit.Assert.*;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-public class IBDataSourceSupplierTest {
-
-  private IBDataSourceSupplier l;
-
-  @Before
-  public void setUp() throws Exception {
-    l = new IBDataSourceSupplier() {
-
-      @Override
-      public int compareTo(IBDataSourceSupplier o) {
-        // TODO Auto-generated method stub
-        return 0;
-      }
-
-      @Override
-      public IBDataSource get() {
-        // TODO Auto-generated method stub
-        return null;
-      }
-
-      @Override
-      public String getId() {
-        // TODO Auto-generated method stub
-        return null;
-      }
-    };
-  }
-
-  @Test
-  public void test() {
-    assertFalse(l.isExpandArchives());
-  }
-
-}
+//package org.infrastructurebuilder.data;
+//
+//import static org.junit.Assert.*;
+//
+//import org.junit.After;
+//import org.junit.AfterClass;
+//import org.junit.Before;
+//import org.junit.BeforeClass;
+//import org.junit.Test;
+//
+//public class IBDataSourceSupplierTest {
+//
+//  private IBDataSourceSupplier l;
+//
+//  @Before
+//  public void setUp() throws Exception {
+//    l = new IBDataSourceSupplier() {
+//
+//      @Override
+//      public int compareTo(IBDataSourceSupplier o) {
+//        // TODO Auto-generated method stub
+//        return 0;
+//      }
+//
+//      @Override
+//      public IBDataSource get() {
+//        // TODO Auto-generated method stub
+//        return null;
+//      }
+//
+//      @Override
+//      public String getId() {
+//        // TODO Auto-generated method stub
+//        return null;
+//      }
+//    };
+//  }
+//
+//  @Test
+//  public void test() {
+//    assertFalse(l.isExpandArchives());
+//  }
+//
+//}

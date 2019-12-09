@@ -35,6 +35,7 @@ public interface IBConstants {
   public static final String TEXT_CSV = "text/csv";
   public static final String TEXT_TSV = "text/tab-separated-values";
   public static final String TEXT_PSV = "text/pipe-separated-values";
+  public static final String TEXT_HTML = "text/html";
   public static final String APPLICATION_XLS = "application/msexcel";
   public static final String APPLICATION_XLSX = "application//vnd.openxmlformats-officedocument.spreadsheetml.sheet";
   public static final String APPLICATION_ACCESS = "application/msaccess";

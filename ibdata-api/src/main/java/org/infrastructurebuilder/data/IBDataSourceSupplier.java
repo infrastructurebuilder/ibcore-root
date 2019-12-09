@@ -25,8 +25,8 @@ import java.util.function.Supplier;
 public interface IBDataSourceSupplier extends Supplier<IBDataSource>, Comparable<IBDataSourceSupplier> {
   String getId();
 
-  default boolean isExpandArchives() {
-    return false;
-  }
+//  default boolean isExpandArchives() {
+//    return false;
+//  }
 
 }

@@ -16,6 +16,7 @@
 package org.infrastructurebuilder.util;
 
 import static java.lang.Long.MAX_VALUE;
+import static java.nio.file.Files.walkFileTree;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.Spliterator.ORDERED;
@@ -68,7 +69,9 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.Spliterators;
+import java.util.TreeSet;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -171,7 +174,9 @@ public class IBUtils {
   }
 
   /**
-   * Modified from https://stackoverflow.com/questions/33242577/how-do-i-turn-a-java-enumeration-into-a-stream
+   * Modified from
+   * https://stackoverflow.com/questions/33242577/how-do-i-turn-a-java-enumeration-into-a-stream
+   *
    * @param <T>
    * @param e1
    * @param parallel
@@ -286,9 +291,23 @@ public class IBUtils {
     return target;
   }
 
+  public final static SortedSet<Path> allFilesInTree(final Path root) {
+    SortedSet<Path> l = new TreeSet<>();
+    cet.withTranslation(() -> walkFileTree(root, new SimpleFileVisitor<Path>() {
+      @Override
+      public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+        l.add(file);
+        return FileVisitResult.CONTINUE;
+      }
+
+    }));
+    return l;
+
+  }
+
   public final static void deletePath(final Path root) {
     try {
-      Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
+      walkFileTree(root, new SimpleFileVisitor<Path>() {
         @Override
         public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
           Files.delete(dir);
@@ -601,7 +620,9 @@ public class IBUtils {
   /**
    * Try to atomically move a source path to a target path.
    *
-   * IF THAT FAILS TO WORK, then copy source to target and then TRY to delete source but accept if it doesn't work
+   * IF THAT FAILS TO WORK, then copy source to target and then TRY to delete
+   * source but accept if it doesn't work
+   *
    * @param source
    * @param target
    * @return target
@@ -609,16 +630,17 @@ public class IBUtils {
    */
   public static Path moveAtomic(final Path source, final Path target) throws IOException {
     if (Objects.requireNonNull(source).toAbsolutePath().equals(Objects.requireNonNull(target).toAbsolutePath()))
-      return target;  // We do nothing here
+      return target; // We do nothing here
     try {
       return Files.move(source, target, StandardCopyOption.ATOMIC_MOVE);
     } catch (AtomicMoveNotSupportedException amns) {
-      // If we cannot move atomic, then copy the file instead and then TRY to delete it but accept delete failure
+      // If we cannot move atomic, then copy the file instead and then TRY to delete
+      // it but accept delete failure
       Path retVal = Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
       try {
         Files.delete(source);
       } catch (IOException e) {
-        // Do nothing here.  Leave trash on thefilesystem
+        // Do nothing here. Leave trash on thefilesystem
       }
       return retVal;
     }
@@ -724,11 +746,13 @@ public class IBUtils {
     return requireNonNull(gav).getVersion().map(DefaultIBVersion::new).map(DefaultIBVersion::apiVersion);
   }
 
-  //  public final static Function<Artifact, GAV> artifactToGAV = (art) -> {
-  //    final Path p = Optional.ofNullable(art.getFile()).map(p2 -> p2.toPath()).orElse(null);
-  //    return new DefaultGAV(art.getGroupId(), art.getArtifactId(), art.getClassifier(), art.getVersion(),
-  //        art.getExtension()).withFile(p);
-  //  };
+  // public final static Function<Artifact, GAV> artifactToGAV = (art) -> {
+  // final Path p = Optional.ofNullable(art.getFile()).map(p2 ->
+  // p2.toPath()).orElse(null);
+  // return new DefaultGAV(art.getGroupId(), art.getArtifactId(),
+  // art.getClassifier(), art.getVersion(),
+  // art.getExtension()).withFile(p);
+  // };
 
   public static String toInternalSignaturePath(final GAV gav) {
     return gav.getGroupId() + ":" + gav.getArtifactId() + ":" + gav.getClassifier().orElse("") + ":"
@@ -749,57 +773,61 @@ public class IBUtils {
     return b;
   }
 
-  //  public static boolean _versionmatcher(final GAV art, final GAV range) {
-  //    if (!art.getVersion().isPresent())
-  //      return true;
-  //    if (!range.getVersion().isPresent())
-  //      return true;
-  //    try {
-  //      final boolean b = inRange(art, ((DefaultGAV) range).asRange());
-  //      return b;
-  //    } catch (final IBException e) {
-  //      return false;
-  //    }
-  //  }
+  // public static boolean _versionmatcher(final GAV art, final GAV range) {
+  // if (!art.getVersion().isPresent())
+  // return true;
+  // if (!range.getVersion().isPresent())
+  // return true;
+  // try {
+  // final boolean b = inRange(art, ((DefaultGAV) range).asRange());
+  // return b;
+  // } catch (final IBException e) {
+  // return false;
+  // }
+  // }
 
-  //  public static Artifact asArtifact(final GAV art) {
-  //    return new DefaultArtifact(art.getDefaultSignaturePath());
-  //  }
+  // public static Artifact asArtifact(final GAV art) {
+  // return new DefaultArtifact(art.getDefaultSignaturePath());
+  // }
   //
-  //  public static Dependency asDependency(final GAV art, final String scope) {
-  //    return new Dependency(asArtifact(art), scope);
-  //  }
+  // public static Dependency asDependency(final GAV art, final String scope) {
+  // return new Dependency(asArtifact(art), scope);
+  // }
 
-  //  public static int compareVersion(final GAV art, final GAV otherVersion)
-  //      throws org.eclipse.aether.version.InvalidVersionSpecificationException {
-  //    return getVersionScheme().parseVersion(art.getVersion().get().toString())
-  //        .compareTo(getVersionScheme().parseVersion(otherVersion.getVersion().get().toString()));
-  //  }
+  // public static int compareVersion(final GAV art, final GAV otherVersion)
+  // throws org.eclipse.aether.version.InvalidVersionSpecificationException {
+  // return getVersionScheme().parseVersion(art.getVersion().get().toString())
+  // .compareTo(getVersionScheme().parseVersion(otherVersion.getVersion().get().toString()));
+  // }
 
-  //  public static GAV fromArtifact(final Artifact a) {
-  //    return new DefaultGAV(a.getGroupId(), a.getArtifactId(), a.getClassifier(), a.getVersion(), a.getExtension())
-  //        .withFile(Optional.ofNullable(a.getFile()).map(File::toPath).orElse(null));
-  //  }
+  // public static GAV fromArtifact(final Artifact a) {
+  // return new DefaultGAV(a.getGroupId(), a.getArtifactId(), a.getClassifier(),
+  // a.getVersion(), a.getExtension())
+  // .withFile(Optional.ofNullable(a.getFile()).map(File::toPath).orElse(null));
+  // }
 
   public static Optional<IBVersion> getVersion(final GAV art) {
     return art.getVersion().map(DefaultIBVersion::new);
   }
 
-  //  public static VersionScheme getVersionScheme() {
-  //    return new org.eclipse.aether.util.version.GenericVersionScheme();
-  //  }
+  // public static VersionScheme getVersionScheme() {
+  // return new org.eclipse.aether.util.version.GenericVersionScheme();
+  // }
   //
-  //  public static boolean inRange(final GAV art, final String versionRange) {
-  //    return IBException.cet.withReturningTranslation(() -> {
-  //      return getVersionScheme().parseVersionRange(versionRange)
-  //          .containsVersion(getVersionScheme().parseVersion(art.getVersion().orElse(null)));
-  //    });
-  //  }
+  // public static boolean inRange(final GAV art, final String versionRange) {
+  // return IBException.cet.withReturningTranslation(() -> {
+  // return getVersionScheme().parseVersionRange(versionRange)
+  // .containsVersion(getVersionScheme().parseVersion(art.getVersion().orElse(null)));
+  // });
+  // }
 
-  //  public static boolean matches(final GAV art, final GAV pattern) {
-  //    return _matcher(pattern.getGroupId(), art.getGroupId()) && _matcher(pattern.getArtifactId(), art.getArtifactId())
-  //        && _matcher(pattern.getClassifier().orElse(".*"), art.getClassifier().orElse(null))
-  //        && _matcher(pattern.getExtension(), art.getExtension()) && _versionmatcher(art, pattern);
-  //  }
+  // public static boolean matches(final GAV art, final GAV pattern) {
+  // return _matcher(pattern.getGroupId(), art.getGroupId()) &&
+  // _matcher(pattern.getArtifactId(), art.getArtifactId())
+  // && _matcher(pattern.getClassifier().orElse(".*"),
+  // art.getClassifier().orElse(null))
+  // && _matcher(pattern.getExtension(), art.getExtension()) &&
+  // _versionmatcher(art, pattern);
+  // }
 
 }

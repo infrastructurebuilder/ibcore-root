@@ -33,8 +33,16 @@ import org.infrastructurebuilder.IBException;
 import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 
-public class DefaultIBChecksumPathType extends BasicIBChecksumPathType  {
+public class DefaultIBChecksumPathType extends BasicIBChecksumPathType {
   private final static Tika tika = new Tika();
+
+  public final static IBChecksumPathType copyToDeletedOnExitTempChecksumAndPath(Optional<Path> targetDir, String prefix,
+      String suffix, final Path source) throws IOException {
+
+    try (InputStream ins = cet.withReturningTranslation(() -> Files.newInputStream(source, StandardOpenOption.READ))) {
+      return copyToDeletedOnExitTempChecksumAndPath(targetDir, prefix, suffix, ins);
+    }
+  }
 
   public final static IBChecksumPathType copyToDeletedOnExitTempChecksumAndPath(Optional<Path> targetDir, String prefix,
       String suffix, final InputStream source) {
@@ -74,5 +82,9 @@ public class DefaultIBChecksumPathType extends BasicIBChecksumPathType  {
 
   DefaultIBChecksumPathType(Path path, Checksum checksum) throws IOException {
     super(path, checksum, toType.apply(path));
+  }
+
+  public DefaultIBChecksumPathType(Path path, Checksum checksum, Optional<String> type) {
+    super(path, checksum, Objects.requireNonNull(type).orElse(toType.apply(path)));
   }
 }
