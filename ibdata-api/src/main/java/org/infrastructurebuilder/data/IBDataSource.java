@@ -15,9 +15,6 @@
  */
 package org.infrastructurebuilder.data;
 
-import static java.util.Optional.of;
-import static org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -46,9 +43,7 @@ import org.w3c.dom.Document;
  *
  */
 public interface IBDataSource extends Supplier<List<IBChecksumPathType>>, IBLoggerEnabled {
-  public static final String TARGET_PATH = "Source-Target-Path";
-//  public static final String SPLIT_ZIPS_CONFIG = "Source-Split-Zips";
-//  public static final String CACHE_DIR = "Source-Cache-Directory";
+//  public static final String TARGET_PATH = "Source-Target-Path";
 
   String getSourceURL();
 
