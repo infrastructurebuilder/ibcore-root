@@ -16,6 +16,7 @@
 package org.infrastructurebuilder.data;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import static javax.xml.parsers.DocumentBuilderFactory.newInstance;
 import static org.infrastructurebuilder.data.IBDataException.cet;
 
@@ -23,7 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.Optional;
+import java.nio.file.Files;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -38,6 +39,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.infrastructurebuilder.data.model.DataStream;
+import org.infrastructurebuilder.data.model.DataStreamStructuredMetadata;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -55,13 +57,15 @@ public class IBMetadataUtils {
   };
 
   /**
-   * Map an object to a W3C Document.  If null, returns an empty Document
+   * Map an object to a W3C Document. If null, returns an empty Document
    */
-  public final static Function<Object, Document> fromXpp3Dom = (document) -> Optional
-      .ofNullable(cet.withReturningTranslation(
-          () -> (Optional.ofNullable(document).orElse(emptyDocumentSupplier.get()) instanceof Document) ? // Is it a Document
+  public final static Function<Object, Document> fromXpp3Dom = (document) -> ofNullable(cet.withReturningTranslation(
+          () -> (ofNullable(document).orElse(emptyDocumentSupplier.get()) instanceof Document) ? // Is it a
+                                                                                                          // Document
               (Document) document : // Already a document
-              (newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(document.toString())))) // Make it a document
+              (newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(document.toString())))) // Make
+                                                                                                                 // it a
+                                                                                                                 // document
       ))
 
       .orElse(emptyDocumentSupplier.get());
@@ -100,11 +104,18 @@ public class IBMetadataUtils {
     ds.setSha512(ibds.getChecksum().toString());
     ds.setUuid(ibds.getChecksum().asUUID().get().toString());
     ds.setPath(ibds.getPath());
+    ibds.getPathIfAvailable().ifPresent(p -> {
+      DataStreamStructuredMetadata dssm = ofNullable(ds.getStructuredDataDescriptor())
+          .orElse(new DataStreamStructuredMetadata());
+      dssm.setOriginalLength(new Long(cet.withReturningTranslation(() -> Files.size(p))).toString());
+      ds.setStructuredDataDescriptor(dssm);
+    });
     return ds;
   };
 
   /**
-   * Function to compare W3c Dcoument instances (by string compare, like a filthy animal
+   * Function to compare W3c Document instances (by string compare, like a filthy
+   * animal
    */
   public final static BiFunction<Document, Document, Boolean> w3cDocumentEqualser = (lhs, rhs) -> {
     return stringifyDocument.apply(lhs).equals(stringifyDocument.apply(rhs));

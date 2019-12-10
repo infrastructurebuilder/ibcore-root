@@ -56,6 +56,16 @@ public class IBDataStructuredDataMetadataTest {
         return fields;
       }
 
+      @Override
+      public String getOriginalLength() {
+        return null;
+      }
+
+      @Override
+      public String getOriginalRowCount() {
+        return null;
+      }
+
     };
   }
 

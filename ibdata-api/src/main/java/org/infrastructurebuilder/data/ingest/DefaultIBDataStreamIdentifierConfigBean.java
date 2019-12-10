@@ -15,6 +15,7 @@
  */
 package org.infrastructurebuilder.data.ingest;
 
+import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.data.IBMetadataUtils.translateToXpp3Dom;
 
@@ -25,9 +26,9 @@ import java.util.UUID;
 
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.data.IBDataException;
 import org.infrastructurebuilder.data.IBDataStreamIdentifier;
+import org.infrastructurebuilder.data.IBDataStructuredDataMetadata;
 import org.infrastructurebuilder.data.IBMetadataUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.w3c.dom.Document;
@@ -197,6 +198,11 @@ public class DefaultIBDataStreamIdentifierConfigBean implements IBDataStreamIden
         && Objects.equals(getMimeType(), other.getMimeType()) && Objects.equals(getName(), other.getName())
         && Objects.equals(getPath(), other.getPath()) && Objects.equals(getChecksum(), other.getChecksum())
         && Objects.equals(getTemporaryId(), other.getTemporaryId()) && Objects.equals(url, other.url);
+  }
+
+  @Override
+  public Optional<IBDataStructuredDataMetadata> getStructuredDataMetadata() {
+    return empty();
   }
 
 }

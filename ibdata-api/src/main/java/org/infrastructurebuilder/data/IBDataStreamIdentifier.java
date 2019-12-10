@@ -15,6 +15,7 @@
  */
 package org.infrastructurebuilder.data;
 
+import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.data.IBDataException.cet;
 import static org.infrastructurebuilder.util.IBUtils.nullSafeDateComparator;
@@ -22,6 +23,7 @@ import static org.infrastructurebuilder.util.IBUtils.nullSafeURLMapper;
 import static org.infrastructurebuilder.util.IBUtils.nullSafeUUIDComparator;
 
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Objects;
@@ -189,5 +191,12 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
   default boolean isExpandArchives() {
     return false;
   }
+
+  Optional<IBDataStructuredDataMetadata> getStructuredDataMetadata();
+
+  default Optional<Path> getPathIfAvailable() {
+    return empty();
+  }
+
 
 }

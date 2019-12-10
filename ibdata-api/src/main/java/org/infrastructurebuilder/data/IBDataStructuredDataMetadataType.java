@@ -16,6 +16,6 @@
 package org.infrastructurebuilder.data;
 
 public enum IBDataStructuredDataMetadataType {
-  // Identical to Avro types but with some removed
+  // Identical to Avro or ProtoBuf types but with some removed
   /*RECORD, ENUM, ARRAY, MAP, UNION, FIXED,*/ STRING, BYTES, INT, LONG, FLOAT, DOUBLE, BOOLEAN /*, NULL*/;
 }

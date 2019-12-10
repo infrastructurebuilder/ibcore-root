@@ -19,31 +19,35 @@ import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
 /**
  * This type's name is a mouthful.
  *
- * This type describes an optional piece of metadata about a field in a DataStream that contains
- * structured data.  These values are meant to be calculated at transformation time, so
- * the transformation should produce them.  They could change during the course of a transformation
- * so it's important that we be able to manipulate the list easily.
+ * This type describes an optional piece of metadata about a field in a
+ * DataStream that contains structured data. These values are meant to be
+ * calculated at transformation time, so the transformation should produce them.
+ * They could change during the course of a transformation so it's important
+ * that we be able to manipulate the list easily.
+ *
  * @author mykel.alvis
  *
  */
 public interface IBDataStructuredDataFieldMetadata {
 
-  public static final int NULL_INDICATOR = -1;
-
   /**
-   * Required.  0-based index of this field
+   * Required. 0-based index of this field
+   *
    * @return
    */
   int getIndex();
 
   /**
    * If we have a name, return it
+   *
    * @return
    */
   default Optional<String> getFieldName() {
@@ -52,6 +56,7 @@ public interface IBDataStructuredDataFieldMetadata {
 
   /**
    * Returns the string representations of enumeration values (the "name()"s).
+   *
    * @return
    */
   List<String> getEnumerations();
@@ -60,58 +65,75 @@ public interface IBDataStructuredDataFieldMetadata {
     return ofNullable(getEnumerations()).orElse(emptyList()).size() > 0;
   }
 
-  default Optional<Integer> getMaxLength() {
-    return ofNullable(getMax() < 0 ? null : getMax());
+  default Optional<BigInteger> getMaxIntValue() {
+    try {
+      return ofNullable(getMax()).map(BigInteger::new);
+    } catch (NumberFormatException e) {
+      return empty();
+    }
   }
 
-  default Optional<Integer> getMinLength() {
-    return ofNullable(getMin() < 0 ? null : getMin());
+  default Optional<BigInteger> getMinIntValue() {
+    try {
+
+      return ofNullable(getMin()).map(BigInteger::new);
+    } catch (NumberFormatException e) {
+      return empty();
+    }
   }
 
-  /**
-   * @return  actual byte length of the inputstream if known
-   */
-  default Optional<Long> getInputStreamLength() {
-    return empty();
+  default Optional<BigDecimal> getMaxRealValue() {
+    try {
+      return ofNullable(getMax()).map(BigDecimal::new);
+    } catch (NumberFormatException e) {
+      return empty();
+    }
   }
+
+  default Optional<BigDecimal> getMinRealValue() {
+    try {
+      return ofNullable(getMin()).map(BigDecimal::new);
+    } catch (NumberFormatException e) {
+      return empty();
+    }
+  }
+
 
   default Optional<Integer> getUniqueValuesCount() {
     return empty();
   }
 
-  default boolean hasNull() {
-    return getMinLength().map(l -> l == NULL_INDICATOR).orElse(false);
+  /**
+   * Is this field nullable
+   *
+   * @return returns empty if unknown, or Optional<True> if nullable
+   */
+  default Optional<Boolean> isNullable() {
+    return Optional.ofNullable(getNullable()).map(f -> "true".equalsIgnoreCase(f));
   }
 
-
   default Optional<IBDataStructuredDataMetadataType> getType() {
-    return ofNullable(getIBDataStructuredDataMetadataType()).map(IBDataStructuredDataMetadataType::valueOf);
+    return ofNullable(getMetadataType()).map(IBDataStructuredDataMetadataType::valueOf);
   }
 
   /**
    * Allows us to the the string type in the model from the enum
+   *
    * @param t
    */
   void setType(IBDataStructuredDataMetadataType t);
 
   /*
-   * The following are implemented in the generated model directly
+   * The following are implemented in the generated model directly. They are
+   * stored as strings because their types are needed within this interface but
+   * cannot be relied on to have good typing.
    */
-  /**
-   * Describes the "minimum length" of the data in the field.  Assume an actually null field has a -1 length.
-              Length -2 means unset (for nullability purposes)
-   * @return
-   */
-  int getMin();
+  String getMin();
 
-  /**
-   * Describes the "maximum length" of the data in the field.
-              This is mostly useful for string (i.e. targeted to varchar) types.
-              Length -2 means unset (for nullability purposes)
-   * @return
-   */
-  int getMax();
+  String getMax();
 
-  String getIBDataStructuredDataMetadataType();
+  String getNullable();
+
+  String getMetadataType();
 
 }

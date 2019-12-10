@@ -7,7 +7,8 @@
   xsd.namespace="https://resources.infrastructurebuilder.org/IBDataSet/${apiVersion}"
   xsd.targetNamespace="https://resources.infrastructurebuilder.org/IBDataSet/${apiVersion}">
   <id>datasource</id>
-  <name>IBDataSourceModel</name> <!--  Must be a single (no spaces, no dashes, no periods) identifier in order to create reader/writer -->
+  <name>IBDataSourceModel</name> <!-- Must be a single (no spaces, no dashes, no periods) identifier in order
+    to create reader/writer -->
   <description>Mechanism to read config for an IBDataSource</description>
 
   <defaults>
@@ -21,7 +22,7 @@
     <value>modelVersion</value>
   </versionDefinition>
   <classes>
-  <!-- MODEL -->
+    <!-- MODEL -->
     <class xml.tagName="dataSet" rootElement="true"
       java.clone.hook="mutatingDataSetCloneHook" java.clone="deep">
       <name>DataSet</name>
@@ -42,7 +43,7 @@
       <fields>
 
         <!-- ====================================================================== -->
-        <!-- Deployment Version                                                          -->
+        <!-- Deployment Version -->
         <!-- ====================================================================== -->
         <field>
           <name>modelVersion</name>
@@ -510,29 +511,24 @@
   ]]>
           </code>
         </codeSegment>
-
-<!--
-
         <codeSegment>
           <version>1.0.0+</version>
           <code>
             <![CDATA[
-  private java.util.Optional<String> getValidatedSha512() {
-    if (this.sha512 != null  && this.sha512.length() != 128)
-      throw  new org.infrastructurebuilder.data.IBDataException("sha512 length must be 128 ");
-    return java.util.Optional.ofNullable(getSha512());
-  }
-            // Checksum
-  @Override
-  public org.infrastructurebuilder.util.artifacts.Checksum getChecksum() {
-    return getValidatedSha512()
-      .map(org.infrastructurebuilder.util.artifacts.Checksum::new)
-      .orElseThrow(() -> new org.infrastructurebuilder.data.IBDataException("No sha512 available"));
-  }
-  ]]>
+  public java.util.Optional<org.infrastructurebuilder.data.IBDataStructuredDataMetadata> getStructuredDataMetadata() {
+    return java.util.Optional.ofNullable(this.getStructuredDataDescriptor());
+  }            ]]>
           </code>
         </codeSegment>
--->
+
+        <!-- <codeSegment> <version>1.0.0+</version> <code> <![CDATA[ private
+          java.util.Optional<String> getValidatedSha512() { if (this.sha512 != null
+          && this.sha512.length() != 128) throw new org.infrastructurebuilder.data.IBDataException("sha512
+          length must be 128 "); return java.util.Optional.ofNullable(getSha512());
+          } // Checksum @Override public org.infrastructurebuilder.util.artifacts.Checksum
+          getChecksum() { return getValidatedSha512() .map(org.infrastructurebuilder.util.artifacts.Checksum::new)
+          .orElseThrow(() -> new org.infrastructurebuilder.data.IBDataException("No
+          sha512 available")); } ]]> </code> </codeSegment> -->
       </codeSegments>
     </class>
     <class locationTracker="locations" java.clone="shallow">
@@ -616,7 +612,7 @@
           <defaultValue>-1</defaultValue>
         </field>
         <field>
-          <name>iBDataStructuredDataMetadataType</name>
+          <name>metadataType</name>
           <version>1.0.0+</version>
           <required>false</required>
           <description>"name()" of an enumerated type from IBDataStructuredDataMetadataType. Not required, but strongly encouraged.</description>
@@ -636,17 +632,22 @@
           <name>max</name>
           <version>1.0.0+</version>
           <required>false</required>
-          <description>Describes the "maximum length" of the data in the field. This is mostly useful for string (i.e. targeted to varchar) types. Length -2 means unset (for nullability purposes)</description>
-          <type>int</type>
-          <defaultValue>-2</defaultValue>
+          <description>Describes the "maximum length" or "maximum size" of the data in the field.</description>
+          <type>String</type>
         </field>
         <field>
           <name>min</name>
           <version>1.0.0+</version>
           <required>false</required>
-          <description>Describes the "minimum length" of the data in the field.  Assume an actually null field has a -1 length. Length -2 means unset (for nullability purposes)</description>
-          <type>int</type>
-          <defaultValue>-2</defaultValue>
+          <description>Describes the "minimum length" or "maximum size" of the data in the field.</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>nullable</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Describes if the field has a null value in it.  The only "true" answer is the string 'true'</description>
+          <type>String</type>
         </field>
       </fields>
       <codeSegments>
@@ -655,24 +656,14 @@
           <code>
             <![CDATA[
     public void setType(org.infrastructurebuilder.data.IBDataStructuredDataMetadataType t) {
-        this.setIBDataStructuredDataMetadataType(java.util.Objects.requireNonNull(t, "IBDataStructuredDataMetadataType is null").name());
+        this.setMetadataType(java.util.Objects.requireNonNull(t, "IBDataStructuredDataMetadataType is null").name());
     }            ]]>
           </code>
         </codeSegment>
-<!--
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-            // Clone hooks
 
-  private void mutatingDataStreamStructuredMetadataCloneHook(DataStreamStructuredMetadata s) {
-  }
-
-  ]]>
-          </code>
-        </codeSegment>
- -->
+        <!-- <codeSegment> <version>1.0.0+</version> <code> <![CDATA[ //
+          Clone hooks private void mutatingDataStreamStructuredMetadataCloneHook(DataStreamStructuredMetadata
+          s) { } ]]> </code> </codeSegment> -->
       </codeSegments>
     </class>
 
@@ -692,6 +683,20 @@
           <version>1.0.0+</version>
           <required>true</required>
           <description>UUID identifier of the datastream that this metadata references</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>originalLength</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Length of the original stream, if known</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>originalRowCount</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Number of rows of the stream</description>
           <type>String</type>
         </field>
         <field>
@@ -716,6 +721,30 @@
   }
 
   ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+    @Override
+    public int hashCode() {
+      return java.util.Objects.hash(fields, uuid);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      DataStreamStructuredMetadata other = (DataStreamStructuredMetadata) obj;
+      return java.util.Objects.equals(fields, other.fields) && java.util.Objects.equals(uuid, other.uuid);
+    }
+
+    ]]>
           </code>
         </codeSegment>
       </codeSegments>

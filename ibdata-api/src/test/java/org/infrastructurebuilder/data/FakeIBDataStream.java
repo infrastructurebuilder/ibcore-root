@@ -114,4 +114,9 @@ public class FakeIBDataStream extends DataStream implements IBDataStream {
   public Optional<IBDataStructuredDataMetadata> getIBDataStructuredDataMetadata() {
     return Optional.ofNullable(this.smd);
   }
+
+  @Override
+  public Optional<Path> getPathIfAvailable() {
+    return Optional.of(this.localPath);
+  }
 }
