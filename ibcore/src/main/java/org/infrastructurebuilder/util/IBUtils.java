@@ -97,6 +97,24 @@ import org.slf4j.LoggerFactory;
 
 public class IBUtils {
 
+  private static boolean isJar;
+  private static boolean isZip;
+  static {
+    try {
+      new URL("zip:file://z.zip!/a");
+      isZip = true;
+    } catch (MalformedURLException e) {
+      isZip = false;
+    }
+    try {
+      new URL("jar:file://z.jar!/a");
+      isJar = true;
+    } catch (MalformedURLException e) {
+      isJar = false;
+    }
+    if (!isJar && !isZip)
+      throw new IBException("THIS JVM CANNOT HANDLE ARCHIVES.  IBDATA WILL NOT WORK");
+  }
   public final static Function<Properties, Map<String, String>> propertiesToMapSS = (p) -> {
     final Map<String, String> m = new HashMap<>();
     Optional.ofNullable(p)
@@ -112,7 +130,7 @@ public class IBUtils {
       .nullsFirst(java.util.Date::compareTo);
 
   public final static Function<String, Optional<URL>> nullSafeURLMapper = (s) -> {
-    return ofNullable(s).map(u -> cet.withReturningTranslation(() -> new URL(u)));
+    return ofNullable(s).map(u -> cet.withReturningTranslation(() -> translateToWorkableArchiveURL(u)));
   };
 
   public final static Function<Object, Optional<String>> nullSafeObjectToString = (o) -> {
@@ -128,7 +146,7 @@ public class IBUtils {
   };
 
   public final static URL reURL(String url) {
-    return ofNullable(url).map(u -> cet.withReturningTranslation(() -> new URL(u))).orElse(null);
+    return ofNullable(url).map(u -> cet.withReturningTranslation(() -> translateToWorkableArchiveURL(u))).orElse(null);
   }
 
   public final static Function<JSONObject, JSONObject> cheapCopy = j -> {
@@ -245,8 +263,8 @@ public class IBUtils {
 
   public static final Optional<URL> asURL(final String url) {
     try {
-      return Optional.of(new URL(url));
-    } catch (final MalformedURLException e) {
+      return Optional.of(translateToWorkableArchiveURL(url));
+    } catch (final IBException e) {
       return Optional.empty();
     }
   }
@@ -296,7 +314,7 @@ public class IBUtils {
     cet.withTranslation(() -> walkFileTree(root, new SimpleFileVisitor<Path>() {
       @Override
       public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
-        l.add(file);
+        l.add(file.toAbsolutePath());
         return FileVisitResult.CONTINUE;
       }
 
@@ -558,13 +576,8 @@ public class IBUtils {
   }
 
   public static URL mapStringToURLOrNull(final Optional<String> urlString) {
-    return urlString.map(u -> {
-      try {
-        return new URL(u);
-      } catch (final MalformedURLException e) {
-        throw new IBException(e);
-      }
-    }).orElse((URL) null);
+    return urlString.map(IBUtils::translateToWorkableArchiveURL).orElse(null);
+
   }
 
   public static boolean matches(final JSONObject metadata, final Map<Pattern, Pattern> t) {
@@ -728,8 +741,8 @@ public class IBUtils {
   }
 
   public static Optional<URL> zipEntryToUrl(final Optional<URL> p, final ZipEntry e) {
-    return requireNonNull(p)
-        .map(u -> cet.withReturningTranslation(() -> new URL("jar:" + u.toExternalForm() + "!/" + e.getName())));
+    return requireNonNull(p).map(u -> cet.withReturningTranslation(
+        () -> translateToWorkableArchiveURL("jar:" + u.toExternalForm() + "!/" + e.getName())));
   }
 
   private static boolean _match(final JSONObject metadata, final Pattern key, final Pattern value) {
@@ -830,4 +843,15 @@ public class IBUtils {
   // _versionmatcher(art, pattern);
   // }
 
+  public static URL translateToWorkableArchiveURL(String url) {
+    requireNonNull(url);
+    String retVal = url;
+    if (url.startsWith("jar:") && !isJar)
+      retVal = "zip:" + url.substring(4);
+    if (url.startsWith("zip:") && !isZip)
+      retVal = "jar:" + url.substring(4);
+    final String f = retVal;
+    return IBException.cet.withReturningTranslation(() -> new URL(f));
+
+  }
 }

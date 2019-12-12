@@ -19,8 +19,6 @@ import static java.nio.file.Files.createTempFile;
 import static java.util.Objects.requireNonNull;
 import static org.infrastructurebuilder.IBException.cet;
 import static org.infrastructurebuilder.util.IBUtils.copy;
-import static org.infrastructurebuilder.util.IBUtils.copyAndDigest;
-import static org.infrastructurebuilder.util.IBUtils.moveAtomic;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +26,6 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -44,15 +41,24 @@ public class DefaultIBChecksumPathType extends BasicIBChecksumPathType {
   private static final long serialVersionUID = 5978749189830232137L;
   private final static Tika tika = new Tika();
 
+  public final static IBChecksumPathType copyToTempChecksumAndPath(Path targetDir, final Path source,
+      final Optional<String> oSource, final String pString) throws IOException {
+    DefaultIBChecksumPathType d = (DefaultIBChecksumPathType) copyToTempChecksumAndPath(targetDir, source);
+    requireNonNull(oSource).ifPresent(o -> {
+      d.setSource(o + "!/" + pString);
+    });
+    return d;
+  }
+
   public final static IBChecksumPathType copyToTempChecksumAndPath(Path targetDir, final Path source)
       throws IOException {
 
     String localType = toType.apply(requireNonNull(source));
-    Checksum k = new Checksum(source);
-    Path newTarget = targetDir.resolve(k.asUUID().get().toString());
+    Checksum cSum = new Checksum(source);
+    Path newTarget = targetDir.resolve(cSum.asUUID().get().toString());
     cet.withReturningTranslation(() -> copy(source, newTarget));
 //    cet.withTranslation(() -> moveAtomic(source, newTarget));
-    return new DefaultIBChecksumPathType(newTarget, k, Optional.of(localType));
+    return new DefaultIBChecksumPathType(newTarget, cSum, Optional.of(localType));
   }
 
   public final static IBChecksumPathType copyToDeletedOnExitTempChecksumAndPath(Path targetDir, String prefix,
@@ -68,22 +74,20 @@ public class DefaultIBChecksumPathType extends BasicIBChecksumPathType {
   }
 
   public final static Function<Path, String> toType = (path) -> {
-    synchronized (tika) { // FIXME Unnecessary
+    synchronized (tika) { // FIXME Unnecessary to synchronize?
       try {
-        log.info("Detecting path " + path);
+        log.debug("Detecting path " + path);
         Metadata md = new Metadata();
         md.set(Metadata.RESOURCE_NAME_KEY, path.toAbsolutePath().toString());
         Reader p = tika.parse(path, md);
         p.close();
-        log.info(" Metadata is " + md);
-        ;
+        log.debug(" Metadata is " + md);
         return tika.detect(path);
 
       } catch (IOException e) {
         throw new IBException("Failed during attempt to get tika type", e);
       }
     }
-
   };
 
   public final static IBChecksumPathType from(Path p, Checksum c, String type) {

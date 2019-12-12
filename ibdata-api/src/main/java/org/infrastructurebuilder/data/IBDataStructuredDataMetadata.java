@@ -38,17 +38,4 @@ public interface IBDataStructuredDataMetadata {
     return getFields().stream().collect(toMap(k -> k.getIndex(), Function.identity()));
   }
 
-  /**
-   * @return actual byte length of the inputstream if known
-   */
-  default Optional<Long> getInputStreamLength() {
-    return ofNullable(getOriginalLength()).map(Long::parseLong);
-  }
-  default Optional<Long> getNumRows() {
-    return ofNullable(getOriginalRowCount()).map(Long::parseLong);
-  }
-
-  String getOriginalLength();
-  String getOriginalRowCount();
-
 }

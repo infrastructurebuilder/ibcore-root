@@ -59,6 +59,7 @@ import org.infrastructurebuilder.data.model.DataSetInputSource;
 import org.infrastructurebuilder.data.model.DataStream;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3ReaderEx;
 import org.infrastructurebuilder.data.model.io.xpp3.IBDataSourceModelXpp3Writer;
+import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
 import org.infrastructurebuilder.util.files.DefaultIBChecksumPathType;
@@ -89,7 +90,7 @@ public class IBDataModelUtils {
       .withReturningTranslation(() -> ofNullable(s).map(UUID::fromString));
 
   public final static Function<String, Optional<URL>> safeMapURL = (s) -> ofNullable(s)
-      .map(u -> cet.withReturningTranslation(() -> new URL(u)));
+      .map(u -> cet.withReturningTranslation(() -> IBUtils.translateToWorkableArchiveURL(u)));
 
   public final static Function<IBDataSetIdentifier, Checksum> dataSetIdentifierChecksum = (ds) -> {
     return ChecksumBuilder.newInstance()

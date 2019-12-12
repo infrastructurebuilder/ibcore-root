@@ -28,7 +28,7 @@ import java.util.Optional;
  * This type's name is a mouthful.
  *
  * This type describes an optional piece of metadata about a field in a
- * DataStream that contains structured data. These values are meant to be
+ * DataStream that contains structured (or somewhat structured) data. These values are meant to be
  * calculated at transformation time, so the transformation should produce them.
  * They could change during the course of a transformation so it's important
  * that we be able to manipulate the list easily.

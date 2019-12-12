@@ -136,15 +136,6 @@
             <![CDATA[
    @Override
     public boolean equals(Object obj) {
-      if (this == obj) {
-        return true;
-      }
-      if (obj == null) {
-        return false;
-      }
-      if (getClass() != obj.getClass()) {
-        return false;
-      }
       return defaultEquals(obj);
     }  ]]>
           </code>
@@ -156,13 +147,7 @@
             <![CDATA[
     @Override
     public String toString() {
-      java.util.StringJoiner sj = new java.util.StringJoiner("|")
-        .add(getType())
-        .add(getChecksum().asUUID().get().toString())
-        .add(getPath().toString());
-      getSourceURL().ifPresent(u -> sj.add(u.toExternalForm()));
-      getSourceName().ifPresent(sj::add);
-      return sj.toString();
+      return defaultToString();
     }
 
   ]]>
@@ -176,12 +161,12 @@
             <![CDATA[
     @Override
     public java.nio.file.Path getPath() {
+      if (this.path == null && this.getFilePath() != null) {
+        this.path = java.nio.file.Paths.get(getFilePath());
+      }
       if (this.path == null && getSourceURL().isPresent()) {
         this.path = java.nio.file.Paths.get(org.infrastructurebuilder.IBException.cet
             .withReturningTranslation(() -> getSourceURL().get().toURI()));
-      }
-      if (this.path == null && this.getFilePath() != null) {
-        this.path = java.nio.file.Paths.get(getFilePath());
       }
       return java.util.Optional.ofNullable(path).orElseThrow(() -> new org.infrastructurebuilder.IBException("No available path"));
     }
@@ -206,7 +191,7 @@
             <![CDATA[
     @Override
     public java.util.Optional<java.net.URL> getSourceURL() {
-      return java.util.Optional.ofNullable(getSource()).map(u -> org.infrastructurebuilder.IBException.cet.withReturningTranslation(() -> new java.net.URL(u)));
+      return java.util.Optional.ofNullable(getSource()).map(u -> org.infrastructurebuilder.IBException.cet.withReturningTranslation(() -> org.infrastructurebuilder.util.IBUtils.translateToWorkableArchiveURL(u)));
     }
   ]]>
           </code>

@@ -205,4 +205,14 @@ public class DefaultIBDataStreamIdentifierConfigBean implements IBDataStreamIden
     return empty();
   }
 
+  @Override
+  public String getOriginalLength() {
+    return null; // Not yet determinable
+  }
+
+  @Override
+  public String getOriginalRowCount() {
+    return null; // Not yet determinable
+  }
+
 }

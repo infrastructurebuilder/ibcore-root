@@ -77,6 +77,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -1166,6 +1167,26 @@ public class IBUtilsTest {
     assertTrue(IBUtils._matcher(null, "anything"));
     assertFalse(IBUtils._matcher("abc", "def"));
     assertTrue(IBUtils._matcher("abc.*", "abcdef"));
+  }
 
+  @Test
+  public void testTranslateToWorkableArchiveURL() throws IOException {
+    Path p = testClasses.resolve("X.zip");
+    URL k = p.toUri().toURL();
+    String e = k.toExternalForm() + "!/rick.jpg";
+    URL u = IBUtils.translateToWorkableArchiveURL("jar:" + e);
+    URL v = IBUtils.translateToWorkableArchiveURL("zip:" + e);
+
+    URL first = new URL("https://file-examples.com/wp-content/uploads/2017/02/zip_2MB.zip");
+    String secondA = "zip:" + first.toExternalForm() + "!/zip_10MB/" + "file-sample_1MB.doc";
+    URL second = IBUtils.translateToWorkableArchiveURL(secondA);
+
+    Path cc = wps.get().resolve("file-sample_1MB.doc");
+    try (OutputStream outs = Files.newOutputStream(cc); InputStream ins = second.openStream()) {
+      IBUtils.copy(ins, outs);
+    }
+    assertEquals(
+        "67d617a6ad2e286c46588284ddf63887c320bc30549471576f1937a9c49daefd669413d71b98b2cb42d29823d0c4acfae5abdc6dc01e05e03f200bfe13d6a15a",
+        new Checksum(cc).toString());
   }
 }

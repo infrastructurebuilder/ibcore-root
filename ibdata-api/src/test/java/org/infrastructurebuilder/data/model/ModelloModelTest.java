@@ -50,7 +50,7 @@ public class ModelloModelTest {
   public void testHashCode() {
     // Detects model change
     assertEquals(215078020,dds.hashCode());
-    assertEquals(1811192380,dstr.hashCode());
+    assertEquals(1094122300,dstr.hashCode());
   }
 
   @Test

@@ -113,18 +113,18 @@
           </association>
         </field>
         <field>
-          <name>metadata</name>
-          <version>1.0.0+</version>
-          <required>true</required>
-          <description>Additional metadata</description>
-          <type>DOM</type>
-        </field>
-        <field>
           <name>path</name>
           <version>1.0.0+</version>
           <required>false</required>
           <description>Describes a path to the dataset</description>
           <type>String</type>
+        </field>
+        <field>
+          <name>metadata</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Additional metadata</description>
+          <type>DOM</type>
         </field>
       </fields>
       <codeSegments>
@@ -341,13 +341,6 @@
           <type>String</type>
         </field>
         <field>
-          <name>metadata</name>
-          <version>1.0.0+</version>
-          <required>true</required>
-          <description>Additional metadata</description>
-          <type>DOM</type>
-        </field>
-        <field>
           <name>path</name>
           <version>1.0.0+</version>
           <required>true</required>
@@ -364,7 +357,27 @@
             <multiplicity>1</multiplicity>
           </association>
         </field>
-
+        <field>
+          <name>originalLength</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Length of the original stream, if known</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>originalRowCount</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Number of rows of the stream</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>metadata</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Additional metadata</description>
+          <type>DOM</type>
+        </field>
       </fields>
       <codeSegments>
         <codeSegment>
@@ -393,6 +406,8 @@
     this.setSha512(ds.getSha512());
     this.setSourceURL(ds.getSourceURL());
     this.setUuid(ds.getUuid());
+    this.setOriginalLength(ds.getOriginalLength());
+    this.setOriginalRowCount(ds.getOriginalRowCount());
   }
             ]]>
           </code>
@@ -420,7 +435,7 @@
   @Override
   public int hashCode() {
     return java.util.Objects.hash(creationDate, dataStreamDescription, dataStreamName, metadata, mimeType, path, sha512,
-        sourceURL, uuid);
+        sourceURL, uuid, originalLength, originalRowCount);
   }
 
   @Override
@@ -440,7 +455,10 @@
         && java.util.Objects.equals(dataStreamName, other.dataStreamName) && java.util.Objects.equals(metadata, other.metadata)
         && java.util.Objects.equals(mimeType, other.mimeType) && java.util.Objects.equals(path, other.path)
         && java.util.Objects.equals(sha512, other.sha512) && java.util.Objects.equals(sourceURL, other.sourceURL)
-        && java.util.Objects.equals(uuid, other.uuid);
+        && java.util.Objects.equals(uuid, other.uuid)
+        && java.util.Objects.equals(originalLength, other.originalLength)
+        && java.util.Objects.equals(originalRowCount, other.originalRowCount)
+        ;
   }
 
 
@@ -655,6 +673,30 @@
           <version>1.0.0+</version>
           <code>
             <![CDATA[
+    public StructuredFieldMetadata() {
+    }            ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+    public StructuredFieldMetadata(org.infrastructurebuilder.data.IBDataStructuredDataFieldMetadata o) {
+      this.index = o.getIndex();
+      this.metadataType = o.getMetadataType();
+      this.enumerations = new java.util.ArrayList<>(o.getEnumerations().stream().collect(java.util.stream.Collectors.toList()));
+      this.max = o.getMax();
+      this.min = o.getMin();
+      this.nullable = o.getNullable();
+    }
+    ]]>
+          </code>
+        </codeSegment>
+
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
     public void setType(org.infrastructurebuilder.data.IBDataStructuredDataMetadataType t) {
         this.setMetadataType(java.util.Objects.requireNonNull(t, "IBDataStructuredDataMetadataType is null").name());
     }            ]]>
@@ -686,20 +728,6 @@
           <type>String</type>
         </field>
         <field>
-          <name>originalLength</name>
-          <version>1.0.0+</version>
-          <required>false</required>
-          <description>Length of the original stream, if known</description>
-          <type>String</type>
-        </field>
-        <field>
-          <name>originalRowCount</name>
-          <version>1.0.0+</version>
-          <required>false</required>
-          <description>Number of rows of the stream</description>
-          <type>String</type>
-        </field>
-        <field>
           <name>fields</name>
           <version>1.0.0+</version>
           <required>true</required>
@@ -711,6 +739,29 @@
         </field>
       </fields>
       <codeSegments>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+
+            // Default constructor (required because we're making a new one)
+  public DataStreamStructuredMetadata() {
+  }
+            ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+            // Copy constructor
+  public DataStreamStructuredMetadata(org.infrastructurebuilder.data.IBDataStructuredDataMetadata o) {
+    this.uuid = o.getUuid();
+    this.fields = o.getFields().stream().map(StructuredFieldMetadata::new).collect(java.util.stream.Collectors.toList());
+  }
+            ]]>
+          </code>
+        </codeSegment>
         <codeSegment>
           <version>1.0.0+</version>
           <code>

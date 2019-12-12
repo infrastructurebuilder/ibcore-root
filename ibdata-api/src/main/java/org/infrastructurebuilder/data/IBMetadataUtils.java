@@ -59,16 +59,18 @@ public class IBMetadataUtils {
   /**
    * Map an object to a W3C Document. If null, returns an empty Document
    */
-  public final static Function<Object, Document> fromXpp3Dom = (document) -> ofNullable(cet.withReturningTranslation(
-          () -> (ofNullable(document).orElse(emptyDocumentSupplier.get()) instanceof Document) ? // Is it a
-                                                                                                          // Document
-              (Document) document : // Already a document
-              (newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(document.toString())))) // Make
-                                                                                                                 // it a
-                                                                                                                 // document
+  public final static Function<Object, Document> fromXpp3Dom = (document) -> ofNullable(cet
+      .withReturningTranslation(() -> (ofNullable(document).orElse(emptyDocumentSupplier.get()) instanceof Document) ? // Is
+                                                                                                                       // it
+                                                                                                                       // a
+                                                                                                                       // Document
+          (Document) document : // Already a document
+          (newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(document.toString())))) // Make
+                                                                                                             // it a
+                                                                                                             // document
       ))
 
-      .orElse(emptyDocumentSupplier.get());
+          .orElse(emptyDocumentSupplier.get());
 
   public final static Function<Document, String> stringifyDocument = (document) -> cet.withReturningTranslation(() -> {
     StringWriter writer = new StringWriter();
@@ -105,10 +107,12 @@ public class IBMetadataUtils {
     ds.setUuid(ibds.getChecksum().asUUID().get().toString());
     ds.setPath(ibds.getPath());
     ibds.getPathIfAvailable().ifPresent(p -> {
-      DataStreamStructuredMetadata dssm = ofNullable(ds.getStructuredDataDescriptor())
-          .orElse(new DataStreamStructuredMetadata());
-      dssm.setOriginalLength(new Long(cet.withReturningTranslation(() -> Files.size(p))).toString());
-      ds.setStructuredDataDescriptor(dssm);
+      ds.setOriginalLength(new Long(cet.withReturningTranslation(() -> Files.size(p))).toString());
+    });
+    ibds.getStructuredDataMetadata().ifPresent(smd -> {
+      DataStreamStructuredMetadata newSMD = new DataStreamStructuredMetadata();
+
+      ds.setStructuredDataDescriptor(newSMD);
     });
     return ds;
   };

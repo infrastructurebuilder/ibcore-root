@@ -35,9 +35,10 @@ public interface WGetter {
    *
    * @param tempPath path to write temp files
    * @param source Path of the archive we're expanding
+   * @param Original source URL as a string if available
    * @return List of expanded read, typed, and renamed files, not including the original.
    */
 
-  List<IBChecksumPathType> expand(Path tempPath, Path source);
+  List<IBChecksumPathType> expand(Path tempPath, IBChecksumPathType source, Optional<String> oSource);
 
 }

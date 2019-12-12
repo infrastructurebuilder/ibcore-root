@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
 import org.infrastructurebuilder.util.artifacts.ChecksumEnabled;
@@ -171,7 +172,7 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
   default Optional<URL> pathAsURL(IBDataSetIdentifier pDataSet) {
     return nullSafeURLMapper.apply(ofNullable(getPath()).flatMap(path -> {
       Optional<String> v = ofNullable(pDataSet.getPath())
-          .map(pPath -> cet.withReturningTranslation(() -> new URL(pPath))).map(parent -> {
+          .map(pPath -> cet.withReturningTranslation(() -> IBUtils.translateToWorkableArchiveURL(pPath))).map(parent -> {
             String y = Objects.requireNonNull(parent).toExternalForm();
             StringBuilder x = new StringBuilder(y);
             // URLS are paths into jar/zip files generally
@@ -197,6 +198,29 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
   default Optional<Path> getPathIfAvailable() {
     return empty();
   }
+
+
+  /**
+   * @return actual byte length of the inputstream if known
+   */
+  default Optional<Long> getInputStreamLength() {
+    return ofNullable(getOriginalLength()).map(Long::parseLong);
+  }
+  default Optional<Long> getNumRows() {
+    return ofNullable(getOriginalRowCount()).map(Long::parseLong);
+  }
+
+  /**
+   * Nullable value for string length of file stream
+   * @return
+   */
+  String getOriginalLength();
+
+  /**
+   * Nullable value for string count of "records" (or lines or whatever)
+   * @return
+   */
+  String getOriginalRowCount();
 
 
 }

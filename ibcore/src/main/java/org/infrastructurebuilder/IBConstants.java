@@ -121,5 +121,6 @@ public interface IBConstants {
   public final static String HTTPS_PREFIX = "https://";
   public final static String FILE_PREFIX = "file:";
   public final static String ZIP_PREFIX = "zip:";
+  public final static String JAR_PREFIX = "jar:";
 
 }

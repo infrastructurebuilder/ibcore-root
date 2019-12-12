@@ -15,6 +15,8 @@
  */
 package org.infrastructurebuilder.util.files;
 
+import static org.infrastructurebuilder.IBException.cet;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -24,16 +26,16 @@ import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Optional;
+import java.util.StringJoiner;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.IBException;
 import org.infrastructurebuilder.util.artifacts.Checksum;
-import org.infrastructurebuilder.util.files.model.IBChecksumPathTypeModel;
 
 public interface IBChecksumPathType extends Supplier<InputStream> {
 
   /**
    * @return Non-null Path to this result
+   * @throws IBException (runtime) if not available
    */
   Path getPath();
 
@@ -65,7 +67,7 @@ public interface IBChecksumPathType extends Supplier<InputStream> {
     }
     OpenOption[] readOptions = o.toArray(new java.nio.file.OpenOption[o.size()]);
 
-    return IBException.cet.withReturningTranslation(() -> Files.newInputStream(getPath(), readOptions));
+    return cet.withReturningTranslation(() -> Files.newInputStream(getPath(), readOptions));
   }
 
   default Optional<URL> getSourceURL() {
@@ -77,26 +79,10 @@ public interface IBChecksumPathType extends Supplier<InputStream> {
   }
 
   default int defaultHashCode() {
-//    int[] a = new int[5];
-//    Checksum c = getChecksum();
-//    a[0]  = getChecksum().hashCode();
-//    a[1]= getPath().hashCode();
-//    a[2]= getSourceName().hashCode();
-//    a[3]= getSourceURL().hashCode();
-//    a[4] = getType().hashCode();
     return java.util.Objects.hash(getChecksum(), getPath(), getSourceName(), getSourceURL(), getType());
-//    int result = 1;
-//
-//    for (int element : a)
-//        result = 31 * result + (element);
-//
-//    return result;
-//
-//    return java.util.Objects.hash();
   }
 
   default boolean defaultEquals(Object obj) {
-    /* This needs to be implemented by type
     if (this == obj) {
       return true;
     }
@@ -106,13 +92,27 @@ public interface IBChecksumPathType extends Supplier<InputStream> {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    */
     IBChecksumPathType other = (IBChecksumPathType) obj;
     return java.util.Objects.equals(getChecksum(), other.getChecksum())
         && java.util.Objects.equals(getPath(), other.getPath())
         && java.util.Objects.equals(getSourceName(), other.getSourceName())
         && java.util.Objects.equals(getSourceURL(), other.getSourceURL())
         && java.util.Objects.equals(getType(), other.getType());
+  }
+
+  default String defaultToString() {
+    StringJoiner sj = new StringJoiner("|")
+        .add(getType())
+        .add(getChecksum().asUUID().get().toString())
+        .add(getPath().toString());
+      getSourceURL().ifPresent(u -> sj.add(u.toExternalForm()));
+      getSourceName().ifPresent(sj::add);
+      return sj.toString();
+  }
+
+  default Long size() {
+    return cet.withReturningTranslation(() -> Files.size(getPath()));
+
   }
 
 }
