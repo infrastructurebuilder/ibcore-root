@@ -15,6 +15,7 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
+import static java.util.Optional.ofNullable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
@@ -35,7 +36,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-
+import static org.infrastructurebuilder.IBConstants.*;
 public class ChecksumBuilderTest {
 
   private final Checksum abc = new Checksum(
@@ -68,7 +69,7 @@ public class ChecksumBuilderTest {
 
   @Before
   public void setUp() throws Exception {
-    relativeRoot = Optional.of(Paths.get(Optional.ofNullable(System.getProperty("target_dir")).orElse("./target")));
+    relativeRoot = Optional.of(Paths.get(ofNullable(System.getProperty(TARGET_DIR_PROPERTY)).orElse(MAVEN_TARGET_PATH)));
     sha512 = ChecksumBuilder.newInstance(relativeRoot);
     map = new HashMap<>();
     m = new HashMap<>();

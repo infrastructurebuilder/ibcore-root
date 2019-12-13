@@ -123,4 +123,7 @@ public interface IBConstants {
   public final static String ZIP_PREFIX = "zip:";
   public final static String JAR_PREFIX = "jar:";
 
+  public static final String TARGET_DIR_PROPERTY = "target_dir";
+  public static final String MAVEN_TARGET_PATH = "./target";
+
 }

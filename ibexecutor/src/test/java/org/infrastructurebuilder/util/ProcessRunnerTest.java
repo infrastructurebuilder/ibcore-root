@@ -32,12 +32,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.infrastructurebuilder.util.config.TestingPathSupplier;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import static org.infrastructurebuilder.IBConstants.*;
 public class ProcessRunnerTest {
   private final static Logger logger = LoggerFactory.getLogger(ProcessRunnerTest.class);
 
@@ -52,16 +53,17 @@ public class ProcessRunnerTest {
 
   private Path scratchDir;
 
-  private Path target;
 
   private String ttClass;
 
   private Path ttest1;
   private boolean isWindows;
+  private TestingPathSupplier wps = new TestingPathSupplier();
+  private Path target;
 
   @Before
   public void setUp() throws Exception {
-    target = Paths.get(Optional.ofNullable(System.getProperty("target_dir")).orElse("./target"));
+    target = wps.getRoot();
     scratchDir = target.resolve(UUID.randomUUID().toString());
     runner = new DefaultProcessRunner(scratchDir, Optional.of(System.out), Optional.of(logger), Optional.of(target));
     isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
@@ -125,7 +127,7 @@ public class ProcessRunnerTest {
       newrunner.setKeepScratchDir(false);
       newrunner.lock(Duration.ofSeconds(15), Optional.of(25L));
       final ProcessExecutionResultBag p = runner.get().get();
-      
+
       assertTrue(newrunner.hasErrorResult(p.getResults()));
       final ProcessExecutionResult a = p.getExecutions().get(id);
       assertEquals(2, a.getResultCode().get().longValue());

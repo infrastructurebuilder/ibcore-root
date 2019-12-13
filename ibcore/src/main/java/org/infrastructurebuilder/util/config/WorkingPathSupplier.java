@@ -54,11 +54,10 @@ public class WorkingPathSupplier implements PathSupplier {
   public WorkingPathSupplier(final Map<String, String> params, @org.eclipse.sisu.Nullable final IdentifierSupplier id,
       final boolean cleanup) {
     this(
-        () -> cet
-            .withReturningTranslation(() -> Paths
-                .get(ofNullable(params.get(WORKING_PATH_KEY))
-                    .orElse(ofNullable(System.getProperty("target_dir")).orElse("./target")))
-                .toRealPath().toAbsolutePath()),
+        () -> cet.withReturningTranslation(() -> Paths
+            .get(ofNullable(params.get(WORKING_PATH_KEY))
+                .orElse(ofNullable(System.getProperty("")).orElse("./target")))
+            .toRealPath().toAbsolutePath()),
         id, cleanup);
   }
 
@@ -86,8 +85,7 @@ public class WorkingPathSupplier implements PathSupplier {
     }
     final Path k = p;
     paths.add(k);
-    cet.withTranslation(() -> Files.createDirectories(k));
-    return k;
+    return cet.withReturningTranslation(() -> Files.createDirectories(k));
   }
 
   public Path getRoot() {
