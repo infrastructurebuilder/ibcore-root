@@ -50,8 +50,8 @@ public class AbstractConfigurableSupplierTest {
     }
 
     @Override
-    protected String configuredType(String config) {
-      return config;
+    protected String getInstance() {
+      return getConfig();
     }
 
   }

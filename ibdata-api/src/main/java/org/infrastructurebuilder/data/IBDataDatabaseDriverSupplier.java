@@ -40,6 +40,11 @@ public interface IBDataDatabaseDriverSupplier {
    */
   List<GAV> getRequiredArtifacts();
 
+  /**
+   * Returns the Jooq Dialect name for a JDBC url if possible
+   * @param jdbcUrl
+   * @return Jooq Dialect name or empty()
+   */
   Optional<String> getDatabaseDriverClassName(String jdbcUrl);
 
   /**
@@ -56,6 +61,11 @@ public interface IBDataDatabaseDriverSupplier {
     return getHint();
   }
 
+  /**
+   * Get an IBDatabaseDialect from a JDBC url if possible
+   * @param jdbcUrl
+   * @return IBDatabaseDialect or empty() if not possible
+   */
   Optional<IBDatabaseDialect> getDialect(String jdbcUrl);
 
   boolean respondsTo(String jdbcURL);

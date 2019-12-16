@@ -51,4 +51,10 @@ public interface IBDataConstants {
   public static final String LIQUIBASE_DATABASE_CORE_MSSQL_DATABASE = "liquibase.database.core.MSSQLDatabase";
   public static final String LIQUIBASE_DATABASE_CORE_MARIA_DB_DATABASE = "liquibase.database.core.MariaDBDatabase";
 
+
+  // IBData's preferred content type for protobug is PROTOBUF0
+  public static final String PROTOBUF0 = "application/vnd.google.protobuf";
+  public static final String PROTOBUF1 = "application/x-protobuf";
+  public static final String PROTOBUF2 = "application/x-google-protobuf";
+  public static final String PROTOBUF3 = "application/protobuf";
 }

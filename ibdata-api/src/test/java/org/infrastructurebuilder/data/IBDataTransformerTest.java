@@ -76,7 +76,6 @@ public class IBDataTransformerTest {
   @Test
   public void test() {
     assertFalse(i.respondsTo(null));
-    assertEquals(i, i.configure(new ConfigMap()));
   }
 
 }

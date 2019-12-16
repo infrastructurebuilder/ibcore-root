@@ -30,6 +30,7 @@ import java.util.UUID;
 
 import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.infrastructurebuilder.util.config.TestingPathSupplier;
 import org.infrastructurebuilder.util.config.WorkingPathSupplier;
 import org.infrastructurebuilder.util.files.model.IBChecksumPathTypeModel;
 import org.json.JSONObject;
@@ -40,15 +41,15 @@ import org.skyscreamer.jsonassert.JSONAssert;
 
 public class BasicIBChecksumPathTypeTest {
 
-  private WorkingPathSupplier wps;
+  private TestingPathSupplier wps;
   private BasicIBChecksumPathType c1, c2;
   private Path path;
   private Checksum checksum;
 
   @Before
   public void setUp() throws Exception {
-    wps = new WorkingPathSupplier();
-    Path source = wps.getRoot().resolve("test-classes").resolve(TESTFILE);
+    wps = new TestingPathSupplier();
+    Path source = wps.getTestClasses().resolve(TESTFILE);
     path = wps.get().resolve(UUID.randomUUID().toString());
     IBUtils.copy(source, path);
     checksum = new Checksum(TESTFILE_CHECKSUM);

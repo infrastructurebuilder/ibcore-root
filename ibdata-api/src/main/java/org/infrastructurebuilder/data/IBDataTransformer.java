@@ -38,15 +38,15 @@ public interface IBDataTransformer extends LoggerEnabled {
     return i != null;
   }
 
-  /**
-   * Overrides of this method MUST return a NEW INSTANCE of the calling transformer.
-   * unless no changes are made to the state of the object,
-   * @param map
-   * @return
-   */
-  default IBDataTransformer configure(ConfigMap map) {
-    return this;
-  }
+//  /**
+//   * Overrides of this method MUST return a NEW INSTANCE of the calling transformer.
+//   * unless no changes are made to the state of the object,
+//   * @param map
+//   * @return
+//   */
+//  default IBDataTransformer configure(ConfigMap map) {
+//    return this;
+//  }
 
   /**
    * Transform the supplied IBDataSet to a new IBDataTransformationResult

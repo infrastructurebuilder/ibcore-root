@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.infrastructurebuilder.util.config.StringListSupplier;
+import org.infrastructurebuilder.util.config.TestingPathSupplier;
 import org.infrastructurebuilder.util.config.WorkingPathSupplier;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -34,7 +35,7 @@ import org.slf4j.LoggerFactory;
 public class DefaultIBDirScannerSupplierTest {
   public final static Logger log = LoggerFactory.getLogger(DefaultIBDirScannerSupplierTest.class);
 
-  private static WorkingPathSupplier wps;
+  private final static TestingPathSupplier wps = new TestingPathSupplier();
   private static Path target;
   private static Path testClasses;
   private static Path test1;
@@ -43,9 +44,8 @@ public class DefaultIBDirScannerSupplierTest {
 
   @BeforeClass
   public static void setupClass() {
-    wps = new WorkingPathSupplier();
     target = wps.getRoot();
-    testClasses = target.resolve("test-classes");
+    testClasses = wps.getTestClasses();
     test1 = testClasses.resolve("test1");
     test2 = testClasses.resolve("test2");
   }

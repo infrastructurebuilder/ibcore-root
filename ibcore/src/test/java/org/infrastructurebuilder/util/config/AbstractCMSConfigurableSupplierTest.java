@@ -41,8 +41,8 @@ public class AbstractCMSConfigurableSupplierTest {
       }
 
       @Override
-      protected String configuredType(ConfigMapSupplier config) {
-        return config.get().getString("A");
+      protected String getInstance() {
+        return getConfig().get().getString("A");
       }
     };
   }

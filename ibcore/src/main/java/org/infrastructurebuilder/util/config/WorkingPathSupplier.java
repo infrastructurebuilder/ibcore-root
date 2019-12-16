@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.infrastructurebuilder.util.IBUtils;
+import static org.infrastructurebuilder.IBConstants.*;
 
 @Named(WorkingPathSupplier.WORKING)
 public class WorkingPathSupplier implements PathSupplier {
@@ -53,12 +54,10 @@ public class WorkingPathSupplier implements PathSupplier {
 
   public WorkingPathSupplier(final Map<String, String> params, @org.eclipse.sisu.Nullable final IdentifierSupplier id,
       final boolean cleanup) {
-    this(
-        () -> cet.withReturningTranslation(() -> Paths
-            .get(ofNullable(params.get(WORKING_PATH_KEY))
-                .orElse(ofNullable(System.getProperty("")).orElse("./target")))
-            .toRealPath().toAbsolutePath()),
-        id, cleanup);
+    this(() -> cet.withReturningTranslation(() -> Paths
+        .get(ofNullable(params.get(WORKING_PATH_KEY))
+            .orElse(ofNullable(System.getProperty(TARGET_DIR_PROPERTY)).orElse(MAVEN_TARGET_PATH)))
+        .toRealPath().toAbsolutePath()), id, cleanup);
   }
 
   public WorkingPathSupplier(final PathSupplier root, final IdentifierSupplier id, final boolean cleanup) {
