@@ -32,7 +32,6 @@ import java.util.Map;
 
 import org.infrastructurebuilder.IBException;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
-import org.infrastructurebuilder.util.config.WorkingPathSupplier;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;

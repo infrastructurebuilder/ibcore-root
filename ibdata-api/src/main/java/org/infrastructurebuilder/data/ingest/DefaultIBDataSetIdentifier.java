@@ -20,7 +20,6 @@ import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.data.IBMetadataUtils.translateToXpp3Dom;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;

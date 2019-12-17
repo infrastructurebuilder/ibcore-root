@@ -20,7 +20,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-import org.infrastructurebuilder.data.IBDataStream;
 import org.infrastructurebuilder.data.IBDataStreamIdentifier;
 import org.infrastructurebuilder.data.model.DataStream;
 

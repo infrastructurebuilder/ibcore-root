@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.function.Supplier;
 
+import org.infrastructurebuilder.IBException;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 
 public interface IBChecksumPathType extends Supplier<InputStream> {

@@ -16,6 +16,8 @@
 package org.infrastructurebuilder.util.artifacts;
 
 import static java.util.Optional.ofNullable;
+import static org.infrastructurebuilder.IBConstants.MAVEN_TARGET_PATH;
+import static org.infrastructurebuilder.IBConstants.TARGET_DIR_PROPERTY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
@@ -36,7 +38,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-import static org.infrastructurebuilder.IBConstants.*;
 public class ChecksumBuilderTest {
 
   private final Checksum abc = new Checksum(

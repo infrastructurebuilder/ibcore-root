@@ -15,9 +15,7 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import static org.junit.Assert.*;
-
-import java.util.function.Supplier;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.AfterClass;

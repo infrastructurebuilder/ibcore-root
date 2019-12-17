@@ -17,6 +17,8 @@ package org.infrastructurebuilder.util.config;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
+import static org.infrastructurebuilder.IBConstants.MAVEN_TARGET_PATH;
+import static org.infrastructurebuilder.IBConstants.TARGET_DIR_PROPERTY;
 import static org.infrastructurebuilder.IBException.cet;
 
 import java.nio.file.Files;
@@ -31,7 +33,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.infrastructurebuilder.util.IBUtils;
-import static org.infrastructurebuilder.IBConstants.*;
 
 @Named(WorkingPathSupplier.WORKING)
 public class WorkingPathSupplier implements PathSupplier {

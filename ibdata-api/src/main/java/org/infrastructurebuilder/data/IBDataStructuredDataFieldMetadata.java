@@ -126,7 +126,7 @@ public interface IBDataStructuredDataFieldMetadata {
   /*
    * The following are implemented in the generated model directly. They are
    * stored as strings because their types are needed within this interface but
-   * cannot be relied on to have good typing.
+   * cannot be relied on to have good typing.  These may/should return null if not set
    */
   String getMin();
 

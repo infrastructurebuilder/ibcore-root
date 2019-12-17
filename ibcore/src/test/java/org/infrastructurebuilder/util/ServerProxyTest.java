@@ -23,7 +23,6 @@ import static org.junit.Assert.assertTrue;
 import java.nio.file.Path;
 
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
-import org.infrastructurebuilder.util.config.WorkingPathSupplier;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -25,7 +25,6 @@ import java.util.Map;
 
 import org.infrastructurebuilder.util.config.StringListSupplier;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
-import org.infrastructurebuilder.util.config.WorkingPathSupplier;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

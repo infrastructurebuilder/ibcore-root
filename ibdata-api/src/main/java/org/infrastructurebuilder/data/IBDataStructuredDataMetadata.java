@@ -15,7 +15,6 @@
  */
 package org.infrastructurebuilder.data;
 
-import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static org.infrastructurebuilder.data.IBDataModelUtils.safeMapUUID;
 

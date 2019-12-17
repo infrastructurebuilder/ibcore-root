@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.infrastructurebuilder.data.transform.Transformer;
 import org.infrastructurebuilder.util.LoggerEnabled;
-import org.infrastructurebuilder.util.config.ConfigMap;
 
 public interface IBDataTransformer extends LoggerEnabled {
 

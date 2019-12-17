@@ -16,6 +16,21 @@
 package org.infrastructurebuilder.data;
 
 public enum IBDataStructuredDataMetadataType {
-  // Identical to Avro or ProtoBuf types but with some removed
-  /*RECORD, ENUM, ARRAY, MAP, UNION, FIXED,*/ STRING, BYTES, INT, LONG, FLOAT, DOUBLE, BOOLEAN /*, NULL*/;
+  // A limited subset of serialization framework types.
+
+  // NOTE: At the present, we are not planning on supporting other types. If
+  // necessary, you can write it as a string, y'all.  It's possible we will
+  // implement Map and Array at a future date, but unlikely
+
+  /* Not supported -> RECORD, ENUM, ARRAY, MAP, UNION, FIXED, NULL */
+  STRING,       // UTF-* string
+  BYTES,        // *LOB
+  INT,          // small signed / sint32
+  LONG,         // large signed / sint64
+  FLOAT,        // float
+  DOUBLE,       // double
+  BOOLEAN,      // boolean
+  DATE,         // Stored as a long
+  TIMESTAMP     // Stored as a long
+  ;
 }

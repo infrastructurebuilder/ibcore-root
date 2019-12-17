@@ -20,7 +20,6 @@ import org.infrastructurebuilder.util.LoggerSupplier;
 import org.infrastructurebuilder.util.config.AbstractCMSConfigurableSupplier;
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 import org.infrastructurebuilder.util.config.PathSupplier;
-import org.slf4j.Logger;
 
 public abstract class AbstractIBDataConfigurableSupplier<T> extends AbstractCMSConfigurableSupplier<T>
     implements IBLoggerEnabled {
