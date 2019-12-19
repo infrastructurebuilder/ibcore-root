@@ -7,10 +7,10 @@
   xsd.namespace="https://resources.infrastructurebuilder.org/IBDataSet/${apiVersion}"
   xsd.targetNamespace="https://resources.infrastructurebuilder.org/IBDataSet/${apiVersion}">
   <id>datasource</id>
-  <name>IBDataSourceModel</name> <!-- Must be a single (no spaces, no dashes, no periods) identifier in order
-    to create reader/writer -->
+  <name>IBDataSourceModel</name>
+  <!-- Must be a single (no spaces, no dashes, no periods) identifier in
+    order to create reader/writer -->
   <description>Mechanism to read config for an IBDataSource</description>
-
   <defaults>
     <default>
       <key>package</key>
@@ -378,6 +378,16 @@
           <description>Additional metadata</description>
           <type>DOM</type>
         </field>
+        <field>
+          <name>provenance</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Datastream provenance</description>
+          <association>
+            <type>DataStreamProvenance</type>
+            <multiplicity>1</multiplicity>
+          </association>
+        </field>
       </fields>
       <codeSegments>
         <codeSegment>
@@ -617,8 +627,8 @@
       <version>1.0.0+</version>
       <interfaces>
         <interface>
-          <![CDATA[org.infrastructurebuilder.data.IBDataStructuredDataFieldMetadata]]>
-        </interface>
+                <![CDATA[org.infrastructurebuilder.data.IBDataStructuredDataFieldMetadata]]>
+            </interface>
       </interfaces>
       <fields>
         <field>
@@ -798,6 +808,212 @@
     ]]>
           </code>
         </codeSegment>
+      </codeSegments>
+    </class>
+
+    <class xml.tagName="dataStreamProvenance"
+      java.clone.hook="mutatingDataStreamProvenanceCloneHook"
+      java.clone="deep">
+      <name>DataStreamProvenance</name>
+      <version>1.0.0+</version>
+      <interfaces>
+        <interface>
+          <![CDATA[org.infrastructurebuilder.data.IBDataProvenance]]>
+        </interface>
+      </interfaces>
+      <fields>
+        <field>
+          <name>originator</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>UUID identifier of the datastream that this metadata references</description>
+          <association>
+            <type>Dependency</type>
+            <multiplicity>1</multiplicity>
+          </association>
+        </field>
+        <field>
+          <name>url</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description> Originating URL</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>transformations</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>List of structured data for a given field. </description>
+          <association>
+            <type>String</type>
+            <multiplicity>*</multiplicity>
+          </association>
+        </field>
+      </fields>
+      <codeSegments>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+
+            // Default constructor (required because we're making a new one)
+  public DataStreamProvenance() {
+  }
+            ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+            // Copy constructor
+  public DataStreamProvenance(org.infrastructurebuilder.data.IBDataProvenance o) {
+  }
+            ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+            // Clone hooks
+
+  public void mutatingDataStreamProvenanceCloneHook(DataStreamProvenance s) {
+  }
+
+  ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+            // HASH
+
+
+  @Override
+  public int hashCode() {
+    return java.util.Objects.hash(originator, transformations, url);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    DataStreamProvenance other = (DataStreamProvenance) obj;
+    return java.util.Objects.equals(originator, other.originator)
+        && java.util.Objects.equals(transformations, other.transformations)
+        && java.util.Objects.equals(url, other.url);
+  }
+
+  @Override
+  public String toString() {
+    return "DataStreamProvenance [originator=" + originator + ", url=" + url + ", transformations=" + transformations
+        + "]";
+  }
+
+  // Implement required methods
+  @Override
+  public java.util.Optional<org.infrastructurebuilder.util.artifacts.GAV> getOriginalSourceArtifact() {
+    return java.util.Optional.ofNullable(getOriginator()).map(Dependency::asGAV);
+  }
+
+  @Override
+  public java.util.Optional<String> getOriginalURL() {
+    return java.util.Optional.ofNullable(getUrl());
+  }
+
+  @Override
+  public java.util.Optional<java.util.List<String>> getTransformationList() {
+    return java.util.Optional.ofNullable(this.transformations);
+  }
+
+    ]]>
+          </code>
+        </codeSegment>
+      </codeSegments>
+    </class>
+    <class xml.tagName="gav" java.clone="deep">
+      <name>Dependency</name>
+      <version>1.0.0+</version>
+      <fields>
+        <field>
+          <name>groupId</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Group ID</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>artifactId</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>ArtifactId ID</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>version</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>version</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>extension</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>extension (not type-mapped)</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>classifier</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Addl classifier</description>
+          <type>String</type>
+        </field>
+      </fields>
+      <codeSegments>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  @Override
+    public int hashCode() {
+      return java.util.Objects.hash(artifactId, classifier, extension, groupId, version);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      Dependency other = (Dependency) obj;
+      return java.util.Objects.equals(artifactId, other.artifactId) && java.util.Objects.equals(classifier, other.classifier)
+          && java.util.Objects.equals(extension, other.extension) && java.util.Objects.equals(groupId, other.groupId)
+          && java.util.Objects.equals(version, other.version);
+    }
+
+  @Override
+    public String toString() {
+      return "Dependency [groupId=" + groupId + ", artifactId=" + artifactId + ", version=" + version + ", extension="
+          + extension + ", classifier=" + classifier + "]";
+    }
+
+  public org.infrastructurebuilder.util.artifacts.GAV asGAV() {
+    return new org.infrastructurebuilder.util.artifacts.impl.DefaultGAV(groupId, artifactId, classifier, version, extension);
+  }
+    ]]>
+          </code>
+        </codeSegment>
+
       </codeSegments>
     </class>
   </classes>

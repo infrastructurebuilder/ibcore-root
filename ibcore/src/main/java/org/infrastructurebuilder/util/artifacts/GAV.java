@@ -15,6 +15,9 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
+import static java.util.Optional.empty;
+import static java.util.Optional.ofNullable;
+
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -60,12 +63,12 @@ public interface GAV extends JSONAndChecksumEnabled, Comparable<GAV> {
           .orElseThrow(() -> new IllegalArgumentException("No version available"));
       final String theClassifier = getClassifier().map(c -> ":" + c).orElse("");
 
-      final String theType = Optional.ofNullable(getExtension()).map(t -> ":" + t)
+      final String theType = ofNullable(getExtension()).map(t -> ":" + t)
           .orElse("".equals(theClassifier) ? "" : ":jar");
       return Optional
           .of(String.format("%s:%s:%s%s%s", getGroupId(), getArtifactId(), theVersion, theType, theClassifier));
     } catch (final IllegalArgumentException e) {
-      return Optional.empty();
+      return empty();
     }
   }
 
@@ -76,7 +79,7 @@ public interface GAV extends JSONAndChecksumEnabled, Comparable<GAV> {
           .orElseThrow(() -> new IllegalArgumentException("No version available"));
       return Optional.of(String.format("%s:%s:%s", getGroupId(), getArtifactId(), theVersion));
     } catch (final IllegalArgumentException e) {
-      return Optional.empty();
+      return empty();
     }
 
   }
@@ -97,20 +100,20 @@ public interface GAV extends JSONAndChecksumEnabled, Comparable<GAV> {
 
   default String getDefaultSignaturePath() {
     return String.format("%s:%s:%s%s:%s", getGroupId(), getArtifactId(),
-        Optional.ofNullable(getExtension()).map(pp -> pp).orElse("jar"), getClassifier().map(c2 -> ":" + c2).orElse(""),
+        ofNullable(getExtension()).map(pp -> pp).orElse("jar"), getClassifier().map(c2 -> ":" + c2).orElse(""),
         getVersion().orElseThrow(() -> new IBException("No string version available")));
   }
 
   String getExtension();
 
   default Optional<Path> getFile() {
-    return Optional.empty();
+    return empty();
   }
 
   String getGroupId();
 
   default JSONBuilder getJSONBuilder() {
-    return new JSONBuilder(Optional.empty())
+    return new JSONBuilder(empty())
 
         .addString(GAV_GROUPID, getGroupId())
 
