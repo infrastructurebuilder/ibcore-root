@@ -50,7 +50,7 @@ public class AbstractIBDataIngesterSupplierTest {
       }
 
       @Override
-      protected IBDataIngester configuredType(ConfigMapSupplier config) {
+      protected IBDataIngester getInstance() {
         return null;
       }
     };

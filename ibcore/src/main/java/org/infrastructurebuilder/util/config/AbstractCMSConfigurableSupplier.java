@@ -15,10 +15,12 @@
  */
 package org.infrastructurebuilder.util.config;
 
+import org.infrastructurebuilder.util.LoggerSupplier;
+
 abstract public class AbstractCMSConfigurableSupplier<T> extends AbstractConfigurableSupplier<T, ConfigMapSupplier> implements CMSConfigurableSupplier<T> {
 
-  public AbstractCMSConfigurableSupplier(ConfigMapSupplier config) {
-    super(config);
+  public AbstractCMSConfigurableSupplier(ConfigMapSupplier config, LoggerSupplier l) {
+    super(config, l);
   }
 
   @Override

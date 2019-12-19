@@ -15,30 +15,32 @@
  */
 package org.infrastructurebuilder.util;
 
+import static java.util.Optional.of;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Path;
-import java.util.Optional;
 
-import org.infrastructurebuilder.util.config.WorkingPathSupplier;
+import org.infrastructurebuilder.util.config.TestingPathSupplier;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ServerProxyImplTest {
+public class ServerProxyTest {
 
+  private static final String PASSPHRASE = "passphrase";
+  private static final String USERNAME = "username";
+  private static final String PASSWORD = "password";
   private static final String TESTCONFIGSTRING = "<configuration><abc>123</abc></configuration>";
   private ServerProxy p;
   private Path path;
 
   @Before
   public void setUp() throws Exception {
-    final Path target = new WorkingPathSupplier().getRoot();
-    final Path testClasses = target.resolve("test-classes");
+    final Path testClasses = new TestingPathSupplier().getTestClasses();
     path = testClasses.resolve("X.txt").toAbsolutePath();
-    p = new ServerProxy("id", Optional.of("username"), Optional.of("password"), Optional.of("passphrase"),
-        Optional.of(path), Optional.of("0666"), Optional.of("0777"), Optional.of(TESTCONFIGSTRING));
+    p = new ServerProxy("id", of(USERNAME), of(PASSWORD), of(PASSPHRASE),
+        of(path), of("0666"), of("0777"), of(TESTCONFIGSTRING));
   }
 
   @Test
@@ -47,23 +49,29 @@ public class ServerProxyImplTest {
   }
 
   @Test
+  public void testBasicCreds() {
+    BasicCredentials b = p.getBasicCredentials();
+    assertEquals(USERNAME, b.getKeyId());
+    assertEquals(of(PASSWORD), b.getSecret());
+  }
+  @Test
   public void testGetKeyPath() {
     assertEquals(path, p.getKeyPath().get());
   }
 
   @Test
   public void testGetPassphrase() {
-    assertEquals("passphrase", p.getPassphrase().get());
+    assertEquals(PASSPHRASE, p.getPassphrase().get());
   }
 
   @Test
   public void testGetPrincipal() {
-    assertEquals("username", p.getPrincipal().get());
+    assertEquals(USERNAME, p.getPrincipal().get());
   }
 
   @Test
   public void testGetSecret() {
-    assertEquals("password", p.getSecret().get());
+    assertEquals(PASSWORD, p.getSecret().get());
   }
 
   @Test

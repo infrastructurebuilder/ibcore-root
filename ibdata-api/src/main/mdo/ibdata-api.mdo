@@ -7,9 +7,10 @@
   xsd.namespace="https://resources.infrastructurebuilder.org/IBDataSet/${apiVersion}"
   xsd.targetNamespace="https://resources.infrastructurebuilder.org/IBDataSet/${apiVersion}">
   <id>datasource</id>
-  <name>IBDataSourceModel</name> <!--  Must be a single (no spaces, no dashes, no periods) identifier in order to create reader/writer -->
+  <name>IBDataSourceModel</name>
+  <!-- Must be a single (no spaces, no dashes, no periods) identifier in
+    order to create reader/writer -->
   <description>Mechanism to read config for an IBDataSource</description>
-
   <defaults>
     <default>
       <key>package</key>
@@ -21,7 +22,7 @@
     <value>modelVersion</value>
   </versionDefinition>
   <classes>
-  <!-- MODEL -->
+    <!-- MODEL -->
     <class xml.tagName="dataSet" rootElement="true"
       java.clone.hook="mutatingDataSetCloneHook" java.clone="deep">
       <name>DataSet</name>
@@ -42,7 +43,7 @@
       <fields>
 
         <!-- ====================================================================== -->
-        <!-- Deployment Version                                                          -->
+        <!-- Deployment Version -->
         <!-- ====================================================================== -->
         <field>
           <name>modelVersion</name>
@@ -112,18 +113,18 @@
           </association>
         </field>
         <field>
-          <name>metadata</name>
-          <version>1.0.0+</version>
-          <required>true</required>
-          <description>Additional metadata</description>
-          <type>DOM</type>
-        </field>
-        <field>
           <name>path</name>
           <version>1.0.0+</version>
           <required>false</required>
           <description>Describes a path to the dataset</description>
           <type>String</type>
+        </field>
+        <field>
+          <name>metadata</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Additional metadata</description>
+          <type>DOM</type>
         </field>
       </fields>
       <codeSegments>
@@ -340,6 +341,37 @@
           <type>String</type>
         </field>
         <field>
+          <name>path</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Describes a path to the stream</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>structuredDataDescriptor</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Optional DataStreamStructuredMetadata element for datastream</description>
+          <association>
+            <type>DataStreamStructuredMetadata</type>
+            <multiplicity>1</multiplicity>
+          </association>
+        </field>
+        <field>
+          <name>originalLength</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Length of the original stream, if known</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>originalRowCount</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Number of rows of the stream</description>
+          <type>String</type>
+        </field>
+        <field>
           <name>metadata</name>
           <version>1.0.0+</version>
           <required>true</required>
@@ -347,13 +379,15 @@
           <type>DOM</type>
         </field>
         <field>
-          <name>path</name>
+          <name>provenance</name>
           <version>1.0.0+</version>
-          <required>true</required>
-          <description>Describes a path to the stream</description>
-          <type>String</type>
+          <required>false</required>
+          <description>Datastream provenance</description>
+          <association>
+            <type>DataStreamProvenance</type>
+            <multiplicity>1</multiplicity>
+          </association>
         </field>
-
       </fields>
       <codeSegments>
         <codeSegment>
@@ -382,6 +416,8 @@
     this.setSha512(ds.getSha512());
     this.setSourceURL(ds.getSourceURL());
     this.setUuid(ds.getUuid());
+    this.setOriginalLength(ds.getOriginalLength());
+    this.setOriginalRowCount(ds.getOriginalRowCount());
   }
             ]]>
           </code>
@@ -409,7 +445,7 @@
   @Override
   public int hashCode() {
     return java.util.Objects.hash(creationDate, dataStreamDescription, dataStreamName, metadata, mimeType, path, sha512,
-        sourceURL, uuid);
+        sourceURL, uuid, originalLength, originalRowCount);
   }
 
   @Override
@@ -429,7 +465,10 @@
         && java.util.Objects.equals(dataStreamName, other.dataStreamName) && java.util.Objects.equals(metadata, other.metadata)
         && java.util.Objects.equals(mimeType, other.mimeType) && java.util.Objects.equals(path, other.path)
         && java.util.Objects.equals(sha512, other.sha512) && java.util.Objects.equals(sourceURL, other.sourceURL)
-        && java.util.Objects.equals(uuid, other.uuid);
+        && java.util.Objects.equals(uuid, other.uuid)
+        && java.util.Objects.equals(originalLength, other.originalLength)
+        && java.util.Objects.equals(originalRowCount, other.originalRowCount)
+        ;
   }
 
 
@@ -500,28 +539,25 @@
   ]]>
           </code>
         </codeSegment>
-
         <codeSegment>
           <version>1.0.0+</version>
           <code>
             <![CDATA[
-  private java.util.Optional<String> getValidatedSha512() {
-    if (this.sha512 != null  && this.sha512.length() != 128)
-      throw  new org.infrastructurebuilder.data.IBDataException("sha512 length must be 128 ");
-    return java.util.Optional.ofNullable(getSha512());
-  }
-            // Checksum
-  @Override
-  public org.infrastructurebuilder.util.artifacts.Checksum getChecksum() {
-    return getValidatedSha512()
-      .map(org.infrastructurebuilder.util.artifacts.Checksum::new)
-      .orElseThrow(() -> new org.infrastructurebuilder.data.IBDataException("No sha512 available"));
-  }
-  ]]>
+  public java.util.Optional<org.infrastructurebuilder.data.IBDataStructuredDataMetadata> getStructuredDataMetadata() {
+    return java.util.Optional.ofNullable(this.getStructuredDataDescriptor());
+  }            ]]>
           </code>
         </codeSegment>
-      </codeSegments>
 
+        <!-- <codeSegment> <version>1.0.0+</version> <code> <![CDATA[ private
+          java.util.Optional<String> getValidatedSha512() { if (this.sha512 != null
+          && this.sha512.length() != 128) throw new org.infrastructurebuilder.data.IBDataException("sha512
+          length must be 128 "); return java.util.Optional.ofNullable(getSha512());
+          } // Checksum @Override public org.infrastructurebuilder.util.artifacts.Checksum
+          getChecksum() { return getValidatedSha512() .map(org.infrastructurebuilder.util.artifacts.Checksum::new)
+          .orElseThrow(() -> new org.infrastructurebuilder.data.IBDataException("No
+          sha512 available")); } ]]> </code> </codeSegment> -->
+      </codeSegments>
     </class>
     <class locationTracker="locations" java.clone="shallow">
       <name>DataSetInputLocation</name>
@@ -583,6 +619,401 @@
             ]]>
           </code>
         </codeSegment>
+      </codeSegments>
+    </class>
+
+    <class xml.tagName="structuredFieldMetadata" java.clone="deep">
+      <name>StructuredFieldMetadata</name>
+      <version>1.0.0+</version>
+      <interfaces>
+        <interface>
+                <![CDATA[org.infrastructurebuilder.data.IBDataStructuredDataFieldMetadata]]>
+            </interface>
+      </interfaces>
+      <fields>
+        <field>
+          <name>index</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Describes the field within the structured metadata that this SFM describes, from a base of 0.  Default value set to -1 to ensure setting proper index</description>
+          <type>int</type>
+          <defaultValue>-1</defaultValue>
+        </field>
+        <field>
+          <name>metadataType</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>"name()" of an enumerated type from IBDataStructuredDataMetadataType. Not required, but strongly encouraged.</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>enumerations</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Shows the list of (ordinal) enums that this field posseses.  If not present, this is not assumed to not be an enum</description>
+          <association>
+            <type>String</type>
+            <multiplicity>*</multiplicity>
+          </association>
+        </field>
+        <field>
+          <name>max</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Describes the "maximum length" or "maximum size" of the data in the field.</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>min</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Describes the "minimum length" or "maximum size" of the data in the field.</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>nullable</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Describes if the field has a null value in it.  The only "true" answer is the string 'true'</description>
+          <type>String</type>
+        </field>
+      </fields>
+      <codeSegments>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+    public StructuredFieldMetadata() {
+    }            ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+    public StructuredFieldMetadata(org.infrastructurebuilder.data.IBDataStructuredDataFieldMetadata o) {
+      this.index = o.getIndex();
+      this.metadataType = o.getMetadataType();
+      this.enumerations = new java.util.ArrayList<>(o.getEnumerations().stream().collect(java.util.stream.Collectors.toList()));
+      this.max = o.getMax();
+      this.min = o.getMin();
+      this.nullable = o.getNullable();
+    }
+    ]]>
+          </code>
+        </codeSegment>
+
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+    public void setType(org.infrastructurebuilder.data.IBDataStructuredDataMetadataType t) {
+        this.setMetadataType(java.util.Objects.requireNonNull(t, "IBDataStructuredDataMetadataType is null").name());
+    }            ]]>
+          </code>
+        </codeSegment>
+
+        <!-- <codeSegment> <version>1.0.0+</version> <code> <![CDATA[ //
+          Clone hooks private void mutatingDataStreamStructuredMetadataCloneHook(DataStreamStructuredMetadata
+          s) { } ]]> </code> </codeSegment> -->
+      </codeSegments>
+    </class>
+
+    <class xml.tagName="dataStreamStructuredMetadata"
+      java.clone.hook="mutatingDataStreamStructuredMetadataCloneHook"
+      java.clone="deep">
+      <name>DataStreamStructuredMetadata</name>
+      <version>1.0.0+</version>
+      <interfaces>
+        <interface>
+          <![CDATA[org.infrastructurebuilder.data.IBDataStructuredDataMetadata]]>
+        </interface>
+      </interfaces>
+      <fields>
+        <field>
+          <name>uuid</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>UUID identifier of the datastream that this metadata references</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>fields</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>List of structured data for a given field. </description>
+          <association>
+            <type>StructuredFieldMetadata</type>
+            <multiplicity>*</multiplicity>
+          </association>
+        </field>
+      </fields>
+      <codeSegments>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+
+            // Default constructor (required because we're making a new one)
+  public DataStreamStructuredMetadata() {
+  }
+            ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+            // Copy constructor
+  public DataStreamStructuredMetadata(org.infrastructurebuilder.data.IBDataStructuredDataMetadata o) {
+    this.uuid = o.getUuid();
+    this.fields = o.getFields().stream().map(StructuredFieldMetadata::new).collect(java.util.stream.Collectors.toList());
+  }
+            ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+            // Clone hooks
+
+  public void mutatingDataStreamStructuredMetadataCloneHook(DataStreamStructuredMetadata s) {
+  }
+
+  ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+    @Override
+    public int hashCode() {
+      return java.util.Objects.hash(fields, uuid);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      DataStreamStructuredMetadata other = (DataStreamStructuredMetadata) obj;
+      return java.util.Objects.equals(fields, other.fields) && java.util.Objects.equals(uuid, other.uuid);
+    }
+
+    ]]>
+          </code>
+        </codeSegment>
+      </codeSegments>
+    </class>
+
+    <class xml.tagName="dataStreamProvenance"
+      java.clone.hook="mutatingDataStreamProvenanceCloneHook"
+      java.clone="deep">
+      <name>DataStreamProvenance</name>
+      <version>1.0.0+</version>
+      <interfaces>
+        <interface>
+          <![CDATA[org.infrastructurebuilder.data.IBDataProvenance]]>
+        </interface>
+      </interfaces>
+      <fields>
+        <field>
+          <name>originator</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>UUID identifier of the datastream that this metadata references</description>
+          <association>
+            <type>Dependency</type>
+            <multiplicity>1</multiplicity>
+          </association>
+        </field>
+        <field>
+          <name>url</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description> Originating URL</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>transformations</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>List of structured data for a given field. </description>
+          <association>
+            <type>String</type>
+            <multiplicity>*</multiplicity>
+          </association>
+        </field>
+      </fields>
+      <codeSegments>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+
+            // Default constructor (required because we're making a new one)
+  public DataStreamProvenance() {
+  }
+            ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+            // Copy constructor
+  public DataStreamProvenance(org.infrastructurebuilder.data.IBDataProvenance o) {
+  }
+            ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+            // Clone hooks
+
+  public void mutatingDataStreamProvenanceCloneHook(DataStreamProvenance s) {
+  }
+
+  ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+            // HASH
+
+
+  @Override
+  public int hashCode() {
+    return java.util.Objects.hash(originator, transformations, url);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    DataStreamProvenance other = (DataStreamProvenance) obj;
+    return java.util.Objects.equals(originator, other.originator)
+        && java.util.Objects.equals(transformations, other.transformations)
+        && java.util.Objects.equals(url, other.url);
+  }
+
+  @Override
+  public String toString() {
+    return "DataStreamProvenance [originator=" + originator + ", url=" + url + ", transformations=" + transformations
+        + "]";
+  }
+
+  // Implement required methods
+  @Override
+  public java.util.Optional<org.infrastructurebuilder.util.artifacts.GAV> getOriginalSourceArtifact() {
+    return java.util.Optional.ofNullable(getOriginator()).map(Dependency::asGAV);
+  }
+
+  @Override
+  public java.util.Optional<String> getOriginalURL() {
+    return java.util.Optional.ofNullable(getUrl());
+  }
+
+  @Override
+  public java.util.Optional<java.util.List<String>> getTransformationList() {
+    return java.util.Optional.ofNullable(this.transformations);
+  }
+
+    ]]>
+          </code>
+        </codeSegment>
+      </codeSegments>
+    </class>
+    <class xml.tagName="gav" java.clone="deep">
+      <name>Dependency</name>
+      <version>1.0.0+</version>
+      <fields>
+        <field>
+          <name>groupId</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Group ID</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>artifactId</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>ArtifactId ID</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>version</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>version</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>extension</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>extension (not type-mapped)</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>classifier</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Addl classifier</description>
+          <type>String</type>
+        </field>
+      </fields>
+      <codeSegments>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  @Override
+    public int hashCode() {
+      return java.util.Objects.hash(artifactId, classifier, extension, groupId, version);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      Dependency other = (Dependency) obj;
+      return java.util.Objects.equals(artifactId, other.artifactId) && java.util.Objects.equals(classifier, other.classifier)
+          && java.util.Objects.equals(extension, other.extension) && java.util.Objects.equals(groupId, other.groupId)
+          && java.util.Objects.equals(version, other.version);
+    }
+
+  @Override
+    public String toString() {
+      return "Dependency [groupId=" + groupId + ", artifactId=" + artifactId + ", version=" + version + ", extension="
+          + extension + ", classifier=" + classifier + "]";
+    }
+
+  public org.infrastructurebuilder.util.artifacts.GAV asGAV() {
+    return new org.infrastructurebuilder.util.artifacts.impl.DefaultGAV(groupId, artifactId, classifier, version, extension);
+  }
+    ]]>
+          </code>
+        </codeSegment>
+
       </codeSegments>
     </class>
   </classes>

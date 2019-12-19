@@ -15,6 +15,8 @@
  */
 package org.infrastructurebuilder.util.artifacts.impl;
 
+import static java.util.Optional.ofNullable;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -49,7 +51,7 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
     setVersion(json.optString(GAV_VERSION, null));
     setClassifier(json.optString(GAV_CLASSIFIER, null));
     setExtension(json.optString(GAV_EXTENSION, json.optString("type", json.optString("packaging", null))));
-    path = Optional.ofNullable(json.optString(GAV_PATH, null)).map(Paths::get);
+    path = ofNullable(json.optString(GAV_PATH, null)).map(Paths::get);
   }
 
   public DefaultGAV(final JSONObject json, final String classifier) {
@@ -115,7 +117,7 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
     setVersion(gav.getVersion().orElse(null));
     setClassifier(gav.getClassifier().orElse(null));
     setExtension(gav.getExtension());
-    this.path = Optional.ofNullable(path);
+    this.path = ofNullable(path);
   }
 
   @Override
@@ -167,7 +169,7 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
     if (!ignoreClassifier && !getClassifier().equals(other.getClassifier()))
       return false;
     if (!getVersion().equals(other.getVersion()))
-        return false;
+      return false;
     return true;
 
   }
@@ -210,7 +212,7 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
 
   @Override
   public Optional<String> getVersion() {
-    return Optional.ofNullable(stringVersion);
+    return ofNullable(stringVersion);
   }
 
   @Override
@@ -234,13 +236,13 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
     if (classifier != null && "".equals(classifier.trim())) {
       this.classifier = Optional.empty();
     } else {
-      this.classifier = Optional.ofNullable(classifier);
+      this.classifier = ofNullable(classifier);
     }
     return this;
   }
 
   public DefaultGAV setExtension(final String extension) {
-    this.extension = Optional.ofNullable(extension).orElse(BASIC_PACKAGING);
+    this.extension = ofNullable(extension).orElse(BASIC_PACKAGING);
     return this;
   }
 

@@ -19,6 +19,11 @@ import java.util.EmptyStackException;
 import java.util.Stack;
 import java.util.UUID;
 
+/**
+ * This isn't what I thought it was.  I think I forgot to implement this properly
+ * @author mykel.alvis
+ *
+ */
 public class ConsecutiveIDSupplier implements IdentifierSupplier {
 
   private final Stack<String> s = new Stack<>();

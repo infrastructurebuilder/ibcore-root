@@ -16,6 +16,7 @@
 package org.infrastructurebuilder.util;
 
 import static java.lang.Long.MAX_VALUE;
+import static java.nio.file.Files.walkFileTree;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.Spliterator.ORDERED;
@@ -68,7 +69,9 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.Spliterators;
+import java.util.TreeSet;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -94,12 +97,38 @@ import org.slf4j.LoggerFactory;
 
 public class IBUtils {
 
+  private static boolean isJar;
+  private static boolean isZip;
+  static {
+    try {
+      new URL("zip:file://z.zip!/a");
+      isZip = true;
+    } catch (MalformedURLException e) {
+      isZip = false;
+    }
+    try {
+      new URL("jar:file://z.jar!/a");
+      isJar = true;
+    } catch (MalformedURLException e) {
+      isJar = false;
+    }
+    if (!isJar && !isZip)
+      throw new IBException("THIS JVM CANNOT HANDLE ARCHIVES.  IBDATA WILL NOT WORK");
+  }
   public final static Function<Properties, Map<String, String>> propertiesToMapSS = (p) -> {
     final Map<String, String> m = new HashMap<>();
     Optional.ofNullable(p)
         .ifPresent(properties -> properties.stringPropertyNames().forEach(n -> m.put(n, p.getProperty(n))));
     return m;
   };
+
+  public final static boolean isJarArchive() {
+    return isJar;
+  }
+  public final static boolean isZipArchive() {
+    return isZip;
+  }
+
 
   public final static java.util.Comparator<String> nullSafeStringComparator = java.util.Comparator
       .nullsFirst(String::compareToIgnoreCase);
@@ -109,7 +138,7 @@ public class IBUtils {
       .nullsFirst(java.util.Date::compareTo);
 
   public final static Function<String, Optional<URL>> nullSafeURLMapper = (s) -> {
-    return ofNullable(s).map(u -> cet.withReturningTranslation(() -> new URL(u)));
+    return ofNullable(s).map(u -> cet.withReturningTranslation(() -> translateToWorkableArchiveURL(u)));
   };
 
   public final static Function<Object, Optional<String>> nullSafeObjectToString = (o) -> {
@@ -125,7 +154,7 @@ public class IBUtils {
   };
 
   public final static URL reURL(String url) {
-    return ofNullable(url).map(u -> cet.withReturningTranslation(() -> new URL(u))).orElse(null);
+    return ofNullable(url).map(u -> cet.withReturningTranslation(() -> translateToWorkableArchiveURL(u))).orElse(null);
   }
 
   public final static Function<JSONObject, JSONObject> cheapCopy = j -> {
@@ -171,7 +200,9 @@ public class IBUtils {
   }
 
   /**
-   * Modified from https://stackoverflow.com/questions/33242577/how-do-i-turn-a-java-enumeration-into-a-stream
+   * Modified from
+   * https://stackoverflow.com/questions/33242577/how-do-i-turn-a-java-enumeration-into-a-stream
+   *
    * @param <T>
    * @param e1
    * @param parallel
@@ -240,8 +271,8 @@ public class IBUtils {
 
   public static final Optional<URL> asURL(final String url) {
     try {
-      return Optional.of(new URL(url));
-    } catch (final MalformedURLException e) {
+      return Optional.of(translateToWorkableArchiveURL(url));
+    } catch (final IBException e) {
       return Optional.empty();
     }
   }
@@ -286,9 +317,23 @@ public class IBUtils {
     return target;
   }
 
+  public final static SortedSet<Path> allFilesInTree(final Path root) {
+    SortedSet<Path> l = new TreeSet<>();
+    cet.withTranslation(() -> walkFileTree(root, new SimpleFileVisitor<Path>() {
+      @Override
+      public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+        l.add(file.toAbsolutePath());
+        return FileVisitResult.CONTINUE;
+      }
+
+    }));
+    return l;
+
+  }
+
   public final static void deletePath(final Path root) {
     try {
-      Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
+      walkFileTree(root, new SimpleFileVisitor<Path>() {
         @Override
         public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
           Files.delete(dir);
@@ -539,13 +584,8 @@ public class IBUtils {
   }
 
   public static URL mapStringToURLOrNull(final Optional<String> urlString) {
-    return urlString.map(u -> {
-      try {
-        return new URL(u);
-      } catch (final MalformedURLException e) {
-        throw new IBException(e);
-      }
-    }).orElse((URL) null);
+    return urlString.map(IBUtils::translateToWorkableArchiveURL).orElse(null);
+
   }
 
   public static boolean matches(final JSONObject metadata, final Map<Pattern, Pattern> t) {
@@ -601,7 +641,9 @@ public class IBUtils {
   /**
    * Try to atomically move a source path to a target path.
    *
-   * IF THAT FAILS TO WORK, then copy source to target and then TRY to delete source but accept if it doesn't work
+   * IF THAT FAILS TO WORK, then copy source to target and then TRY to delete
+   * source but accept if it doesn't work
+   *
    * @param source
    * @param target
    * @return target
@@ -609,16 +651,17 @@ public class IBUtils {
    */
   public static Path moveAtomic(final Path source, final Path target) throws IOException {
     if (Objects.requireNonNull(source).toAbsolutePath().equals(Objects.requireNonNull(target).toAbsolutePath()))
-      return target;  // We do nothing here
+      return target; // We do nothing here
     try {
       return Files.move(source, target, StandardCopyOption.ATOMIC_MOVE);
     } catch (AtomicMoveNotSupportedException amns) {
-      // If we cannot move atomic, then copy the file instead and then TRY to delete it but accept delete failure
+      // If we cannot move atomic, then copy the file instead and then TRY to delete
+      // it but accept delete failure
       Path retVal = Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
       try {
         Files.delete(source);
       } catch (IOException e) {
-        // Do nothing here.  Leave trash on thefilesystem
+        // Do nothing here. Leave trash on thefilesystem
       }
       return retVal;
     }
@@ -706,8 +749,8 @@ public class IBUtils {
   }
 
   public static Optional<URL> zipEntryToUrl(final Optional<URL> p, final ZipEntry e) {
-    return requireNonNull(p)
-        .map(u -> cet.withReturningTranslation(() -> new URL("jar:" + u.toExternalForm() + "!/" + e.getName())));
+    return requireNonNull(p).map(u -> cet.withReturningTranslation(
+        () -> translateToWorkableArchiveURL("jar:" + u.toExternalForm() + "!/" + e.getName())));
   }
 
   private static boolean _match(final JSONObject metadata, final Pattern key, final Pattern value) {
@@ -724,11 +767,13 @@ public class IBUtils {
     return requireNonNull(gav).getVersion().map(DefaultIBVersion::new).map(DefaultIBVersion::apiVersion);
   }
 
-  //  public final static Function<Artifact, GAV> artifactToGAV = (art) -> {
-  //    final Path p = Optional.ofNullable(art.getFile()).map(p2 -> p2.toPath()).orElse(null);
-  //    return new DefaultGAV(art.getGroupId(), art.getArtifactId(), art.getClassifier(), art.getVersion(),
-  //        art.getExtension()).withFile(p);
-  //  };
+  // public final static Function<Artifact, GAV> artifactToGAV = (art) -> {
+  // final Path p = Optional.ofNullable(art.getFile()).map(p2 ->
+  // p2.toPath()).orElse(null);
+  // return new DefaultGAV(art.getGroupId(), art.getArtifactId(),
+  // art.getClassifier(), art.getVersion(),
+  // art.getExtension()).withFile(p);
+  // };
 
   public static String toInternalSignaturePath(final GAV gav) {
     return gav.getGroupId() + ":" + gav.getArtifactId() + ":" + gav.getClassifier().orElse("") + ":"
@@ -749,57 +794,72 @@ public class IBUtils {
     return b;
   }
 
-  //  public static boolean _versionmatcher(final GAV art, final GAV range) {
-  //    if (!art.getVersion().isPresent())
-  //      return true;
-  //    if (!range.getVersion().isPresent())
-  //      return true;
-  //    try {
-  //      final boolean b = inRange(art, ((DefaultGAV) range).asRange());
-  //      return b;
-  //    } catch (final IBException e) {
-  //      return false;
-  //    }
-  //  }
+  // public static boolean _versionmatcher(final GAV art, final GAV range) {
+  // if (!art.getVersion().isPresent())
+  // return true;
+  // if (!range.getVersion().isPresent())
+  // return true;
+  // try {
+  // final boolean b = inRange(art, ((DefaultGAV) range).asRange());
+  // return b;
+  // } catch (final IBException e) {
+  // return false;
+  // }
+  // }
 
-  //  public static Artifact asArtifact(final GAV art) {
-  //    return new DefaultArtifact(art.getDefaultSignaturePath());
-  //  }
+  // public static Artifact asArtifact(final GAV art) {
+  // return new DefaultArtifact(art.getDefaultSignaturePath());
+  // }
   //
-  //  public static Dependency asDependency(final GAV art, final String scope) {
-  //    return new Dependency(asArtifact(art), scope);
-  //  }
+  // public static Dependency asDependency(final GAV art, final String scope) {
+  // return new Dependency(asArtifact(art), scope);
+  // }
 
-  //  public static int compareVersion(final GAV art, final GAV otherVersion)
-  //      throws org.eclipse.aether.version.InvalidVersionSpecificationException {
-  //    return getVersionScheme().parseVersion(art.getVersion().get().toString())
-  //        .compareTo(getVersionScheme().parseVersion(otherVersion.getVersion().get().toString()));
-  //  }
+  // public static int compareVersion(final GAV art, final GAV otherVersion)
+  // throws org.eclipse.aether.version.InvalidVersionSpecificationException {
+  // return getVersionScheme().parseVersion(art.getVersion().get().toString())
+  // .compareTo(getVersionScheme().parseVersion(otherVersion.getVersion().get().toString()));
+  // }
 
-  //  public static GAV fromArtifact(final Artifact a) {
-  //    return new DefaultGAV(a.getGroupId(), a.getArtifactId(), a.getClassifier(), a.getVersion(), a.getExtension())
-  //        .withFile(Optional.ofNullable(a.getFile()).map(File::toPath).orElse(null));
-  //  }
+  // public static GAV fromArtifact(final Artifact a) {
+  // return new DefaultGAV(a.getGroupId(), a.getArtifactId(), a.getClassifier(),
+  // a.getVersion(), a.getExtension())
+  // .withFile(Optional.ofNullable(a.getFile()).map(File::toPath).orElse(null));
+  // }
 
   public static Optional<IBVersion> getVersion(final GAV art) {
     return art.getVersion().map(DefaultIBVersion::new);
   }
 
-  //  public static VersionScheme getVersionScheme() {
-  //    return new org.eclipse.aether.util.version.GenericVersionScheme();
-  //  }
+  // public static VersionScheme getVersionScheme() {
+  // return new org.eclipse.aether.util.version.GenericVersionScheme();
+  // }
   //
-  //  public static boolean inRange(final GAV art, final String versionRange) {
-  //    return IBException.cet.withReturningTranslation(() -> {
-  //      return getVersionScheme().parseVersionRange(versionRange)
-  //          .containsVersion(getVersionScheme().parseVersion(art.getVersion().orElse(null)));
-  //    });
-  //  }
+  // public static boolean inRange(final GAV art, final String versionRange) {
+  // return IBException.cet.withReturningTranslation(() -> {
+  // return getVersionScheme().parseVersionRange(versionRange)
+  // .containsVersion(getVersionScheme().parseVersion(art.getVersion().orElse(null)));
+  // });
+  // }
 
-  //  public static boolean matches(final GAV art, final GAV pattern) {
-  //    return _matcher(pattern.getGroupId(), art.getGroupId()) && _matcher(pattern.getArtifactId(), art.getArtifactId())
-  //        && _matcher(pattern.getClassifier().orElse(".*"), art.getClassifier().orElse(null))
-  //        && _matcher(pattern.getExtension(), art.getExtension()) && _versionmatcher(art, pattern);
-  //  }
+  // public static boolean matches(final GAV art, final GAV pattern) {
+  // return _matcher(pattern.getGroupId(), art.getGroupId()) &&
+  // _matcher(pattern.getArtifactId(), art.getArtifactId())
+  // && _matcher(pattern.getClassifier().orElse(".*"),
+  // art.getClassifier().orElse(null))
+  // && _matcher(pattern.getExtension(), art.getExtension()) &&
+  // _versionmatcher(art, pattern);
+  // }
 
+  public static URL translateToWorkableArchiveURL(String url) {
+    requireNonNull(url);
+    String retVal = url;
+    if (url.startsWith("jar:") && !isJar)
+      retVal = "zip:" + url.substring(4);
+    if (url.startsWith("zip:") && !isZip)
+      retVal = "jar:" + url.substring(4);
+    final String f = retVal;
+    return IBException.cet.withReturningTranslation(() -> new URL(f));
+
+  }
 }

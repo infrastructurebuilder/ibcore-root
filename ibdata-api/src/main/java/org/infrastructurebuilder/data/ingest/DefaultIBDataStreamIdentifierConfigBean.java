@@ -15,6 +15,7 @@
  */
 package org.infrastructurebuilder.data.ingest;
 
+import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.data.IBMetadataUtils.translateToXpp3Dom;
 
@@ -25,9 +26,9 @@ import java.util.UUID;
 
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.data.IBDataException;
 import org.infrastructurebuilder.data.IBDataStreamIdentifier;
+import org.infrastructurebuilder.data.IBDataStructuredDataMetadata;
 import org.infrastructurebuilder.data.IBMetadataUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.w3c.dom.Document;
@@ -44,6 +45,7 @@ public class DefaultIBDataStreamIdentifierConfigBean implements IBDataStreamIden
   private String path;
   private Date creationDate;
   private UUID id;
+  private boolean expandArchives;
 
   public DefaultIBDataStreamIdentifierConfigBean() {
   }
@@ -73,6 +75,10 @@ public class DefaultIBDataStreamIdentifierConfigBean implements IBDataStreamIden
     return temporaryId;
   }
 
+  public void setTemporaryId(String temporaryId) {
+    this.temporaryId = temporaryId;
+  }
+
   @Override
   public Optional<String> getURL() {
     return ofNullable(url);
@@ -95,13 +101,21 @@ public class DefaultIBDataStreamIdentifierConfigBean implements IBDataStreamIden
 
   @Override
   public String getMimeType() {
-    return ofNullable(mimeType).orElse(IBConstants.APPLICATION_OCTET_STREAM);
+    return mimeType;
   }
 
+  /**
+   * Overrides the (non-nullable) getChecksum() so that we can have null checksums
+   * here
+   */
   @Override
   public Checksum getChecksum() {
     return (sha512 != null) ? new Checksum(sha512) : null;
+  }
 
+  @Override
+  public String getSha512() {
+    return sha512;
   }
 
   @Override
@@ -153,6 +167,14 @@ public class DefaultIBDataStreamIdentifierConfigBean implements IBDataStreamIden
     this.sha512 = checksum;
   }
 
+  public void setExpandArchives(boolean expandArchives) {
+    this.expandArchives = expandArchives;
+  }
+
+  public boolean isExpandArchives() {
+    return expandArchives;
+  }
+
   @Override
   public int hashCode() {
     return Objects.hash(creationDate, description, id, metadata, mimeType, name, path, sha512, temporaryId, url);
@@ -172,10 +194,25 @@ public class DefaultIBDataStreamIdentifierConfigBean implements IBDataStreamIden
     DefaultIBDataStreamIdentifierConfigBean other = (DefaultIBDataStreamIdentifierConfigBean) obj;
     return Objects.equals(getCreationDate(), other.getCreationDate())
         && Objects.equals(getDescription(), other.getDescription()) && Objects.equals(getId(), other.getId())
-        && Objects.equals(getMetadata().toString(), other.getMetadata().toString()) && Objects.equals(getMimeType(), other.getMimeType())
-        && Objects.equals(getName(), other.getName()) && Objects.equals(getPath(), other.getPath())
-        && Objects.equals(getChecksum(), other.getChecksum()) && Objects.equals(getTemporaryId(), other.getTemporaryId())
-        && Objects.equals(url, other.url);
+        && Objects.equals(getMetadata().toString(), other.getMetadata().toString())
+        && Objects.equals(getMimeType(), other.getMimeType()) && Objects.equals(getName(), other.getName())
+        && Objects.equals(getPath(), other.getPath()) && Objects.equals(getChecksum(), other.getChecksum())
+        && Objects.equals(getTemporaryId(), other.getTemporaryId()) && Objects.equals(url, other.url);
+  }
+
+  @Override
+  public Optional<IBDataStructuredDataMetadata> getStructuredDataMetadata() {
+    return empty();
+  }
+
+  @Override
+  public String getOriginalLength() {
+    return null; // Not yet determinable
+  }
+
+  @Override
+  public String getOriginalRowCount() {
+    return null; // Not yet determinable
   }
 
 }

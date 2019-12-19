@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.infrastructurebuilder.IBException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,6 +41,21 @@ public class ConfigMapTest {
     m.put("A", o);
     ConfigMap m2 = new ConfigMap(m);
     m3 = new ConfigMap(m2);
+  }
+
+  @Test
+  public void testGetParsedBoolean() {
+    assertFalse(m3.getParsedBoolean("X", false));
+  }
+
+  @Test
+  public void testGetRequired() {
+    assertEquals(o, m3.getRequired("A"));
+  }
+
+  @Test(expected = IBException.class)
+  public void testGetRequiredNotPResent() {
+    assertEquals(o, m3.getRequired("Q"));
   }
 
   @Test

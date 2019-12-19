@@ -16,6 +16,7 @@
 package org.infrastructurebuilder.data;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
@@ -56,6 +57,10 @@ public class IBDataStreamIdentifierTest extends AbstractModelTest {
     assertEquals(IBConstants.APPLICATION_OCTET_STREAM, stream.getMimeType());
     assertEquals(Optional.empty(), stream.pathAsURL(finalData));
     assertEquals(STREAM_ID, stream.getId().toString());
+    assertFalse(stream.getInputStreamLength().isPresent());
+    assertFalse(stream.getNumRows().isPresent());
+    assertFalse(stream.getPathIfAvailable().isPresent());
+    assertFalse(stream.isExpandArchives());
   }
 
   @Test
@@ -67,5 +72,11 @@ public class IBDataStreamIdentifierTest extends AbstractModelTest {
     finalData.setPath(p);
     Optional<URL> q = stream.pathAsURL(finalData);
     assertTrue(q.get().toExternalForm().endsWith("test.jar!" + filePath));
+  }
+
+  @Test
+  public void testChecksum() {
+    stream.getChecksum();
+
   }
 }

@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 public interface ConfigMapSupplier extends Supplier<ConfigMap> {
   public static final String MAVEN = "maven"; // This one is implemented in ibcore-plexus
 
-  ConfigMapSupplier addConfiguration(ConfigMapSupplier add);
+//  ConfigMapSupplier addConfiguration(ConfigMapSupplier add);
 
   ConfigMapSupplier addConfiguration(Map<String, Object> add);
   ConfigMapSupplier addConfiguration(ConfigMap add);
@@ -50,8 +50,6 @@ public interface ConfigMapSupplier extends Supplier<ConfigMap> {
   Map<String,Object> asMap();
 
   ConfigMapSupplier overrideConfigurationString(Map<String, String> over);
-
-  void addConfigurationMap(Map<String, String> getenv);
 
   ConfigMapSupplier overrideConfiguration(ConfigMap over);
 }

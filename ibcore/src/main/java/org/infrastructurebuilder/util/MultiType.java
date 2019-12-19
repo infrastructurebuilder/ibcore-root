@@ -35,8 +35,17 @@ public class MultiType<T, E extends Throwable> {
     return e;
   }
 
+  /**
+   * Use getT() instead
+   * @return
+   */
+  @Deprecated
   public Optional<T> getReturnedType() {
     return t;
+  }
+
+  public Optional<T> getT() {
+    return getReturnedType();
   }
 
 }

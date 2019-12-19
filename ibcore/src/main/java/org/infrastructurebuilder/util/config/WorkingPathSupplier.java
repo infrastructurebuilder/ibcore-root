@@ -17,6 +17,8 @@ package org.infrastructurebuilder.util.config;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
+import static org.infrastructurebuilder.IBConstants.MAVEN_TARGET_PATH;
+import static org.infrastructurebuilder.IBConstants.TARGET_DIR_PROPERTY;
 import static org.infrastructurebuilder.IBException.cet;
 
 import java.nio.file.Files;
@@ -53,13 +55,10 @@ public class WorkingPathSupplier implements PathSupplier {
 
   public WorkingPathSupplier(final Map<String, String> params, @org.eclipse.sisu.Nullable final IdentifierSupplier id,
       final boolean cleanup) {
-    this(
-        () -> cet
-            .withReturningTranslation(() -> Paths
-                .get(ofNullable(params.get(WORKING_PATH_KEY))
-                    .orElse(ofNullable(System.getProperty("target_dir")).orElse("./target")))
-                .toRealPath().toAbsolutePath()),
-        id, cleanup);
+    this(() -> cet.withReturningTranslation(() -> Paths
+        .get(ofNullable(params.get(WORKING_PATH_KEY))
+            .orElse(ofNullable(System.getProperty(TARGET_DIR_PROPERTY)).orElse(MAVEN_TARGET_PATH)))
+        .toRealPath().toAbsolutePath()), id, cleanup);
   }
 
   public WorkingPathSupplier(final PathSupplier root, final IdentifierSupplier id, final boolean cleanup) {
@@ -86,8 +85,7 @@ public class WorkingPathSupplier implements PathSupplier {
     }
     final Path k = p;
     paths.add(k);
-    cet.withTranslation(() -> Files.createDirectories(k));
-    return k;
+    return cet.withReturningTranslation(() -> Files.createDirectories(k));
   }
 
   public Path getRoot() {

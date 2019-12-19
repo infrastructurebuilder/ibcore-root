@@ -15,12 +15,15 @@
  */
 package org.infrastructurebuilder.util.config;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toMap;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -70,8 +73,9 @@ public class MavenConfigMapSupplier extends DefaultConfigMapSupplier {
     final Path workingDir = Paths.get(build.getDirectory()).resolve(UUID.randomUUID().toString());
     IBException.cet.withTranslation(() -> Files.createDirectories(workingDir));
     super.overrideValue("workingDir", workingDir.toString());
-
-    super.addConfigurationMap(System.getenv());
+    Map<String, Object> i = requireNonNull(System.getenv()).entrySet().stream()
+        .collect(toMap(k -> k.getKey(), v -> v.getValue()));
+    super.addConfiguration(i);
     super.overrideConfiguration(System.getProperties());
     super.overrideConfiguration(Objects.requireNonNull(mavenProject).getProperties());
   }

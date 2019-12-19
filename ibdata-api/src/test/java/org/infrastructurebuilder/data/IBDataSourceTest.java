@@ -17,6 +17,7 @@ package org.infrastructurebuilder.data;
 
 import static org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -101,9 +102,17 @@ public class IBDataSourceTest {
       public IBDataSource withAdditionalConfig(ConfigMap config) {
         return this;
       }
+      @Override
+      public Optional<String> getMimeType() {
+        return Optional.of(APPLICATION_OCTET_STREAM);
+      }
     };
   }
 
+  @Test
+  public void testIsExpand() {
+    assertFalse(i.isExpandArchives());
+  }
   @Test
   public void testGetMimeType() {
     assertEquals(APPLICATION_OCTET_STREAM, i.getMimeType().get());

@@ -47,6 +47,7 @@ import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.zeroturnaround.exec.ProcessOutput;
 import org.zeroturnaround.exec.ProcessResult;
+import static org.infrastructurebuilder.IBConstants.*;
 
 public class ProcessExecutionResultTest {
   private static final List<String> ARGS = Arrays.asList("-version");
@@ -111,7 +112,7 @@ public class ProcessExecutionResultTest {
 
     stdErr = Arrays.asList("Hi", "there");
     stdOut = Arrays.asList("hello", "gentlepersons");
-    scratchDir = Paths.get(Optional.ofNullable(System.getProperty("target_dir")).orElse("./target"));
+    scratchDir = Paths.get(Optional.ofNullable(System.getProperty(TARGET_DIR_PROPERTY)).orElse(MAVEN_TARGET_PATH));
 
     stdOutPth = DefaultProcessRunner.touchFile(scratchDir.resolve("extraStdOut"));
 

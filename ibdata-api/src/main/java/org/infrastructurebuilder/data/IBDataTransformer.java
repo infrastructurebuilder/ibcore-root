@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.infrastructurebuilder.data.transform.Transformer;
 import org.infrastructurebuilder.util.LoggerEnabled;
-import org.infrastructurebuilder.util.config.ConfigMap;
 
 public interface IBDataTransformer extends LoggerEnabled {
 
@@ -38,15 +37,15 @@ public interface IBDataTransformer extends LoggerEnabled {
     return i != null;
   }
 
-  /**
-   * Overrides of this method MUST return a NEW INSTANCE of the calling transformer.
-   * unless no changes are made to the state of the object,
-   * @param map
-   * @return
-   */
-  default IBDataTransformer configure(ConfigMap map) {
-    return this;
-  }
+//  /**
+//   * Overrides of this method MUST return a NEW INSTANCE of the calling transformer.
+//   * unless no changes are made to the state of the object,
+//   * @param map
+//   * @return
+//   */
+//  default IBDataTransformer configure(ConfigMap map) {
+//    return this;
+//  }
 
   /**
    * Transform the supplied IBDataSet to a new IBDataTransformationResult

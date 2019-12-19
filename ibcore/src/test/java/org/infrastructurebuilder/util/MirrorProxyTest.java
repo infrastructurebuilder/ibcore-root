@@ -55,6 +55,7 @@ public class MirrorProxyTest {
     assertEquals(mirrorOf, m.getMirrorOf().stream().collect(Collectors.toList()));
     assertEquals(mirrorOfLayouts, m.getMirrorOfLayouts().stream().collect(Collectors.toList()));
     assertEquals(url, m.getUrl().toExternalForm());
+    assertEquals(DEFAULT, m.getLayout());
   }
 
   @Test(expected = IBException.class)

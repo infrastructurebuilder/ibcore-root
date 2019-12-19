@@ -19,8 +19,11 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AbstractConfigurableSupplierTest {
+  private final static Logger log = LoggerFactory.getLogger(AbstractConfigurableSupplierTest.class);
 
   private TestAbstractConfigurableSupplier a;
 
@@ -38,7 +41,7 @@ public class AbstractConfigurableSupplierTest {
   public class TestAbstractConfigurableSupplier extends AbstractConfigurableSupplier<String, String> {
 
     public TestAbstractConfigurableSupplier(String config) {
-      super(config);
+      super(config, () -> log);
     }
 
     @Override
@@ -47,8 +50,8 @@ public class AbstractConfigurableSupplierTest {
     }
 
     @Override
-    protected String configuredType(String config) {
-      return config;
+    protected String getInstance() {
+      return getConfig();
     }
 
   }

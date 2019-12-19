@@ -282,7 +282,7 @@ public final class ChecksumBuilder implements ChecksumEnabled {
   }
 
   public ChecksumBuilder addString(final String s) {
-    return addBytes(getBytes.apply(requireNonNull(s)));
+    return s == null ? this : addBytes(getBytes.apply(requireNonNull(s)));
   }
 
   public ChecksumBuilder addThrowable(final Optional<Throwable> s) {

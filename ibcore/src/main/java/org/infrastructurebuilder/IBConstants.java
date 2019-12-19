@@ -35,14 +35,17 @@ public interface IBConstants {
   public static final String TEXT_CSV = "text/csv";
   public static final String TEXT_TSV = "text/tab-separated-values";
   public static final String TEXT_PSV = "text/pipe-separated-values";
+  public static final String TEXT_HTML = "text/html";
   public static final String APPLICATION_XLS = "application/msexcel";
   public static final String APPLICATION_XLSX = "application//vnd.openxmlformats-officedocument.spreadsheetml.sheet";
   public static final String APPLICATION_ACCESS = "application/msaccess";
   public static final String APPLICATION_MSWORD = "application/msword";
   public static final String APPLICATION_MSWORDX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+  public static final String APPLICATION_PPTX = "application/vnd.ms-powerpoint";
   public static final String APPLICATION_PDF = "application/pdf";
   public static final String APPLICATION_ZIP = "application/zip";
   public static final String APPLICATION_XML = "application/xml";
+  public static final String APPLICATION_VND_OASIS_SPREADSHEET = "application/vnd.oasis.opendocument.spreadsheet";
 
 
   public static final String JAVA_LANG_STRING = "java.lang.String";
@@ -63,6 +66,9 @@ public interface IBConstants {
   public static final String ZIP = ".zip";
   public static final String TXT = ".txt";
   public static final String XML = ".xml";
+  public static final String ODS = ".ods";
+  public static final String PPT = ".ppt";
+
 
   public static final String _SHA512 = "sha512";
   public static final String ASC_EXT = ".asc";
@@ -115,5 +121,9 @@ public interface IBConstants {
   public final static String HTTPS_PREFIX = "https://";
   public final static String FILE_PREFIX = "file:";
   public final static String ZIP_PREFIX = "zip:";
+  public final static String JAR_PREFIX = "jar:";
+
+  public static final String TARGET_DIR_PROPERTY = "target_dir";
+  public static final String MAVEN_TARGET_PATH = "./target";
 
 }

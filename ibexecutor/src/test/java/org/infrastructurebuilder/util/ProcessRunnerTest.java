@@ -32,11 +32,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.infrastructurebuilder.util.config.TestingPathSupplier;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static org.infrastructurebuilder.IBConstants.*;
 
 public class ProcessRunnerTest {
   private final static Logger logger = LoggerFactory.getLogger(ProcessRunnerTest.class);
@@ -52,23 +54,23 @@ public class ProcessRunnerTest {
 
   private Path scratchDir;
 
-  private Path target;
-
   private String ttClass;
 
   private Path ttest1;
   private boolean isWindows;
+  private TestingPathSupplier wps = new TestingPathSupplier();
+  private Path target;
 
   @Before
   public void setUp() throws Exception {
-    target = Paths.get(Optional.ofNullable(System.getProperty("target_dir")).orElse("./target"));
+    target = wps.getRoot();
     scratchDir = target.resolve(UUID.randomUUID().toString());
     runner = new DefaultProcessRunner(scratchDir, Optional.of(System.out), Optional.of(logger), Optional.of(target));
     isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
 
     packerExecutable = target.resolve("packer" + (isWindows ? ".exe" : "")).toAbsolutePath();
     packerCsum = new Checksum(Files.newInputStream(packerExecutable));
-    ttest1 = target.resolve("test-classes");
+    ttest1 = wps.getTestClasses();
     ttClass = "ThreadTest1S";
   }
 
@@ -90,7 +92,7 @@ public class ProcessRunnerTest {
   @Test
   public void testDaemon() {
     final String id = UUID.randomUUID().toString();
-    final Path in = target.resolve("test-classes").resolve("ThreadTest1S.class");
+    final Path in = ttest1.resolve("ThreadTest1S.class");
     try (ProcessRunner newrunner = runner.addExecution(id, "java", Arrays.asList(ttClass, "1"),
         Optional.of(Duration.ofMinutes(5)), Optional.of(in), Optional.of(ttest1), Optional.empty(), false,
         Optional.empty(), Optional.of(target), Optional.empty(), true)) {
@@ -118,20 +120,20 @@ public class ProcessRunnerTest {
   @Test
   public void testErrorResult() {
     final String id = UUID.randomUUID().toString();
-    final Path in = target.resolve("test-classes").resolve("ThreadTest1S.class");
+    final Path in = ttest1.resolve("ThreadTest1S.class");
     try (ProcessRunner newrunner = runner.addExecution(id, "javac", Arrays.asList(), Optional.of(Duration.ofMinutes(1)),
         Optional.of(in), Optional.of(ttest1), Optional.empty(), false, Optional.empty(), Optional.of(target),
         Optional.empty(), true)) {
       newrunner.setKeepScratchDir(false);
       newrunner.lock(Duration.ofSeconds(15), Optional.of(25L));
       final ProcessExecutionResultBag p = runner.get().get();
-      
+
       assertTrue(newrunner.hasErrorResult(p.getResults()));
       final ProcessExecutionResult a = p.getExecutions().get(id);
       assertEquals(2, a.getResultCode().get().longValue());
       logger.debug(a.getId() + " " + a.getException().toString() + a.getResultCode());
     } catch (final Exception e) {
-      logger.error("Unexpected exception occurred" ,e);
+      logger.error("Unexpected exception occurred", e);
       fail(e.getClass().getCanonicalName() + " " + e.getMessage());
     }
     assertFalse(Files.exists(scratchDir));
@@ -179,7 +181,7 @@ public class ProcessRunnerTest {
   @Test
   public void testLongRunningDaemon() {
     final String id = UUID.randomUUID().toString();
-    final Path in = target.resolve("test-classes").resolve("ThreadTest1S.class");
+    final Path in = ttest1.resolve("ThreadTest1S.class");
     runner = runner.addExecution(id, "java", Arrays.asList(ttClass, "60"), Optional.of(Duration.ofMinutes(5)),
         Optional.of(in), Optional.of(ttest1), Optional.empty(), false, Optional.empty(), Optional.of(target),
         Optional.empty(), true);

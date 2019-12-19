@@ -41,25 +41,27 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-
 import static org.mockito.Mockito.*;
+
 public class MavenConfigMapSupplierTest {
 
   public static Map<String, String> m, n;
   public static MavenProject mp;
   public static Model mm;
   public static Properties properties;
+  public final static TestingPathSupplier wps = new TestingPathSupplier();
   public static Path target;
   public static Path testClasses;
 
   public static MavenSession ms;
   public static MojoExecution me;
-  @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
+  @Rule
+  public MockitoRule mockitoRule = MockitoJUnit.rule();
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
-    target = Paths.get(Optional.ofNullable(System.getProperty("target")).orElse("./target")).toRealPath();
-    testClasses = target.resolve("test-classes");
+    target = wps.getRoot();
+    testClasses = wps.getTestClasses();
     m = new HashMap<>();
     n = new HashMap<>();
     m.put("X", "Y");
@@ -82,14 +84,13 @@ public class MavenConfigMapSupplierTest {
 
     ms = mock(MavenSession.class);
     me = mock(MojoExecution.class);
-    when(ms.getGoals()).thenReturn(Arrays.asList("A","B"));
-    when (ms.getStartTime()).thenReturn(new Date());
+    when(ms.getGoals()).thenReturn(Arrays.asList("A", "B"));
+    when(ms.getStartTime()).thenReturn(new Date());
     when(me.getExecutionId()).thenReturn("A");
     when(me.getGoal()).thenReturn("B");
     when(me.getLifecyclePhase()).thenReturn("compile");
 
   }
-
 
   public MavenConfigMapSupplier getCms() {
     return new MavenConfigMapSupplier(mp, ms, me);

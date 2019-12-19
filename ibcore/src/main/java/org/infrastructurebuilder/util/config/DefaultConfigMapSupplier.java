@@ -57,11 +57,6 @@ public class DefaultConfigMapSupplier implements ConfigMapSupplier {
   }
 
   @Override
-  public ConfigMapSupplier addConfiguration(ConfigMapSupplier add) {
-    return addConfiguration(add.get());
-  }
-
-  @Override
   public ConfigMapSupplier addConfiguration(final Properties add) {
     for (String n : requireNonNull(add).stringPropertyNames())
       addValue(n.toString(), add.getProperty(n.toString()));
@@ -144,14 +139,6 @@ public class DefaultConfigMapSupplier implements ConfigMapSupplier {
   @Override
   public String toString() {
     return "DefaultConfigMapSupplier [map=" + map + "]";
-  }
-
-  @Override
-  public void addConfigurationMap(Map<String, String> getenv) {
-    Map<String, Object> i = requireNonNull(getenv).entrySet().stream()
-        .collect(toMap(k -> k.getKey(), v -> v.getValue()));
-    this.addConfiguration(i);
-
   }
 
 }

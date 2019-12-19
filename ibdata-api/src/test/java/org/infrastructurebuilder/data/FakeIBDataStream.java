@@ -43,6 +43,7 @@ public class FakeIBDataStream extends DataStream implements IBDataStream {
   private final Optional<Exception> throwMeOnClose;
   private final Optional<Exception> throwMeOnRelocate;
   private final List<InputStream> opened = new ArrayList<>();
+  private final IBDataStructuredDataMetadata smd;
 
   public FakeIBDataStream(Path p, Optional<Exception> throwMeOnClose) {
     this(p, throwMeOnClose, empty());
@@ -59,6 +60,7 @@ public class FakeIBDataStream extends DataStream implements IBDataStream {
     this.setMetadata(new Xpp3Dom("metadata"));
     this.setPath(".");
     this.setMimeType(IBConstants.APPLICATION_OCTET_STREAM);
+    this.smd = null;
   }
 
   public FakeIBDataStream(DataStream ds, Path p) {
@@ -69,6 +71,7 @@ public class FakeIBDataStream extends DataStream implements IBDataStream {
     setSha512(c.toString());
     this.throwMeOnClose = empty();
     this.throwMeOnRelocate = empty();
+    this.smd = null;
   }
 
   public Path getLocalPath() {
@@ -105,5 +108,15 @@ public class FakeIBDataStream extends DataStream implements IBDataStream {
     cet.withReturningTranslation(() -> Files.move(Paths.get(getPath()), p));
     this.setPath(p.toString());
     return this;
+  }
+
+  @Override
+  public Optional<IBDataStructuredDataMetadata> getIBDataStructuredDataMetadata() {
+    return Optional.ofNullable(this.smd);
+  }
+
+  @Override
+  public Optional<Path> getPathIfAvailable() {
+    return Optional.of(this.localPath);
   }
 }

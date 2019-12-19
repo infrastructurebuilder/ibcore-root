@@ -20,10 +20,10 @@
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibparent</artifactId>
-    <version>20</version>
+    <version>26</version>
   </parent>
   <artifactId>ibcore-root</artifactId>
-  <version>0.14.1-SNAPSHOT</version>
+  <version>0.15.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>${project.artifactId}</name>
   <description>InfrastructureBuilder Common</description>
@@ -41,12 +41,8 @@
     </site>
   </distributionManagement>
   <properties>
-    <error.version>20</error.version>
     <iblog.version>0.10.0</iblog.version>
-
-    <!--  FIXME Move version in newer parent release -->
-    <ib.versioning.support.plugin.version>0.12.0</ib.versioning.support.plugin.version>
-
+    <ib.exceptions.version>25</ib.exceptions.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -90,7 +86,7 @@
       <dependency>
         <groupId>org.infrastructurebuilder</groupId>
         <artifactId>ibexceptions</artifactId>
-        <version>${error.version}</version>
+        <version>${ib.exceptions.version}</version>
       </dependency>
       <dependency>
         <groupId>org.infrastructurebuilder.util</groupId>

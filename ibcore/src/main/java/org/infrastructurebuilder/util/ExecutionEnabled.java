@@ -15,10 +15,9 @@
  */
 package org.infrastructurebuilder.util;
 
-import org.infrastructurebuilder.util.config.ConfigMapSupplier;
+public interface ExecutionEnabled<T, C, E, R> {
+  ExecutionEnabled<T, C, E, R> configure(C cms);
 
-public interface ExecutionEnabled<T,E,R> {
-  T configure(ConfigMapSupplier cms);
   ExecutionResponse<E, R> execute();
 
 }

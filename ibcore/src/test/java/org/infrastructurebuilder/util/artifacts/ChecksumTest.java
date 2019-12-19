@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.infrastructurebuilder.IBException;
-import org.infrastructurebuilder.util.config.WorkingPathSupplier;
+import org.infrastructurebuilder.util.config.TestingPathSupplier;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -39,7 +39,7 @@ import org.junit.Test;
 
 public class ChecksumTest {
 
-  private static WorkingPathSupplier wps;
+  private static TestingPathSupplier wps;
   private Checksum cnull;
   private Checksum cRick;
   private Checksum cString;
@@ -48,13 +48,14 @@ public class ChecksumTest {
 
   @BeforeClass
   public static void setupB4Class() {
-    wps = new WorkingPathSupplier();
+    wps = new TestingPathSupplier();
   }
+
   @Before
   public void setUp() throws Exception {
     p = wps.getRoot();
     cnull = new Checksum();
-    cRick = new Checksum(p.resolve("test-classes").resolve("rick.jpg"));
+    cRick = new Checksum(wps.getTestClasses().resolve("rick.jpg"));
     cString = new Checksum(theString.getBytes(UTF_8));
   }
 
