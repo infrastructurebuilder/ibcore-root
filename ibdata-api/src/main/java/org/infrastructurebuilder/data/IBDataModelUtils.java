@@ -70,9 +70,21 @@ import org.infrastructurebuilder.util.files.model.IBChecksumPathTypeModel;
 public class IBDataModelUtils {
   public final static IBDataSourceModelXpp3Writer xpp3Writer = new IBDataSourceModelXpp3Writer();
 
-  public final static void writeDataSet(DataSet ds, Path target) {
-    try (Writer writer = Files.newBufferedWriter(target.resolve(IBDATA).resolve(IBDATASET_XML), UTF_8, CREATE_NEW)) {
-      xpp3Writer.write(writer, ds.clone());
+  public final static void writeDataSet(DataSet ds, Path target, Optional<String> basedirString) {
+    Path v = target.resolve(IBDATA).resolve(IBDATASET_XML);
+    cet.withTranslation(() -> Files.createDirectories(v.getParent()));
+    try (Writer writer = Files.newBufferedWriter(v, UTF_8, CREATE_NEW)) {
+      DataSet d = ds.clone();
+      d.getStreams().stream().forEach(s -> {
+        final String k = s.getSourceURL();
+        basedirString.ifPresent(basedir -> {
+          if (k.contains(basedir))
+            s.setSourceURL(k.replace(basedir, "${basedir}"));
+        });
+        if (k.contains("!/") && !(k.startsWith("zip:") || k.startsWith("jar:")))
+          s.setSourceURL("jar:" + s.getSourceURL());
+      });
+      xpp3Writer.write(writer, d);
     } catch (Throwable e) { // Catch anything and translate it to an IBDataException
       throw new IBDataException(e);
     }
@@ -132,17 +144,19 @@ public class IBDataModelUtils {
   };
 
   /**
-   * Given the parameters, create a final data location (either through atomic moves or copies), that maps to a state that
-   * will allow us to generate an archive
+   * Given the parameters, create a final data location (either through atomic
+   * moves or copies), that maps to a state that will allow us to generate an
+   * archive
    *
-   * @param workingPath  This is a current working path.
-   * @param finalData This is as much of the metadata of the dataset as we currently know.  It has no streams attached at the moment
-   * @param ibdssList These are the streams we will attach
+   * @param workingPath This is a current working path.
+   * @param finalData   This is as much of the metadata of the dataset as we
+   *                    currently know. It has no streams attached at the moment
+   * @param ibdssList   These are the streams we will attach
    * @return A location suitable for archive generation
    * @throws IOException
    */
   public final static IBChecksumPathType forceToFinalizedPath(Date creationDate, Path workingPath, DataSet finalData,
-      List<Supplier<IBDataStream>> ibdssList, TypeToExtensionMapper t2e) throws IOException {
+      List<Supplier<IBDataStream>> ibdssList, TypeToExtensionMapper t2e, Optional<String> basedir) throws IOException {
 
     // This archive is about to be created
     finalData.setCreationDate(requireNonNull(creationDate)); // That is now
@@ -162,7 +176,8 @@ public class IBDataModelUtils {
             .map(toDataStream)
             // to list
             .collect(toList()));
-    //    finalData.getStreams().stream().forEach(dss -> dss.setPath(IBDataModelUtils.relativizePath(finalData, dss)));
+    // finalData.getStreams().stream().forEach(dss ->
+    // dss.setPath(IBDataModelUtils.relativizePath(finalData, dss)));
     // The id of the archive is based on the checksum of the data within it
     Checksum dsChecksum = fromPathDSAndStream(newWorkingPath, finalData);
     finalData.setUuid(dsChecksum.asUUID().get().toString());
@@ -176,14 +191,15 @@ public class IBDataModelUtils {
     DataSet finalData2 = finalData.clone(); // Executes the clone hook, including relativizing the path
     finalData2.setPath(null);
     // write the dataset to disk
-    IBDataModelUtils.writeDataSet(finalData2, newTarget);
+    IBDataModelUtils.writeDataSet(finalData2, newTarget, basedir);
     // newTarget now points to a valid DataSet with metadata and referenced streams
     return DefaultIBChecksumPathType.from(newTarget, dsChecksum, APPLICATION_IBDATA_ARCHIVE);
   }
 
   /**
-   * "remodel" the existing result into an IBChecksumPathTypeModel
-   * Eventually, this will probably be how moveTo relocates URLs that aren't concrete physical file paths (like paths into archives)
+   * "remodel" the existing result into an IBChecksumPathTypeModel Eventually,
+   * this will probably be how moveTo relocates URLs that aren't concrete physical
+   * file paths (like paths into archives)
    *
    * @param theResult
    * @return

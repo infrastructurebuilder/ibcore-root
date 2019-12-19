@@ -15,7 +15,16 @@
  */
 package org.infrastructurebuilder.data;
 
-import static org.infrastructurebuilder.IBConstants.*;
+import static java.util.Optional.empty;
+import static org.infrastructurebuilder.IBConstants.APPLICATION_XML;
+import static org.infrastructurebuilder.IBConstants.AVRO_BINARY;
+import static org.infrastructurebuilder.IBConstants.JAVA_LANG_STRING;
+import static org.infrastructurebuilder.IBConstants.ORG_APACHE_AVRO_GENERIC_INDEXED_RECORD;
+import static org.infrastructurebuilder.IBConstants.ORG_W3C_DOM_NODE;
+import static org.infrastructurebuilder.IBConstants.TEXT_CSV;
+import static org.infrastructurebuilder.IBConstants.TEXT_PLAIN;
+import static org.infrastructurebuilder.IBConstants.TEXT_PSV;
+import static org.infrastructurebuilder.IBConstants.TEXT_TSV;
 import static org.infrastructurebuilder.data.IBDataConstants.IBDATA;
 import static org.infrastructurebuilder.data.IBDataConstants.IBDATASET_XML;
 import static org.infrastructurebuilder.data.IBDataModelUtils.forceToFinalizedPath;
@@ -35,16 +44,22 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.data.model.DataSet;
 import org.infrastructurebuilder.data.model.DataStream;
 import org.infrastructurebuilder.util.IBUtils;
+import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.infrastructurebuilder.util.files.DefaultIBChecksumPathType;
 import org.infrastructurebuilder.util.files.IBChecksumPathType;
 import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
+import org.infrastructurebuilder.util.files.model.IBChecksumPathTypeModel;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class IBDataModelUtilsTest extends AbstractModelTest {
@@ -68,7 +83,18 @@ public class IBDataModelUtilsTest extends AbstractModelTest {
     Path target = w.resolve(IBDATA).resolve(IBDATASET_XML);
     Files.createDirectories(target.getParent());
     Files.createFile(target);
-    IBDataModelUtils.writeDataSet(new DataSet(), w);
+    DataSet d = new DataSet();
+    IBDataModelUtils.writeDataSet(d, w, empty());
+  }
+
+  @Test
+  public void testWriteDataSet2() throws IOException {
+    Path w = wps.get();
+    DataSet d = new DataSet();
+    DataStream ds = new DataStream();
+    ds.setSourceURL("file://a/b/c.zip!/def.doc");
+    d.addStream(ds);
+    IBDataModelUtils.writeDataSet(d, w, empty());
   }
 
   @Test
@@ -85,7 +111,7 @@ public class IBDataModelUtilsTest extends AbstractModelTest {
   @Test
   public void testFromPathDSAndStream() {
 
-    //    fail("Not yet implemented");
+    // fail("Not yet implemented");
   }
 
   @Test
@@ -109,10 +135,9 @@ public class IBDataModelUtilsTest extends AbstractModelTest {
     IBUtils.deletePath(tPath); // Fails if exists
     List<Supplier<IBDataStream>> ibdssList = new ArrayList<>();
     TypeToExtensionMapper t2e = new FakeTypeToExtensionMapper();
-    IBChecksumPathType v = forceToFinalizedPath(now, workingPath, finalData, ibdssList, t2e);
+    IBChecksumPathType v = forceToFinalizedPath(now, workingPath, finalData, ibdssList, t2e, empty());
     assertEquals(tPath, v.getPath());
     assertNotNull(v.get());
-
   }
 
   @Test
@@ -126,4 +151,45 @@ public class IBDataModelUtilsTest extends AbstractModelTest {
     assertFalse(getStructuredSupplyTypeClass(IBConstants.APPLICATION_OCTET_STREAM).isPresent());
   }
 
+  @Test
+  public void testIBDataRemodel1() {
+    IBChecksumPathTypeModel k = new IBChecksumPathTypeModel();
+    IBChecksumPathTypeModel v = IBDataModelUtils.remodel(k);
+    Path p = wps.getTestClasses().resolve("test-metadata.xml");
+    DefaultIBChecksumPathType k2 = new DefaultIBChecksumPathType(p, new Checksum(),
+        Optional.of(IBConstants.APPLICATION_OCTET_STREAM));
+    v = IBDataModelUtils.remodel(k2);
+  }
+
+  @Test(expected = IBDataException.class)
+  public void testOtherIBDAtaRemodel2() {
+    IBChecksumPathType k = new IBChecksumPathType() {
+
+      @Override
+      public IBChecksumPathType moveTo(Path target) throws IOException {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+      @Override
+      public String getType() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+      @Override
+      public Path getPath() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+      @Override
+      public Checksum getChecksum() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+    };
+    IBChecksumPathTypeModel v = IBDataModelUtils.remodel(k);
+
+  }
 }

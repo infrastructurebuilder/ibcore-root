@@ -37,30 +37,37 @@ import org.infrastructurebuilder.util.artifacts.ChecksumEnabled;
 import org.w3c.dom.Document;
 
 /**
- * This is the top-level interface that describes a stream of data (i.e. a single InputStream/File/what have you)
+ * This is the top-level interface that describes a stream of data (i.e. a
+ * single InputStream/File/what have you)
  *
  * @author mykel.alvis
  *
  */
 public interface IBDataStreamIdentifier extends ChecksumEnabled {
   public final static Comparator<IBDataStreamIdentifier> ibDataStreamComparator = Comparator
-      //  Check UUID
+      // Check UUID
       .comparing(IBDataStreamIdentifier::getId, nullSafeUUIDComparator)
       // Check Date
       .thenComparing(IBDataStreamIdentifier::getCreationDate, nullSafeDateComparator);
 
   /**
-   * <i>Usually</i> this will return the "data stream id", which a UUID generated from the bytes of a Checksum of the contents of the stream in question.
-   * This IS OCCASIONALLY NULL, but only temporarily.  It may not be available, as there might not have been a computed checksum for something that hasn't been
+   * <i>Usually</i> this will return the "data stream id", which a UUID generated
+   * from the bytes of a Checksum of the contents of the stream in question. This
+   * IS OCCASIONALLY NULL, but only temporarily. It may not be available, as there
+   * might not have been a computed checksum for something that hasn't been
    * calculated yet.
-   * @return A UUID from the Checksum of the contents of the stream or null.  Null simply means there has not been a calculation on the contents yet.
+   *
+   * @return A UUID from the Checksum of the contents of the stream or null. Null
+   *         simply means there has not been a calculation on the contents yet.
    */
   UUID getId();
 
   /**
-   * The source of this stream.  Optional, but HIGHLY important
+   * The source of this stream. Optional, but HIGHLY important
    *
-   * Note that this might be a JDBC URL as well, so it can't be an ACTUAL java.net.URL (yet)
+   * Note that this might be a JDBC URL as well, so it can't be an ACTUAL
+   * java.net.URL (yet)
+   *
    * @return Optional URL of the underlying stream
    */
   Optional<String> getURL();
@@ -77,20 +84,23 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
   Optional<String> getDescription();
 
   /**
-   * Mapper for field in the model.  This allows us to extract some logic from the modello model.
-   * Users should not rely on this.
+   * Mapper for field in the model. This allows us to extract some logic from the
+   * modello model. Users should not rely on this.
+   *
    * @return
    */
   String getSha512();
 
   /**
-   * This is a checksum of the underlying file (used to calculate the UUID in getId()).
-   * It only contains a checksum for the file, not the metadata. See getMetadataChecksum() to get checksums of all elements
+   * This is a checksum of the underlying file (used to calculate the UUID in
+   * getId()). It only contains a checksum for the file, not the metadata. See
+   * getMetadataChecksum() to get checksums of all elements
    *
-   * This is expected to be a non-null value unless the underlying code handles an actual stream.  In that case the value needs
-   * to be calculated.
+   * This is expected to be a non-null value unless the underlying code handles an
+   * actual stream. In that case the value needs to be calculated.
    *
-   * @return  Checksum of the contents of the underlying file or throw NullPointerException
+   * @return Checksum of the contents of the underlying file or throw
+   *         NullPointerException
    */
   default Checksum getChecksum() {
     return ofNullable(getSha512()).filter(s -> s.length() == 128) // Length of a sha512
@@ -100,17 +110,20 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
 
   /**
    * The "creation date", which is VERY CLOSE to when this file was downloaded.
-   * @return Date accepted moment when this stream was read from the source and optionally subsequently verified
+   *
+   * @return Date accepted moment when this stream was read from the source and
+   *         optionally subsequently verified
    */
   Date getCreationDate();
 
   /**
    * Xpp3Dom instance containing the metadata supplied for THIS stream.
    *
-   * No extra metadata is supplied by the default ingester, although subtypes could easily introduce or require additional metadata.
+   * No extra metadata is supplied by the default ingester, although subtypes
+   * could easily introduce or require additional metadata.
    *
-   * The DataSet has the capability of aggregating metadata.
-   * You should probably use that.
+   * The DataSet has the capability of aggregating metadata. You should probably
+   * use that.
    *
    * Use getMetadataAsDocument for W3c Document
    *
@@ -120,13 +133,17 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
 
   /**
    * Non-nullable mime type of the contents of the stream.
-   * @return Mime type of the contents of the stream, defaulting to application/octect-stream
+   *
+   * @return Mime type of the contents of the stream, defaulting to
+   *         application/octect-stream
    */
   String getMimeType();
 
   /**
-   * REQUIRED Path to the URL of the stream (wherever it is) relative to the parent dataset's path.
-   * See pathAsURL for a reasonable representation of how to calculate the URL based on this path.
+   * REQUIRED Path to the URL of the stream (wherever it is) relative to the
+   * parent dataset's path. See pathAsURL for a reasonable representation of how
+   * to calculate the URL based on this path.
+   *
    * @return Path relative to the path supplied in the enclosing DataSet.
    *
    */
@@ -134,6 +151,7 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
 
   /**
    * The proper method for calculating metadata checksum
+   *
    * @return Checksum instance consisting of a checksum of all relevant entries
    */
   default Checksum getMetadataChecksum() {
@@ -160,11 +178,14 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
   }
 
   /**
-   * This is tricky.  The parent URL must exist to be able to get the child URL (obvs).
+   * This is tricky. The parent URL must exist to be able to get the child URL
+   * (obvs).
+   *
    * @param parent non-null URL From IBDataSetIdentifier.pathAsURL().get()
    *
-   * The current version probably won't work on Windows because they REALLY needed to have a different path
-   * separator than the rest of the computing world.
+   *               The current version probably won't work on Windows because they
+   *               REALLY needed to have a different path separator than the rest
+   *               of the computing world.
    *
    * @return Optional URL mapped to a string
    */
@@ -172,11 +193,15 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
   default Optional<URL> pathAsURL(IBDataSetIdentifier pDataSet) {
     return nullSafeURLMapper.apply(ofNullable(getPath()).flatMap(path -> {
       Optional<String> v = ofNullable(pDataSet.getPath())
-          .map(pPath -> cet.withReturningTranslation(() -> IBUtils.translateToWorkableArchiveURL(pPath))).map(parent -> {
+          .map(pPath -> cet.withReturningTranslation(() -> IBUtils.translateToWorkableArchiveURL(pPath)))
+          .map(parent -> {
             String y = Objects.requireNonNull(parent).toExternalForm();
-            StringBuilder x = new StringBuilder(y);
-            // URLS are paths into jar/zip files generally
-            x.append((y.endsWith(".jar") || y.endsWith(".zip")) ? "!" : "");
+            boolean isArchive = (y.endsWith(".jar") || y.endsWith(".zip"));
+            StringBuilder x = new StringBuilder();
+            x.append(isArchive ? "zip:" : "");
+            x.append(y);
+            // URLS are paths into jar/zip files (at present)
+            x.append(isArchive ? "!" : "");
             return x.append(path).toString();
           });
       return v;
@@ -199,28 +224,29 @@ public interface IBDataStreamIdentifier extends ChecksumEnabled {
     return empty();
   }
 
-
   /**
    * @return actual byte length of the inputstream if known
    */
   default Optional<Long> getInputStreamLength() {
     return ofNullable(getOriginalLength()).map(Long::parseLong);
   }
+
   default Optional<Long> getNumRows() {
     return ofNullable(getOriginalRowCount()).map(Long::parseLong);
   }
 
   /**
    * Nullable value for string length of file stream
+   *
    * @return
    */
   String getOriginalLength();
 
   /**
    * Nullable value for string count of "records" (or lines or whatever)
+   *
    * @return
    */
   String getOriginalRowCount();
-
 
 }

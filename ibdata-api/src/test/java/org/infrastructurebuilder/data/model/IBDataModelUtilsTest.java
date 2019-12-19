@@ -16,6 +16,7 @@
 package org.infrastructurebuilder.data.model;
 
 
+import static java.util.Optional.empty;
 import static org.infrastructurebuilder.data.IBDataConstants.IBDATA;
 import static org.infrastructurebuilder.data.IBDataConstants.IBDATASET_XML;
 import static org.junit.Assert.assertTrue;
@@ -23,28 +24,21 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.UUID;
 
 import org.infrastructurebuilder.data.IBDataException;
 import org.infrastructurebuilder.data.IBDataModelUtils;
-import org.infrastructurebuilder.util.config.WorkingPathSupplier;
-import org.junit.Before;
+import org.infrastructurebuilder.util.config.TestingPathSupplier;
 import org.junit.Test;
 
 public class IBDataModelUtilsTest {
 
-  private WorkingPathSupplier wps;
-
-  @Before
-  public void setUp() throws Exception {
-    wps = new WorkingPathSupplier();
-  }
+  private final static  TestingPathSupplier wps = new TestingPathSupplier();
 
   @Test(expected = IBDataException.class)
   public void testWriteDataSet() {
-    Path p = Paths.get(".").resolve(UUID.randomUUID().toString()).resolve(UUID.randomUUID().toString());
-    IBDataModelUtils.writeDataSet(null, p);
+    Path p = wps.getRoot().resolve(UUID.randomUUID().toString()).resolve(UUID.randomUUID().toString());
+    IBDataModelUtils.writeDataSet(null, p, empty());
   }
 
   @Test
@@ -52,7 +46,7 @@ public class IBDataModelUtilsTest {
     Path target = wps.get();
     Files.createDirectories(target.resolve(IBDATA));
     DataSet ds = new DataSet();
-    IBDataModelUtils.writeDataSet(ds, target);
+    IBDataModelUtils.writeDataSet(ds, target, empty());
     assertTrue(Files.exists(target.resolve(IBDATA).resolve(IBDATASET_XML)));
   }
 

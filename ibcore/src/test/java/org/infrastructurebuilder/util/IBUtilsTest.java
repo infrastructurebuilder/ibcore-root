@@ -1189,4 +1189,10 @@ public class IBUtilsTest {
         "67d617a6ad2e286c46588284ddf63887c320bc30549471576f1937a9c49daefd669413d71b98b2cb42d29823d0c4acfae5abdc6dc01e05e03f200bfe13d6a15a",
         new Checksum(cc).toString());
   }
+
+  @Test
+  public void testIsJarorZip() {
+    assertTrue(IBUtils.isJarArchive() || IBUtils.isZipArchive());
+    assertTrue(IBUtils.isZipArchive() || IBUtils.isJarArchive());
+  }
 }

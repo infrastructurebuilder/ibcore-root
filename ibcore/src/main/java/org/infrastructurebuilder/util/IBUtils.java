@@ -122,6 +122,14 @@ public class IBUtils {
     return m;
   };
 
+  public final static boolean isJarArchive() {
+    return isJar;
+  }
+  public final static boolean isZipArchive() {
+    return isZip;
+  }
+
+
   public final static java.util.Comparator<String> nullSafeStringComparator = java.util.Comparator
       .nullsFirst(String::compareToIgnoreCase);
   public final static java.util.Comparator<java.util.UUID> nullSafeUUIDComparator = java.util.Comparator
