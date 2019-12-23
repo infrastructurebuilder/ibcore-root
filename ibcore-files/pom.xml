@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibcore-root</artifactId>
-    <version>0.15.1-SNAPSHOT</version>
+    <version>0.15.1</version>
   </parent>
   <artifactId>ibcore-files</artifactId>
   <packaging>jar</packaging>
