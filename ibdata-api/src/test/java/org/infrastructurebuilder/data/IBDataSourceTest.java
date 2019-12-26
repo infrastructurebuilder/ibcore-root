@@ -94,12 +94,7 @@ public class IBDataSourceTest {
       }
 
       @Override
-      public Optional<ConfigMap> getAdditionalConfig() {
-        return Optional.empty();
-      }
-
-      @Override
-      public IBDataSource withAdditionalConfig(ConfigMap config) {
+      public IBDataSource configure(ConfigMap config) {
         return this;
       }
       @Override

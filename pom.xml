@@ -23,7 +23,7 @@
     <version>28</version>
   </parent>
   <artifactId>ibcore-root</artifactId>
-  <version>0.15.2-SNAPSHOT</version>
+  <version>0.16.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>${project.artifactId}</name>
   <description>InfrastructureBuilder Common</description>

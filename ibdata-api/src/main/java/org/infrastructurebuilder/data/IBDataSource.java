@@ -23,6 +23,7 @@ import org.infrastructurebuilder.util.BasicCredentials;
 import org.infrastructurebuilder.util.IBLoggerEnabled;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.ConfigMap;
+import org.infrastructurebuilder.util.config.ConfigurableSupplier;
 import org.infrastructurebuilder.util.files.IBChecksumPathType;
 import org.w3c.dom.Document;
 
@@ -42,7 +43,7 @@ import org.w3c.dom.Document;
  * @author mykel.alvis
  *
  */
-public interface IBDataSource extends Supplier<List<IBChecksumPathType>>, IBLoggerEnabled {
+public interface IBDataSource extends ConfigurableSupplier<List<IBChecksumPathType>, ConfigMap> , IBLoggerEnabled {
 //  public static final String TARGET_PATH = "Source-Target-Path";
 
   String getSourceURL();
@@ -57,7 +58,7 @@ public interface IBDataSource extends Supplier<List<IBChecksumPathType>>, IBLogg
 
   Optional<String> getDescription();
 
-  Optional<ConfigMap> getAdditionalConfig();
+//  Optional<ConfigMap> getAdditionalConfig();
 
   default boolean isExpandArchives() {
     return false;
@@ -72,6 +73,6 @@ public interface IBDataSource extends Supplier<List<IBChecksumPathType>>, IBLogg
 
   Optional<String> getMimeType();
 
-  IBDataSource withAdditionalConfig(ConfigMap config);
+  IBDataSource configure(ConfigMap config);
 
 }
