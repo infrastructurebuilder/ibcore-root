@@ -13,10 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.data;
+package org.infrastructurebuilder.util.artifacts;
 
-import org.infrastructurebuilder.util.config.TSupplier;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-public class ProxyInfoSupplier extends TSupplier<Object> {
+import org.junit.Before;
+import org.junit.Test;
+
+public class WeightedComparatorTest {
+
+  private Weighted w1, w2;
+
+  @Before
+  public void setUp() throws Exception {
+    w1 = new Weighted() {
+    };
+    w2 = new Weighted() {
+      @Override
+      public Integer getWeight() {
+        return 2;
+      }
+    };
+  }
+
+
+  @Test
+  public void testCompare() {
+    WeightedComparator c = new WeightedComparator();
+    assertEquals(0, c.compare(w1, w1));
+    assertTrue(c.compare(w1, w2) < 0);
+  }
 
 }

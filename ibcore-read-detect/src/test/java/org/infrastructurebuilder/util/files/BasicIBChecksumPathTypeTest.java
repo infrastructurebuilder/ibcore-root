@@ -41,6 +41,7 @@ public class BasicIBChecksumPathTypeTest {
   private BasicIBChecksumPathType c1, c2;
   private Path path;
   private Checksum checksum;
+  private IBChecksumPathType def;
 
   @Before
   public void setUp() throws Exception {
@@ -51,11 +52,40 @@ public class BasicIBChecksumPathTypeTest {
     checksum = new Checksum(TESTFILE_CHECKSUM);
     c2 = new BasicIBChecksumPathType(path, checksum);
     c1 = new BasicIBChecksumPathType(path, checksum, "ABC");
+
+    def = new IBChecksumPathType() {
+
+      @Override
+      public Path getPath() {
+        return null;
+      }
+
+      @Override
+      public Checksum getChecksum() {
+        return null;
+      }
+
+      @Override
+      public String getType() {
+        return null;
+      }
+
+      @Override
+      public IBChecksumPathType moveTo(Path target) throws IOException {
+        return null;
+      }
+    };
   }
 
   @After
   public void tearDown() throws Exception {
     wps.finalize();
+  }
+
+  @Test
+  public void testDef() {
+    assertFalse(def.getSourceName().isPresent());
+    assertFalse(def.getSourceURL().isPresent());
   }
 
   @Test
@@ -79,6 +109,8 @@ public class BasicIBChecksumPathTypeTest {
   @Test
   public void testGet() {
     assertEquals(checksum, new Checksum(c1.get()));
+    assertEquals(new Long(22152), c1.size());
+    assertFalse(c1.getSourceURL().isPresent());
   }
 
   @Test
