@@ -23,7 +23,7 @@
     <version>28</version>
   </parent>
   <artifactId>ibcore-root</artifactId>
-  <version>0.15.2-SNAPSHOT</version>
+  <version>0.16.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>${project.artifactId}</name>
   <description>InfrastructureBuilder Common</description>
@@ -56,6 +56,12 @@
       <dependency>
         <groupId>org.infrastructurebuilder</groupId>
         <artifactId>ibcore</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder</groupId>
+        <artifactId>ibcore</artifactId>
+        <type>test-jar</type>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -141,6 +147,5 @@
     <module>ibmaven-support</module>
     <module>ibcore-files</module>
     <module>ibcore-read-detect</module>
-    <module>ibdata-api</module>
   </modules>
 </project>
