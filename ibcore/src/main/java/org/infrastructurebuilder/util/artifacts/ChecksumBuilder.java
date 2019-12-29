@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -191,6 +192,17 @@ public final class ChecksumBuilder implements ChecksumEnabled {
   }
 
   public ChecksumBuilder addListChecksumEnabled(final List<ChecksumEnabled> value) {
+    lockCheck();
+    requireNonNull(value).stream().forEach(l -> this.addChecksumEnabled(l));
+    return this;
+  }
+
+  /**
+   * Warning If this is not a SortedSet, things could go awry
+   * @param value
+   * @return
+   */
+  public ChecksumBuilder addSortedSetChecksumEnabled(final SortedSet<ChecksumEnabled> value) {
     lockCheck();
     requireNonNull(value).stream().forEach(l -> this.addChecksumEnabled(l));
     return this;

@@ -32,12 +32,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
+import org.checkerframework.checker.units.qual.mPERs;
 import org.infrastructurebuilder.IBException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
+
 public class ChecksumBuilderTest {
 
   private final Checksum abc = new Checksum(
@@ -52,8 +57,8 @@ public class ChecksumBuilderTest {
       "4dff4ea340f0a823f15d3f4f01ab62eae0e5da579ccb851f8db9dfe84c58b2b37b89903a740e1ee172da793a6e79d560e5f7f9bd058a12a280433ed6fa46510a");
   private final Checksum jsonArrayChek = new Checksum(
       "0739c4d3cad25f62492289a172dc32ab27dcbefe32aac1855a2f944d5cc4ce9e881b2544c68d24b7bf83ed8910fadbad7715f9cc06708534b91f4a334d7649c9");
-  //  private final Checksum jsonChek = new Checksum(
-  //      "4aea1a0cbef2b738c255cef844eda734c5fff6bd4a80e9d2bf92046ab09c7cafbe140461f678a71096fe7b8839ff69131b452c19dba11987a5db3906c3014041");
+  // private final Checksum jsonChek = new Checksum(
+  // "4aea1a0cbef2b738c255cef844eda734c5fff6bd4a80e9d2bf92046ab09c7cafbe140461f678a71096fe7b8839ff69131b452c19dba11987a5db3906c3014041");
   private final Checksum longChek = new Checksum(
       "4dff4ea340f0a823f15d3f4f01ab62eae0e5da579ccb851f8db9dfe84c58b2b37b89903a740e1ee172da793a6e79d560e5f7f9bd058a12a280433ed6fa46510a");
   private Map<String, List<ChecksumEnabled>> m;
@@ -63,18 +68,23 @@ public class ChecksumBuilderTest {
       "ffdc68defa429277daa99fa2ef18b55c2f477bcb050bff14fd679e42aa97ddf8c1193276021b78d02645c7190ef02d81d4a0397e8de19f13129e8177df22bbd6");
   private ChecksumBuilder sha512;
   private ChecksumEnabled t;
-  //  private final Checksum throwChek = new Checksum(
-  //      "ffdc68defa429277daa99fa2ef18b55c2f477bcb050bff14fd679e42aa97ddf8c1193276021b78d02645c7190ef02d81d4a0397e8de19f13129e8177df22bbd6");
+  // private final Checksum throwChek = new Checksum(
+  // "ffdc68defa429277daa99fa2ef18b55c2f477bcb050bff14fd679e42aa97ddf8c1193276021b78d02645c7190ef02d81d4a0397e8de19f13129e8177df22bbd6");
   private final Checksum trueChek = new Checksum(
       "9120cd5faef07a08e971ff024a3fcbea1e3a6b44142a6d82ca28c6c42e4f852595bcf53d81d776f10541045abdb7c37950629415d0dc66c8d86c64a5606d32de");
+  private SortedSet<ChecksumEnabled> theSet;
+  private ChecksumEnabled longSortable;
 
   @Before
   public void setUp() throws Exception {
-    relativeRoot = Optional.of(Paths.get(ofNullable(System.getProperty(TARGET_DIR_PROPERTY)).orElse(MAVEN_TARGET_PATH)));
+    relativeRoot = Optional
+        .of(Paths.get(ofNullable(System.getProperty(TARGET_DIR_PROPERTY)).orElse(MAVEN_TARGET_PATH)));
     sha512 = ChecksumBuilder.newInstance(relativeRoot);
     map = new HashMap<>();
     m = new HashMap<>();
     t = () -> new Checksum("ABCD");
+    theSet = new TreeSet<>();
+    theSet.add(new LS(longChek));
 
   }
 
@@ -185,6 +195,13 @@ public class ChecksumBuilderTest {
   }
 
   @Test
+  public void testAddSetChecksumEnabled() {
+    assertEquals(
+        "2a3566029249feeb73e6e2c6f97fefe12e703676a6ee51a991bb8b0eadf8d123b2b1ce7c029507ec369011201f562e59ee1ad4a01dcb6858b340d6ae0a86057f",
+        sha512.addSortedSetChecksumEnabled(theSet).asChecksum().toString());
+  }
+
+  @Test
   public void testAddMapStringMapStringListChecksumEnabled2() {
     map.put("m", m);
     assertEquals(
@@ -252,4 +269,22 @@ public class ChecksumBuilderTest {
     sha512.addString("ABC");
   }
 
+  private final static class LS implements Comparable<LS>, ChecksumEnabled {
+
+    private Checksum c;
+
+    public LS(Checksum c) {
+      this.c  = c;
+    }
+    @Override
+    public Checksum asChecksum() {
+      return c;
+    }
+
+    @Override
+    public int compareTo(LS o) {
+      return c.compareTo(o.c);
+    }
+
+  }
 }
