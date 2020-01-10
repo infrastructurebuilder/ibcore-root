@@ -45,6 +45,7 @@ public interface IBConstants {
   public static final String APPLICATION_PDF = "application/pdf";
   public static final String APPLICATION_ZIP = "application/zip";
   public static final String APPLICATION_XML = "application/xml";
+  public static final String IBDATA_SCHEMA = "application/ibdata-xml";
   public static final String APPLICATION_VND_OASIS_SPREADSHEET = "application/vnd.oasis.opendocument.spreadsheet";
 
 

@@ -17,6 +17,7 @@ package org.infrastructurebuilder.util.files;
 
 import static java.nio.file.Files.createTempFile;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 import static org.infrastructurebuilder.IBException.cet;
 import static org.infrastructurebuilder.util.IBUtils.copy;
 
@@ -96,5 +97,9 @@ public class DefaultIBChecksumPathType extends BasicIBChecksumPathType {
 
   public DefaultIBChecksumPathType(Path path, Checksum checksum, Optional<String> type) {
     super(path, checksum, requireNonNull(type).orElse(toType.apply(path)));
+  }
+
+  public final static IBChecksumPathType fromPath(Path path) {
+    return new DefaultIBChecksumPathType(path, new Checksum(path), empty());
   }
 }

@@ -31,6 +31,7 @@ import java.util.function.Supplier;
 
 import org.infrastructurebuilder.IBException;
 import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.infrastructurebuilder.util.files.model.IBChecksumPathTypeModel;
 
 public interface IBChecksumPathType extends Supplier<InputStream> {
 
@@ -52,6 +53,7 @@ public interface IBChecksumPathType extends Supplier<InputStream> {
 
   /**
    * Relocate underlying path to new path
+   *
    * @param target
    * @return
    * @throws IOException
@@ -102,13 +104,11 @@ public interface IBChecksumPathType extends Supplier<InputStream> {
   }
 
   default String defaultToString() {
-    StringJoiner sj = new StringJoiner("|")
-        .add(getType())
-        .add(getChecksum().asUUID().get().toString())
+    StringJoiner sj = new StringJoiner("|").add(getType()).add(getChecksum().asUUID().get().toString())
         .add(getPath().toString());
-      getSourceURL().ifPresent(u -> sj.add(u.toExternalForm()));
-      getSourceName().ifPresent(sj::add);
-      return sj.toString();
+    getSourceURL().ifPresent(u -> sj.add(u.toExternalForm()));
+    getSourceName().ifPresent(sj::add);
+    return sj.toString();
   }
 
   default Long size() {

@@ -32,10 +32,8 @@ abstract public class AbstractConfigurableSupplier<T, C> implements Configurable
 
   public T get() {
     return getInstance();
-//    return configuredType(requireNonNull(this.config, "AbstractConfigurableSupplier config"));
   }
 
-//  protected abstract T configuredType(C config);
   protected abstract T getInstance();
 
   public C getConfig() {

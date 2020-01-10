@@ -17,7 +17,7 @@ package org.infrastructurebuilder.util.config;
 
 import org.infrastructurebuilder.util.LoggerSupplier;
 
-abstract public class AbstractCMSConfigurableSupplier<T> extends AbstractConfigurableSupplier<T, ConfigMapSupplier> implements CMSConfigurableSupplier<T> {
+abstract public class AbstractCMSConfigurableSupplier<T> extends AbstractConfigurableSupplier<T, ConfigMapSupplier>  {
 
   public AbstractCMSConfigurableSupplier(ConfigMapSupplier config, LoggerSupplier l) {
     super(config, l);
