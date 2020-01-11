@@ -26,6 +26,7 @@ import org.json.JSONArray;
 
 public interface IBConstants {
 
+  public final static String DEFAULT = "default";
   public final static String IBDATA_PREFIX = "IBDataTemp_";
   public final static String IBDATA_SUFFIX = ".ibdata";
 
