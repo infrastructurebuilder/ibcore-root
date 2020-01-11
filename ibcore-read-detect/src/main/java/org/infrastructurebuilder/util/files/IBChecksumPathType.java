@@ -31,7 +31,6 @@ import java.util.function.Supplier;
 
 import org.infrastructurebuilder.IBException;
 import org.infrastructurebuilder.util.artifacts.Checksum;
-import org.infrastructurebuilder.util.files.model.IBChecksumPathTypeModel;
 
 public interface IBChecksumPathType extends Supplier<InputStream> {
 
