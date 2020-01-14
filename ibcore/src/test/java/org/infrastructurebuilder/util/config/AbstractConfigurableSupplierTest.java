@@ -54,7 +54,7 @@ public class AbstractConfigurableSupplierTest {
     }
 
     @Override
-    protected String getInstance(Optional<Path> workingPath, Optional<Object> in) {
+    protected String getInstance(PathSupplier workingPath, Optional<Object> in) {
       return getConfig();
     }
 

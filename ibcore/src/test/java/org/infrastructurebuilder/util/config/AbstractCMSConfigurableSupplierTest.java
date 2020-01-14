@@ -17,7 +17,6 @@ package org.infrastructurebuilder.util.config;
 
 import static org.junit.Assert.assertEquals;
 
-import java.nio.file.Path;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -45,7 +44,7 @@ public class AbstractCMSConfigurableSupplierTest {
       }
 
       @Override
-      protected String getInstance(Optional<Path> workingPath, Optional<Object> in) {
+      protected String getInstance(PathSupplier workingPath, Optional<Object> in) {
         return getConfig().get().getString("A");
       }
     };

@@ -40,15 +40,15 @@ abstract public class AbstractConfigurableSupplier<T, C, P> implements Configura
     return wps;
   }
 
-  public Optional<Path> getWorkingPath() {
-    return Optional.of(getWps().get());
-  }
-
+//  public Optional<Path> getWorkingPath() {
+//    return Optional.of(getWps().get());
+//  }
+//
   public T get() {
-    return getInstance(getWorkingPath(), empty());
+    return getInstance(getWps(), empty());
   }
 
-  protected abstract T getInstance(Optional<Path> workingPath, Optional<P> in);
+  protected abstract T getInstance(PathSupplier wps, Optional<P> in);
 
   public C getConfig() {
     return this.config;
