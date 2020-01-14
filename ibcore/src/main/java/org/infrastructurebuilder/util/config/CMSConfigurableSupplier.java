@@ -17,6 +17,6 @@ package org.infrastructurebuilder.util.config;
 
 import org.infrastructurebuilder.util.LoggerEnabled;
 
-public interface CMSConfigurableSupplier<T> extends ConfigurableSupplier<T, ConfigMapSupplier>, LoggerEnabled {
+public interface CMSConfigurableSupplier<T,P> extends ConfigurableSupplier<T, ConfigMapSupplier,P>, LoggerEnabled {
 
 }

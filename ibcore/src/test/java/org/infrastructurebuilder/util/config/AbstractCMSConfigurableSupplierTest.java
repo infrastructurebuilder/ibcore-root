@@ -17,6 +17,9 @@ package org.infrastructurebuilder.util.config;
 
 import static org.junit.Assert.assertEquals;
 
+import java.nio.file.Path;
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -24,24 +27,25 @@ import org.slf4j.LoggerFactory;
 
 public class AbstractCMSConfigurableSupplierTest {
   private final static Logger log = LoggerFactory.getLogger(AbstractCMSConfigurableSupplierTest.class);
+  private final static TestingPathSupplier wps = new TestingPathSupplier();
 
   private DefaultConfigMapSupplier cms;
-  private AbstractCMSConfigurableSupplier<String> l;
+  private AbstractCMSConfigurableSupplier<String, Object> l;
 
   @Before
   public void setUp() throws Exception {
     cms = new DefaultConfigMapSupplier();
     cms.addValue("B", "C");
     cms.addValue("A", "G");
-    l = new AbstractCMSConfigurableSupplier<String>(cms, () -> log) {
+    l = new AbstractCMSConfigurableSupplier<String, Object>(wps, cms, () -> log) {
 
       @Override
-      public AbstractCMSConfigurableSupplier<String> getConfiguredSupplier(ConfigMapSupplier cms) {
+      public AbstractCMSConfigurableSupplier<String, Object> getConfiguredSupplier(ConfigMapSupplier cms) {
         return this;
       }
 
       @Override
-      protected String getInstance() {
+      protected String getInstance(Optional<Path> workingPath, Optional<Object> in) {
         return getConfig().get().getString("A");
       }
     };

@@ -17,6 +17,9 @@ package org.infrastructurebuilder.util.config;
 
 import static org.junit.Assert.assertEquals;
 
+import java.nio.file.Path;
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -24,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 public class AbstractConfigurableSupplierTest {
   private final static Logger log = LoggerFactory.getLogger(AbstractConfigurableSupplierTest.class);
+  private final static TestingPathSupplier wps = new TestingPathSupplier();
 
   private TestAbstractConfigurableSupplier a;
 
@@ -34,23 +38,23 @@ public class AbstractConfigurableSupplierTest {
 
   @Test
   public void test() {
-    ConfigurableSupplier<String, String> b = a.configure("new");
+    ConfigurableSupplier<String, String, Object> b = a.configure("new");
     assertEquals("new", b.get());
   }
 
-  public class TestAbstractConfigurableSupplier extends AbstractConfigurableSupplier<String, String> {
+  public class TestAbstractConfigurableSupplier extends AbstractConfigurableSupplier<String, String, Object> {
 
     public TestAbstractConfigurableSupplier(String config) {
-      super(config, () -> log);
+      super(wps, config, () -> log);
     }
 
     @Override
-    public ConfigurableSupplier<String, String> configure(String config) {
+    public ConfigurableSupplier<String, String, Object> configure(String config) {
       return new TestAbstractConfigurableSupplier(config);
     }
 
     @Override
-    protected String getInstance() {
+    protected String getInstance(Optional<Path> workingPath, Optional<Object> in) {
       return getConfig();
     }
 

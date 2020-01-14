@@ -16,25 +16,39 @@
 package org.infrastructurebuilder.util.config;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
+
+import java.nio.file.Path;
+import java.util.Optional;
 
 import org.infrastructurebuilder.util.LoggerSupplier;
 import org.slf4j.Logger;
 
-abstract public class AbstractConfigurableSupplier<T, C> implements ConfigurableSupplier<T, C> {
+abstract public class AbstractConfigurableSupplier<T, C, P> implements ConfigurableSupplier<T, C, P> {
 
   private final C config;
   private final LoggerSupplier loggerSupplier;
+  private final PathSupplier wps;
 
-  public AbstractConfigurableSupplier(C config, LoggerSupplier l) {
+  protected AbstractConfigurableSupplier(PathSupplier wps, C config, LoggerSupplier l) {
+    this.wps = requireNonNull(wps);
     this.config = config;
     this.loggerSupplier = requireNonNull(l);
   }
 
-  public T get() {
-    return getInstance();
+  public PathSupplier getWps() {
+    return wps;
   }
 
-  protected abstract T getInstance();
+  public Optional<Path> getWorkingPath() {
+    return Optional.of(getWps().get());
+  }
+
+  public T get() {
+    return getInstance(getWorkingPath(), empty());
+  }
+
+  protected abstract T getInstance(Optional<Path> workingPath, Optional<P> in);
 
   public C getConfig() {
     return this.config;

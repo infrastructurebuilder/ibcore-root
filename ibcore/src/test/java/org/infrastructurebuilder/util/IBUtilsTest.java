@@ -184,6 +184,17 @@ public class IBUtilsTest {
   }
 
   @Test
+  public void testMoveAtomicDirectory() throws IOException {
+    Path source = wps.get();
+    Path target = wps.get();
+    Path adir = Files.createDirectories(source.resolve("A"));
+    Path bdir = Files.createDirectories(adir.resolve("B"));
+    Path cfile = writeString(bdir.resolve("C"), "HI");
+    IBUtils.moveAtomic(source, target);
+    assertTrue(Files.exists(target.resolve("A").resolve("B").resolve("C")));
+  }
+
+  @Test
   public void testEnumerationAsStream() {
     List<String> a = Arrays.asList("A", "B", "C", "D", "E");
 

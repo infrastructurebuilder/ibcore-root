@@ -52,7 +52,6 @@ public class DefaultIBDirScannerSupplier implements IBDirScannerSupplier {
   private final boolean caseSensitive;
   private final boolean excludeDotFiles;
 
-  @Inject
   public DefaultIBDirScannerSupplier(PathSupplier root,
       // Includes
       StringListSupplier includes,

@@ -17,6 +17,10 @@ package org.infrastructurebuilder.util;
 
 import static java.lang.Long.MAX_VALUE;
 import static java.nio.file.Files.walkFileTree;
+import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
+import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
+import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.Spliterator.ORDERED;
@@ -46,7 +50,6 @@ import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
-import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
@@ -63,7 +66,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Random;
@@ -82,6 +84,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import javax.naming.ldap.UnsolicitedNotificationEvent;
 
 import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.IBException;
@@ -125,10 +129,10 @@ public class IBUtils {
   public final static boolean isJarArchive() {
     return isJar;
   }
+
   public final static boolean isZipArchive() {
     return isZip;
   }
-
 
   public final static java.util.Comparator<String> nullSafeStringComparator = java.util.Comparator
       .nullsFirst(String::compareToIgnoreCase);
@@ -650,26 +654,79 @@ public class IBUtils {
    * @throws IOException
    */
   public static Path moveAtomic(final Path source, final Path target) throws IOException {
-    if (Objects.requireNonNull(source).toAbsolutePath().equals(Objects.requireNonNull(target).toAbsolutePath()))
-      return target; // We do nothing here
+    return Files.isDirectory(source) ? moveDirectoryAtomic(source, target) : moveFileAtomic(source, target);
+  }
+
+  private static Path moveFileAtomic(final Path source, final Path target) throws IOException {
+    if (Files.isDirectory(source))
+      throw new IBException("Cannot move a directory as a file");
+    Path s1 = requireNonNull(source).toAbsolutePath();
+    Path t1 = requireNonNull(target).toAbsolutePath();
+    if (Files.isDirectory(t1))
+      t1 = t1.resolve(s1.getFileName());
+    if (s1.equals(t1))
+      return t1; // We do nothing here
     try {
-      return Files.move(source, target, StandardCopyOption.ATOMIC_MOVE);
-    } catch (AtomicMoveNotSupportedException amns) {
+      return Files.move(source, target, ATOMIC_MOVE, COPY_ATTRIBUTES, NOFOLLOW_LINKS);
+    } catch (UnsupportedOperationException | AtomicMoveNotSupportedException amns) {
       // If we cannot move atomic, then copy the file instead and then TRY to delete
       // it but accept delete failure
-      Path retVal = Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+      Path retVal = Files.copy(source, target, REPLACE_EXISTING);
       try {
         Files.delete(source);
       } catch (IOException e) {
-        // Do nothing here. Leave trash on thefilesystem
+        // Do nothing here. Leave trash on the filesystem. Boo!
       }
       return retVal;
     }
   }
 
+  private static Path moveDirectoryAtomic(final Path source, final Path target) throws IOException {
+    if (requireNonNull(source).toAbsolutePath().equals(requireNonNull(target).toAbsolutePath()))
+      return target; // We do nothing here
+    try {
+      walkFileTree(source, new SimpleFileVisitor<Path>() {
+        @Override
+        public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+          Path newTarget = target.resolve(source.relativize(dir));
+          Files.createDirectories(newTarget);
+          return super.preVisitDirectory(dir, attrs);
+        }
+
+        @Override
+        public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
+          deletePath(dir);
+          return FileVisitResult.CONTINUE;
+        }
+
+        @Override
+        public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+          return super.visitFileFailed(file, exc);
+        }
+
+        @Override
+        public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+          Path newTarget = target.resolve(source.relativize(file));
+          try {
+            moveFileAtomic(file, newTarget);
+            Files.delete(file);
+          } catch (IOException e) {
+            // do Nothing
+          }
+          return FileVisitResult.CONTINUE;
+        }
+
+      });
+    } catch (final IOException e) {
+      iolog.warn("Fail to move entirely", e);
+    }
+    return target;
+
+  }
+
   public static Path moveFileToNewIdPath(final Path oldFile, final UUID newPath) throws IOException {
     final Path newFile = oldFile.getParent().resolve(newPath.toString());
-    return Files.move(oldFile, newFile, StandardCopyOption.ATOMIC_MOVE);
+    return Files.move(oldFile, newFile, ATOMIC_MOVE);
   }
 
   public static String readFile(final Path path) throws IOException {

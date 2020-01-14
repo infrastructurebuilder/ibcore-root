@@ -18,8 +18,6 @@ package org.infrastructurebuilder.util.plexus;
 import static org.infrastructurebuilder.util.plexus.ProcessRunnerSupplier.PROCESS_NAMESPACE;
 import static org.junit.Assert.assertEquals;
 
-import java.util.Map;
-
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.DefaultConfigMapSupplier;
 import org.junit.Before;
