@@ -50,8 +50,7 @@ public class DefaultIBResource extends BasicIBResource {
     return d;
   }
 
-  public final static IBResource copyToTempChecksumAndPath(Path targetDir, final Path source)
-      throws IOException {
+  public final static IBResource copyToTempChecksumAndPath(Path targetDir, final Path source) throws IOException {
 
     String localType = toType.apply(requireNonNull(source));
     Checksum cSum = new Checksum(source);
@@ -60,8 +59,8 @@ public class DefaultIBResource extends BasicIBResource {
     return new DefaultIBResource(newTarget, cSum, Optional.of(localType));
   }
 
-  public final static IBResource copyToDeletedOnExitTempChecksumAndPath(Path targetDir, String prefix,
-      String suffix, final InputStream source) {
+  public final static IBResource copyToDeletedOnExitTempChecksumAndPath(Path targetDir, String prefix, String suffix,
+      final InputStream source) {
     return cet.withReturningTranslation(() -> {
       Path target = createTempFile(requireNonNull(targetDir), prefix, suffix);
       try (OutputStream outs = Files.newOutputStream(target)) {
@@ -77,7 +76,7 @@ public class DefaultIBResource extends BasicIBResource {
       log.debug("Detecting path " + path);
       org.apache.tika.metadata.Metadata md = new org.apache.tika.metadata.Metadata();
       md.set(org.apache.tika.metadata.Metadata.RESOURCE_NAME_KEY, path.toAbsolutePath().toString());
-      try (Reader p = tika.parse(path, md)){
+      try (Reader p = tika.parse(path, md)) {
         log.debug(" Metadata is " + md);
         return tika.detect(path);
       } catch (IOException e) {

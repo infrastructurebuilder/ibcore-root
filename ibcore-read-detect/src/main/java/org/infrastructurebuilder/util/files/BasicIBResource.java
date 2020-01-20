@@ -15,9 +15,15 @@
  */
 package org.infrastructurebuilder.util.files;
 
-import org.infrastructurebuilder.util.files.model.IBResourceModel;
 
-public class BasicIBResource extends IBResourceModel {
+/**
+ * This class needs to have its functionality moved up into the generated model prior to 1.0.0
+ * Use DefaultIBResource
+ * @author mykel.alvis
+ *
+ */
+@Deprecated
+class BasicIBResource extends org.infrastructurebuilder.util.files.model.IBResourceModel {
 
   /**
    *
@@ -53,7 +59,7 @@ public class BasicIBResource extends IBResourceModel {
     this.path = java.util.Objects.requireNonNull(path);
   }
 
-  public BasicIBResource(
+  BasicIBResource(
       // Path
       java.nio.file.Path path
       // Checksum
@@ -61,6 +67,7 @@ public class BasicIBResource extends IBResourceModel {
     this(path, checksum, org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM);
   }
 
+  // FIXME Obscures super path in almost all cases?
   @Override
   public java.nio.file.Path getPath() {
     return path;

@@ -19,7 +19,7 @@ import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.infrastructurebuilder.util.IBUtils.UTF_8;
-import static org.infrastructurebuilder.util.IBUtils.asIterator;
+import static org.infrastructurebuilder.util.IBUtils.*;
 import static org.infrastructurebuilder.util.IBUtils.asJSONObjectStream;
 import static org.infrastructurebuilder.util.IBUtils.asOptFilesystemMap;
 import static org.infrastructurebuilder.util.IBUtils.asStream;
@@ -386,6 +386,18 @@ public class IBUtilsTest {
     final Path c = a.resolve(UUID.randomUUID().toString());
     Files.createDirectories(a);
     copy(c, null);
+  }
+
+  @Test
+  public void testCoptToDeletedOnExitTemp() throws IOException {
+    String prefix = "testpre";
+    String suffix = ".tmp";
+    Path p = wps.getTestClasses().resolve(TESTFILE);
+    Path target = null;
+    try (InputStream source = Files.newInputStream(p)) {
+      target = copyToDeletedOnExitTempPath(prefix, suffix, source);
+    }
+    assertEquals(new Checksum(p), new Checksum(target));
   }
 
   @Test(expected = NullPointerException.class)

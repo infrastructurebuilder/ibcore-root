@@ -44,7 +44,7 @@ public interface IBResource extends Supplier<InputStream> {
   Path getPath();
 
   /**
-   * @return Calculated Checksum of the contents of the file at getPath()
+   * @return Equivalent to calculated Checksum of the contents of the file at getPath()
    */
   Checksum getChecksum();
 
@@ -54,7 +54,8 @@ public interface IBResource extends Supplier<InputStream> {
   String getType();
 
   /**
-   * Relocate underlying path to new path
+   * Relocate underlying path to new path.  The target path is meant to be a
+   * normal filesystem, not a ZipFileSystem.
    *
    * @param target
    * @return
@@ -94,9 +95,8 @@ public interface IBResource extends Supplier<InputStream> {
     if (obj == null) {
       return false;
     }
-    if (getClass() != obj.getClass()) {
+    if (!(obj instanceof IBResource))
       return false;
-    }
     IBResource other = (IBResource) obj;
     return Objects.equals(getChecksum(), other.getChecksum())
         && Objects.equals(getPath(), other.getPath())
