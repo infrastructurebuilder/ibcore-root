@@ -17,8 +17,8 @@ package org.infrastructurebuilder.util.config;
 
 import static org.junit.Assert.assertEquals;
 
-import java.nio.file.Path;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class AbstractConfigurableSupplierTest {
   public class TestAbstractConfigurableSupplier extends AbstractConfigurableSupplier<String, String, Object> {
 
     public TestAbstractConfigurableSupplier(String config) {
-      super(wps, config, () -> log);
+      super(wps, config, () -> log, null);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class AbstractConfigurableSupplierTest {
     }
 
     @Override
-    protected String getInstance(PathSupplier workingPath, Optional<Object> in) {
+    protected String getInstance(PathSupplier workingPath, Object in) {
       return getConfig();
     }
 

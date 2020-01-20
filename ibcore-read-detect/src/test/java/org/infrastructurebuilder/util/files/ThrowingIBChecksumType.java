@@ -21,7 +21,7 @@ import java.nio.file.Paths;
 
 import org.infrastructurebuilder.util.artifacts.Checksum;
 
-public class ThrowingIBChecksumType extends BasicIBChecksumPathType {
+public class ThrowingIBChecksumType extends BasicIBResource {
 
   public ThrowingIBChecksumType() throws IOException {
     super(Paths.get("."), new Checksum(), "doesnt/matter");

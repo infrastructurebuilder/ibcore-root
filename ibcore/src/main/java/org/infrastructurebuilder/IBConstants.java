@@ -127,5 +127,11 @@ public interface IBConstants {
 
   public static final String TARGET_DIR_PROPERTY = "target_dir";
   public static final String MAVEN_TARGET_PATH = "./target";
+  public static final String TEMPORARYID = "temporaryId";
+  public static final String DESCRIPTION = "description";
+  public static final String CREDENTIALS = "credentials";
+
+  public static final String IBSCHEMA_MIME_TYPE = "application/ibdata-schema";
+
 
 }

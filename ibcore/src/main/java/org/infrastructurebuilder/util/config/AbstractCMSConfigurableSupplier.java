@@ -20,7 +20,7 @@ import org.infrastructurebuilder.util.LoggerSupplier;
 abstract public class AbstractCMSConfigurableSupplier<T, P> extends AbstractConfigurableSupplier<T, ConfigMapSupplier, P>  {
 
   public AbstractCMSConfigurableSupplier(PathSupplier wps, ConfigMapSupplier config, LoggerSupplier l) {
-    super(wps, config, l);
+    super(wps, config, l, null);
   }
 
   @Override

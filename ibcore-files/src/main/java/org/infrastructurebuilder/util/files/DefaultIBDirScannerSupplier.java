@@ -31,7 +31,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.tools.ant.DirectoryScanner;

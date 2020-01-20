@@ -16,41 +16,40 @@
 package org.infrastructurebuilder.util.config;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
-
-import java.nio.file.Path;
-import java.util.Optional;
 
 import org.infrastructurebuilder.util.LoggerSupplier;
 import org.slf4j.Logger;
 
-abstract public class AbstractConfigurableSupplier<T, C, P> implements ConfigurableSupplier<T, C, P> {
+abstract public class AbstractConfigurableSupplier<TYPE, CONFIG, PARAMETER>
+    implements ConfigurableSupplier<TYPE, CONFIG, PARAMETER> {
 
-  private final C config;
+  private final CONFIG config;
   private final LoggerSupplier loggerSupplier;
   private final PathSupplier wps;
+  private final PARAMETER param;
 
-  protected AbstractConfigurableSupplier(PathSupplier wps, C config, LoggerSupplier l) {
+  protected AbstractConfigurableSupplier(PathSupplier wps, CONFIG config, LoggerSupplier l, PARAMETER p) {
     this.wps = requireNonNull(wps);
     this.config = config;
     this.loggerSupplier = requireNonNull(l);
+    this.param = p;
   }
 
-  public PathSupplier getWps() {
+//  protected AbstractConfigurableSupplier(PathSupplier wps, CONFIG config, LoggerSupplier l) {
+//    this(wps, config, l, null);
+//  }
+
+  public PathSupplier getWorkingPathSupplier() {
     return wps;
   }
 
-//  public Optional<Path> getWorkingPath() {
-//    return Optional.of(getWps().get());
-//  }
-//
-  public T get() {
-    return getInstance(getWps(), empty());
+  public TYPE get() {
+    return getInstance(getWorkingPathSupplier(), param);
   }
 
-  protected abstract T getInstance(PathSupplier wps, Optional<P> in);
+  protected abstract TYPE getInstance(PathSupplier wps, PARAMETER in);
 
-  public C getConfig() {
+  public CONFIG getConfig() {
     return this.config;
   }
 

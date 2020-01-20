@@ -7,7 +7,7 @@
   xsd.namespace="https://resources.infrastructurebuilder.org/IBDataSet/${apiVersion}"
   xsd.targetNamespace="https://resources.infrastructurebuilder.org/IBDataSet/${apiVersion}">
   <id>checksum</id>
-  <name>IBChecksumPathTypeModel</name> <!--  Must be a single (no spaces, no dashes, no periods) identifier in order to create reader/writer -->
+  <name>IBResourceModel</name> <!--  Must be a single (no spaces, no dashes, no periods) identifier in order to create reader/writer -->
   <description>Model for IBChecksumPathType, which underpins IBData among others</description>
 
   <defaults>
@@ -19,29 +19,22 @@
 
   <classes>
   <!-- MODEL -->
-    <class xml.tagName="iBChecksumPathTypeModel"
+    <class xml.tagName="IBResourceModel"
       rootElement="true">
-      <name>IBChecksumPathTypeModel</name>
-      <description>Iterim persistence data for IBChecksumPathType</description>
+      <name>IBResourceModel</name>
+      <description>Iterim persistence data for IBResource</description>
       <version>1.0.0+</version>
       <interfaces>
         <interface>
-          <![CDATA[org.infrastructurebuilder.util.files.IBChecksumPathType]]>
+          <![CDATA[org.infrastructurebuilder.util.files.IBResource]]>
         </interface>
-        <!--
-        <interface>
-          <![CDATA[java.lang.Comparable<org.infrastructurebuilder.util.files.IBChecksumPathType>]]>
-        </interface>
-         -->
       </interfaces>
       <fields>
-
-
         <field>
           <name>filePath</name>
           <version>1.0.0+</version>
           <required>false</required>
-          <description>Path to the described file.  IBChecksumType requires this be non-null, but the persistence model may not, because the source can be the means for acquiring the data.</description>
+          <description>Path to the described file.  IBResource requires this be non-null, but the persistence model may not, because the source can be the means for acquiring the data.</description>
           <type>String</type>
         </field>
         <field>
@@ -89,7 +82,7 @@
           <version>1.0.0+</version>
           <code>
             <![CDATA[
-    public IBChecksumPathTypeModel() {
+    public IBResourceModel() {
       this(null,null,null, null, null);
     }
   ]]>
@@ -98,7 +91,7 @@
         <codeSegment>
           <code>
             <![CDATA[
-    protected IBChecksumPathTypeModel(
+    protected IBResourceModel(
       String filePath,
       String checksum,
       String type,
@@ -178,9 +171,9 @@
           <code>
             <![CDATA[
     @Override
-    public org.infrastructurebuilder.util.files.IBChecksumPathType moveTo(java.nio.file.Path target) throws java.io.IOException {
+    public org.infrastructurebuilder.util.files.IBResource moveTo(java.nio.file.Path target) throws java.io.IOException {
       org.infrastructurebuilder.util.IBUtils.moveAtomic(getPath(), target);
-      return new IBChecksumPathTypeModel(target.toAbsolutePath().toString(),getFileChecksum(), getType(), getSource(), getName());
+      return new IBResourceModel(target.toAbsolutePath().toString(),getFileChecksum(), getType(), getSource(), getName());
     }
   ]]>
           </code>

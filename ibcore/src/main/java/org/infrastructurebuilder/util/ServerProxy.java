@@ -22,13 +22,14 @@ import static org.infrastructurebuilder.util.IBUtils.readFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.infrastructurebuilder.util.artifacts.Identified;
 import org.infrastructurebuilder.util.artifacts.JSONBuilder;
 import org.infrastructurebuilder.util.artifacts.JSONOutputEnabled;
 import org.json.JSONObject;
 
-public class ServerProxy implements Identified, JSONOutputEnabled {
+public class ServerProxy implements Identified, JSONOutputEnabled, Supplier<BasicCredentials> {
   public static final String ID_STRING = "id";
   private final String id;
   private final Optional<Path> keyPath;
@@ -117,5 +118,10 @@ public class ServerProxy implements Identified, JSONOutputEnabled {
         .addString("filePermissions", getFilePermissions())
         // fin
         .asJSON();
+  }
+
+  @Override
+  public BasicCredentials get() {
+    return new DefaultBasicCredentials(getPrincipal().orElse(null), getSecret());
   }
 }

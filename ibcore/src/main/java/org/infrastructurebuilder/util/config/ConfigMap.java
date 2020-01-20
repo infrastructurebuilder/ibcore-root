@@ -77,6 +77,10 @@ public class ConfigMap implements Map<String, Object> {
     return (T) config.getOrDefault(key, defaultValue);
   }
 
+  public Optional<String> getOptionalString(String key) {
+    return Optional.ofNullable(getOrDefault(key, null));
+  }
+
   public <T> T getRequired(String key) {
     return (T) Optional.ofNullable(config.getOrDefault(key, null))
         .orElseThrow(() -> new IBException("Value " + key + " not available"));

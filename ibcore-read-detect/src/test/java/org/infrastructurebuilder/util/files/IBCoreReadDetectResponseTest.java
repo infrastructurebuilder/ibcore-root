@@ -17,8 +17,8 @@ package org.infrastructurebuilder.util.files;
 
 import static org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM;
 import static org.infrastructurebuilder.IBConstants.TEXT_PLAIN;
-import static org.infrastructurebuilder.util.files.DefaultIBChecksumPathType.copyToDeletedOnExitTempChecksumAndPath;
-import static org.infrastructurebuilder.util.files.DefaultIBChecksumPathType.copyToTempChecksumAndPath;
+import static org.infrastructurebuilder.util.files.DefaultIBResource.copyToDeletedOnExitTempChecksumAndPath;
+import static org.infrastructurebuilder.util.files.DefaultIBResource.copyToTempChecksumAndPath;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -54,12 +54,12 @@ public class IBCoreReadDetectResponseTest {
   @Test
   public void testBasicType() {
     assertEquals(APPLICATION_OCTET_STREAM,
-        DefaultIBChecksumPathType.from(Paths.get("."), new Checksum(), APPLICATION_OCTET_STREAM).getType());
+        DefaultIBResource.from(Paths.get("."), new Checksum(), APPLICATION_OCTET_STREAM).getType());
   }
 
   @Test(expected = IBException.class)
   public void testNonExistentFile() {
-    DefaultIBChecksumPathType.toType.apply(Paths.get(".").resolve(UUID.randomUUID().toString()));
+    DefaultIBResource.toType.apply(Paths.get(".").resolve(UUID.randomUUID().toString()));
   }
 //https://file-examples.com/wp-content/uploads/2017/02/zip_2MB.zip
 
@@ -71,7 +71,7 @@ public class IBCoreReadDetectResponseTest {
     URL l = uri.toURL();
     String ef = l.toExternalForm();
 
-    IBChecksumPathType cset = copyToTempChecksumAndPath(this.wps.get(), t, Optional.of("zip:" + ef), TESTFILE_TEST);
+    IBResource cset = copyToTempChecksumAndPath(this.wps.get(), t, Optional.of("zip:" + ef), TESTFILE_TEST);
     assertEquals(183, cset.getPath().toFile().length());
     assertEquals("11220f09966021668749276fdd1998f95937c85d07eb2d7f0deb15790bbcf325bfcdf07cfa35570b49ec197b872dfff7d68b6fd3b39bb11916757bff97d19f2d", cset.getChecksum().toString());
     assertEquals(IBConstants.APPLICATION_ZIP, cset.getType());
@@ -83,7 +83,7 @@ public class IBCoreReadDetectResponseTest {
   @Test
   public void testCopyToDeletedOnExitTempChecksumAndPathWithTarget() throws IOException {
     Path t = this.wps.getTestClasses().resolve(TESTFILE_TEST);
-    IBChecksumPathType cset = copyToTempChecksumAndPath(this.wps.get(), t);
+    IBResource cset = copyToTempChecksumAndPath(this.wps.get(), t);
     assertEquals(7, cset.getPath().toFile().length());
     assertEquals(EXPECTED, cset.getChecksum().toString());
     assertEquals(TEXT_PLAIN, cset.getType());
@@ -94,7 +94,7 @@ public class IBCoreReadDetectResponseTest {
   @Test
   public void testCopyToDeletedOnExitTempChecksumAndPathWithoutTarget() throws IOException {
     try (InputStream ins = Files.newInputStream(this.wps.getTestClasses().resolve(TESTFILE_TEST))) {
-      IBChecksumPathType cset = copyToDeletedOnExitTempChecksumAndPath(wps.get(), "A", "B", ins);
+      IBResource cset = copyToDeletedOnExitTempChecksumAndPath(wps.get(), "A", "B", ins);
       assertEquals(7, cset.getPath().toFile().length());
       assertEquals(EXPECTED, cset.getChecksum().toString());
       assertEquals(TEXT_PLAIN, cset.getType());
@@ -105,7 +105,7 @@ public class IBCoreReadDetectResponseTest {
   @Test
   public void testSecondarConstructor() {
     Path f = this.wps.getTestClasses().resolve(TESTFILE_TEST);
-    DefaultIBChecksumPathType g = new DefaultIBChecksumPathType(f, new Checksum(f), Optional.empty());
+    DefaultIBResource g = new DefaultIBResource(f, new Checksum(f), Optional.empty());
     assertEquals(TEXT_PLAIN, g.getType());
   }
 

@@ -15,24 +15,27 @@
  */
 package org.infrastructurebuilder.util.files;
 
+import static java.nio.file.Files.*;
+import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
+import static java.nio.file.StandardOpenOption.READ;
+import static java.util.Objects.hash;
+import static java.util.Optional.empty;
 import static org.infrastructurebuilder.IBException.cet;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.IBException;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 
-public interface IBChecksumPathType extends Supplier<InputStream> {
+public interface IBResource extends Supplier<InputStream> {
 
   /**
    * @return Non-null Path to this result
@@ -57,31 +60,31 @@ public interface IBChecksumPathType extends Supplier<InputStream> {
    * @return
    * @throws IOException
    */
-  IBChecksumPathType moveTo(Path target) throws IOException;
+  IBResource moveTo(Path target) throws IOException;
 
   default InputStream get() {
     java.util.List<java.nio.file.OpenOption> o = new java.util.ArrayList<>();
-    o.add(StandardOpenOption.READ);
+    o.add(READ);
     if (getPath().getClass().getCanonicalName().contains("Zip")) {
 
     } else {
-      o.add(LinkOption.NOFOLLOW_LINKS);
+      o.add(NOFOLLOW_LINKS);
     }
     OpenOption[] readOptions = o.toArray(new java.nio.file.OpenOption[o.size()]);
 
-    return cet.withReturningTranslation(() -> Files.newInputStream(getPath(), readOptions));
+    return cet.withReturningTranslation(() -> newInputStream(getPath(), readOptions));
   }
 
   default Optional<URL> getSourceURL() {
-    return Optional.empty();
+    return empty();
   }
 
   default Optional<String> getSourceName() {
-    return Optional.empty();
+    return empty();
   }
 
   default int defaultHashCode() {
-    return java.util.Objects.hash(getChecksum(), getPath(), getSourceName(), getSourceURL(), getType());
+    return hash(getChecksum(), getPath(), getSourceName(), getSourceURL(), getType());
   }
 
   default boolean defaultEquals(Object obj) {
@@ -94,12 +97,12 @@ public interface IBChecksumPathType extends Supplier<InputStream> {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    IBChecksumPathType other = (IBChecksumPathType) obj;
-    return java.util.Objects.equals(getChecksum(), other.getChecksum())
-        && java.util.Objects.equals(getPath(), other.getPath())
-        && java.util.Objects.equals(getSourceName(), other.getSourceName())
-        && java.util.Objects.equals(getSourceURL(), other.getSourceURL())
-        && java.util.Objects.equals(getType(), other.getType());
+    IBResource other = (IBResource) obj;
+    return Objects.equals(getChecksum(), other.getChecksum())
+        && Objects.equals(getPath(), other.getPath())
+        && Objects.equals(getSourceName(), other.getSourceName())
+        && Objects.equals(getSourceURL(), other.getSourceURL())
+        && Objects.equals(getType(), other.getType());
   }
 
   default String defaultToString() {
