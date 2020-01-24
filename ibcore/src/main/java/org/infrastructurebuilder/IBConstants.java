@@ -33,6 +33,7 @@ public interface IBConstants {
   public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
   public static final String TEXT_PLAIN = "text/plain";
   public static final String AVRO_BINARY = "avro/binary";
+  public static final String AVRO_SCHEMA = "application/avro";
   public static final String TEXT_CSV = "text/csv";
   public static final String TEXT_TSV = "text/tab-separated-values";
   public static final String TEXT_PSV = "text/pipe-separated-values";
@@ -56,6 +57,7 @@ public interface IBConstants {
 
   public static final String DEFAULT_EXTENSION = ".bin";
   public static final String AVRO = ".avro";
+  public static final String AVSC = ".avsc";
   public static final String PDF = ".pdf";
   public static final String PSV = ".psv";
   public static final String DOCX = ".docx";
@@ -132,6 +134,7 @@ public interface IBConstants {
   public static final String CREDENTIALS = "credentials";
 
   public static final String IBSCHEMA_MIME_TYPE = "application/ibdata-schema";
+  public static final String  APPLICATION_LIQUIBASE_CHANGELOG = "application/liquibase-changelog";
 
 
 }

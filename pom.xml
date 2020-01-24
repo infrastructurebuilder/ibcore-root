@@ -42,7 +42,7 @@
   </distributionManagement>
   <properties>
     <iblog.version>0.10.0</iblog.version>
-    <ib.exceptions.version>25</ib.exceptions.version>
+    <ib.exceptions.version>29-SNAPSHOT</ib.exceptions.version>
   </properties>
   <dependencyManagement>
     <dependencies>

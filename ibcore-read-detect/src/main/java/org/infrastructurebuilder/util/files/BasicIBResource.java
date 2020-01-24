@@ -15,6 +15,7 @@
  */
 package org.infrastructurebuilder.util.files;
 
+import static java.util.Objects.requireNonNull;
 
 /**
  * This class needs to have its functionality moved up into the generated model prior to 1.0.0
@@ -52,11 +53,11 @@ class BasicIBResource extends org.infrastructurebuilder.util.files.model.IBResou
       , java.util.Optional<java.net.URL> sourceURL
       // Name
       , java.util.Optional<String> name) {
-    super(java.util.Objects.requireNonNull(path).toAbsolutePath().toString(),
-        java.util.Objects.requireNonNull(checksum).toString(), java.util.Objects.requireNonNull(type),
-        java.util.Objects.requireNonNull(sourceURL).map(java.net.URL::toExternalForm).orElse(null),
-        java.util.Objects.requireNonNull(name).orElse(null));
-    this.path = java.util.Objects.requireNonNull(path);
+    super(requireNonNull(path).toAbsolutePath().toString(),
+        requireNonNull(checksum).toString(), requireNonNull(type),
+        requireNonNull(sourceURL).map(java.net.URL::toExternalForm).orElse(null),
+        requireNonNull(name).orElse(null));
+    this.path = requireNonNull(path);
   }
 
   BasicIBResource(

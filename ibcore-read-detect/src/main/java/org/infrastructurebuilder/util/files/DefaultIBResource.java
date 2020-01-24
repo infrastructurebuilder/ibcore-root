@@ -90,7 +90,7 @@ public class DefaultIBResource extends BasicIBResource {
   }
 
   public DefaultIBResource(Path path, Checksum checksum, Optional<String> type) {
-    super(path, checksum, requireNonNull(type).orElse(toType.apply(path)));
+    super(path, checksum, requireNonNull(type).orElseGet(() -> toType.apply(path)));
   }
 
   public final static IBResource fromPath(Path path) {

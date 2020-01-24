@@ -13,20 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util;
+package org.infrastructurebuilder.util.artifacts;
 
-import java.util.Optional;
-import java.util.function.Supplier;
+import java.util.List;
 
-import org.infrastructurebuilder.util.artifacts.Weighted;
+import org.infrastructurebuilder.IBVersionsSupplier;
+import org.infrastructurebuilder.util.LoggerEnabled;
 
-/**
- * @author mykel.alvis
- *
- */
-public interface SettingsSupplier extends Supplier<SettingsProxy>, CredentialsSupplier {
-  default Optional<BasicCredentials> getCredentialsFor(String query) {
-    return get().getServer(query).map(ServerProxy::get);
-  }
+public interface IBArtifactVersionMapper extends LoggerEnabled {
+
+  List<IBVersionsSupplier> getMatchingArtifacts(String groupId, String artifactId);
 
 }

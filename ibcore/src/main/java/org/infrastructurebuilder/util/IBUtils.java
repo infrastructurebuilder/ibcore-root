@@ -132,8 +132,10 @@ public class IBUtils {
     return isZip;
   }
 
-  public final static java.util.Comparator<String> nullSafeStringComparator = java.util.Comparator
+  public final static java.util.Comparator<String> nullSafeCaseInsensitiveStringComparator = java.util.Comparator
       .nullsFirst(String::compareToIgnoreCase);
+  public final static java.util.Comparator<String> nullSafeStringComparator = java.util.Comparator
+      .nullsFirst(String::compareTo);
   public final static java.util.Comparator<java.util.UUID> nullSafeUUIDComparator = java.util.Comparator
       .nullsFirst(java.util.UUID::compareTo);
   public final static java.util.Comparator<java.util.Date> nullSafeDateComparator = java.util.Comparator

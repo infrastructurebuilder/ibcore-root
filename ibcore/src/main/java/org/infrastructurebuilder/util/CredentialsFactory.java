@@ -18,15 +18,20 @@ package org.infrastructurebuilder.util;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.util.artifacts.Weighted;
-
 /**
+ * The {@code CredentialsFactory} is injected with mechanisms for lookup up
+ * creds
+ *
  * @author mykel.alvis
  *
  */
-public interface SettingsSupplier extends Supplier<SettingsProxy>, CredentialsSupplier {
-  default Optional<BasicCredentials> getCredentialsFor(String query) {
-    return get().getServer(query).map(ServerProxy::get);
-  }
+public interface CredentialsFactory {
+  /**
+   * Get a {@link CredentialsSupplier} from a query
+   *
+   * @param query string query lookup
+   * @return {@link CredentialsSupplier} if found
+   */
+  Optional<BasicCredentials> getCredentialsFor(String query);
 
 }

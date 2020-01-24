@@ -15,7 +15,7 @@
  */
 package org.infrastructurebuilder.util.files;
 
-import static java.nio.file.Files.*;
+import static java.nio.file.Files.newInputStream;
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static java.nio.file.StandardOpenOption.READ;
 import static java.util.Objects.hash;
@@ -33,6 +33,7 @@ import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.function.Supplier;
 
+import org.infrastructurebuilder.IBException;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 
 public interface IBResource extends Supplier<InputStream> {

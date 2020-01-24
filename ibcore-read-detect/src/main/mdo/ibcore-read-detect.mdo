@@ -8,7 +8,7 @@
   xsd.targetNamespace="https://resources.infrastructurebuilder.org/IBDataSet/${apiVersion}">
   <id>checksum</id>
   <name>IBResourceModel</name> <!--  Must be a single (no spaces, no dashes, no periods) identifier in order to create reader/writer -->
-  <description>Model for IBChecksumPathType, which underpins IBData among others</description>
+  <description>Model for IBResource, which underpins IBData among others</description>
 
   <defaults>
     <default>

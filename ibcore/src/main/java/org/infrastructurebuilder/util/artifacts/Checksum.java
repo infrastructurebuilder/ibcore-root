@@ -15,6 +15,7 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
+import static java.nio.file.Files.newInputStream;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
@@ -27,7 +28,6 @@ import static org.infrastructurebuilder.util.IBUtils.hexStringToByteArray;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -88,7 +88,7 @@ public class Checksum implements Comparable<Checksum>, Supplier<Optional<UUID>> 
   }
 
   public Checksum(final Path file) {
-    this(cet.withReturningTranslation(() -> Files.newInputStream(requireNonNull(file))));
+    this(cet.withReturningTranslation(() -> newInputStream(requireNonNull(file))));
   }
 
   /**

@@ -15,18 +15,31 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.UUID;
 
 /**
- * REQUIREMENT: getId() must return a unique id for a given component.
- * If the component is not a singleton, it's id must be different from others, including other singletons, of any of its types
+ * REQUIREMENT: getId() must return a unique id for a given component. If the
+ * component is not a singleton, it's id must be different from others,
+ * including other singletons, of any of its types
  *
  * @author mykel.alvis
  *
  */
 public interface Identified {
+  public static java.util.Comparator<Identified> comparator() {
+    return new java.util.Comparator<Identified>() {
+      @Override
+      public int compare(Identified o1, Identified o2) {
+        return requireNonNull(o1, "Identified o1").getId().compareTo(requireNonNull(o2, "Identified o2").getId());
+      }
+    };
+  };
+
   /**
    * Return non-null value for id
+   *
    * @return
    */
   default String getId() {
