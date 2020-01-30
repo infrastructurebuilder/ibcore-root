@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 abstract public class AbstractConfigurableSupplier<TYPE, CONFIG, PARAMETER>
     implements ConfigurableSupplier<TYPE, CONFIG, PARAMETER> {
 
-  private final CONFIG config;
+  protected final CONFIG config;
   private final LoggerSupplier loggerSupplier;
   private final PathSupplier wps;
   private final PARAMETER param;

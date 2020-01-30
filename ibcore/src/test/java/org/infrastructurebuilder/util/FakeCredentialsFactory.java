@@ -17,9 +17,21 @@ package org.infrastructurebuilder.util;
 
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.artifacts.Weighted;
+public class FakeCredentialsFactory implements CredentialsFactory {
 
-public interface CredentialsSupplier extends Weighted {
-  Optional<BasicCredentials> getCredentialsFor(String query);
+  private final BasicCredentials creds;
+
+  public FakeCredentialsFactory() {
+    this(null);
+  }
+
+  public FakeCredentialsFactory(BasicCredentials c) {
+    this.creds = c;
+  }
+
+  @Override
+  public Optional<BasicCredentials> getCredentialsFor(String query) {
+    return Optional.ofNullable(creds);
+  }
 
 }

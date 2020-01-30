@@ -37,6 +37,9 @@ public interface IBConstants {
   public static final String TEXT_CSV = "text/csv";
   public static final String TEXT_TSV = "text/tab-separated-values";
   public static final String TEXT_PSV = "text/pipe-separated-values";
+  public static final String TEXT_CSV_WITH_HEADER = "text/csv;header";
+  public static final String TEXT_TSV_WITH_HEADER = "text/tab-separated-values;header";
+  public static final String TEXT_PSV_WITH_HEADER = "text/pipe-separated-values;header";
   public static final String TEXT_HTML = "text/html";
   public static final String APPLICATION_XLS = "application/msexcel";
   public static final String APPLICATION_XLSX = "application//vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -47,7 +50,7 @@ public interface IBConstants {
   public static final String APPLICATION_PDF = "application/pdf";
   public static final String APPLICATION_ZIP = "application/zip";
   public static final String APPLICATION_XML = "application/xml";
-  public static final String IBDATA_SCHEMA = "application/ibdata-xml";
+  public static final String IBDATA_SCHEMA = "application/xml-ibdata-schema";
   public static final String APPLICATION_VND_OASIS_SPREADSHEET = "application/vnd.oasis.opendocument.spreadsheet";
 
 
@@ -72,6 +75,10 @@ public interface IBConstants {
   public static final String XML = ".xml";
   public static final String ODS = ".ods";
   public static final String PPT = ".ppt";
+  public static final String PROTO = ".proto";
+  public static final String THRIFT = ".thrift";
+  public static final String DTD = ".dtd";
+
 
 
   public static final String _SHA512 = "sha512";
@@ -135,6 +142,21 @@ public interface IBConstants {
 
   public static final String IBSCHEMA_MIME_TYPE = "application/ibdata-schema";
   public static final String  APPLICATION_LIQUIBASE_CHANGELOG = "application/liquibase-changelog";
+
+
+  // IBData's preferred content type for protobug is PROTOBUF0
+  public static final String PROTOBUF0 = "application/vnd.google.protobuf";
+  public static final String PROTOBUF1 = "application/x-protobuf";
+  public static final String PROTOBUF2 = "application/x-google-protobuf";
+  public static final String PROTOBUF3 = "application/protobuf";
+
+  public static final String LIQUIBASE_SCHEMA = "application/liquibase-schema";
+
+  public static final String APPLICATION_X_TIKA_MSOFFICE = "application/x-tika-msoffice";
+  public static final String DBUNIT_FLATXML = "application/dbunit-flatxml";
+  public static final String DBUNIT_DTD = "application/dbunit-DTD";
+  public static final String DTD_RESOURCE = "dbUnitDTD";
+  public static final String FAIL_ON_ERROR = "failOnError";
 
 
 }

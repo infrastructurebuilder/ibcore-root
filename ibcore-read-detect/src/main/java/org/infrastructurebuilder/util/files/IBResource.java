@@ -45,7 +45,8 @@ public interface IBResource extends Supplier<InputStream> {
   Path getPath();
 
   /**
-   * @return Equivalent to calculated Checksum of the contents of the file at getPath()
+   * @return Equivalent to calculated Checksum of the contents of the file at
+   *         getPath()
    */
   Checksum getChecksum();
 
@@ -55,8 +56,8 @@ public interface IBResource extends Supplier<InputStream> {
   String getType();
 
   /**
-   * Relocate underlying path to new path.  The target path is meant to be a
-   * normal filesystem, not a ZipFileSystem.
+   * Relocate underlying path to new path. The target path is meant to be a normal
+   * filesystem, not a ZipFileSystem.
    *
    * @param target
    * @return
@@ -99,16 +100,18 @@ public interface IBResource extends Supplier<InputStream> {
     if (!(obj instanceof IBResource))
       return false;
     IBResource other = (IBResource) obj;
-    return Objects.equals(getChecksum(), other.getChecksum())
-        && Objects.equals(getPath(), other.getPath())
-        && Objects.equals(getSourceName(), other.getSourceName())
-        && Objects.equals(getSourceURL(), other.getSourceURL())
-        && Objects.equals(getType(), other.getType());
+    return Objects.equals(getChecksum(), other.getChecksum()) // checksum
+        && Objects.equals(getPath(), other.getPath()) // path
+        && Objects.equals(getSourceName(), other.getSourceName()) // source
+        && Objects.equals(getSourceURL(), other.getSourceURL()) // sourceURL
+        && Objects.equals(getType(), other.getType()); // Type
   }
 
   default String defaultToString() {
-    StringJoiner sj = new StringJoiner("|").add(getType()).add(getChecksum().asUUID().get().toString())
-        .add(getPath().toString());
+    StringJoiner sj = new StringJoiner("|") //
+        .add(getChecksum().asUUID().get().toString()) // Checksum
+        .add(getType()) // type
+        .add(getPath().toString()); // Path
     getSourceURL().ifPresent(u -> sj.add(u.toExternalForm()));
     getSourceName().ifPresent(sj::add);
     return sj.toString();

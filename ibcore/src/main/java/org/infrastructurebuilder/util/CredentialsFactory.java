@@ -34,4 +34,7 @@ public interface CredentialsFactory {
    */
   Optional<BasicCredentials> getCredentialsFor(String query);
 
+  default Optional<BasicCredentials> getCredentialsFor(URLAndCreds u) {
+    return u.getCredentialsQuery().flatMap(this::getCredentialsFor);
+  }
 }

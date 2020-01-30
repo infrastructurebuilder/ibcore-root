@@ -32,13 +32,14 @@ import org.junit.Test;
 
 public class DefaultStringListSupplierTest {
 
+private final static TestingPathSupplier wps = new TestingPathSupplier();
   private static Path target;
   private static Path testClasses;
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
-    target = Paths.get(Optional.ofNullable(System.getProperty("target")).orElse("./target")).toRealPath();
-    testClasses = target.resolve("test-classes");
+    target = wps.getRoot();
+    testClasses = wps.getTestClasses();
   }
 
   private List<String> list;

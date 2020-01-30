@@ -17,9 +17,13 @@ package org.infrastructurebuilder.util;
 
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.artifacts.Weighted;
+public interface URLAndCreds {
+  public static final String SOURCE_URL = "sourceURL";
+  public static final String CREDS = "credentials";
 
-public interface CredentialsSupplier extends Weighted {
-  Optional<BasicCredentials> getCredentialsFor(String query);
+  String getUrl();
 
+  Optional<String> getCredentialsQuery();
+
+//  Optional<BasicCredentials> getCreds(CredentialsFactory f);
 }

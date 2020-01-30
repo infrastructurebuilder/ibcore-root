@@ -28,6 +28,7 @@ import org.junit.Test;
 
 public class PropertiesInjectedConfigMapSupplierTest {
 
+  private final static TestingPathSupplier wps = new TestingPathSupplier();
   private static Path target;
 
   @BeforeClass
@@ -42,8 +43,8 @@ public class PropertiesInjectedConfigMapSupplierTest {
   @Before
   public void setUp() throws Exception {
     list = new ArrayList<>();
-    list.add(target.resolve("test-classes").resolve("c1.properties").toAbsolutePath().toString());
-    list.add(target.resolve("test-classes").resolve("b.xml").toAbsolutePath().toString());
+    list.add(wps.getTestClasses().resolve("c1.properties").toAbsolutePath().toString());
+    list.add(wps.getTestClasses().resolve("b.xml").toAbsolutePath().toString());
     list.add(DefaultStringListSupplier.ISFILE);
     single = new DefaultStringListSupplier(list);
     k = new PropertiesInjectedConfigMapSupplier(Arrays.asList(single));
