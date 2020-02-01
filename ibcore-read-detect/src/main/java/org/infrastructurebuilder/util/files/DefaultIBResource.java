@@ -33,10 +33,11 @@ import java.util.function.Function;
 import org.apache.tika.Tika;
 import org.infrastructurebuilder.IBException;
 import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.infrastructurebuilder.util.files.model.IBResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DefaultIBResource extends BasicIBResource {
+public class DefaultIBResource extends IBResourceModel {
   private final static Logger log = LoggerFactory.getLogger(DefaultIBResource.class);
   private static final long serialVersionUID = 5978749189830232137L;
   private final static Tika tika = new Tika();
@@ -86,7 +87,7 @@ public class DefaultIBResource extends BasicIBResource {
   };
 
   public final static IBResource from(Path p, Checksum c, String type) {
-    return new BasicIBResource(p, c, type);
+    return new IBResourceModel(p, c, type);
   }
 
   public DefaultIBResource(Path path, Checksum checksum, Optional<String> type) {

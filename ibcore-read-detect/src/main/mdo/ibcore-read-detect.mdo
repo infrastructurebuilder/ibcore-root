@@ -7,7 +7,8 @@
   xsd.namespace="https://resources.infrastructurebuilder.org/IBDataSet/${apiVersion}"
   xsd.targetNamespace="https://resources.infrastructurebuilder.org/IBDataSet/${apiVersion}">
   <id>checksum</id>
-  <name>IBResourceModel</name> <!--  Must be a single (no spaces, no dashes, no periods) identifier in order to create reader/writer -->
+  <name>IBResourceModel</name> <!-- Must be a single (no spaces, no dashes, no periods) identifier in order
+    to create reader/writer -->
   <description>Model for IBResource, which underpins IBData among others</description>
 
   <defaults>
@@ -18,9 +19,8 @@
   </defaults>
 
   <classes>
-  <!-- MODEL -->
-    <class xml.tagName="IBResourceModel"
-      rootElement="true">
+    <!-- MODEL -->
+    <class xml.tagName="IBResourceModel" rootElement="true">
       <name>IBResourceModel</name>
       <description>Iterim persistence data for IBResource</description>
       <version>1.0.0+</version>
@@ -83,7 +83,7 @@
           <code>
             <![CDATA[
     public IBResourceModel() {
-      this(null,null,null, null, null);
+      this((String)null,null,null, null, null);
     }
   ]]>
           </code>
@@ -208,6 +208,64 @@
     public org.infrastructurebuilder.util.artifacts.Checksum getChecksum() {
       return new org.infrastructurebuilder.util.artifacts.Checksum(getFileChecksum());
     }
+  ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  public IBResourceModel(
+      // Path
+      java.nio.file.Path path
+      // Checksum
+      , org.infrastructurebuilder.util.artifacts.Checksum checksum
+      // Type
+      , String type) {
+    this(path, checksum, type, java.util.Optional.empty(), java.util.Optional.empty());
+  }
+
+  ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  public IBResourceModel(
+      // Path
+      java.nio.file.Path path
+      // Checksum
+      , org.infrastructurebuilder.util.artifacts.Checksum checksum
+      // Type
+      , String type
+      // Source
+      , java.util.Optional<java.net.URL> sourceURL
+      // Name
+      , java.util.Optional<String> name) {
+    this(java.util.Objects.requireNonNull(path).toAbsolutePath().toString(),
+        java.util.Objects.requireNonNull(checksum).toString()
+        , java.util.Objects.requireNonNull(type)
+        , java.util.Objects.requireNonNull(sourceURL).map(java.net.URL::toExternalForm).orElse(null)
+        ,java.util.Objects.requireNonNull(name).orElse(null));
+    this.path = java.util.Objects.requireNonNull(path);
+  }
+
+  ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+   IBResourceModel(
+      // Path
+      java.nio.file.Path path
+      // Checksum
+      , org.infrastructurebuilder.util.artifacts.Checksum checksum) {
+    this(path, checksum, org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM);
+  }
+
   ]]>
           </code>
         </codeSegment>

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.files;
+package org.infrastructurebuilder.util.files.model;
 
 import static org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM;
 import static org.infrastructurebuilder.util.IBUtilsTest.TESTFILE;
@@ -30,15 +30,16 @@ import java.util.UUID;
 import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
+import org.infrastructurebuilder.util.files.IBResource;
 import org.infrastructurebuilder.util.files.model.IBResourceModel;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BasicIBResourceTest {
+public class IBResourceModelTest {
 
   private TestingPathSupplier wps;
-  private BasicIBResource c1, c2;
+  private IBResourceModel c1, c2;
   private Path path;
   private Checksum checksum;
   private IBResource def;
@@ -50,8 +51,8 @@ public class BasicIBResourceTest {
     path = wps.get().resolve(UUID.randomUUID().toString());
     IBUtils.copy(source, path);
     checksum = new Checksum(TESTFILE_CHECKSUM);
-    c2 = new BasicIBResource(path, checksum);
-    c1 = new BasicIBResource(path, checksum, "ABC");
+    c2 = new IBResourceModel(path, checksum);
+    c1 = new IBResourceModel(path, checksum, "ABC");
 
     def = new IBResource() {
 
@@ -132,7 +133,7 @@ public class BasicIBResourceTest {
 
   @Test
   public void testEqualsHash() {
-    BasicIBResource c3 = new BasicIBResource(path, checksum, "ABC");
+    IBResourceModel c3 = new IBResourceModel(path, checksum, "ABC");
     c1.hashCode();
     c1.hashCode();
     c1.hashCode();
