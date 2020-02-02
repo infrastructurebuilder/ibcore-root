@@ -26,15 +26,20 @@ import org.json.JSONArray;
 
 public interface IBConstants {
 
+  public final static String DEFAULT = "default";
   public final static String IBDATA_PREFIX = "IBDataTemp_";
   public final static String IBDATA_SUFFIX = ".ibdata";
 
   public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
   public static final String TEXT_PLAIN = "text/plain";
   public static final String AVRO_BINARY = "avro/binary";
+  public static final String AVRO_SCHEMA = "application/avro";
   public static final String TEXT_CSV = "text/csv";
   public static final String TEXT_TSV = "text/tab-separated-values";
   public static final String TEXT_PSV = "text/pipe-separated-values";
+  public static final String TEXT_CSV_WITH_HEADER = "text/csv;header";
+  public static final String TEXT_TSV_WITH_HEADER = "text/tab-separated-values;header";
+  public static final String TEXT_PSV_WITH_HEADER = "text/pipe-separated-values;header";
   public static final String TEXT_HTML = "text/html";
   public static final String APPLICATION_XLS = "application/msexcel";
   public static final String APPLICATION_XLSX = "application//vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -45,8 +50,8 @@ public interface IBConstants {
   public static final String APPLICATION_PDF = "application/pdf";
   public static final String APPLICATION_ZIP = "application/zip";
   public static final String APPLICATION_XML = "application/xml";
+  public static final String IBDATA_SCHEMA = "application/xml-ibdata-schema";
   public static final String APPLICATION_VND_OASIS_SPREADSHEET = "application/vnd.oasis.opendocument.spreadsheet";
-
 
   public static final String JAVA_LANG_STRING = "java.lang.String";
   public static final String ORG_W3C_DOM_NODE = "org.w3c.dom.Node";
@@ -54,6 +59,7 @@ public interface IBConstants {
 
   public static final String DEFAULT_EXTENSION = ".bin";
   public static final String AVRO = ".avro";
+  public static final String AVSC = ".avsc";
   public static final String PDF = ".pdf";
   public static final String PSV = ".psv";
   public static final String DOCX = ".docx";
@@ -68,6 +74,11 @@ public interface IBConstants {
   public static final String XML = ".xml";
   public static final String ODS = ".ods";
   public static final String PPT = ".ppt";
+  public static final String PROTO = ".proto";
+  public static final String THRIFT = ".thrift";
+  public static final String DTD = ".dtd";
+  public static final String JSON_EXT = ".json";
+  public static final String NLD_JSON_EXT = ".nldjson";
 
 
   public static final String _SHA512 = "sha512";
@@ -90,9 +101,9 @@ public interface IBConstants {
   public static final String AZUREDEVOPS = "azuredevops";
   public static final String HEX_IDENTIFIER = "HEXID:";
   public static final String ID = "id";
-  public static final String JSON_EXT = ".json";
   public static final String KEYSERVER_DEFAULT_HOST = "pgp.mit.edu";
   public static final String KEYSERVER_HOST_ENV = "SPECIFIC_KEYSERVER_HOST";
+  public static final String MAVEN = "maven";
   public static final String MAVEN_MIRRORS = "MAVEN_MIRRORS";
   public static final String NAME = "name";
   public static final String NO_OP = "no-op";
@@ -125,5 +136,28 @@ public interface IBConstants {
 
   public static final String TARGET_DIR_PROPERTY = "target_dir";
   public static final String MAVEN_TARGET_PATH = "./target";
+  public static final String TEMPORARYID = "temporaryId";
+  public static final String DESCRIPTION = "description";
+  public static final String CREDENTIALS = "credentials";
 
+  public static final String IBSCHEMA_MIME_TYPE = "application/ibdata-schema";
+  public static final String APPLICATION_LIQUIBASE_CHANGELOG = "application/liquibase-changelog";
+
+  // IBData's preferred content type for protobug is PROTOBUF0
+  public static final String PROTOBUF0 = "application/vnd.google.protobuf";
+  public static final String PROTOBUF1 = "application/x-protobuf";
+  public static final String PROTOBUF2 = "application/x-google-protobuf";
+  public static final String PROTOBUF3 = "application/protobuf";
+
+  public static final String LIQUIBASE_SCHEMA = "application/liquibase-schema";
+
+  public static final String APPLICATION_X_TIKA_MSOFFICE = "application/x-tika-msoffice";
+  public static final String DBUNIT_FLATXML = "application/dbunit-flatxml";
+  public static final String DBUNIT_DTD = "application/dbunit-DTD";
+  public static final String DTD_RESOURCE = "dbUnitDTD";
+  public static final String FAIL_ON_ERROR = "failOnError";
+
+  public static final String JSON_TYPE = "application/json";
+  // This is a specific type that keeps cropping up
+  public static final String NLD_JSON_TYPE = JSON_TYPE + ";newline-delimited-records";
 }

@@ -15,6 +15,8 @@
  */
 package org.infrastructurebuilder.util.config;
 
+import static java.util.Optional.ofNullable;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +30,7 @@ public class ConfigMap implements Map<String, Object> {
   private final Map<String, Object> config;
 
   public ConfigMap(Map<String, Object> c) {
-    this.config = Optional.ofNullable(c).orElse(new HashMap<>());
+    this.config = ofNullable(c).orElse(new HashMap<>());
   }
 
   public ConfigMap() {
@@ -46,13 +48,14 @@ public class ConfigMap implements Map<String, Object> {
   }
 
   public final String getString(String key) {
-    return Optional.ofNullable(get(key)).map(Object::toString).orElse(null);
+    return ofNullable(get(key)).map(Object::toString).orElse(null);
   }
 
   public final boolean getParsedBoolean(String key, boolean defaultValue) {
-    return Optional.ofNullable(getString(key)).map(Boolean::parseBoolean).orElse(defaultValue);
+    return ofNullable(getString(key)).map(Boolean::parseBoolean).orElse(defaultValue);
   }
 
+  @SuppressWarnings("unchecked")
   public final <T> T get(String key) {
     return (T) this.config.get(key);
   }
@@ -73,12 +76,18 @@ public class ConfigMap implements Map<String, Object> {
     return config.containsKey(key);
   }
 
+  @SuppressWarnings("unchecked")
   public <T> T getOrDefault(String key, T defaultValue) {
     return (T) config.getOrDefault(key, defaultValue);
   }
 
+  public Optional<String> getOptionalString(String key) {
+    return ofNullable(getOrDefault(key, null));
+  }
+
+  @SuppressWarnings("unchecked")
   public <T> T getRequired(String key) {
-    return (T) Optional.ofNullable(config.getOrDefault(key, null))
+    return (T) ofNullable(config.getOrDefault(key, null))
         .orElseThrow(() -> new IBException("Value " + key + " not available"));
   }
 

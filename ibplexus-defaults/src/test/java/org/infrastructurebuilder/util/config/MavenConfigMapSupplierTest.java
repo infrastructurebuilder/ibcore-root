@@ -18,85 +18,14 @@ package org.infrastructurebuilder.util.config;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
-
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.model.Build;
-import org.apache.maven.model.Model;
-import org.apache.maven.plugin.MojoExecution;
-import org.apache.maven.project.MavenProject;
-import org.joor.Reflect;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
 
-import static org.mockito.Mockito.*;
-
-public class MavenConfigMapSupplierTest {
-
-  public static Map<String, String> m, n;
-  public static MavenProject mp;
-  public static Model mm;
-  public static Properties properties;
-  public final static TestingPathSupplier wps = new TestingPathSupplier();
-  public static Path target;
-  public static Path testClasses;
-
-  public static MavenSession ms;
-  public static MojoExecution me;
-  @Rule
-  public MockitoRule mockitoRule = MockitoJUnit.rule();
-
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception {
-    target = wps.getRoot();
-    testClasses = wps.getTestClasses();
-    m = new HashMap<>();
-    n = new HashMap<>();
-    m.put("X", "Y");
-    m.put("A", "B");
-    n.put("X", "Z");
-    n.put("A", "CC");
-    n.put("Q", "M");
-
-    properties = new Properties();
-    properties.setProperty("a", "b");
-    properties.setProperty("c", "d");
-    properties.setProperty("user.home", "override");
-    mp = new MavenProject();
-    final Build b = new Build();
-    b.setDirectory(target.toString());
-    mm = new Model();
-    mm.setProperties(properties);
-    mp.setModel(mm);
-    mp.setBuild(b);
-
-    ms = mock(MavenSession.class);
-    me = mock(MojoExecution.class);
-    when(ms.getGoals()).thenReturn(Arrays.asList("A", "B"));
-    when(ms.getStartTime()).thenReturn(new Date());
-    when(me.getExecutionId()).thenReturn("A");
-    when(me.getGoal()).thenReturn("B");
-    when(me.getLifecyclePhase()).thenReturn("compile");
-
-  }
+public class MavenConfigMapSupplierTest extends AbstractPlexusDefaultsConfigTest {
 
   public MavenConfigMapSupplier getCms() {
     return new MavenConfigMapSupplier(mp, ms, me);
   }
 
-  @Ignore
   @Test
   public void testSetMavenProject() {
     final ConfigMap map = getCms().get();

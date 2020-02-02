@@ -15,19 +15,22 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import org.infrastructurebuilder.util.LoggerSupplier;
+abstract public class AbstractCMSConfigurableSupplier<T, P> extends AbstractConfigurableSupplier<T, ConfigMapSupplier, P>  {
 
-abstract public class AbstractCMSConfigurableSupplier<T> extends AbstractConfigurableSupplier<T, ConfigMapSupplier> implements CMSConfigurableSupplier<T> {
-
-  public AbstractCMSConfigurableSupplier(ConfigMapSupplier config, LoggerSupplier l) {
-    super(config, l);
+  public AbstractCMSConfigurableSupplier(IBRuntimeUtils ibr, ConfigMapSupplier config) {
+    this(ibr, config, null);
   }
 
+  public AbstractCMSConfigurableSupplier(IBRuntimeUtils ibr, ConfigMapSupplier config,  P param) {
+    super(ibr, config, param);
+  }
+
+
   @Override
-  public ConfigurableSupplier<T, ConfigMapSupplier> configure(ConfigMapSupplier config) {
+  public ConfigurableSupplier<T, ConfigMapSupplier,P> configure(ConfigMapSupplier config) {
     return getConfiguredSupplier(config);
   }
 
 
-  abstract public AbstractCMSConfigurableSupplier<T> getConfiguredSupplier(ConfigMapSupplier cms);
+  abstract public AbstractCMSConfigurableSupplier<T,P> getConfiguredSupplier(ConfigMapSupplier cms);
 }

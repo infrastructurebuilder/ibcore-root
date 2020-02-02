@@ -15,6 +15,8 @@
  */
 package org.infrastructurebuilder.util;
 
+import static org.infrastructurebuilder.IBConstants.MAVEN_TARGET_PATH;
+import static org.infrastructurebuilder.IBConstants.TARGET_DIR_PROPERTY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -47,7 +49,6 @@ import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.zeroturnaround.exec.ProcessOutput;
 import org.zeroturnaround.exec.ProcessResult;
-import static org.infrastructurebuilder.IBConstants.*;
 
 public class ProcessExecutionResultTest {
   private static final List<String> ARGS = Arrays.asList("-version");

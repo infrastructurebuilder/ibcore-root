@@ -15,8 +15,12 @@
  */
 package org.infrastructurebuilder.util.files;
 
+import java.util.SortedSet;
+
 public interface TypeToExtensionMapper {
 
   String getExtensionForType(String type);
+
+  SortedSet<String> reverseMapFromExtension(String extension);
 
 }

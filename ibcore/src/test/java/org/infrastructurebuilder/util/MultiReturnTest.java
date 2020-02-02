@@ -62,10 +62,10 @@ public class MultiReturnTest {
 
   @Test
   public void testGetReturnedType() {
-    assertFalse(c.getReturnedType().isPresent());
+    assertFalse(c.getT().isPresent());
     assertEquals(e, c.getException().get());
-    assertFalse(b.getReturnedType().isPresent());
-    assertEquals("X", a.getReturnedType().get());
+    assertFalse(b.getT().isPresent());
+    assertEquals("X", a.getT().get());
   }
 
   @Test

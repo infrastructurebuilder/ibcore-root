@@ -20,8 +20,14 @@ import java.io.InputStream;
 import java.nio.file.Paths;
 
 import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.infrastructurebuilder.util.files.model.IBResourceModel;
 
-public class ThrowingIBChecksumType extends BasicIBChecksumPathType {
+public class ThrowingIBChecksumType extends IBResourceModel {
+
+  /**
+   *
+   */
+  private static final long serialVersionUID = 5376806798385645619L;
 
   public ThrowingIBChecksumType() throws IOException {
     super(Paths.get("."), new Checksum(), "doesnt/matter");

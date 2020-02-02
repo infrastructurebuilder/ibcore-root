@@ -21,6 +21,9 @@ import java.util.function.Supplier;
 
 public interface ConfigMapSupplier extends Supplier<ConfigMap> {
   public static final String MAVEN = "maven"; // This one is implemented in ibcore-plexus
+  public static final String IB_DATA_WORKING_DIR = "IBDataWorkingDir"; // This is also in ibcore-plexus
+  public static final String MAVEN_WITH_SERVERS = "maven-with-servers";
+  public static final String MAVEN_SETTINGS_SERVER_NAMESPACE = "maven.settings.server.";
 
 //  ConfigMapSupplier addConfiguration(ConfigMapSupplier add);
 

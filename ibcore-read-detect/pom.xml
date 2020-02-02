@@ -30,7 +30,7 @@
   <description>Component that reads files and detects their types</description>
   <!-- I see no way to increase this at the moment -->
   <properties>
-    <test.coverage.percentage.required>98</test.coverage.percentage.required>
+    <test.coverage.percentage.required>95</test.coverage.percentage.required>
     <jacoco.max.missed.classes>0</jacoco.max.missed.classes>
   </properties>
   <!-- URL for site gen -->

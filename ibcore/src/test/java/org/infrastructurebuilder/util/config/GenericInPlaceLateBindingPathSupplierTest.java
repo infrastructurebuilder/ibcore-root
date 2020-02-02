@@ -39,9 +39,9 @@ public class GenericInPlaceLateBindingPathSupplierTest {
   public void test() {
     Path p = wps.get();
     assertNull(gps.get());
-    gps.setPath(p);
+    gps.setT(p);
     assertEquals(p, gps.get());
-    gps.setPath(p.resolve(UUID.randomUUID().toString()));
+    gps.setT(p.resolve(UUID.randomUUID().toString()));
     assertEquals(p, gps.get());
 
   }

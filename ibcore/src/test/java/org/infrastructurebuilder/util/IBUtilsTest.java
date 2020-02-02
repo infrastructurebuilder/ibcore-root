@@ -27,6 +27,7 @@ import static org.infrastructurebuilder.util.IBUtils.asStringStream;
 import static org.infrastructurebuilder.util.IBUtils.cheapCopy;
 import static org.infrastructurebuilder.util.IBUtils.copy;
 import static org.infrastructurebuilder.util.IBUtils.copyAndDigest;
+import static org.infrastructurebuilder.util.IBUtils.copyToDeletedOnExitTempPath;
 import static org.infrastructurebuilder.util.IBUtils.deepCopy;
 import static org.infrastructurebuilder.util.IBUtils.deletePath;
 import static org.infrastructurebuilder.util.IBUtils.digestInputStream;
@@ -181,6 +182,17 @@ public class IBUtilsTest {
   @Before
   public void before() throws IOException {
     testDir = wps.get();
+  }
+
+  @Test
+  public void testMoveAtomicDirectory() throws IOException {
+    Path source = wps.get();
+    Path target = wps.get();
+    Path adir = Files.createDirectories(source.resolve("A"));
+    Path bdir = Files.createDirectories(adir.resolve("B"));
+    Path cfile = writeString(bdir.resolve("C"), "HI");
+    IBUtils.moveAtomic(source, target);
+    assertTrue(Files.exists(target.resolve("A").resolve("B").resolve("C")));
   }
 
   @Test
@@ -375,6 +387,18 @@ public class IBUtilsTest {
     final Path c = a.resolve(UUID.randomUUID().toString());
     Files.createDirectories(a);
     copy(c, null);
+  }
+
+  @Test
+  public void testCoptToDeletedOnExitTemp() throws IOException {
+    String prefix = "testpre";
+    String suffix = ".tmp";
+    Path p = wps.getTestClasses().resolve(TESTFILE);
+    Path target = null;
+    try (InputStream source = Files.newInputStream(p)) {
+      target = copyToDeletedOnExitTempPath(prefix, suffix, source);
+    }
+    assertEquals(new Checksum(p), new Checksum(target));
   }
 
   @Test(expected = NullPointerException.class)

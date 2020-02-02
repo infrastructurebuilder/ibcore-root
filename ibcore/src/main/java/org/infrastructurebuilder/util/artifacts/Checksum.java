@@ -15,6 +15,11 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
+import static java.nio.file.Files.newInputStream;
+import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.ofNullable;
+import static java.util.UUID.nameUUIDFromBytes;
 import static org.infrastructurebuilder.IBException.cet;
 import static org.infrastructurebuilder.util.IBUtils.UTF_8;
 import static org.infrastructurebuilder.util.IBUtils.digestInputStream;
@@ -23,7 +28,6 @@ import static org.infrastructurebuilder.util.IBUtils.hexStringToByteArray;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -59,16 +63,16 @@ public class Checksum implements Comparable<Checksum>, Supplier<Optional<UUID>> 
   }
 
   public Checksum(final byte[] b) {
-    this(b, Optional.empty());
+    this(b, empty());
   }
 
   public Checksum(final byte[] b, final Optional<Path> relativeRoot) {
     this.b = b;
-    this.relativeRoot = Objects.requireNonNull(relativeRoot);
+    this.relativeRoot = requireNonNull(relativeRoot);
   }
 
   public Checksum(final InputStream ins) {
-    this(ins, Optional.empty());
+    this(ins, empty());
   }
 
   public Checksum(final InputStream ins, final Optional<Path> relativeRoot) {
@@ -78,13 +82,13 @@ public class Checksum implements Comparable<Checksum>, Supplier<Optional<UUID>> 
       throw new IBException(e);
     } finally {
       if (ins != null)
-        IBException.cet.withTranslation(() -> ins.close());
+        cet.withTranslation(() -> ins.close());
     }
-    this.relativeRoot = Objects.requireNonNull(relativeRoot);
+    this.relativeRoot = requireNonNull(relativeRoot);
   }
 
   public Checksum(final Path file) {
-    this(cet.withReturningTranslation(() -> Files.newInputStream(Objects.requireNonNull(file))));
+    this(cet.withReturningTranslation(() -> newInputStream(requireNonNull(file))));
   }
 
   /**
@@ -94,7 +98,7 @@ public class Checksum implements Comparable<Checksum>, Supplier<Optional<UUID>> 
    * @param list
    */
   public Checksum(final Optional<Path> relativeRoot, final List<Checksum> list) {
-    this(Objects.requireNonNull(list).stream()
+    this(requireNonNull(list).stream()
         // Collects all checksums as a string into a long string and then gets the checksum of the UTF-8 bytes.
         .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString().getBytes(UTF_8)
     // RelRoot
@@ -102,7 +106,7 @@ public class Checksum implements Comparable<Checksum>, Supplier<Optional<UUID>> 
   }
 
   public Checksum(final String hexString) {
-    this(hexString, Optional.empty());
+    this(hexString, empty());
   }
 
   public Checksum(final String hexString, final Optional<Path> relativeRoot) {
@@ -110,7 +114,7 @@ public class Checksum implements Comparable<Checksum>, Supplier<Optional<UUID>> 
   }
 
   public Checksum(final Supplier<InputStream> insS) {
-    this(insS, Optional.empty());
+    this(insS, empty());
   }
 
   public Checksum(final Supplier<InputStream> insS, final Optional<Path> relativeRoot) {
@@ -118,11 +122,11 @@ public class Checksum implements Comparable<Checksum>, Supplier<Optional<UUID>> 
   }
 
   public Checksum(final List<Checksum> checksums) {
-    this(Optional.empty(), checksums);
+    this(empty(), checksums);
   }
 
   public Optional<UUID> asUUID() {
-    return Optional.ofNullable(b == null ? null : UUID.nameUUIDFromBytes(b));
+    return ofNullable(b == null ? null : nameUUIDFromBytes(b));
   }
 
   @Override
@@ -157,7 +161,7 @@ public class Checksum implements Comparable<Checksum>, Supplier<Optional<UUID>> 
   }
 
   public byte[] getDigest() {
-    return Optional.ofNullable(b).map(c -> Arrays.copyOf(c, c.length)).orElse(new byte[0]);
+    return ofNullable(b).map(c -> Arrays.copyOf(c, c.length)).orElse(new byte[0]);
   }
 
   public Optional<Path> getRelativeRoot() {

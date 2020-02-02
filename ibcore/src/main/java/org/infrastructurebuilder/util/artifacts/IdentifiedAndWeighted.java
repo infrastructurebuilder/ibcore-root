@@ -16,11 +16,25 @@
 package org.infrastructurebuilder.util.artifacts;
 
 /**
- * Merge identified and weighted for a type of convenience since they often go together.
+ * Merge identified and weighted for a type of convenience since they often go
+ * together.
  *
  * @author mykel.alvis
  *
  */
 public interface IdentifiedAndWeighted extends Identified, Weighted {
+  // TODO Make everythign a null safe comparator?
+  public static java.util.Comparator<IdentifiedAndWeighted> comparator() {
+    return new java.util.Comparator<IdentifiedAndWeighted>() {
+      @Override
+      public int compare(IdentifiedAndWeighted o1, IdentifiedAndWeighted o2) {
+        int retVal = Weighted.comparator().compare(o2,o1);
+        if (retVal == 0)
+          return Identified.comparator().compare(o1, o2);
+        return retVal;
+      }
+
+    };
+  }
 
 }

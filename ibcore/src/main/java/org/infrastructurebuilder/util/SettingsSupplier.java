@@ -15,12 +15,16 @@
  */
 package org.infrastructurebuilder.util;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
  * @author mykel.alvis
  *
  */
-public interface SettingsSupplier extends  Supplier<SettingsProxy> {
+public interface SettingsSupplier extends Supplier<SettingsProxy>, CredentialsSupplier {
+  default Optional<BasicCredentials> getCredentialsFor(String query) {
+    return get().getServer(query).map(ServerProxy::get);
+  }
 
 }

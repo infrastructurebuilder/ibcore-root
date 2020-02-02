@@ -19,13 +19,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Comparator;
+
 import org.junit.Before;
 import org.junit.Test;
 
 public class IdentifiedAndWeightedComparatorTest {
 
   private IdentifiedAndWeighted i1, i2, i3;
-  private IdentifiedAndWeightedComparator c;
+  private Comparator<IdentifiedAndWeighted> c;
   private IdentifiedAndWeighted i4;
 
   @Before
@@ -34,7 +36,7 @@ public class IdentifiedAndWeightedComparatorTest {
     i2 = new IC2("B", 1);
     i3 = new IC2("A", 2);
     i4 = new IC3();
-    c = new IdentifiedAndWeightedComparator();
+    c = IdentifiedAndWeighted.comparator();
   }
 
   @Test

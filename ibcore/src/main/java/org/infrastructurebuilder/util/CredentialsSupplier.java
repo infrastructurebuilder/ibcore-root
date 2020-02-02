@@ -13,20 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.artifacts;
+package org.infrastructurebuilder.util;
 
-import static java.util.Objects.requireNonNull;
+import java.util.Optional;
 
-import java.util.Comparator;
+import org.infrastructurebuilder.util.artifacts.Weighted;
 
-public class IdentifiedAndWeightedComparator implements Comparator<IdentifiedAndWeighted> {
-
-  @Override
-  public int compare(IdentifiedAndWeighted o1, IdentifiedAndWeighted o2) {
-    int retVal = requireNonNull(o1).getWeight().compareTo(requireNonNull(o2).getWeight());
-    if (retVal == 0)
-      retVal = o1.getId().compareTo(o2.getId());
-    return retVal;
-  }
+public interface CredentialsSupplier extends Weighted {
+  Optional<BasicCredentials> getCredentialsFor(String query);
 
 }

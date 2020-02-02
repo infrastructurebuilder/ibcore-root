@@ -20,11 +20,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -32,13 +30,14 @@ import org.junit.Test;
 
 public class DefaultStringListSupplierTest {
 
+private final static TestingPathSupplier wps = new TestingPathSupplier();
   private static Path target;
   private static Path testClasses;
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
-    target = Paths.get(Optional.ofNullable(System.getProperty("target")).orElse("./target")).toRealPath();
-    testClasses = target.resolve("test-classes");
+    target = wps.getRoot();
+    testClasses = wps.getTestClasses();
   }
 
   private List<String> list;

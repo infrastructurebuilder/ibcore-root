@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.files;
+package org.infrastructurebuilder.util.files.model;
 
 import static org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM;
 import static org.infrastructurebuilder.util.IBUtilsTest.TESTFILE;
@@ -30,18 +30,19 @@ import java.util.UUID;
 import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
-import org.infrastructurebuilder.util.files.model.IBChecksumPathTypeModel;
+import org.infrastructurebuilder.util.files.IBResource;
+import org.infrastructurebuilder.util.files.model.IBResourceModel;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BasicIBChecksumPathTypeTest {
+public class IBResourceModelTest {
 
   private TestingPathSupplier wps;
-  private BasicIBChecksumPathType c1, c2;
+  private IBResourceModel c1, c2;
   private Path path;
   private Checksum checksum;
-  private IBChecksumPathType def;
+  private IBResource def;
 
   @Before
   public void setUp() throws Exception {
@@ -50,10 +51,10 @@ public class BasicIBChecksumPathTypeTest {
     path = wps.get().resolve(UUID.randomUUID().toString());
     IBUtils.copy(source, path);
     checksum = new Checksum(TESTFILE_CHECKSUM);
-    c2 = new BasicIBChecksumPathType(path, checksum);
-    c1 = new BasicIBChecksumPathType(path, checksum, "ABC");
+    c2 = new IBResourceModel(path, checksum);
+    c1 = new IBResourceModel(path, checksum, "ABC");
 
-    def = new IBChecksumPathType() {
+    def = new IBResource() {
 
       @Override
       public Path getPath() {
@@ -71,7 +72,7 @@ public class BasicIBChecksumPathTypeTest {
       }
 
       @Override
-      public IBChecksumPathType moveTo(Path target) throws IOException {
+      public IBResource moveTo(Path target) throws IOException {
         return null;
       }
     };
@@ -124,7 +125,7 @@ public class BasicIBChecksumPathTypeTest {
   @Test
   public void testMoveTo() throws IOException {
     Path p = wps.get().resolve(UUID.randomUUID().toString());
-    IBChecksumPathType b = c1.moveTo(p);
+    IBResource b = c1.moveTo(p);
     assertEquals(p, b.getPath());
     assertEquals(c1.getType(), b.getType());
     assertEquals(c1.getChecksum(), b.getChecksum());
@@ -132,7 +133,7 @@ public class BasicIBChecksumPathTypeTest {
 
   @Test
   public void testEqualsHash() {
-    BasicIBChecksumPathType c3 = new BasicIBChecksumPathType(path, checksum, "ABC");
+    IBResourceModel c3 = new IBResourceModel(path, checksum, "ABC");
     c1.hashCode();
     c1.hashCode();
     c1.hashCode();
@@ -147,7 +148,7 @@ public class BasicIBChecksumPathTypeTest {
 
   @Test
   public void testRootInterfaceSourceURL() {
-    IBChecksumPathType q = new IBChecksumPathTypeModel();
+    IBResource q = new IBResourceModel();
     assertFalse(q.getSourceURL().isPresent());
     assertFalse(q.getSourceName().isPresent());
   }

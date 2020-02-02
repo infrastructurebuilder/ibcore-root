@@ -13,23 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.config;
+package org.infrastructurebuilder.util;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
 
-import javax.inject.Named;
+public class FakeCredentialsFactory implements CredentialsFactory {
 
-import org.infrastructurebuilder.IBException;
+  private final BasicCredentials creds;
 
-@Named("target-path")
-public class TargetPathSupplier implements PathSupplier {
+  public FakeCredentialsFactory() {
+    this(null);
+  }
+
+  public FakeCredentialsFactory(BasicCredentials c) {
+    this.creds = c;
+  }
 
   @Override
-  public Path get() {
-    return IBException.cet.withReturningTranslation(() -> Paths
-        .get(Optional.ofNullable(System.getProperty("target")).orElse("./target")).toRealPath().toAbsolutePath());
+  public Optional<BasicCredentials> getCredentialsFor(String query) {
+    return Optional.ofNullable(creds);
   }
 
 }

@@ -23,7 +23,6 @@ import static org.junit.Assert.fail;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
@@ -38,7 +37,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static org.infrastructurebuilder.IBConstants.*;
 
 public class ProcessRunnerTest {
   private final static Logger logger = LoggerFactory.getLogger(ProcessRunnerTest.class);

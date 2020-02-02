@@ -7,8 +7,9 @@
   xsd.namespace="https://resources.infrastructurebuilder.org/IBDataSet/${apiVersion}"
   xsd.targetNamespace="https://resources.infrastructurebuilder.org/IBDataSet/${apiVersion}">
   <id>checksum</id>
-  <name>IBChecksumPathTypeModel</name> <!--  Must be a single (no spaces, no dashes, no periods) identifier in order to create reader/writer -->
-  <description>Model for IBChecksumPathType, which underpins IBData among others</description>
+  <name>IBResourceModel</name> <!-- Must be a single (no spaces, no dashes, no periods) identifier in order
+    to create reader/writer -->
+  <description>Model for IBResource, which underpins IBData among others</description>
 
   <defaults>
     <default>
@@ -18,30 +19,22 @@
   </defaults>
 
   <classes>
-  <!-- MODEL -->
-    <class xml.tagName="iBChecksumPathTypeModel"
-      rootElement="true">
-      <name>IBChecksumPathTypeModel</name>
-      <description>Iterim persistence data for IBChecksumPathType</description>
+    <!-- MODEL -->
+    <class xml.tagName="IBResourceModel" rootElement="true">
+      <name>IBResourceModel</name>
+      <description>Iterim persistence data for IBResource</description>
       <version>1.0.0+</version>
       <interfaces>
         <interface>
-          <![CDATA[org.infrastructurebuilder.util.files.IBChecksumPathType]]>
+          <![CDATA[org.infrastructurebuilder.util.files.IBResource]]>
         </interface>
-        <!--
-        <interface>
-          <![CDATA[java.lang.Comparable<org.infrastructurebuilder.util.files.IBChecksumPathType>]]>
-        </interface>
-         -->
       </interfaces>
       <fields>
-
-
         <field>
           <name>filePath</name>
           <version>1.0.0+</version>
           <required>false</required>
-          <description>Path to the described file.  IBChecksumType requires this be non-null, but the persistence model may not, because the source can be the means for acquiring the data.</description>
+          <description>Path to the described file.  IBResource requires this be non-null, but the persistence model may not, because the source can be the means for acquiring the data.</description>
           <type>String</type>
         </field>
         <field>
@@ -89,8 +82,8 @@
           <version>1.0.0+</version>
           <code>
             <![CDATA[
-    public IBChecksumPathTypeModel() {
-      this(null,null,null, null, null);
+    public IBResourceModel() {
+      this((String)null,null,null, null, null);
     }
   ]]>
           </code>
@@ -98,7 +91,7 @@
         <codeSegment>
           <code>
             <![CDATA[
-    protected IBChecksumPathTypeModel(
+    protected IBResourceModel(
       String filePath,
       String checksum,
       String type,
@@ -178,9 +171,9 @@
           <code>
             <![CDATA[
     @Override
-    public org.infrastructurebuilder.util.files.IBChecksumPathType moveTo(java.nio.file.Path target) throws java.io.IOException {
+    public org.infrastructurebuilder.util.files.IBResource moveTo(java.nio.file.Path target) throws java.io.IOException {
       org.infrastructurebuilder.util.IBUtils.moveAtomic(getPath(), target);
-      return new IBChecksumPathTypeModel(target.toAbsolutePath().toString(),getFileChecksum(), getType(), getSource(), getName());
+      return new IBResourceModel(target.toAbsolutePath().toString(),getFileChecksum(), getType(), getSource(), getName());
     }
   ]]>
           </code>
@@ -215,6 +208,64 @@
     public org.infrastructurebuilder.util.artifacts.Checksum getChecksum() {
       return new org.infrastructurebuilder.util.artifacts.Checksum(getFileChecksum());
     }
+  ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  public IBResourceModel(
+      // Path
+      java.nio.file.Path path
+      // Checksum
+      , org.infrastructurebuilder.util.artifacts.Checksum checksum
+      // Type
+      , String type) {
+    this(path, checksum, type, java.util.Optional.empty(), java.util.Optional.empty());
+  }
+
+  ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  public IBResourceModel(
+      // Path
+      java.nio.file.Path path
+      // Checksum
+      , org.infrastructurebuilder.util.artifacts.Checksum checksum
+      // Type
+      , String type
+      // Source
+      , java.util.Optional<java.net.URL> sourceURL
+      // Name
+      , java.util.Optional<String> name) {
+    this(java.util.Objects.requireNonNull(path).toAbsolutePath().toString(),
+        java.util.Objects.requireNonNull(checksum).toString()
+        , java.util.Objects.requireNonNull(type)
+        , java.util.Objects.requireNonNull(sourceURL).map(java.net.URL::toExternalForm).orElse(null)
+        ,java.util.Objects.requireNonNull(name).orElse(null));
+    this.path = java.util.Objects.requireNonNull(path);
+  }
+
+  ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+   IBResourceModel(
+      // Path
+      java.nio.file.Path path
+      // Checksum
+      , org.infrastructurebuilder.util.artifacts.Checksum checksum) {
+    this(path, checksum, org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM);
+  }
+
   ]]>
           </code>
         </codeSegment>

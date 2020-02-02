@@ -62,5 +62,14 @@ public class DefaultBasicCredentials implements BasicCredentials {
     return result;
   }
 
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder();
+    builder.append("DefaultBasicCredentials [key=").append(key).append(", secret=******]");
+    return builder.toString();
+  }
+
+
+
 
 }

@@ -15,17 +15,14 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import static org.infrastructurebuilder.util.config.MavenConfigWithServersMapSupplier.MAVEN_SETTINGS_SERVER_NAMESPACE;
+import static org.infrastructurebuilder.util.config.ConfigMapSupplier.MAVEN_SETTINGS_SERVER_NAMESPACE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-
-import java.util.Map;
 
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 
 public class MavenConfigWithServersMapSupplierTest extends MavenConfigMapSupplierTest {
 

@@ -31,7 +31,7 @@ import java.util.stream.Collector;
 
 import org.json.JSONObject;
 
-public class SettingsProxy {
+public class SettingsProxy implements CredentialsSupplier {
 
   private final Path localRepository;
   private final List<ServerProxy> servers;
@@ -64,8 +64,8 @@ public class SettingsProxy {
   }
 
   /**
-   * Get the local repository.<br><b>Default value is:</b>
-   * <code>${user.home}/.m2/repository</code>
+   * Get the local repository.<br>
+   * <b>Default value is:</b> <code>${user.home}/.m2/repository</code>
    *
    * @return String
    */
@@ -133,6 +133,7 @@ public class SettingsProxy {
 
   /**
    * Get a mapped list of servers from the settings object
+   *
    * @return Servers mapped by getId
    */
   public JSONObject getServersAsJSON() {
@@ -140,8 +141,7 @@ public class SettingsProxy {
   }
 
   /**
-   * Get whether Maven should attempt to interact with the user
-   * for input.
+   * Get whether Maven should attempt to interact with the user for input.
    *
    * @return false
    */
@@ -150,8 +150,7 @@ public class SettingsProxy {
   }
 
   /**
-   * Get indicate whether maven should operate in offline mode
-   * full-time.
+   * Get indicate whether maven should operate in offline mode full-time.
    *
    * @return boolean
    */
@@ -160,8 +159,8 @@ public class SettingsProxy {
   }
 
   /**
-   * Get whether Maven should use the plugin-registry.xml file to
-   * manage plugin versions.
+   * Get whether Maven should use the plugin-registry.xml file to manage plugin
+   * versions.
    *
    * @return false
    */
@@ -194,5 +193,10 @@ public class SettingsProxy {
 
   public Optional<MirrorProxy> getMirror(String mirrorId) {
     return getMirrors().stream().filter(p -> p.getId().equals(Objects.requireNonNull(mirrorId))).findFirst();
+  }
+
+  @Override
+  public Optional<BasicCredentials> getCredentialsFor(String query) {
+    return getServer(query).map(ServerProxy::get);
   }
 }

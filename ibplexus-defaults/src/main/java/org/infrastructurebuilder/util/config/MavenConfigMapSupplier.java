@@ -36,10 +36,10 @@ import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.sisu.Nullable;
 import org.infrastructurebuilder.IBException;
-import org.infrastructurebuilder.util.IBUtils;
 
 @Named(ConfigMapSupplier.MAVEN)
 public class MavenConfigMapSupplier extends DefaultConfigMapSupplier {
+
 
   @Inject
   public MavenConfigMapSupplier(final MavenProject mavenProject, @Nullable MavenSession session,
@@ -72,7 +72,7 @@ public class MavenConfigMapSupplier extends DefaultConfigMapSupplier {
 
     final Path workingDir = Paths.get(build.getDirectory()).resolve(UUID.randomUUID().toString());
     IBException.cet.withTranslation(() -> Files.createDirectories(workingDir));
-    super.overrideValue("workingDir", workingDir.toString());
+    super.overrideValue(IB_DATA_WORKING_DIR, workingDir.toString());
     Map<String, Object> i = requireNonNull(System.getenv()).entrySet().stream()
         .collect(toMap(k -> k.getKey(), v -> v.getValue()));
     super.addConfiguration(i);
