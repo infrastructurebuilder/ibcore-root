@@ -16,7 +16,6 @@
 package org.infrastructurebuilder.util;
 
 import java.util.Optional;
-import java.util.function.Supplier;
 
 /**
  * The {@code CredentialsFactory} is injected with mechanisms for lookup up
@@ -27,9 +26,9 @@ import java.util.function.Supplier;
  */
 public interface CredentialsFactory {
   /**
-   * Get a {@link CredentialsSupplier} from a query
+   * Get a result from some {@link CredentialsSupplier} from a query
    *
-   * @param query string query lookup
+   * @param query string lookup
    * @return {@link CredentialsSupplier} if found
    */
   Optional<BasicCredentials> getCredentialsFor(String query);

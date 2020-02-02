@@ -15,7 +15,7 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
 import java.util.List;
@@ -78,17 +78,13 @@ public class DefaultIBArtifactVersionMapperTest {
     };
     ibvs = new HashMap<>();
     ibvs.put("ABC", vs);
-    v = new DefaultIBArtifactVersionMapper(() -> log, ibvs);
+    v = new DefaultIBArtifactVersionMapper( ibvs);
   }
 
   @After
   public void tearDown() throws Exception {
   }
 
-  @Test
-  public void testGetLog() {
-    v.getLog().debug("DEBUGGING!  WOO HOO!");
-  }
 
   @Test
   public void testGetMatchingArtifacts() {

@@ -15,13 +15,16 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
+import static java.util.Collections.emptyList;
+
 import java.util.List;
 
 import org.infrastructurebuilder.IBVersionsSupplier;
-import org.infrastructurebuilder.util.LoggerEnabled;
 
-public interface IBArtifactVersionMapper extends LoggerEnabled {
+public interface IBArtifactVersionMapper {
 
-  List<IBVersionsSupplier> getMatchingArtifacts(String groupId, String artifactId);
+  default List<IBVersionsSupplier> getMatchingArtifacts(String groupId, String artifactId) {
+    return emptyList();
+  }
 
 }

@@ -53,7 +53,6 @@ public interface IBConstants {
   public static final String IBDATA_SCHEMA = "application/xml-ibdata-schema";
   public static final String APPLICATION_VND_OASIS_SPREADSHEET = "application/vnd.oasis.opendocument.spreadsheet";
 
-
   public static final String JAVA_LANG_STRING = "java.lang.String";
   public static final String ORG_W3C_DOM_NODE = "org.w3c.dom.Node";
   public static final String ORG_APACHE_AVRO_GENERIC_INDEXED_RECORD = "org.apache.avro.generic.IndexedRecord";
@@ -78,7 +77,8 @@ public interface IBConstants {
   public static final String PROTO = ".proto";
   public static final String THRIFT = ".thrift";
   public static final String DTD = ".dtd";
-
+  public static final String JSON_EXT = ".json";
+  public static final String NLD_JSON_EXT = ".nldjson";
 
 
   public static final String _SHA512 = "sha512";
@@ -101,9 +101,9 @@ public interface IBConstants {
   public static final String AZUREDEVOPS = "azuredevops";
   public static final String HEX_IDENTIFIER = "HEXID:";
   public static final String ID = "id";
-  public static final String JSON_EXT = ".json";
   public static final String KEYSERVER_DEFAULT_HOST = "pgp.mit.edu";
   public static final String KEYSERVER_HOST_ENV = "SPECIFIC_KEYSERVER_HOST";
+  public static final String MAVEN = "maven";
   public static final String MAVEN_MIRRORS = "MAVEN_MIRRORS";
   public static final String NAME = "name";
   public static final String NO_OP = "no-op";
@@ -141,8 +141,7 @@ public interface IBConstants {
   public static final String CREDENTIALS = "credentials";
 
   public static final String IBSCHEMA_MIME_TYPE = "application/ibdata-schema";
-  public static final String  APPLICATION_LIQUIBASE_CHANGELOG = "application/liquibase-changelog";
-
+  public static final String APPLICATION_LIQUIBASE_CHANGELOG = "application/liquibase-changelog";
 
   // IBData's preferred content type for protobug is PROTOBUF0
   public static final String PROTOBUF0 = "application/vnd.google.protobuf";
@@ -158,5 +157,7 @@ public interface IBConstants {
   public static final String DTD_RESOURCE = "dbUnitDTD";
   public static final String FAIL_ON_ERROR = "failOnError";
 
-
+  public static final String JSON_TYPE = "application/json";
+  // This is a specific type that keeps cropping up
+  public static final String NLD_JSON_TYPE = JSON_TYPE + ";newline-delimited-records";
 }

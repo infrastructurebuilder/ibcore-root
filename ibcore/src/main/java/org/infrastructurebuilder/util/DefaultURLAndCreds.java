@@ -17,11 +17,8 @@ package org.infrastructurebuilder.util;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
-import static java.util.Optional.ofNullable;
 
 import java.util.Optional;
-
-import org.infrastructurebuilder.util.config.ConfigMap;
 
 /**
  * Generally speaking, IBJDBCQuery is the more "extended" version of {@link URLAndCreds} for queries

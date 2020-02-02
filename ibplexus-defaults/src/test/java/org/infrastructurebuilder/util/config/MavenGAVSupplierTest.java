@@ -15,21 +15,16 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
+import static org.junit.Assert.assertEquals;
 
-import javax.inject.Named;
+import org.junit.Test;
 
-import org.infrastructurebuilder.IBException;
+public class MavenGAVSupplierTest extends AbstractPlexusDefaultsConfigTest {
 
-@Named("target-path")
-public class TargetPathSupplier implements PathSupplier {
-
-  @Override
-  public Path get() {
-    return IBException.cet.withReturningTranslation(() -> Paths
-        .get(Optional.ofNullable(System.getProperty("target")).orElse("./target")).toRealPath().toAbsolutePath());
+  @Test
+  public void test() {
+    MavenGAVSupplier v = new MavenGAVSupplier(mp);
+    assertEquals("G:A:1.0.0:jar", v.get().asMavenDependencyGet().get());
   }
 
 }

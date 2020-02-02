@@ -16,7 +16,9 @@
 package org.infrastructurebuilder.util.artifacts;
 
 import static org.infrastructurebuilder.util.artifacts.ChecksumEnabled.safeMapUUID;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 
 import java.util.UUID;
 

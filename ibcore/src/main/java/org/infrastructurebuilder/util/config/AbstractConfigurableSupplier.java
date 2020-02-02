@@ -17,44 +17,41 @@ package org.infrastructurebuilder.util.config;
 
 import static java.util.Objects.requireNonNull;
 
-import org.infrastructurebuilder.util.LoggerSupplier;
 import org.slf4j.Logger;
 
 abstract public class AbstractConfigurableSupplier<TYPE, CONFIG, PARAMETER>
     implements ConfigurableSupplier<TYPE, CONFIG, PARAMETER> {
 
   protected final CONFIG config;
-  private final LoggerSupplier loggerSupplier;
-  private final PathSupplier wps;
+  private final IBRuntimeUtils ibr;
   private final PARAMETER param;
 
-  protected AbstractConfigurableSupplier(PathSupplier wps, CONFIG config, LoggerSupplier l, PARAMETER p) {
-    this.wps = requireNonNull(wps);
+  protected AbstractConfigurableSupplier(IBRuntimeUtils ibr, CONFIG config, PARAMETER p) {
+    this.ibr = requireNonNull(ibr);
     this.config = config;
-    this.loggerSupplier = requireNonNull(l);
     this.param = p;
   }
 
-//  protected AbstractConfigurableSupplier(PathSupplier wps, CONFIG config, LoggerSupplier l) {
-//    this(wps, config, l, null);
-//  }
-
   public PathSupplier getWorkingPathSupplier() {
-    return wps;
+    return () -> ibr.getWorkingPath();
   }
 
   public TYPE get() {
-    return getInstance(getWorkingPathSupplier(), param);
+    return getInstance(getRuntimeUtils(), param);
   }
 
-  protected abstract TYPE getInstance(PathSupplier wps, PARAMETER in);
+  protected abstract TYPE getInstance(IBRuntimeUtils r, PARAMETER in);
 
   public CONFIG getConfig() {
     return this.config;
   }
 
+  public IBRuntimeUtils getRuntimeUtils() {
+    return ibr;
+  }
+
   @Override
   public Logger getLog() {
-    return this.loggerSupplier.get();
+    return this.ibr.getLog();
   }
 }

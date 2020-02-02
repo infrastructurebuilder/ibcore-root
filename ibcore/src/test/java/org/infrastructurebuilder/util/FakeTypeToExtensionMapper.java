@@ -13,26 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.config;
+package org.infrastructurebuilder.util;
 
-import java.nio.file.Path;
+import java.util.Collections;
+import java.util.SortedSet;
 
-abstract public class AbstractPathSupplierHolder  implements PathSupplier {
+import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
 
-  private Path path = null;
+public class FakeTypeToExtensionMapper implements TypeToExtensionMapper {
 
-  public AbstractPathSupplierHolder() {
-    super();
-  }
-
-  public void setPath(Path path) {
-    if (this.path == null) // Set it once
-      this.path = path;
+  public FakeTypeToExtensionMapper() {
   }
 
   @Override
-  public Path get() {
-    return this.path;
+  public String getExtensionForType(String type) {
+    return ".bin";
+  }
+
+  @Override
+  public SortedSet<String> reverseMapFromExtension(String extension) {
+    return Collections.emptySortedSet();
   }
 
 }

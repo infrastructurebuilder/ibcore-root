@@ -39,9 +39,9 @@ public class InPlaceLateBindingPathSupplierTest {
     Path p1 = Paths.get(".");
     Path p2 = p1.resolve(UUID.randomUUID().toString());
     assertNull(this.ps.get());
-    this.ps.setPath(p1);
+    this.ps.setT(p1);
     assertEquals(p1, this.ps.get());
-    this.ps.setPath(p2);
+    this.ps.setT(p2);
     assertEquals(p1, this.ps.get());
   }
 

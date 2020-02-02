@@ -15,10 +15,21 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import java.nio.file.Path;
+import static java.util.Collections.emptyList;
 
-//@javax.inject.Named(IBDATA_WORKING_PATH_SUPPLIER)
-@javax.inject.Singleton
-public class SingletonLateBindingPathSupplier extends TSupplier<Path> {
-//  public static final String SINGLETON_LATE_BINDING_PATH_SUPPLIER = "singleton-late-binding-path-supplier";
+import java.nio.file.Path;
+import java.util.List;
+
+import org.infrastructurebuilder.util.CredentialsFactory;
+import org.infrastructurebuilder.util.LoggerEnabled;
+import org.infrastructurebuilder.util.artifacts.GAV;
+import org.infrastructurebuilder.util.artifacts.IBArtifactVersionMapper;
+import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
+
+public interface IBRuntimeUtils extends CredentialsFactory, IBArtifactVersionMapper, LoggerEnabled, TypeToExtensionMapper  {
+  Path getWorkingPath();
+  GAV getWorkingGAV();
+  default List<GAV> getDependencies() {
+    return emptyList();
+  }
 }

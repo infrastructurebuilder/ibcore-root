@@ -13,36 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.artifacts;
+package org.infrastructurebuilder.util.config;
 
 import static java.util.stream.Collectors.toList;
-import static org.infrastructurebuilder.IBConstants.DEFAULT;
+import static org.infrastructurebuilder.IBConstants.MAVEN;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.infrastructurebuilder.IBVersionsSupplier;
+import org.apache.maven.project.MavenProject;
+import org.infrastructurebuilder.util.artifacts.GAV;
+import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
 
-@Named(DEFAULT)
+@Named(MAVEN)
 @Singleton
-public class DefaultIBArtifactVersionMapper implements IBArtifactVersionMapper {
-
-  private final Map<String, IBVersionsSupplier> ibvs;
+public final class MavenDependenciesSupplier implements DependenciesSupplier {
+  private List<GAV> gav;
 
   @Inject
-  public DefaultIBArtifactVersionMapper(Map<String, IBVersionsSupplier> ibvs) {
-    this.ibvs = Objects.requireNonNull(ibvs);
+  public MavenDependenciesSupplier(MavenProject p) {
+    // FIXME type != extension
+    this.gav = p.getArtifacts().stream()
+        .map(d -> new DefaultGAV(d.getGroupId(), d.getArtifactId(), d.getClassifier(), d.getVersion(), d.getType())
+            .withFile(d.getFile().toPath().toAbsolutePath()))
+        .collect(toList());
   }
 
   @Override
-  public List<IBVersionsSupplier> getMatchingArtifacts(String groupId, String artifactId) {
-    return this.ibvs.values().parallelStream()
-        .filter(v -> v.getGroupId().get().equals(groupId) && v.getArtifactId().get().equals(artifactId))
-        .collect(toList());
+  public List<GAV> get() {
+    return gav;
   }
+
 }

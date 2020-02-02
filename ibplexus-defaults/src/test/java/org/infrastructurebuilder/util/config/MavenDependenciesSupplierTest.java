@@ -15,10 +15,21 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import java.nio.file.Path;
+import static org.junit.Assert.assertEquals;
 
-//@javax.inject.Named(IBDATA_WORKING_PATH_SUPPLIER)
-@javax.inject.Singleton
-public class SingletonLateBindingPathSupplier extends TSupplier<Path> {
-//  public static final String SINGLETON_LATE_BINDING_PATH_SUPPLIER = "singleton-late-binding-path-supplier";
+import java.util.List;
+
+import org.infrastructurebuilder.util.artifacts.GAV;
+import org.junit.Test;
+
+public class MavenDependenciesSupplierTest extends AbstractPlexusDefaultsConfigTest {
+
+  @Test
+  public void test() {
+    MavenDependenciesSupplier v = new MavenDependenciesSupplier(mp);
+    List<GAV> a = v.get();
+    assertEquals(1, a.size());
+    assertEquals(destination, a.get(0).getFile().get().toFile());
+  }
+
 }

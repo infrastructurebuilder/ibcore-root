@@ -24,6 +24,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.infrastructurebuilder.IBException;
+import org.infrastructurebuilder.IBVersionsSupplier;
 import org.infrastructurebuilder.util.artifacts.GAV;
 import org.json.JSONObject;
 
@@ -57,6 +58,10 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
   public DefaultGAV(final JSONObject json, final String classifier) {
     this(json);
     setClassifier(classifier);
+  }
+
+  public DefaultGAV(final IBVersionsSupplier from) {
+    this(Objects.requireNonNull(from).getArtifactDependency().get());
   }
 
   public DefaultGAV(final String from) {

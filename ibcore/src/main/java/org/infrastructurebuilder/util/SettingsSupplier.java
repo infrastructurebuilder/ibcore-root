@@ -18,8 +18,6 @@ package org.infrastructurebuilder.util;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.util.artifacts.Weighted;
-
 /**
  * @author mykel.alvis
  *

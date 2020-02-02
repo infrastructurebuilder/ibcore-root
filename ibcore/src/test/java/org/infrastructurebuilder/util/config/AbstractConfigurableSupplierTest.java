@@ -16,10 +16,11 @@
 package org.infrastructurebuilder.util.config;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import java.util.Optional;
-import java.util.function.Supplier;
-
+import org.infrastructurebuilder.util.FakeCredentialsFactory;
+import org.infrastructurebuilder.util.artifacts.IBArtifactVersionMapper;
+import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -30,6 +31,9 @@ public class AbstractConfigurableSupplierTest {
   private final static TestingPathSupplier wps = new TestingPathSupplier();
 
   private TestAbstractConfigurableSupplier a;
+  private final static IBRuntimeUtils ibr = new IBRuntimeUtilsTesting(wps, log,
+      new DefaultGAV(new FakeIBVersionsSupplier()), new FakeCredentialsFactory(), new IBArtifactVersionMapper() {
+      });
 
   @Before
   public void setUp() throws Exception {
@@ -40,12 +44,15 @@ public class AbstractConfigurableSupplierTest {
   public void test() {
     ConfigurableSupplier<String, String, Object> b = a.configure("new");
     assertEquals("new", b.get());
+
+    assertNotNull(a.getRuntimeUtils());
+    assertNotNull(a.getLog());
   }
 
   public class TestAbstractConfigurableSupplier extends AbstractConfigurableSupplier<String, String, Object> {
 
     public TestAbstractConfigurableSupplier(String config) {
-      super(wps, config, () -> log, null);
+      super(ibr, config, null);
     }
 
     @Override
@@ -54,7 +61,7 @@ public class AbstractConfigurableSupplierTest {
     }
 
     @Override
-    protected String getInstance(PathSupplier workingPath, Object in) {
+    protected String getInstance(IBRuntimeUtils ibr, Object in) {
       return getConfig();
     }
 

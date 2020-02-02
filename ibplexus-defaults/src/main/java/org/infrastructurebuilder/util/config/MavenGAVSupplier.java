@@ -15,10 +15,30 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import java.nio.file.Path;
+import static org.infrastructurebuilder.IBConstants.MAVEN;
 
-//@javax.inject.Named(IBDATA_WORKING_PATH_SUPPLIER)
-@javax.inject.Singleton
-public class SingletonLateBindingPathSupplier extends TSupplier<Path> {
-//  public static final String SINGLETON_LATE_BINDING_PATH_SUPPLIER = "singleton-late-binding-path-supplier";
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import org.apache.maven.project.MavenProject;
+import org.infrastructurebuilder.util.artifacts.GAV;
+import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
+
+@Named(MAVEN)
+@Singleton
+public final class MavenGAVSupplier implements GAVSupplier {
+
+  private final GAV gav;
+
+  @Inject
+  public MavenGAVSupplier(MavenProject p) {
+    this.gav = new DefaultGAV(p.getGroupId(), p.getArtifactId(), p.getVersion());
+  }
+
+  @Override
+  public GAV get() {
+    return gav;
+  }
+
 }

@@ -15,10 +15,9 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import java.nio.file.Path;
+import java.util.function.Supplier;
 
-//@javax.inject.Named(IBDATA_WORKING_PATH_SUPPLIER)
-@javax.inject.Singleton
-public class SingletonLateBindingPathSupplier extends TSupplier<Path> {
-//  public static final String SINGLETON_LATE_BINDING_PATH_SUPPLIER = "singleton-late-binding-path-supplier";
+import org.infrastructurebuilder.util.artifacts.GAV;
+
+public interface GAVSupplier extends Supplier<GAV> {
 }

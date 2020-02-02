@@ -15,16 +15,14 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import org.infrastructurebuilder.util.LoggerSupplier;
-
 abstract public class AbstractCMSConfigurableSupplier<T, P> extends AbstractConfigurableSupplier<T, ConfigMapSupplier, P>  {
 
-  public AbstractCMSConfigurableSupplier(PathSupplier wps, ConfigMapSupplier config, LoggerSupplier l) {
-    this(wps, config, l, null);
+  public AbstractCMSConfigurableSupplier(IBRuntimeUtils ibr, ConfigMapSupplier config) {
+    this(ibr, config, null);
   }
 
-  public AbstractCMSConfigurableSupplier(PathSupplier wps, ConfigMapSupplier config, LoggerSupplier l, P param) {
-    super(wps, config, l, param);
+  public AbstractCMSConfigurableSupplier(IBRuntimeUtils ibr, ConfigMapSupplier config,  P param) {
+    super(ibr, config, param);
   }
 
 

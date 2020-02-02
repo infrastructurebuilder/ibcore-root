@@ -20,10 +20,6 @@ import static org.junit.Assert.assertFalse;
 
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.BasicCredentials;
-import org.infrastructurebuilder.util.CredentialsFactory;
-import org.infrastructurebuilder.util.DefaultBasicCredentials;
-import org.infrastructurebuilder.util.DefaultURLAndCreds;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -68,7 +64,7 @@ public class DefaultURLAndCredsTest {
   @Test
   public void testGetCreds() {
     assertFalse(d.getCredentialsQuery().isPresent());
-    assertEquals("A", cf.getCredentialsFor(d.getCredentialsQuery().get()).get().getKeyId());
+    assertEquals("A", cf.getCredentialsFor(e.getCredentialsQuery().get()).get().getKeyId());
   }
 
 }

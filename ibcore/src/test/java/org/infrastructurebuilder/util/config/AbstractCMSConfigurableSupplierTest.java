@@ -17,8 +17,9 @@ package org.infrastructurebuilder.util.config;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.function.Supplier;
-
+import org.infrastructurebuilder.util.FakeCredentialsFactory;
+import org.infrastructurebuilder.util.artifacts.IBArtifactVersionMapper;
+import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -27,6 +28,10 @@ import org.slf4j.LoggerFactory;
 public class AbstractCMSConfigurableSupplierTest {
   private final static Logger log = LoggerFactory.getLogger(AbstractCMSConfigurableSupplierTest.class);
   private final static TestingPathSupplier wps = new TestingPathSupplier();
+  private final static IBRuntimeUtils ibr = new IBRuntimeUtilsTesting(wps, log,
+      new DefaultGAV(new FakeIBVersionsSupplier()), new FakeCredentialsFactory(), new IBArtifactVersionMapper() {
+      });
+
 
   private DefaultConfigMapSupplier cms;
   private AbstractCMSConfigurableSupplier<String, Object> l;
@@ -36,7 +41,7 @@ public class AbstractCMSConfigurableSupplierTest {
     cms = new DefaultConfigMapSupplier();
     cms.addValue("B", "C");
     cms.addValue("A", "G");
-    l = new AbstractCMSConfigurableSupplier<String, Object>(wps, cms, () -> log) {
+    l = new AbstractCMSConfigurableSupplier<String, Object>(ibr, cms) {
 
       @Override
       public AbstractCMSConfigurableSupplier<String, Object> getConfiguredSupplier(ConfigMapSupplier cms) {
@@ -44,7 +49,7 @@ public class AbstractCMSConfigurableSupplierTest {
       }
 
       @Override
-      protected String getInstance(PathSupplier workingPath, Object in) {
+      protected String getInstance(IBRuntimeUtils ibr, Object in) {
         return getConfig().get().getString("A");
       }
     };
