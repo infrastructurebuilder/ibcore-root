@@ -24,7 +24,24 @@ import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.IBException;
 
-public interface ArtifactServices {
+/**
+ * ArtifactServices instances produce access to an artifact repository.
+ *
+ * Specifically, they currently can only reall manage a repository that stores
+ * artifacts in a manner consistent with a {@link GAV}. This means that the
+ * underlying repository has a namespace + name + version + [possible other
+ * identifiers] + extension (not type, like in Maven). For the most part, this
+ * is very straightforward. Nearly every repository manager does this, as it is
+ * a proven pattern with literally billions of uses across the last few decades.
+ *
+ * Note that for some, and possibly even many, repository types, the concept of
+ * scope simply doesn't exist. This value will generally be ignored if that's
+ * the case.
+ *
+ * @author mykel.alvis
+ *
+ */
+public interface ArtifactServices extends Weighted {
   final static String BASIC_PACKAGING = "jar";
   final static String CENTRAL_REPO_ID = "central";
   final static String CENTRAL_REPO_STRING_URL = "https://repo.maven.apache.org/maven2/";
@@ -77,6 +94,7 @@ public interface ArtifactServices {
 
   /**
    * Defined as returning the absolute path to the user's local repository
+   *
    * @return
    */
   Path getLocalRepo();
