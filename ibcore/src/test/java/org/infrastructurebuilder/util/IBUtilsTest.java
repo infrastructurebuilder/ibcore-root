@@ -1219,4 +1219,13 @@ public class IBUtilsTest {
     assertTrue(IBUtils.isJarArchive() || IBUtils.isZipArchive());
     assertTrue(IBUtils.isZipArchive() || IBUtils.isJarArchive());
   }
+
+  @Test
+  public void testReadInputStreamAsStringStream() throws IOException {
+    try (InputStream ins = Files.newInputStream(testClasses.resolve("somefile.json"))) {
+      JSONObject j = new JSONObject(IBUtils.readInputStreamAsStringStream(ins).collect(Collectors.joining("\n")));
+      JSONObject t2 = IBUtils.readJsonObject(testClasses.resolve("somefile.json"));
+      JSONAssert.assertEquals(t2, j, true);
+    }
+  }
 }

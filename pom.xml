@@ -23,7 +23,7 @@
     <version>28</version>
   </parent>
   <artifactId>ibcore-root</artifactId>
-  <version>0.16.1-SNAPSHOT</version>
+  <version>0.17.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>${project.artifactId}</name>
   <description>InfrastructureBuilder Common</description>
@@ -147,5 +147,6 @@
     <module>ibmaven-support</module>
     <module>ibcore-files</module>
     <module>ibcore-read-detect</module>
+    <module>ibcore-default-extension-type-mapper</module>
   </modules>
 </project>

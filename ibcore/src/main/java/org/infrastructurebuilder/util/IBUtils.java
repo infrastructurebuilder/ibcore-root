@@ -351,6 +351,7 @@ public class IBUtils {
         }
 
       });
+      Files.delete(root);
     } catch (final IOException e) {
       iolog.warn("Fail to delete path", e);
     }

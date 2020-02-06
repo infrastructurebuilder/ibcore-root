@@ -15,20 +15,22 @@
     limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibcore-root</artifactId>
     <version>0.17.0-SNAPSHOT</version>
   </parent>
-  <artifactId>ibcore-files</artifactId>
+  <artifactId>ibcore-default-extension-type-mapper</artifactId>
   <packaging>jar</packaging>
   <name>${project.artifactId}</name>
-  <description>Component that wraps dir scanner</description>
+  <description>Component that maps MIME types to file extensions and back</description>
   <!-- I see no way to increase this at the moment -->
   <properties>
-    <test.coverage.percentage.required>99</test.coverage.percentage.required>
+    <test.coverage.percentage.required>95</test.coverage.percentage.required>
     <jacoco.max.missed.classes>0</jacoco.max.missed.classes>
   </properties>
   <!-- URL for site gen -->
@@ -37,26 +39,7 @@
     <dependency>
       <groupId>org.infrastructurebuilder</groupId>
       <artifactId>ibcore</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.sisu</groupId>
-      <artifactId>org.eclipse.sisu.plexus</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.infrastructurebuilder.util</groupId>
-      <artifactId>iblog-slf4j-component</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.infrastructurebuilder.util</groupId>
-      <artifactId>iblogconfig</artifactId>
-      <classifier>debug</classifier>
-      <scope>test</scope>
+      <type>test-jar</type>
     </dependency>
     <dependency>
       <groupId>org.jooq</groupId>
@@ -64,29 +47,41 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.ant</groupId>
-      <artifactId>ant</artifactId>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore-read-detect</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.corn</groupId>
+      <artifactId>corn-cps</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>com.sun</groupId>
+          <artifactId>tools</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <build>
     <plugins>
       <plugin>
+        <groupId>org.infrastructurebuilder.maven</groupId>
+        <artifactId>ibversions-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <forkCount>1</forkCount>
           <reuseForks>false</reuseForks>
+          <!-- <forkCount>0</forkCount> <additionalClasspathElements> <additionalClasspathElement>
+            ${project.build.directory}/test-classes/test.jar </additionalClasspathElement>
+            </additionalClasspathElements> -->
         </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.eclipse.sisu</groupId>
-        <artifactId>sisu-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
-
 </project>

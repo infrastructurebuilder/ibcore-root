@@ -65,6 +65,7 @@ public interface IBConstants {
   public static final String TEXT_PSV_WITH_HEADER = "text/pipe-separated-values;header";
   public static final String TEXT_TSV = "text/tab-separated-values";
   public static final String TEXT_TSV_WITH_HEADER = "text/tab-separated-values;header";
+  public static final String VIDEO_AVI_1 = "video/avi";
 //  public static final String LIQUIBASE_SCHEMA = "application/liquibase-schema+xml";
 
   public static final String JAVA_LANG_STRING = "java.lang.String";
@@ -72,6 +73,7 @@ public interface IBConstants {
   public static final String ORG_APACHE_AVRO_GENERIC_INDEXED_RECORD = "org.apache.avro.generic.IndexedRecord";
 
   public static final String DEFAULT_EXTENSION = ".bin";
+  public static final String AVI = ".avi";
   public static final String AVRO = ".avro";
   public static final String AVSC = ".avsc";
   public static final String CBOR = ".cbor";
