@@ -66,6 +66,13 @@
           <description>Optional name data</description>
           <type>String</type>
         </field>
+        <field java.getter="false">
+          <name>mostRecentReadTime</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Source URL (to be evaluated as a URL)</description>
+          <type>Date</type>
+        </field>
       </fields>
       <codeSegments>
 
@@ -83,7 +90,7 @@
           <code>
             <![CDATA[
     public IBResourceModel() {
-      this((String)null,null,null, null, null);
+      this((String)null,null,null, null, null, null);
     }
   ]]>
           </code>
@@ -92,11 +99,12 @@
           <code>
             <![CDATA[
     protected IBResourceModel(
-      String filePath,
-      String checksum,
-      String type,
-      String source,
-      String name
+      String filePath
+      ,String checksum
+      ,String type
+      ,String source
+      ,String name
+      ,java.util.Date mostRecentRead
       ) {
       super();
       this.filePath = filePath;
@@ -105,6 +113,7 @@
       this.source = source;
       this.name = name;
       this.path = null;
+      this.mostRecentReadTime = mostRecentRead;
     }
   ]]>
         </code>
@@ -173,7 +182,7 @@
     @Override
     public org.infrastructurebuilder.util.files.IBResource moveTo(java.nio.file.Path target) throws java.io.IOException {
       org.infrastructurebuilder.util.IBUtils.moveAtomic(getPath(), target);
-      return new IBResourceModel(target.toAbsolutePath().toString(),getFileChecksum(), getType(), getSource(), getName());
+      return new IBResourceModel(target.toAbsolutePath().toString(),getFileChecksum(), getType(), getSource(), getName(),getMostRecentReadTime().orElse(null));
     }
   ]]>
           </code>
@@ -222,7 +231,7 @@
       , org.infrastructurebuilder.util.artifacts.Checksum checksum
       // Type
       , String type) {
-    this(path, checksum, type, java.util.Optional.empty(), java.util.Optional.empty());
+    this(path, checksum, type, java.util.Optional.empty(), java.util.Optional.empty(), java.util.Optional.empty());
   }
 
   ]]>
@@ -242,12 +251,13 @@
       // Source
       , java.util.Optional<java.net.URL> sourceURL
       // Name
-      , java.util.Optional<String> name) {
+      , java.util.Optional<String> name
+      , java.util.Optional<java.util.Date> readDate) {
     this(java.util.Objects.requireNonNull(path).toAbsolutePath().toString(),
         java.util.Objects.requireNonNull(checksum).toString()
         , java.util.Objects.requireNonNull(type)
         , java.util.Objects.requireNonNull(sourceURL).map(java.net.URL::toExternalForm).orElse(null)
-        ,java.util.Objects.requireNonNull(name).orElse(null));
+        ,java.util.Objects.requireNonNull(name).orElse(null), readDate.orElse(null));
     this.path = java.util.Objects.requireNonNull(path);
   }
 
@@ -265,6 +275,39 @@
       , org.infrastructurebuilder.util.artifacts.Checksum checksum) {
     this(path, checksum, org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM);
   }
+
+  ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  /**
+   * Override the default {@code IBResource#get()} to set the time when a time is available to set
+   */
+  @Override
+  public java.io.InputStream get() {
+    setMostRecentReadTime(new java.util.Date());
+    return org.infrastructurebuilder.util.files.IBResource.super.get();
+  }
+
+
+  ]]>
+          </code>
+        </codeSegment>
+        <codeSegment>
+          <version>1.0.0+</version>
+          <code>
+            <![CDATA[
+  /**
+   * Override the default {@code IBResource#get()} to set the time when a time is available to set
+   */
+  @Override
+  public java.util.Optional<java.util.Date> getMostRecentReadTime() {
+    return java.util.Optional.ofNullable(this.mostRecentReadTime);
+  }
+
 
   ]]>
           </code>

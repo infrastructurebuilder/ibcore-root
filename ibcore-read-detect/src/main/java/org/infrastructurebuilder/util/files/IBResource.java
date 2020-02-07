@@ -28,6 +28,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
@@ -64,6 +65,16 @@ public interface IBResource extends Supplier<InputStream> {
    * @throws IOException
    */
   IBResource moveTo(Path target) throws IOException;
+
+  /**
+   * Sub-types may, at their discretion, return a {@link Date} of the most
+   * recent "get()" call.  The generated IBResourceModel doesn't because it's
+   * really a persistence mechanism and that value isn't relevant.
+   * @return
+   */
+  default Optional<Date> getMostRecentReadTime() {
+    return empty();
+  }
 
   default InputStream get() {
     java.util.List<java.nio.file.OpenOption> o = new java.util.ArrayList<>();

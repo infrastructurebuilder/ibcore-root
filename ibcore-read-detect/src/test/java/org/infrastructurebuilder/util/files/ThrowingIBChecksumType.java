@@ -22,6 +22,12 @@ import java.nio.file.Paths;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.files.model.IBResourceModel;
 
+/**
+ * Just a testing implementation that allows us to throw an excetion when get is called
+ *
+ * @author mykel.alvis
+ *
+ */
 public class ThrowingIBChecksumType extends IBResourceModel {
 
   /**

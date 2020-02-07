@@ -27,6 +27,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Date;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -59,6 +60,7 @@ public class DefaultIBResource extends IBResourceModel {
     cet.withReturningTranslation(() -> copy(source, newTarget));
     return new DefaultIBResource(newTarget, cSum, Optional.of(localType));
   }
+
 
   public final static IBResource copyToDeletedOnExitTempChecksumAndPath(Path targetDir, String prefix, String suffix,
       final InputStream source) {
