@@ -35,18 +35,14 @@ public class DefaultIBDirScannerSupplierTest {
   public final static Logger log = LoggerFactory.getLogger(DefaultIBDirScannerSupplierTest.class);
 
   private final static TestingPathSupplier wps = new TestingPathSupplier();
-  private static Path target;
   private static Path testClasses;
   private static Path test1;
-  private static Path test2;
   private DefaultIBDirScannerSupplier ibdss;
 
   @BeforeClass
   public static void setupClass() {
-    target = wps.getRoot();
     testClasses = wps.getTestClasses();
     test1 = testClasses.resolve("test1");
-    test2 = testClasses.resolve("test2");
   }
 
   @Before

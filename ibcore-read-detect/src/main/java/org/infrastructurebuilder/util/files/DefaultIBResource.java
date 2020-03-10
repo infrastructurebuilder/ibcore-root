@@ -27,7 +27,6 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Date;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -75,7 +74,7 @@ public class DefaultIBResource extends IBResourceModel {
   }
 
   public final static Function<Path, String> toType = (path) -> {
-    synchronized (tika) { // FIXME Unnecessary to synchronize?
+    synchronized (tika) {
       log.debug("Detecting path " + path);
       org.apache.tika.metadata.Metadata md = new org.apache.tika.metadata.Metadata();
       md.set(org.apache.tika.metadata.Metadata.RESOURCE_NAME_KEY, path.toAbsolutePath().toString());

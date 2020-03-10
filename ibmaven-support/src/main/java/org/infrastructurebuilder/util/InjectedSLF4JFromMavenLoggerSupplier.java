@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 @Named(InjectedSLF4JFromMavenLoggerSupplier.LOG)
 public class InjectedSLF4JFromMavenLoggerSupplier implements LoggerSupplier {
   public static final String LOG = "maven-log";
-  private static final long serialVersionUID = 7124854398907420191L;
   private final Log mavenLog;
 
   @Inject

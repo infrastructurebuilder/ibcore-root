@@ -30,17 +30,17 @@ public class IBRuntimeUtilsTesting extends AbstractIBRuntimeUtils {
 
   public IBRuntimeUtilsTesting(PathSupplier wps, Logger ls, GAV gs, CredentialsFactory cf,
       IBArtifactVersionMapper avm) {
-    super(wps, () -> ls, () -> gs, cf, avm, new FakeTypeToExtensionMapper());
+    super(wps, () -> ls, new FakeGAVSupplier(gs), cf, avm, new FakeTypeToExtensionMapper());
   }
 
-  public IBRuntimeUtilsTesting(PathSupplier wps, Logger ls) {
-    this(wps, ls, new DefaultGAV(new FakeIBVersionsSupplier()), new FakeCredentialsFactory(),
+  public IBRuntimeUtilsTesting(PathSupplier wps, Logger log) {
+    this(wps, log, new DefaultGAV(new FakeIBVersionsSupplier()), new FakeCredentialsFactory(),
         new IBArtifactVersionMapper() {
         });
   }
 
-  public IBRuntimeUtilsTesting(Logger ls) {
-    this(new TestingPathSupplier(), ls, new DefaultGAV(new FakeIBVersionsSupplier()), new FakeCredentialsFactory(),
+  public IBRuntimeUtilsTesting(Logger log) {
+    this(new TestingPathSupplier(), log, new DefaultGAV(new FakeIBVersionsSupplier()), new FakeCredentialsFactory(),
         new IBArtifactVersionMapper() {
         });
   }

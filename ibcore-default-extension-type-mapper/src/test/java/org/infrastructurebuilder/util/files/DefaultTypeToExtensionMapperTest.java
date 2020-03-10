@@ -15,17 +15,16 @@
  */
 package org.infrastructurebuilder.util.files;
 
-import static org.infrastructurebuilder.IBConstants.APPLICATION_LIQUIBASE_CHANGELOG;
 import static org.infrastructurebuilder.IBConstants.APPLICATION_XML;
 import static org.infrastructurebuilder.IBConstants.DEFAULT_EXTENSION;
-import static org.infrastructurebuilder.IBConstants.IBDATA_SCHEMA;
+import static org.infrastructurebuilder.IBConstants.ORG_W3C_DOM_NODE;
+import static org.infrastructurebuilder.IBConstants.VIDEO_AVI_1;
 import static org.infrastructurebuilder.IBConstants.XML;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.infrastructurebuilder.data.util.files.DefaultTypeToExtensionMapper;
 import org.junit.Before;
@@ -51,6 +50,12 @@ public class DefaultTypeToExtensionMapperTest {
     SortedSet<String> t = t2e.reverseMapFromExtension(XML);
     assertEquals(4, t.size());
     assertTrue(t.contains(APPLICATION_XML));
+  }
+
+  @Test
+  public void testStructuredType() {
+    assertEquals(ORG_W3C_DOM_NODE, t2e.getStructuredSupplyTypeClassName(APPLICATION_XML).get());
+    assertFalse(t2e.getStructuredSupplyTypeClassName(VIDEO_AVI_1).isPresent());
   }
 
 }

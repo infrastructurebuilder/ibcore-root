@@ -35,19 +35,19 @@ import org.skyscreamer.jsonassert.JSONAssert;
 public class GAVTest {
 
   private static final String ACLASSIFIER = "a";
-  private static final String COLON = ":";
-  private static final String SLASH = "/";
-  private static final String V_1_0_0 = "1.0.0";
-  private static final String X = "X";
-  private static final String Y = "y";
-  private GAV gav;
-  private DefaultGAV gav2;
-  private DefaultGAV gav2NoC;
-  private DefaultGAV gav3;
-  private DefaultGAV gavNoC;
+  private static final String COLON       = ":";
+  private static final String SLASH       = "/";
+  private static final String V_1_0_0     = "1.0.0";
+  private static final String X           = "X";
+  private static final String Y           = "y";
+  private GAV                 gav;
+  private DefaultGAV          gav2;
+  private DefaultGAV          gav2NoC;
+  private DefaultGAV          gav3;
+  private DefaultGAV          gavNoC;
 //  private DefaultGAV gavNoC2;
-  private GAV gavNoV;
-  private GAV gavs;
+  private GAV        gavNoV;
+  private GAV        gavs;
   private JSONObject j;
 
   @Before
@@ -64,6 +64,11 @@ public class GAVTest {
         + "  \"classifier\": \"" + ACLASSIFIER + "\",\n" + "  \"artifactId\": \"" + Y + "\",\n" + "  \"version\": \""
         + V_1_0_0 + "\"\n" + "}");
 
+  }
+
+  @Test
+  public void testAPIVersion() {
+    assertEquals("1.0", gav.getAPIVersion().get());
   }
 
   @Test(expected = NullPointerException.class)
@@ -86,7 +91,7 @@ public class GAVTest {
     final JSONObject g = new JSONObject(gav.toString());
     JSONAssert.assertEquals(j, g, true);
 
-    final JSONObject x = gavNoC.asJSON();
+    final JSONObject x        = gavNoC.asJSON();
     final JSONObject expected = new JSONObject(
         "{\n" + "    \"extension\": \"jar\",\n" + "    \"groupId\": \"X\",\n" + "    \"artifactId\": \"y\"\n" + "}");
     JSONAssert.assertEquals(expected, x, true);

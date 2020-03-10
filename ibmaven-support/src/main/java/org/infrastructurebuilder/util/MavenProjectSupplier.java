@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.config;
+package org.infrastructurebuilder.util;
 
-import java.util.function.Supplier;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
-/**
- * By contract, an IdentifierSupplier supplies a DIFFERENT String every call
- *
- * @author mykel.alvis
- *
- */
-public interface IdentifierSupplier extends Supplier<String> {
+import org.apache.maven.project.MavenProject;
+import org.infrastructurebuilder.IBConstants;
+import org.infrastructurebuilder.util.config.TSupplier;
+
+@Named(IBConstants.MAVEN)
+@Singleton
+public class MavenProjectSupplier extends TSupplier<MavenProject>  {
 
 }

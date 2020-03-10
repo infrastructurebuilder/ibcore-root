@@ -15,40 +15,37 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import static org.infrastructurebuilder.IBConstants.MAVEN;
-
-import java.util.Objects;
 import java.util.Optional;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import org.apache.maven.project.MavenProject;
 import org.infrastructurebuilder.util.artifacts.GAV;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
 
-@Named(MAVEN)
-@Singleton
-public final class MavenGAVSupplier implements GAVSupplier {
+public class FakeGAVSupplier implements GAVSupplier {
 
-  private final GAV gav;
-  private final MavenProject mp;
+  private final String groupId;
+  private final String artifactId;
+  private final String version;
+  private final String description;
 
-  @Inject
-  public MavenGAVSupplier(MavenProject p) {
-    this.mp = Objects.requireNonNull(p);
-    this.gav = new DefaultGAV(p.getGroupId(), p.getArtifactId(), p.getVersion());
+  public FakeGAVSupplier(String g, String a, String v, String d) {
+    this.groupId = g;
+    this.artifactId = a;
+    this.version = v;
+    this.description = d;
+  }
+
+  public FakeGAVSupplier(GAV gs) {
+    this(gs.getGroupId(), gs.getArtifactId(), gs.getVersion().get(), null);
   }
 
   @Override
   public GAV getGAV() {
-    return gav;
+    return new DefaultGAV(this.groupId, this.artifactId, this.version);
   }
 
   @Override
   public Optional<String> getDescription() {
-    return Optional.ofNullable(mp.getDescription());
+    return Optional.ofNullable(this.description);
   }
 
 }

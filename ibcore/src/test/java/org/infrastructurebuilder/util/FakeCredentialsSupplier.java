@@ -13,24 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.config;
+package org.infrastructurebuilder.util;
 
-abstract public class AbstractCMSConfigurableSupplier<T, P> extends AbstractConfigurableSupplier<T, ConfigMapSupplier, P>  {
+import static java.util.Optional.ofNullable;
 
-  public AbstractCMSConfigurableSupplier(IBRuntimeUtils ibr, ConfigMapSupplier config) {
-    this(ibr, config, null);
+import java.util.Optional;
+
+public class FakeCredentialsSupplier implements CredentialsSupplier {
+
+  private BasicCredentials b;
+  private int              weight;
+
+  public FakeCredentialsSupplier() {
+    this(null);
   }
 
-  public AbstractCMSConfigurableSupplier(IBRuntimeUtils ibr, ConfigMapSupplier config,  P param) {
-    super(ibr, config, param);
+  public FakeCredentialsSupplier(BasicCredentials b) {
+    this(b, 0);
   }
 
+  public FakeCredentialsSupplier(BasicCredentials b, int weight) {
+    this.b = b;
+    this.weight = weight;
+  }
 
   @Override
-  public ConfigurableSupplier<T, ConfigMapSupplier,P> configure(ConfigMapSupplier config) {
-    return getConfiguredSupplier(config);
+  public Optional<BasicCredentials> getCredentialsFor(String query) {
+    return ofNullable(b);
   }
 
-
-  abstract public AbstractCMSConfigurableSupplier<T,P> getConfiguredSupplier(ConfigMapSupplier cms);
+  @Override
+  public Integer getWeight() {
+    return this.weight;
+  }
 }

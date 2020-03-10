@@ -13,16 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.config;
+package org.infrastructurebuilder.util;
 
-import java.util.function.Supplier;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
-/**
- * By contract, an IdentifierSupplier supplies a DIFFERENT String every call
- *
- * @author mykel.alvis
- *
- */
-public interface IdentifierSupplier extends Supplier<String> {
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class LocalLogSupplierTest {
+  public final static Logger log = LoggerFactory.getLogger(LocalLogSupplierTest.class);
+
+  private LocalLogSupplier l;
+
+  @Before
+  public void setUp() throws Exception {
+    l = new LocalLogSupplier();
+  }
+
+  @Test
+  public void testGet() {
+    assertNull(l.get());
+    l.setT(log);
+    assertEquals(log, l.get());
+  }
 
 }

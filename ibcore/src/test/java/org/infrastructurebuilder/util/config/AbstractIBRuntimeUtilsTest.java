@@ -35,21 +35,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class AbstractIBRuntimeUtilsTest {
-  public final static Logger log = LoggerFactory.getLogger(AbstractIBRuntimeUtilsTest.class);
+  public final static Logger              log = LoggerFactory.getLogger(AbstractIBRuntimeUtilsTest.class);
   public final static TestingPathSupplier wps = new TestingPathSupplier();
-  public final static GAV gav = new DefaultGAV("G:A:1.0.0:jar");
+  public final static GAV                 gav = new DefaultGAV("G:A:1.0.0:jar");
 
   @AfterClass
   public static void tearDownAfterClass() throws Exception {
     wps.finalize();
   }
 
-  private AbstractIBRuntimeUtils ar;
-  private String princ, creds;
+  private AbstractIBRuntimeUtils  ar;
+  private String                  princ, creds;
   private IBArtifactVersionMapper avm;
+  private FakeGAVSupplier         gavSuppler;
 
   @Before
   public void setUp() throws Exception {
+    gavSuppler = new FakeGAVSupplier("G", "A", "1.0.0", null);
     princ = UUID.randomUUID().toString();
     creds = UUID.randomUUID().toString();
     this.avm = new IBArtifactVersionMapper() {
@@ -61,7 +63,7 @@ public class AbstractIBRuntimeUtilsTest {
         return Optional.of(new DefaultBasicCredentials(princ, Optional.of(creds)));
       }
     };
-    ar = new AbstractIBRuntimeUtils(wps, () -> log, () -> gav, cf, avm, new FakeTypeToExtensionMapper()) {
+    ar = new AbstractIBRuntimeUtils(wps, () -> log, gavSuppler, cf, avm, new FakeTypeToExtensionMapper()) {
     };
   }
 
@@ -72,7 +74,7 @@ public class AbstractIBRuntimeUtilsTest {
 
   @Test
   public void testGetWorkingGAV() {
-    assertEquals(gav, ar.getWorkingGAV());
+    assertEquals(gav, ar.getGAV());
   }
 
   @Test

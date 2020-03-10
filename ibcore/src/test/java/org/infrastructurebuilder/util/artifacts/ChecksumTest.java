@@ -25,7 +25,6 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +42,6 @@ public class ChecksumTest {
   private Checksum cnull;
   private Checksum cRick;
   private Checksum cString;
-  private Path p;
   private final String theString = "NEVER_GONNA_GIVE_YOU_UP";
 
   @BeforeClass
@@ -53,7 +51,6 @@ public class ChecksumTest {
 
   @Before
   public void setUp() throws Exception {
-    p = wps.getRoot();
     cnull = new Checksum();
     cRick = new Checksum(wps.getTestClasses().resolve("rick.jpg"));
     cString = new Checksum(theString.getBytes(UTF_8));

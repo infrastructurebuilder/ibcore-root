@@ -19,7 +19,6 @@ import static java.util.Collections.emptyList;
 
 import java.nio.file.Path;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.util.CredentialsFactory;
 import org.infrastructurebuilder.util.LoggerEnabled;
@@ -46,7 +45,9 @@ public interface IBRuntimeUtils extends
     // provide single logger configuraiton (sorry if you don't like this)
     , LoggerEnabled
     // And whatever MIME<->Extension mapping is configured
-    , TypeToExtensionMapper {
+    , TypeToExtensionMapper
+    // Get GAV and other project data from current working project
+    , GAVSupplier {
 
   /**
    * Get an instance of a {@link Path} that the current instance considers a
@@ -58,16 +59,6 @@ public interface IBRuntimeUtils extends
    * @return Existing {@link Path} that already exists and is a directory.
    */
   Path getWorkingPath();
-
-  /**
-   * Get the {@link GAV} of the artifact currently being worked on.
-   *
-   * This is very specific to InfrastructureBuilder applications, as they all
-   * assume that the current execution is producing some sort of "built artifact".
-   *
-   * @return {@link GAV} instance of the artifact currently being built
-   */
-  GAV getWorkingGAV();
 
   /**
    * Get the list of {@link GAV} elements that define the entities that must be

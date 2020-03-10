@@ -23,7 +23,7 @@ import javax.inject.Named;
 
 @Named(IncrementingDatedStringSupplier.INCREMENTING_DATED_STRING_SUPPLIER)
 public class IncrementingDatedStringSupplier implements IdentifierSupplier {
-  static final String INCREMENTING_DATED_STRING_SUPPLIER = "incrementing-dated-string-supplier";
+  public static final String INCREMENTING_DATED_STRING_SUPPLIER = "incrementing-dated-string-supplier";
   public static final String DEFAULT_DATE_FORMAT = "yyyyMMddHHmm";
   private final AtomicInteger i = new AtomicInteger(0);
   private String format;

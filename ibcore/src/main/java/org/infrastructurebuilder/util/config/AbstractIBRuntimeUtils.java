@@ -31,14 +31,15 @@ import org.slf4j.Logger;
 
 abstract public class AbstractIBRuntimeUtils implements IBRuntimeUtils {
 
-  protected final PathSupplier wps;
-  private final GAVSupplier gs;
-  private final LoggerSupplier ls;
-  private final CredentialsFactory cf;
+  protected final PathSupplier          wps;
+  private final GAVSupplier             gs;
+  private final LoggerSupplier          ls;
+  private final CredentialsFactory      cf;
   private final IBArtifactVersionMapper avm;
-  private final TypeToExtensionMapper t2em;
+  private final TypeToExtensionMapper   t2em;
 
-  protected AbstractIBRuntimeUtils(PathSupplier wps, LoggerSupplier ls, GAVSupplier gs, CredentialsFactory cf, IBArtifactVersionMapper avm, TypeToExtensionMapper t2em) {
+  protected AbstractIBRuntimeUtils(PathSupplier wps, LoggerSupplier ls, GAVSupplier gs, CredentialsFactory cf,
+      IBArtifactVersionMapper avm, TypeToExtensionMapper t2em) {
     this.wps = wps;
     this.ls = ls;
     this.gs = gs;
@@ -47,14 +48,28 @@ abstract public class AbstractIBRuntimeUtils implements IBRuntimeUtils {
     this.t2em = t2em;
   }
 
+  protected AbstractIBRuntimeUtils(AbstractIBRuntimeUtils ibr) {
+    this.wps = ibr.wps;
+    this.ls = ibr.ls;
+    this.gs = ibr.gs;
+    this.cf = ibr.cf;
+    this.avm = ibr.avm;
+    this.t2em = ibr.t2em;
+  }
+
   @Override
   public Path getWorkingPath() {
     return wps.get();
   }
 
   @Override
-  public GAV getWorkingGAV() {
-    return gs.get();
+  public GAV getGAV() {
+    return gs.getGAV();
+  }
+
+  @Override
+  public Optional<String> getDescription() {
+    return gs.getDescription();
   }
 
   @Override
@@ -81,4 +96,10 @@ abstract public class AbstractIBRuntimeUtils implements IBRuntimeUtils {
   public SortedSet<String> reverseMapFromExtension(String extension) {
     return t2em.reverseMapFromExtension(extension);
   }
+
+  @Override
+  public Optional<String> getStructuredSupplyTypeClassName(String type) {
+    return t2em.getStructuredSupplyTypeClassName(type);
+  }
+
 }

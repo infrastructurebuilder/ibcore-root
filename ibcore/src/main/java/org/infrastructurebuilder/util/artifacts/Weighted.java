@@ -16,7 +16,6 @@
 package org.infrastructurebuilder.util.artifacts;
 
 import static java.util.Objects.requireNonNull;
-
 /**
  * Allows us to know the relative weight of a given component within a set.
  *

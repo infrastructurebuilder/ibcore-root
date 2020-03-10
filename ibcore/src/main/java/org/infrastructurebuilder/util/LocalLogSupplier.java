@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.config;
+package org.infrastructurebuilder.util;
 
-import java.util.function.Supplier;
+import org.infrastructurebuilder.util.config.TSupplier;
+import org.slf4j.Logger;
 
-/**
- * By contract, an IdentifierSupplier supplies a DIFFERENT String every call
- *
- * @author mykel.alvis
- *
- */
-public interface IdentifierSupplier extends Supplier<String> {
+@javax.inject.Named(LocalLogSupplier.NAME)
+@javax.inject.Singleton
+public class LocalLogSupplier extends TSupplier<Logger> {
+  public static final String NAME = "local-log-supplier";
 
 }

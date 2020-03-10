@@ -24,7 +24,7 @@ public class MavenGAVSupplierTest extends AbstractPlexusDefaultsConfigTest {
   @Test
   public void test() {
     MavenGAVSupplier v = new MavenGAVSupplier(mp);
-    assertEquals("G:A:1.0.0:jar", v.get().asMavenDependencyGet().get());
+    assertEquals("G:A:1.0.0:jar", v.getGAV().asMavenDependencyGet().get());
   }
 
 }

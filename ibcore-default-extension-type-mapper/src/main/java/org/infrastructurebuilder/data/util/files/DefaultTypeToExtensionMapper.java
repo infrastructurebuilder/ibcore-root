@@ -15,8 +15,6 @@
  */
 package org.infrastructurebuilder.data.util.files;
 
-import static java.util.Collections.emptySortedSet;
-import static java.util.Collections.singleton;
 import static org.infrastructurebuilder.IBConstants.APPLICATION_ACCESS;
 import static org.infrastructurebuilder.IBConstants.APPLICATION_LIQUIBASE_CHANGELOG;
 import static org.infrastructurebuilder.IBConstants.APPLICATION_MSWORD;
@@ -42,12 +40,16 @@ import static org.infrastructurebuilder.IBConstants.DOC;
 import static org.infrastructurebuilder.IBConstants.DOCX;
 import static org.infrastructurebuilder.IBConstants.DTD;
 import static org.infrastructurebuilder.IBConstants.IBDATA_SCHEMA;
+import static org.infrastructurebuilder.IBConstants.JAVA_LANG_STRING;
+import static org.infrastructurebuilder.IBConstants.JSONSTRUCT;
 import static org.infrastructurebuilder.IBConstants.JSON_EXT;
 import static org.infrastructurebuilder.IBConstants.JSON_TYPE;
 import static org.infrastructurebuilder.IBConstants.MDB;
 import static org.infrastructurebuilder.IBConstants.NLD_JSON_EXT;
 import static org.infrastructurebuilder.IBConstants.NLD_JSON_TYPE;
 import static org.infrastructurebuilder.IBConstants.ODS;
+import static org.infrastructurebuilder.IBConstants.ORG_APACHE_AVRO_GENERIC_INDEXED_RECORD;
+import static org.infrastructurebuilder.IBConstants.ORG_W3C_DOM_NODE;
 import static org.infrastructurebuilder.IBConstants.PDF;
 import static org.infrastructurebuilder.IBConstants.PPT;
 import static org.infrastructurebuilder.IBConstants.PROTO;
@@ -71,83 +73,79 @@ import static org.infrastructurebuilder.IBConstants.XLSX;
 import static org.infrastructurebuilder.IBConstants.XML;
 import static org.infrastructurebuilder.IBConstants.ZIP;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.infrastructurebuilder.util.artifacts.IdentifiedAndWeighted;
 import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
 
 @Named
 public class DefaultTypeToExtensionMapper implements TypeToExtensionMapper {
-  @SuppressWarnings("serial")
-  private final static Map<String, String> map = new HashMap<String, String>() {
-    {
-      put(IBDATA_SCHEMA, XML);
-      put(APPLICATION_XML, XML);
-      put(TEXT_PLAIN, TXT);
-      put(APPLICATION_ZIP, ZIP);
-      put(TEXT_CSV, CSV);
-      put(TEXT_TSV, TSV);
-      put(TEXT_CSV_WITH_HEADER, CSV);
-      put(TEXT_TSV_WITH_HEADER, TSV);
-      put(APPLICATION_XLS, XLS);
-      put(APPLICATION_XLSX, XLSX);
-      put(APPLICATION_ACCESS, MDB);
-      put(APPLICATION_MSWORD, DOC);
-      put(APPLICATION_MSWORDX, DOCX);
-      put(TEXT_PSV, PSV);
-      put(TEXT_PSV_WITH_HEADER, PSV);
-      put(APPLICATION_PDF, PDF);
-      put(APPLICATION_PPTX, PPT);
-      put(AVRO_BINARY, AVRO);
-      put(AVRO_SCHEMA, AVSC);
-      put(APPLICATION_X_TIKA_MSOFFICE, DEFAULT_EXTENSION);
-      put(APPLICATION_VND_OASIS_SPREADSHEET, ODS);
-      put(APPLICATION_LIQUIBASE_CHANGELOG, XML);
-      put(DBUNIT_FLATXML, XML);
-      put(PROTOBUF0, PROTO);
-      put(PROTOBUF1, PROTO);
-      put(PROTOBUF2, PROTO);
-      put(PROTOBUF3, PROTO);
-      put(DBUNIT_DTD, DTD);
-      put(JSON_TYPE, JSON_EXT);
-      put(NLD_JSON_TYPE, NLD_JSON_EXT);
-      put(VIDEO_AVI_1, AVI);
-    }
-  };
-
-  @SuppressWarnings("serial")
-  private final static Map<String, SortedSet<String>> reverseMap = new HashMap<String, SortedSet<String>>() {
-    {
-      for (Map.Entry<String, String> e : map.entrySet()) {
-        if (containsKey(e.getValue())) {
-          get(e.getValue()).add(e.getKey());
-        } else {
-          put(e.getValue(), new TreeSet<String>(singleton(e.getKey())));
-        }
-      }
-    }
-  };
+  private final SortedSet<TypeMapTuple> list = new TreeSet<>(IdentifiedAndWeighted.comparator());
 
   private final String defaultExtension;
 
   @Inject
   public DefaultTypeToExtensionMapper() {
     this.defaultExtension = DEFAULT_EXTENSION;
+    list.addAll(Arrays.asList( //
+        new TypeMapTuple(IBDATA_SCHEMA, XML) //
+        , new TypeMapTuple(APPLICATION_XML, XML, ORG_W3C_DOM_NODE) //
+        , new TypeMapTuple(TEXT_PLAIN, TXT, JAVA_LANG_STRING) //
+        , new TypeMapTuple(APPLICATION_ZIP, ZIP) //
+        , new TypeMapTuple(TEXT_CSV, CSV, JAVA_LANG_STRING) //
+        , new TypeMapTuple(TEXT_TSV, TSV, JAVA_LANG_STRING) //
+        , new TypeMapTuple(TEXT_CSV_WITH_HEADER, CSV, JAVA_LANG_STRING) //
+        , new TypeMapTuple(TEXT_TSV_WITH_HEADER, TSV, JAVA_LANG_STRING) //
+        , new TypeMapTuple(APPLICATION_XLS, XLS) //
+        , new TypeMapTuple(APPLICATION_XLSX, XLSX) //
+        , new TypeMapTuple(APPLICATION_ACCESS, MDB) //
+        , new TypeMapTuple(APPLICATION_MSWORD, DOC) //
+        , new TypeMapTuple(APPLICATION_MSWORDX, DOCX) //
+        , new TypeMapTuple(TEXT_PSV, PSV, JAVA_LANG_STRING) //
+        , new TypeMapTuple(TEXT_PSV_WITH_HEADER, PSV, JAVA_LANG_STRING) //
+        , new TypeMapTuple(APPLICATION_PDF, PDF) //
+        , new TypeMapTuple(APPLICATION_PPTX, PPT) //
+        , new TypeMapTuple(AVRO_BINARY, AVRO, ORG_APACHE_AVRO_GENERIC_INDEXED_RECORD) //
+        , new TypeMapTuple(AVRO_SCHEMA, AVSC, JSONSTRUCT) //
+        , new TypeMapTuple(APPLICATION_X_TIKA_MSOFFICE, DEFAULT_EXTENSION) //
+        , new TypeMapTuple(APPLICATION_VND_OASIS_SPREADSHEET, ODS) //
+        , new TypeMapTuple(APPLICATION_LIQUIBASE_CHANGELOG, XML) //
+        , new TypeMapTuple(DBUNIT_FLATXML, XML) //
+        , new TypeMapTuple(PROTOBUF0, PROTO) //
+        , new TypeMapTuple(PROTOBUF1, PROTO) //
+        , new TypeMapTuple(PROTOBUF2, PROTO) //
+        , new TypeMapTuple(PROTOBUF3, PROTO) //
+        , new TypeMapTuple(DBUNIT_DTD, DTD) //
+        , new TypeMapTuple(JSON_TYPE, JSON_EXT, JSONSTRUCT) //
+        , new TypeMapTuple(NLD_JSON_TYPE, NLD_JSON_EXT) //
+        , new TypeMapTuple(VIDEO_AVI_1, AVI) //
+    ));
+    ;
   }
 
   @Override
   public String getExtensionForType(String key) {
-    return map.getOrDefault(key, defaultExtension);
+    return list.stream().filter(k -> k.getId().equals(key)).map(TypeMapTuple::getExtension).findFirst()
+        .orElse(defaultExtension);
   }
 
   @Override
   public SortedSet<String> reverseMapFromExtension(String extension) {
-    return reverseMap.getOrDefault(extension, emptySortedSet());
+    return list.stream().filter(k -> k.getExtension().equals(extension)).sorted(IdentifiedAndWeighted.comparator())
+        .map(TypeMapTuple::getId).collect(Collectors.toCollection(TreeSet::new));
   }
 
+  @Override
+  public Optional<String> getStructuredSupplyTypeClassName(String key) {
+    return list.stream().filter(k -> k.getId().equals(key)).map(TypeMapTuple::getStructuredType).findFirst()
+        .orElse(Optional.empty());
+
+  }
 }

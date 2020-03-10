@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.config;
+package org.infrastructurebuilder.util.config.factory;
 
-import java.util.function.Supplier;
+import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 
-import org.infrastructurebuilder.util.LoggerEnabled;
+public interface IBConfigurableParamIOFactory<T, P> extends IBConfigurableParamFactory<T, P> {
 
-public interface ConfigurableSupplier<T,C, P> extends Supplier<T>, LoggerEnabled {
-  ConfigurableSupplier<T,C,P> configure(C config);
+  IBConfigurableParamIOFactory<T, P> configure(ConfigMapSupplier config);
+
+  boolean respondsTo(P param);
+
+  boolean respondsTo(P param, boolean inbound);
+
 }

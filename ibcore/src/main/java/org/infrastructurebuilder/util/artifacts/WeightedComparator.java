@@ -19,8 +19,18 @@ import java.util.Comparator;
 import java.util.Objects;
 
 public class WeightedComparator implements Comparator<Weighted> {
+  private final boolean b;
+
+  public WeightedComparator() {
+    this(true);
+  }
+
+  public WeightedComparator(boolean b) {
+    this.b = b;
+  }
+
   @Override
   public int compare(Weighted o1, Weighted o2) {
-    return Objects.requireNonNull(o1).getWeight().compareTo(o2.getWeight());
+    return Objects.requireNonNull(o1).getWeight().compareTo(o2.getWeight()) * (b ? 1 : -1);
   }
 }

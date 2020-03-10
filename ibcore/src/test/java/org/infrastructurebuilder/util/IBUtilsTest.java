@@ -132,6 +132,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 @SuppressWarnings("unused")
 public class IBUtilsTest {
 
+  private static final String JUNIT_4_8_2_JAR = "junit-4.8.2.jar";
   private static final String C1_PROPERTY = "process.executor.interim.sleep";
   private static final String FAKEFILE = "FAKEFILE.zip";
   private static final String CANNOT_READ_TARGET_DIR = "I cannot read the target dir";
@@ -1091,7 +1092,7 @@ public class IBUtilsTest {
 
   @Test
   public void testVerifyJarfile() throws IOException {
-    final String name = testClasses.resolve("junit-4.8.2.jar").toAbsolutePath().toString();
+    final String name = testClasses.resolve(JUNIT_4_8_2_JAR).toAbsolutePath().toString();
     final JarFile j = new JarFile(name);
     IBUtils.verify(j);
   }
@@ -1227,5 +1228,16 @@ public class IBUtilsTest {
       JSONObject t2 = IBUtils.readJsonObject(testClasses.resolve("somefile.json"));
       JSONAssert.assertEquals(t2, j, true);
     }
+  }
+
+  @Test
+  public void testPathOfZip() throws IOException {
+    String[] p = ("jar:" + wps.getTestClasses().resolve(JUNIT_4_8_2_JAR).toUri().toURL().toExternalForm() + "!/").split("!");
+    Path zip = IBUtils.getRootFromURL(p);
+    assertNotNull(zip);
+    Path file = zip.resolve("LICENSE.txt");
+    String s= IBUtils.readFile(file);
+    assertTrue(s.startsWith("BSD"));
+
   }
 }

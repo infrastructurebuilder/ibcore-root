@@ -15,9 +15,11 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import java.util.function.Supplier;
+import java.util.Optional;
 
 import org.infrastructurebuilder.util.artifacts.GAV;
 
-public interface GAVSupplier extends Supplier<GAV> {
+public interface GAVSupplier {
+  GAV getGAV();
+  Optional<String> getDescription();
 }

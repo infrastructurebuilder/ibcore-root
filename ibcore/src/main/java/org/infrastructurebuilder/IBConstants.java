@@ -69,6 +69,7 @@ public interface IBConstants {
 //  public static final String LIQUIBASE_SCHEMA = "application/liquibase-schema+xml";
 
   public static final String JAVA_LANG_STRING = "java.lang.String";
+  public static final String JSONSTRUCT= "org.json.JSONObject";
   public static final String ORG_W3C_DOM_NODE = "org.w3c.dom.Node";
   public static final String ORG_APACHE_AVRO_GENERIC_INDEXED_RECORD = "org.apache.avro.generic.IndexedRecord";
 

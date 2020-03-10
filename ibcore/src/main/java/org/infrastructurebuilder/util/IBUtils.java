@@ -191,7 +191,7 @@ public class IBUtils {
   private static final Logger iolog = LoggerFactory.getLogger(IBUtils.class);
 
   public static Stream<String> readInputStreamAsStringStream(InputStream ins) {
-    return IBException.cet.withReturningTranslation(() -> new BufferedReader(new InputStreamReader(ins)).lines());
+    return cet.withReturningTranslation(() -> new BufferedReader(new InputStreamReader(ins)).lines());
   }
 
   @SuppressWarnings("unchecked")
@@ -917,7 +917,17 @@ public class IBUtils {
     if (url.startsWith("zip:") && !isZip)
       retVal = "jar:" + url.substring(4);
     final String f = retVal;
-    return IBException.cet.withReturningTranslation(() -> new URL(f));
+    return cet.withReturningTranslation(() -> new URL(f));
 
   }
+
+  public final static Path getRootFromURL(String[] uA) {
+    try {
+      final FileSystem fs = FileSystems.newFileSystem(URI.create(uA[0]), new HashMap<String, String>());
+      return fs.getPath(uA[1]);
+    } catch (IOException e) {
+      throw new IBException(e);
+    }
+  }
+
 }

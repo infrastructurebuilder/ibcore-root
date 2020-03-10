@@ -13,16 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.config;
+package org.infrastructurebuilder.util;
 
-import java.util.function.Supplier;
+import static org.junit.Assert.assertEquals;
 
-/**
- * By contract, an IdentifierSupplier supplies a DIFFERENT String every call
- *
- * @author mykel.alvis
- *
- */
-public interface IdentifierSupplier extends Supplier<String> {
+import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
+import org.apache.maven.project.MavenProject;
+import org.junit.Before;
+import org.junit.Test;
+
+public class MavenProjectSupplierTest {
+
+  private MavenProjectSupplier mps;
+  private MavenProject p;
+
+  @Before
+  public void setUp() throws Exception {
+    p = new MavenProjectStub();
+    mps = new MavenProjectSupplier();
+    mps.setT(p);
+  }
+
+  @Test
+  public void test() {
+    assertEquals(p, mps.get());
+  }
 
 }

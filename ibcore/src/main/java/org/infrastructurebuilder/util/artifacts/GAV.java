@@ -26,17 +26,17 @@ import org.json.JSONObject;
 
 public interface GAV extends JSONAndChecksumEnabled, Comparable<GAV> {
   String BASIC_PACKAGING = "jar";
-  String COMPILE_SCOPE = "compile";
+  String COMPILE_SCOPE   = "compile";
 
-  String FAKE_AF_VALUE = "___@#!#!@#!@#!";
-  String GAV_ARTIFACTID = "artifactId";
-  String GAV_CLASSIFIER = "classifier";
-  String GAV_EXTENSION = "extension";
-  String GAV_GROUPID = "groupId";
-  String GAV_VERSION = "version";
-  String GAV_PATH = "path";
-  String PROVIDED_SCOPE = "provided";
-  String RUNTIME_SCOPE = "runtime";
+  String FAKE_AF_VALUE       = "___@#!#!@#!@#!";
+  String GAV_ARTIFACTID      = "artifactId";
+  String GAV_CLASSIFIER      = "classifier";
+  String GAV_EXTENSION       = "extension";
+  String GAV_GROUPID         = "groupId";
+  String GAV_VERSION         = "version";
+  String GAV_PATH            = "path";
+  String PROVIDED_SCOPE      = "provided";
+  String RUNTIME_SCOPE       = "runtime";
   String SNAPSHOT_DESIGNATOR = "-SNAPSHOT";
 
   static String asPaxUrl(final GAV v) {
@@ -59,7 +59,7 @@ public interface GAV extends JSONAndChecksumEnabled, Comparable<GAV> {
   default Optional<String> asMavenDependencyGet() {
 
     try {
-      final String theVersion = getVersion().map(v -> v.toString())
+      final String theVersion    = getVersion().map(v -> v.toString())
           .orElseThrow(() -> new IllegalArgumentException("No version available"));
       final String theClassifier = getClassifier().map(c -> ":" + c).orElse("");
 
@@ -128,6 +128,20 @@ public interface GAV extends JSONAndChecksumEnabled, Comparable<GAV> {
   }
 
   Optional<String> getVersion();
+
+  /**
+   * Get the "API version" for semantic versions.
+   *
+   * Might blow up if you're not a semantic version
+   * @return String with Major.Minor verions
+   */
+  default Optional<String> getAPIVersion() {
+    return getVersion().map(s -> {
+      String[] splits = s.split("\\.");
+      return splits[0] + "." + splits[1];
+    });
+
+  }
 
   default boolean isSnapshot() {
     return getVersion().orElse(FAKE_AF_VALUE).endsWith(SNAPSHOT_DESIGNATOR);

@@ -13,10 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.config;
+package org.infrastructurebuilder.util.config.factory;
 
-import org.infrastructurebuilder.util.LoggerEnabled;
+import org.infrastructurebuilder.util.config.ConfigMapSupplier;
+import org.infrastructurebuilder.util.config.IBRuntimeUtils;
 
-public interface CMSConfigurableSupplier<T,P> extends ConfigurableSupplier<T, ConfigMapSupplier,P>, LoggerEnabled {
+abstract public class AbstractIBConfigurableTypedFactory<T, P> extends AbstractIBConfigurableFactory<T>
+    implements IBConfigurableTypedFactory<T, P> {
+
+  public AbstractIBConfigurableTypedFactory(IBRuntimeUtils ibr) {
+    super(ibr);
+  }
+
+  protected AbstractIBConfigurableTypedFactory(IBRuntimeUtils ibr, ConfigMapSupplier cms) {
+    super(ibr, cms);
+  }
 
 }

@@ -15,6 +15,7 @@
  */
 package org.infrastructurebuilder.util.config;
 
+import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -29,12 +30,22 @@ import org.junit.Test;
 public class DefaultConfigMapSupplierTest {
 
   private ConfigMapSupplier supplier;
-  private ConfigMap val;
+  private ConfigMap         val;
 
   @Before
   public void setUp() throws Exception {
     supplier = new DefaultConfigMapSupplier();
     val = new ConfigMap();
+  }
+
+  @Test
+  public void testCons1() {
+    DefaultConfigMapSupplier b = new DefaultConfigMapSupplier(val);
+    DefaultConfigMapSupplier b1 = new DefaultConfigMapSupplier(b);
+    ConfigMap c = b.get();
+    ConfigMap c1 = b1.get();
+    assertEquals(val.keySet().stream().sorted().collect(toSet()), c.keySet().stream().sorted().collect(toSet()));
+    assertEquals(val.keySet().stream().sorted().collect(toSet()), c1.keySet().stream().sorted().collect(toSet()));
   }
 
   @Test
@@ -146,6 +157,7 @@ public class DefaultConfigMapSupplierTest {
     assertEquals("CC", k.getString("A"));
     assertEquals("M", k.getString("Q"));
   }
+
   @Test
   public void testOverride2() {
     final Map<String, Object> m = new HashMap<>();

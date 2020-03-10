@@ -15,14 +15,22 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import java.util.function.Supplier;
+import static org.infrastructurebuilder.util.config.IncrementingDatedStringSupplier.INCREMENTING_DATED_STRING_SUPPLIER;
 
-/**
- * By contract, an IdentifierSupplier supplies a DIFFERENT String every call
- *
- * @author mykel.alvis
- *
- */
-public interface IdentifierSupplier extends Supplier<String> {
+import java.util.HashMap;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+@Named(IncrementingDatedWorkingPathSupplier.INCREMENTING_DATED_WPS)
+@Singleton
+public class IncrementingDatedWorkingPathSupplier extends WorkingPathSupplier {
+  public static final String INCREMENTING_DATED_WPS = "incrementing-dated-wps";
+
+  @Inject
+  public IncrementingDatedWorkingPathSupplier(
+      @Named(INCREMENTING_DATED_STRING_SUPPLIER) IdentifierSupplier idSupplier) {
+    super(new HashMap<>(), idSupplier, false);
+  }
 }

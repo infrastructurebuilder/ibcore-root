@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.config;
+package org.infrastructurebuilder.util.config.factory;
 
-import java.util.function.Supplier;
-
-/**
- * By contract, an IdentifierSupplier supplies a DIFFERENT String every call
- *
- * @author mykel.alvis
- *
- */
-public interface IdentifierSupplier extends Supplier<String> {
+public interface IBConfigurableTypedFactory<T, P> extends IBConfigurableFactory<T> {
+  /**
+   * This factory only produces elements of a given type
+   *
+   * @param type The type used to make a comparison
+   * @return true if this factory produces instances that are of that type
+   */
+  boolean respondsTo(P type);
 
 }

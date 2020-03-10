@@ -15,7 +15,7 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.nio.file.Path;
 import java.util.Optional;
@@ -77,9 +77,21 @@ public class IBRuntimeUtilsTest {
       }
 
       @Override
-      public GAV getWorkingGAV() {
+      public GAV getGAV() {
         // TODO Auto-generated method stub
         return null;
+      }
+
+      @Override
+      public Optional<String> getDescription() {
+        // TODO Auto-generated method stub
+        return Optional.empty();
+      }
+
+      @Override
+      public Optional<String> getStructuredSupplyTypeClassName(String type) {
+        // TODO Auto-generated method stub
+        return Optional.empty();
       }
 
     };

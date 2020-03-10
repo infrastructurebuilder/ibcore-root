@@ -15,12 +15,33 @@
  */
 package org.infrastructurebuilder.util.files;
 
+import java.util.Optional;
 import java.util.SortedSet;
 
 public interface TypeToExtensionMapper {
 
+  /**
+   * Returns the file extension for a given MIME string
+   *
+   * @param type String version of MIME type
+   * @return non-null extension of type, mapping to a default type if unknown
+   */
   String getExtensionForType(String type);
 
+  /**
+   * Returns a set of types that are associated with a given extension
+   *
+   * @param extension
+   * @return
+   */
   SortedSet<String> reverseMapFromExtension(String extension);
+
+  /**
+   * Denotes that
+   *
+   * @param type
+   * @return
+   */
+  Optional<String> getStructuredSupplyTypeClassName(String type);
 
 }
