@@ -15,13 +15,15 @@
  */
 package org.infrastructurebuilder.util;
 
+import static java.nio.file.Files.createDirectories;
+import static java.nio.file.Files.newBufferedWriter;
+import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.IBException.cet;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.zeroturnaround.exec.stream.LogOutputStream;
@@ -29,28 +31,24 @@ import org.zeroturnaround.exec.stream.LogOutputStream;
 public abstract class CapturingLogOutputStream extends LogOutputStream {
 
   private final Optional<BufferedWriter> os;
-  private final Optional<Path> path;
+  private final Optional<Path>           path;
+  private final boolean                  flushEveryLine;
 
   public CapturingLogOutputStream(final Optional<Path> p) {
-    path = Objects.requireNonNull(p);
-    p.ifPresent(path -> {
-      cet.withTranslation(() -> {
-        Files.createDirectories(path.getParent());
-      });
-    });
-    os = cet.withReturningTranslation(() -> {
-      return Optional.ofNullable(p.isPresent() ? Files.newBufferedWriter(p.get()) : null);
-    });
+    this(p, true);
+  }
+
+  public CapturingLogOutputStream(final Optional<Path> p, boolean flushEveryLine) {
+    path = requireNonNull(p).map(Path::toAbsolutePath);
+    path.ifPresent(path -> cet.withTranslation(() -> createDirectories(path.getParent())));
+    os = cet.withReturningTranslation(() -> ofNullable(p.isPresent() ? newBufferedWriter(p.get()) : null));
+    this.flushEveryLine = flushEveryLine;
   }
 
   @Override
   public void close() throws IOException {
     super.close();
-    os.ifPresent(p -> {
-      cet.withTranslation(() -> {
-        p.close();
-      });
-    });
+    os.ifPresent(p -> cet.withTranslation(() -> p.close()));
   }
 
   public Optional<Path> getPath() {
@@ -61,11 +59,11 @@ public abstract class CapturingLogOutputStream extends LogOutputStream {
 
   @Override
   protected void processLine(final String line) {
-    if (os.isPresent()) {
-      cet.withTranslation(() -> {
-        os.get().write(line);
-      });
-    }
+    os.ifPresent(g -> cet.withTranslation(() -> {
+      g.write(line);
+      if (this.flushEveryLine)
+        g.flush();
+    }));
     secondaryProcessLine(line);
   }
 }

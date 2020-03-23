@@ -15,16 +15,19 @@
  */
 package org.infrastructurebuilder.util;
 
+import static java.time.Duration.between;
+import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Future;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.util.artifacts.JSONBuilder;
 import org.infrastructurebuilder.util.artifacts.JSONOutputEnabled;
@@ -32,101 +35,84 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.zeroturnaround.exec.ProcessResult;
 
-public class ProcessExecutionResultBag implements JSONOutputEnabled {
+public interface ProcessExecutionResultBag extends JSONOutputEnabled {
+  public static final String EXECUTION_IDS         = "executed-ids";
+  public static final String INCOMPLETE_FUTURE_IDS = "incomplete-futures-ids";
+  public static final String RESULTS               = "results";
 
-  private static final String EXECUTION_IDS = "executed-ids";
-  private static final String INCOMPLETE_FUTURE_IDS = "incomplete-futures-ids";
-  private static final String RESULTS = "results";
-  private final List<String> executedIds;
-  private final Map<String, ProcessExecutionResult> executions;
-  private final Map<String, Future<ProcessResult>> futures;
-  private final JSONObject json;
+  List<String> getExecutedIds();
 
-  ProcessExecutionResultBag(final MutableProcessExecutionResultBag r) {
-    executions = Collections.unmodifiableMap(r.getExecutionResults());
-    executedIds = Collections.unmodifiableList(r.getExecutedIds());
-    futures = Collections.unmodifiableMap(r.getRunningFutures());
-    json = JSONBuilder.newInstance().addJSONArray(EXECUTION_IDS, new JSONArray(executedIds))
-        .addJSONArray(INCOMPLETE_FUTURE_IDS, new JSONArray(futures.keySet())).addJSONArray(RESULTS,
-            new JSONArray(executions.values().stream().map(v -> v.asJSON()).collect(Collectors.toList())))
-        .asJSON();
+  Map<String, ProcessExecutionResult> getExecutions();
+
+  Map<String, Future<ProcessResult>> getRunningFutures();
+
+  default Optional<Duration> getDuration() {
+    return getStart().map(start -> between(start, getEnd().orElseThrow(() -> new ProcessException("No end time"))));
   }
 
-  @Override
-  public JSONObject asJSON() {
-    return json;
+  default Optional<Instant> getEnd() {
+    return getExecutions().values().stream().map(ProcessExecutionResult::getEndTime).max(Instant::compareTo);
   }
 
-  public Optional<Duration> getDuration() {
-    return getStart().map(start -> Duration.between(start,
-        getEnd().orElseThrow(() -> new ProcessException("No end time availabe for some weird reason"))));
-
-  }
-
-  public Optional<Instant> getEnd() {
-    return executions.values().stream().map(ProcessExecutionResult::getEndTime).max(Instant::compareTo);
-  }
-
-  public List<String> getErrors() {
+  default List<String> getErrors() {
     return getExecutions().values().stream()
 
         .filter(ProcessExecutionResult::isError)
 
         .map(ProcessExecutionResult::getId)
 
-        .collect(Collectors.toList());
+        .collect(toList());
 
   }
 
-  public List<String> getExecutedIds() {
-    return executedIds;
+  default Optional<ProcessExecutionResult> getExecution(final String id) {
+    return ofNullable(getExecutions().get(requireNonNull(id)));
   }
 
-  public Optional<ProcessExecutionResult> getExecution(final String id) {
-    return Optional.ofNullable(executions.get(Objects.requireNonNull(id)));
-  }
-
-  public Map<String, Map<String, String>> getExecutionEnvironment() {
+  default Map<String, Map<String, String>> getExecutionEnvironment() {
     return getExecutions().entrySet().stream()
-        .collect(Collectors.toMap(k -> k.getKey(), v -> v.getValue().getExecutionEnvironment()));
+        .collect(toMap(k -> k.getKey(), v -> v.getValue().getExecutionEnvironment()));
   }
 
-  public Map<String, ProcessExecutionResult> getExecutions() {
-    return executions;
+  default Map<String, ProcessExecutionResult> getResults() {
+    return getExecutions().values().stream().collect(toMap(ProcessExecutionResult::getId, identity()));
   }
 
-  public Map<String, ProcessExecutionResult> getResults() {
-    return getExecutions().values().stream()
-        .collect(Collectors.toMap(ProcessExecutionResult::getId, Function.identity()));
+  default Optional<Instant> getStart() {
+    return getExecutions().values().stream().map(ProcessExecutionResult::getStartTime).min(Instant::compareTo);
   }
 
-  public Map<String, Future<ProcessResult>> getRunningFutures() {
-    return futures;
-  }
-
-  public Optional<Instant> getStart() {
-    return executions.values().stream().map(ProcessExecutionResult::getStartTime).min(Instant::compareTo);
-  }
-
-  public List<String> getStdErr() {
+  default List<String> getStdErr() {
     final Map<String, List<String>> l = getStdErrs();
-    return getExecutedIds().stream().map(l::get).flatMap(List::stream).collect(Collectors.toList());
+    return getExecutedIds().stream().map(l::get).flatMap(List::stream).collect(toList());
   }
 
-  public Map<String, List<String>> getStdErrs() {
+  default Map<String, List<String>> getStdErrs() {
     return getExecutions().values().stream()
-        .collect(Collectors.toMap(ProcessExecutionResult::getId, ProcessExecutionResult::getStdErr));
+        .collect(toMap(ProcessExecutionResult::getId, ProcessExecutionResult::getStdErr));
 
   }
 
-  public List<String> getStdOut() {
-    return getExecutedIds().stream().map(key -> getStdOuts().get(key)).flatMap(List::stream)
-        .collect(Collectors.toList());
+  default List<String> getStdOut() {
+    return getExecutedIds().stream().map(key -> getStdOuts().get(key)).flatMap(List::stream).collect(toList());
   }
 
-  public Map<String, List<String>> getStdOuts() {
+  default Map<String, List<String>> getStdOuts() {
     return getExecutions().values().stream()
-        .collect(Collectors.toMap(ProcessExecutionResult::getId, ProcessExecutionResult::getStdOut));
+        .collect(toMap(ProcessExecutionResult::getId, ProcessExecutionResult::getStdOut));
+  }
+
+  @Override
+  default JSONObject asJSON() {
+    return JSONBuilder.newInstance()
+
+        .addJSONArray(EXECUTION_IDS, new JSONArray(getExecutedIds()))
+
+        .addJSONArray(INCOMPLETE_FUTURE_IDS, new JSONArray(getRunningFutures().keySet()))
+
+        .addJSONArray(RESULTS, new JSONArray(getExecutions().values().stream().map(v -> v.asJSON()).collect(toList())))
+
+        .asJSON();
   }
 
 }

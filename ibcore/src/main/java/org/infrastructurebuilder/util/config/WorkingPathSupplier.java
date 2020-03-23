@@ -15,11 +15,13 @@
  */
 package org.infrastructurebuilder.util.config;
 
+import static java.nio.file.Files.createDirectories;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.IBConstants.MAVEN_TARGET_PATH;
 import static org.infrastructurebuilder.IBConstants.TARGET_DIR_PROPERTY;
 import static org.infrastructurebuilder.IBException.cet;
+import static org.infrastructurebuilder.util.IBUtils.deletePath;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,8 +33,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import org.infrastructurebuilder.util.IBUtils;
 
 @Named(WorkingPathSupplier.WORKING)
 public class WorkingPathSupplier implements PathSupplier {
@@ -71,7 +71,7 @@ public class WorkingPathSupplier implements PathSupplier {
   public void finalize() {
     paths.forEach(p -> {
       if (cleanup) {
-        IBUtils.deletePath(p);
+        deletePath(p);
       }
     });
     paths.clear();
@@ -85,7 +85,7 @@ public class WorkingPathSupplier implements PathSupplier {
     }
     final Path k = p;
     paths.add(k);
-    return cet.withReturningTranslation(() -> Files.createDirectories(k));
+    return cet.withReturningTranslation(() -> createDirectories(k));
   }
 
   public Path getRoot() {

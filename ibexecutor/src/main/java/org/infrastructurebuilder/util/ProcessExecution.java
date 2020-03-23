@@ -15,215 +15,130 @@
  */
 package org.infrastructurebuilder.util;
 
+import static java.nio.file.Files.newInputStream;
+import static java.time.Duration.ofHours;
+import static java.util.Optional.of;
+import static java.util.UUID.randomUUID;
+import static org.infrastructurebuilder.util.ProcessException.pet;
+
 import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
-import org.infrastructurebuilder.util.artifacts.Checksum;
-import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
 import org.infrastructurebuilder.util.artifacts.JSONAndChecksumEnabled;
 import org.infrastructurebuilder.util.artifacts.JSONBuilder;
 import org.json.JSONObject;
 import org.zeroturnaround.exec.ProcessExecutor;
 
-public final class ProcessExecution implements JSONAndChecksumEnabled, AutoCloseable {
-  public final static Duration VERY_LONG = Duration.ofHours(2 * 24 * 365 + 12);
+public interface ProcessExecution extends JSONAndChecksumEnabled, AutoCloseable {
 
-  private static final String ARGUMENTS = "arguments";
-  private final static int[] DEFAULT_EXIT = { 0 };
-  private static final String ENVIRONMENT = "environment";
-  private static final String EXECUTABLE = "executable";
-  private static final String ID = "id";
-  private static final String OPTIONAL = "optional";
+  public static final String        ARGUMENTS    = "arguments";
+  public static final List<Integer> DEFAULT_EXIT = Arrays.asList(0);
+  public static final String        ENVIRONMENT  = "environment";
+  public static final String        EXECUTABLE   = "executable";
+  public static final String        ID           = "id";
+  public static final String        OPTIONAL     = "optional";
+  public static final String        TIMEOUT      = "duration";
+  public static final String        STD_ERR      = "stderr";
+  public static final String        STD_OUT      = "stdout";
+  public final static Duration      VERY_LONG    = ofHours(2 * 24 * 365 + 12);
 
-  private static final String TIMEOUT = "duration";
+  List<String> getArguments();
 
-  private final List<String> arguments;
+  String getExecutable();
 
-  private final boolean background;
+  Map<String, String> getExecutionEnvironment();
 
-  private final Optional<Map<String, String>> environment;
+  String getId();
 
-  private final String executable;
-  private final Map<String, String> executionEnvironment = new HashMap<>();
-  private final String executionString;
-  private final AtomicReference<ProcessExecutor> executor = new AtomicReference<>();
+  Optional<Path> getStdIn();
 
-  private final int[] exitValues;
+  Optional<Duration> getTimeout();
 
-  private final String id;
+  boolean isBackground();
 
-  private final boolean optional;
+  boolean isOptional();
 
-  private final Optional<Path> relativeRoot;
+  Optional<PrintStream> getAdditionalPrintStream();
 
-  private final ListCapturingLogOutputStream stdErr;
+  ListCapturingLogOutputStream getStdOut();
 
-  private final Optional<Path> stdIn;
-
-  private final ListCapturingLogOutputStream stdOut;
-
-  private final Optional<Duration> timeout;
-
-  private final Optional<Path> workDirectory;
-
-  public ProcessExecution(final String id, final String executable, final List<String> arguments,
-      final Optional<Duration> timeout, final Path stdOut, final Path stdErr, final Optional<Path> stdIn,
-      final Optional<Path> workDirectory, final boolean optional, final Optional<Map<String, String>> environment,
-      final Optional<Path> relativeRoot, final Optional<List<Integer>> exitValues, final Optional<PrintStream> addl,
-      final boolean background) {
-    this.id = Objects.requireNonNull(id, "process execution id");
-    this.executable = Objects.requireNonNull(executable);
-    this.arguments = Objects.requireNonNull(arguments);
-    this.timeout = Objects.requireNonNull(timeout);
-    this.timeout.filter(t -> t.isNegative()).ifPresent(n -> {
-      throw new ProcessException("Negative durations a invalid " + n);
-    });
-    this.optional = optional;
-    this.stdOut = new ListCapturingLogOutputStream(Optional.of(stdOut), addl);
-    this.stdErr = new ListCapturingLogOutputStream(Optional.of(stdErr), addl);
-    this.stdIn = Objects.requireNonNull(stdIn);
-    executionString = String.join(" ", Objects.requireNonNull(arguments));
-    this.environment = Objects.requireNonNull(environment);
-    this.workDirectory = Objects.requireNonNull(workDirectory);
-    this.relativeRoot = Objects.requireNonNull(relativeRoot);
-    this.background = background;
-    this.exitValues = exitValues.map(l -> l.stream().mapToInt(ii -> ii).toArray()).orElse(DEFAULT_EXIT);
-
-  }
+  ListCapturingLogOutputStream getStdErr();
 
   @Override
-  public Checksum asChecksum() {
+  default JSONObject asJSON() {
+    return JSONBuilder.newInstance(getRelativeRoot())
 
-    return ChecksumBuilder.newInstance(relativeRoot)
+        .addString(ID, getId())
 
-        .addString(id)
+        .addString(EXECUTABLE, getExecutable())
 
-        .addString(executable)
+        .addListString(ARGUMENTS, getArguments())
 
-        .addListString(arguments)
+        .addDuration(TIMEOUT, getTimeout())
 
-        .addDuration(timeout)
+        .addBoolean(OPTIONAL, isOptional())
 
-        .addBoolean(optional)
+        .addPath(STD_OUT, getStdOut().getPath())
 
-        .addPath(stdOut.getPath().get())
+        .addPath(STD_ERR, getStdErr().getPath())
 
-        .addPath(stdErr.getPath().get()).addMapStringString(environment).asChecksum();
+        .addMapStringString(ENVIRONMENT, getExecutionEnvironment())
+
+        .asJSON();
   }
 
-  @Override
-  public JSONObject asJSON() {
-    return JSONBuilder.newInstance().addString(ID, id).addString(EXECUTABLE, executable)
-        .addListString(ARGUMENTS, arguments).addDuration(TIMEOUT, timeout).addBoolean(OPTIONAL, optional)
-        .addMapStringString(ENVIRONMENT, environment).asJSON();
+  Path getWorkDirectory();
+
+  List<Integer> getExitValuesAsIntegers();
+
+  /**
+   * One should override this and cache the value, if possible, so as to return the same executor
+   * @return
+   */
+  default ProcessExecutor getProcessExecutor() {
+    final List<String> command = new ArrayList<>();
+    command.add(getExecutable());
+    command.addAll(getArguments());
+    List<Integer> l = getExitValuesAsIntegers();
+    Integer[] exitValues = (Integer[]) l.toArray(new Integer[l.size()]);
+    final ProcessExecutor pe = new ProcessExecutor()
+
+        .environment(getExecutionEnvironment())
+
+        .directory(getWorkDirectory().toFile())
+
+        .redirectError(getStdErr())
+
+        .redirectOutput(getStdOut())
+
+        .redirectInput(getStdIn().map(si -> pet.withReturningTranslation(() -> newInputStream(si))).orElse(System.in))
+
+        .exitValues(exitValues)
+
+        .command(command)
+
+    ;
+    if (getTimeout().isPresent()) {
+      final Duration d = getTimeout().get();
+      if (d.isNegative())
+        throw new ProcessException("Negative timeouts are disallowed " + d);
+      return pe.timeout(d.get(ChronoUnit.SECONDS) * 1000 + d.get(ChronoUnit.NANOS), TimeUnit.NANOSECONDS);
+    } else
+      return pe;
   }
 
-  @Override
-  public void close() {
-    ProcessException.pet.withTranslation(() -> stdOut.close());
-    ProcessException.pet.withTranslation(() -> stdErr.close());
-  }
-
-  public List<String> getArguments() {
-    return arguments;
-  }
-
-  public String getExecutable() {
-    return executable;
-  }
-
-  public Map<String, String> getExecutionEnvironment() {
-    return executionEnvironment;
-  }
-
-  public String getExecutionString() {
-    return executionString;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public ProcessExecutor getProcessExecutor() {
-    synchronized (executor) {
-      if (executor.get() == null) {
-        ProcessExecutor pe = new ProcessExecutor()
-
-            .environment(environment.orElse(new HashMap<>()))
-
-            .directory(workDirectory.map(Path::toFile).orElse((File) null))
-
-            .redirectError(stdErr)
-
-            .redirectOutput(stdOut)
-
-            .exitValues(exitValues)
-
-            .command(getCommand())
-
-        ;
-
-        if (timeout.isPresent()) {
-          final Duration d = timeout.get();
-          pe = pe.timeout(d.get(ChronoUnit.SECONDS) * 1000 + d.get(ChronoUnit.NANOS), TimeUnit.NANOSECONDS);
-        }
-        final ProcessExecutor pe2 = pe;
-        if (stdIn.isPresent()) {
-          pe = ProcessException.pet.withReturningTranslation(() -> {
-            return pe2.redirectInput(Files.newInputStream(stdIn.get()));
-          });
-        }
-        executor.compareAndSet(null, pe2);
-      }
-    }
-    return executor.get();
-  }
-
-  public Optional<Path> getRelativeRoot() {
-    return relativeRoot;
-  }
-
-  public ListCapturingLogOutputStream getStdErr() {
-    return stdErr;
-  }
-
-  public Optional<Path> getStdIn() {
-    return stdIn;
-  }
-
-  public ListCapturingLogOutputStream getStdOut() {
-    return stdOut;
-  }
-
-  public Optional<Duration> getTimeout() {
-    return timeout;
-  }
-
-  public boolean isBackground() {
-    return background;
-  }
-
-  public boolean isOptional() {
-    return optional;
-  }
-
-  private List<String> getCommand() {
-    final ArrayList<String> l = new ArrayList<>();
-    l.add(getExecutable());
-    l.addAll(getArguments());
-    return l;
-  }
 
 }

@@ -15,10 +15,12 @@
  */
 package org.infrastructurebuilder.util.artifacts.impl;
 
+import static java.util.Objects.requireNonNull;
 import static org.infrastructurebuilder.util.artifacts.IBVersionException.ibt;
 
 import java.util.Objects;
 
+import org.infrastructurebuilder.IBException;
 import org.infrastructurebuilder.util.artifacts.IBVersion;
 import org.infrastructurebuilder.util.artifacts.IBVersionException;
 
@@ -33,11 +35,18 @@ public final class DefaultIBVersion implements IBVersion {
   public IBVersionRange forRange(RangeOperator op) {
     return new DefaultIBVersionRange(this, op);
   }
+
   public static class DefaultIBVersionRange implements IBVersionRange {
     private final Range range;
+    private final IBVersion version;
+    private final RangeOperator op;
+
 
     public DefaultIBVersionRange(final IBVersion version, final RangeOperator op) {
-      range = new Range(new Semver(version.getValue()), Range.RangeOperator.valueOf(op.name()));
+      this.version = Objects.requireNonNull(version);
+      this.op = Objects.requireNonNull(op);
+
+      range = new Range(new Semver(version.getValue(), SemverType.LOOSE), Range.RangeOperator.valueOf(op.name()));
     }
 
     @Override
@@ -47,7 +56,62 @@ public final class DefaultIBVersion implements IBVersion {
 
     @Override
     public boolean isSatisfiedBy(final String version) {
-      return range.isSatisfiedBy(new Semver(version));
+      return range.isSatisfiedBy(new Semver(version, SemverType.LOOSE));
+    }
+    @Override
+    public String toString() {
+        return range.toString();
+    }
+
+    @Override
+    public IBVersionRange apiVersion() {
+      return new DefaultIBVersionRange(this.version.apiVersion(),this.op);
+    }
+
+  }
+
+  public static class DefaultIBVersionBoundedRange implements IBVersionBoundedRange {
+
+    private final IBVersionRange lower, upper;
+
+    public final static IBVersionBoundedRange versionBoundedRangeFrom (String lower, String upper) {
+      return versionBoundedRangeFrom(new DefaultIBVersion(lower), new DefaultIBVersion(upper));
+    }
+
+    public final static IBVersionBoundedRange versionBoundedRangeFrom(IBVersion lower, IBVersion upper) {
+      RangeOperator secnd = RangeOperator.LT;
+      if (lower.equals(upper))
+        secnd = RangeOperator.EQ;
+      if (upper.isLowerThan(lower) )
+        throw new IBException("Upper " + upper + " must be greater than " + lower);
+
+      return new DefaultIBVersionBoundedRange(new DefaultIBVersionRange(lower, RangeOperator.GTE),
+          new DefaultIBVersionRange(upper, secnd));
+    }
+
+    private DefaultIBVersionBoundedRange(IBVersionRange lower2, IBVersionRange upper2) {
+      this.upper = requireNonNull(lower2);
+      this.lower = requireNonNull(upper2);
+    }
+
+    @Override
+    public boolean isSatisfiedBy(IBVersion version) {
+      return lower.isSatisfiedBy(version) && upper.isSatisfiedBy(version);
+    }
+
+    @Override
+    public boolean isSatisfiedBy(String version) {
+      return lower.isSatisfiedBy(version) && upper.isSatisfiedBy(version);
+    }
+
+    @Override
+    public String toString() {
+      return this.lower.toString() + this.upper.toString();
+    }
+
+    @Override
+    public IBVersionBoundedRange apiRange() {
+      return new DefaultIBVersionBoundedRange(lower.apiVersion(), upper.apiVersion());
     }
 
   }
@@ -103,8 +167,7 @@ public final class DefaultIBVersion implements IBVersion {
       });
     }
 
-    private static IBVersionRequirement asIBVersionRequirement(
-        final com.vdurmont.semver4j.Requirement req) {
+    private static IBVersionRequirement asIBVersionRequirement(final com.vdurmont.semver4j.Requirement req) {
       return ibt.withReturningTranslation(() -> {
         return new DefaultIBVersionRequirement(req);
       });

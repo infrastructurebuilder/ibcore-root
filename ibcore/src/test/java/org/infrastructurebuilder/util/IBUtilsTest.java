@@ -15,10 +15,12 @@
  */
 package org.infrastructurebuilder.util;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.Files.newOutputStream;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static org.infrastructurebuilder.util.IBUtils.UTF_8;
+import static org.infrastructurebuilder.util.IBUtils.XML_PREFIX;
 import static org.infrastructurebuilder.util.IBUtils.asIterator;
 import static org.infrastructurebuilder.util.IBUtils.asJSONObjectStream;
 import static org.infrastructurebuilder.util.IBUtils.asOptFilesystemMap;
@@ -44,6 +46,7 @@ import static org.infrastructurebuilder.util.IBUtils.getOptInteger;
 import static org.infrastructurebuilder.util.IBUtils.getOptLong;
 import static org.infrastructurebuilder.util.IBUtils.getOptString;
 import static org.infrastructurebuilder.util.IBUtils.getOptionalJSONArray;
+import static org.infrastructurebuilder.util.IBUtils.getRootFromURL;
 import static org.infrastructurebuilder.util.IBUtils.getServicesFor;
 import static org.infrastructurebuilder.util.IBUtils.getZipFileCreateMap;
 import static org.infrastructurebuilder.util.IBUtils.getZipFileSystem;
@@ -52,6 +55,8 @@ import static org.infrastructurebuilder.util.IBUtils.hasAll;
 import static org.infrastructurebuilder.util.IBUtils.hex8Digit;
 import static org.infrastructurebuilder.util.IBUtils.hexStringToByteArray;
 import static org.infrastructurebuilder.util.IBUtils.inputStreamFromHexString;
+import static org.infrastructurebuilder.util.IBUtils.isJarArchive;
+import static org.infrastructurebuilder.util.IBUtils.isZipArchive;
 import static org.infrastructurebuilder.util.IBUtils.joinFromMap;
 import static org.infrastructurebuilder.util.IBUtils.mapJSONToStringString;
 import static org.infrastructurebuilder.util.IBUtils.matches;
@@ -60,10 +65,15 @@ import static org.infrastructurebuilder.util.IBUtils.mergeJsonObjects;
 import static org.infrastructurebuilder.util.IBUtils.nullIfBlank;
 import static org.infrastructurebuilder.util.IBUtils.reURL;
 import static org.infrastructurebuilder.util.IBUtils.readFile;
+import static org.infrastructurebuilder.util.IBUtils.readInputStreamAsStringStream;
 import static org.infrastructurebuilder.util.IBUtils.readJsonObject;
 import static org.infrastructurebuilder.util.IBUtils.readToJSONObject;
 import static org.infrastructurebuilder.util.IBUtils.readToString;
+import static org.infrastructurebuilder.util.IBUtils.removeXMLPrefix;
 import static org.infrastructurebuilder.util.IBUtils.splitToMap;
+import static org.infrastructurebuilder.util.IBUtils.strToDoc;
+import static org.infrastructurebuilder.util.IBUtils.stringFromDocument;
+import static org.infrastructurebuilder.util.IBUtils.translateToWorkableArchiveURL;
 import static org.infrastructurebuilder.util.IBUtils.unzip;
 import static org.infrastructurebuilder.util.IBUtils.writeString;
 import static org.infrastructurebuilder.util.IBUtils.zipEntryToUrl;
@@ -128,28 +138,29 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.w3c.dom.Document;
 
 @SuppressWarnings("unused")
 public class IBUtilsTest {
 
-  private static final String JUNIT_4_8_2_JAR = "junit-4.8.2.jar";
-  private static final String C1_PROPERTY = "process.executor.interim.sleep";
-  private static final String FAKEFILE = "FAKEFILE.zip";
-  private static final String CANNOT_READ_TARGET_DIR = "I cannot read the target dir";
-  private static final String ABC = "ABC";
-  private static final String ABC_CHECKSUM = "397118fdac8d83ad98813c50759c85b8c47565d8268bf10da483153b747a74743a58a90e85aa9f705ce6984ffc128db567489817e4092d050d8a1cc596ddc119";
-  private static final String X_TXT = "X.txt";
-  public static final String TESTFILE_CHECKSUM = "0bd4468980d90ef4d5e1e39bf30b93670492d282c518da95334df7bcad7ba8e0afe377a97d8fd64b4b6fd452b5d60ee9ee665e2fa5ecb13d8d51db8794011f3e";
-  public static final String TESTFILE = "rick.jpg";
-  private static JSONObject jj;
-  private static JSONObject jjNull;
-  private static JSONObject jjNull2;
-  private static JSONObject jjNull3;
-  private static JSONObject[] objects;
-  private static Path target, testClasses, classes;
+  private static final String        JUNIT_4_8_2_JAR        = "junit-4.8.2.jar";
+  private static final String        C1_PROPERTY            = "process.executor.interim.sleep";
+  private static final String        FAKEFILE               = "FAKEFILE.zip";
+  private static final String        CANNOT_READ_TARGET_DIR = "I cannot read the target dir";
+  private static final String        ABC                    = "ABC";
+  private static final String        ABC_CHECKSUM           = "397118fdac8d83ad98813c50759c85b8c47565d8268bf10da483153b747a74743a58a90e85aa9f705ce6984ffc128db567489817e4092d050d8a1cc596ddc119";
+  private static final String        X_TXT                  = "X.txt";
+  public static final String         TESTFILE_CHECKSUM      = "0bd4468980d90ef4d5e1e39bf30b93670492d282c518da95334df7bcad7ba8e0afe377a97d8fd64b4b6fd452b5d60ee9ee665e2fa5ecb13d8d51db8794011f3e";
+  public static final String         TESTFILE               = "rick.jpg";
+  private static JSONObject          jj;
+  private static JSONObject          jjNull;
+  private static JSONObject          jjNull2;
+  private static JSONObject          jjNull3;
+  private static JSONObject[]        objects;
+  private static Path                target, testClasses, classes;
   private static TestingPathSupplier wps;
-  private static final String TESTSTRING = "ABCDE";
-  private static final String URL = "https://www.google.com";
+  private static final String        TESTSTRING             = "ABCDE";
+  private static final String        URL                    = "https://www.google.com";
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
@@ -1199,15 +1210,15 @@ public class IBUtilsTest {
     Path p = testClasses.resolve("X.zip");
     URL k = p.toUri().toURL();
     String e = k.toExternalForm() + "!/rick.jpg";
-    URL u = IBUtils.translateToWorkableArchiveURL("jar:" + e);
-    URL v = IBUtils.translateToWorkableArchiveURL("zip:" + e);
+    URL u = translateToWorkableArchiveURL("jar:" + e);
+    URL v = translateToWorkableArchiveURL("zip:" + e);
 
     URL first = new URL("https://file-examples.com/wp-content/uploads/2017/02/zip_2MB.zip");
     String secondA = "zip:" + first.toExternalForm() + "!/zip_10MB/" + "file-sample_1MB.doc";
-    URL second = IBUtils.translateToWorkableArchiveURL(secondA);
+    URL second = translateToWorkableArchiveURL(secondA);
 
     Path cc = wps.get().resolve("file-sample_1MB.doc");
-    try (OutputStream outs = Files.newOutputStream(cc); InputStream ins = second.openStream()) {
+    try (OutputStream outs = newOutputStream(cc); InputStream ins = second.openStream()) {
       IBUtils.copy(ins, outs);
     }
     assertEquals(
@@ -1217,27 +1228,45 @@ public class IBUtilsTest {
 
   @Test
   public void testIsJarorZip() {
-    assertTrue(IBUtils.isJarArchive() || IBUtils.isZipArchive());
-    assertTrue(IBUtils.isZipArchive() || IBUtils.isJarArchive());
+    assertTrue(isJarArchive() || isZipArchive());
+    assertTrue(isZipArchive() || isJarArchive());
   }
 
   @Test
   public void testReadInputStreamAsStringStream() throws IOException {
     try (InputStream ins = Files.newInputStream(testClasses.resolve("somefile.json"))) {
-      JSONObject j = new JSONObject(IBUtils.readInputStreamAsStringStream(ins).collect(Collectors.joining("\n")));
-      JSONObject t2 = IBUtils.readJsonObject(testClasses.resolve("somefile.json"));
+      JSONObject j = new JSONObject(readInputStreamAsStringStream(ins).collect(Collectors.joining("\n")));
+      JSONObject t2 = readJsonObject(testClasses.resolve("somefile.json"));
       JSONAssert.assertEquals(t2, j, true);
     }
   }
 
   @Test
   public void testPathOfZip() throws IOException {
-    String[] p = ("jar:" + wps.getTestClasses().resolve(JUNIT_4_8_2_JAR).toUri().toURL().toExternalForm() + "!/").split("!");
-    Path zip = IBUtils.getRootFromURL(p);
+    String[] p = ("jar:" + wps.getTestClasses().resolve(JUNIT_4_8_2_JAR).toUri().toURL().toExternalForm() + "!/")
+        .split("!");
+    Path zip = getRootFromURL(p);
     assertNotNull(zip);
     Path file = zip.resolve("LICENSE.txt");
-    String s= IBUtils.readFile(file);
+    String s = readFile(file);
     assertTrue(s.startsWith("BSD"));
+  }
+
+  @Test
+  public void testStringFromDom() {
+    String x = XML_PREFIX + "\n" + "<tag/>";
+    String y = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><tag/>";
+    Document document = strToDoc.apply(x).get();
+    assertEquals(y, stringFromDocument(document));
+  }
+
+  @Test
+  public void testRemoveXLPrefix() {
+    String x = XML_PREFIX + "\n" + "<tag/>";
+    String y = "<tag/>";
+    String z = "<tag/>";
+    assertEquals(removeXMLPrefix(x), y);
+    assertEquals(removeXMLPrefix(y), z);
 
   }
 }

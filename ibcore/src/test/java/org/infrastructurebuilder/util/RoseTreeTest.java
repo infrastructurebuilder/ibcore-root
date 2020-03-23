@@ -15,6 +15,8 @@
  */
 package org.infrastructurebuilder.util;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.infrastructurebuilder.util.IBUtils.deepCopy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -22,7 +24,6 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -64,18 +65,11 @@ public class RoseTreeTest {
 
   public static class X implements JSONAndChecksumEnabled {
     private final JSONObject a;
-    private final Checksum checksum;
     private final JSONObject json;
 
     public X(final JSONObject a) {
       this.a = a;
-      checksum = ChecksumBuilder.newInstance().addJSONObject(this.a).asChecksum();
       json = deepCopy.apply(this.a);
-    }
-
-    @Override
-    public Checksum asChecksum() {
-      return checksum;
     }
 
     @Override
@@ -129,23 +123,23 @@ public class RoseTreeTest {
     testObject0 = new X(testJson0);
     testObject1 = new X(testJson1);
     testObject2 = new X(testJson2);
-    rose2 = new RoseTest(testObject2, Collections.emptyList());
-    rose1 = new RoseTest(testObject1, Collections.emptyList());
-    rose0 = new RoseTest(testObject0, Arrays.asList(rose1, rose2));
+    rose2 = new RoseTest(testObject2, emptyList());
+    rose1 = new RoseTest(testObject1, emptyList());
+    rose0 = new RoseTest(testObject0, asList(rose1, rose2));
   }
 
   @Test
   public void testAsChecksum() {
-    final String rose1checksum = "3472cdf4486ea9188a0477671bdbf7d128bb070b1259202e1b365e1793b744f7a2d561aed65ea25fec6984aada5718d9a16a6c823c1bbc1b611281771c99db27";
+    final String rose1checksum = "57be5e8db73583d93774c737de925b39e67cfa1ef03c0cdea0c34ebf41669aef87fab36c33225157f7fcfd34f34a50ac91d54aa2781bf884f6aa7f4e74968ced";
     assertEquals("rose1 checksum is " + rose1checksum, rose1checksum, rose1.asChecksum().toString());
-    final String rose0Checksum = "eddf3cd09baa94ee970489a43f6e5fa1f5be4950de1b5a2cd6a40d1e3be1c286c77cb2cbd08990681d1db8d54927a90d168b4ba079033243256f9634db2a6a75";
+    final String rose0Checksum = "49f9207ff5c6c339a3850ecce2172e327d6f8a8dc63f62fd2be277e8145f17d309167dabc9cf3650e1367f995ce90fe685113250a1226d089b7e42818ef1073f";
     assertEquals("rose0 checksum is " + rose0Checksum, rose0Checksum, rose0.asChecksum().toString());
   }
 
   @Test
   public void testEqualsNotSame() {
-    final RoseTest rose3 = new RoseTest(new X(testJson0), Collections.emptyList());
-    final RoseTest rose4 = new RoseTest(new X(testJson0), Collections.emptyList());
+    final RoseTest rose3 = new RoseTest(new X(testJson0), emptyList());
+    final RoseTest rose4 = new RoseTest(new X(testJson0), emptyList());
     assertEquals("Equals not same ", rose3, rose4);
     assertEquals("Different hash codes?", rose3.hashCode(), rose4.hashCode());
     assertNotEquals("Not equal to null?", rose3, null);
@@ -182,7 +176,7 @@ public class RoseTreeTest {
 
   @Test
   public void testNotAString() {
-    final RoseTest rose3 = new RoseTest(new X(testJson0), Collections.emptyList());
+    final RoseTest rose3 = new RoseTest(new X(testJson0), emptyList());
     assertNotEquals("Not a string", rose3, "ABC");
   }
 
@@ -195,8 +189,8 @@ public class RoseTreeTest {
 
   @Test
   public void testWithChildren() {
-    final RoseTest rose3 = new RoseTest(new X(testJson0), Collections.emptyList());
-    final RoseTree<X> b = rose1.withChildren(Arrays.asList(rose2, rose3));
+    final RoseTest rose3 = new RoseTest(new X(testJson0), emptyList());
+    final RoseTree<X> b = rose1.withChildren(asList(rose2, rose3));
     assertEquals("b has 2 children", 2, b.getChildren().size());
   }
 

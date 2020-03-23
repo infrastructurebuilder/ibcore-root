@@ -57,21 +57,21 @@ public class DefaultCryptoIdentifier implements CryptoIdentifier {
         .asJSON();
   }
 
-  @Override
-  public Checksum asChecksum() {
-    return ChecksumBuilder.newInstance()
-        // ID
-        .addString(getId())
-        // Type
-        .addString(getType())
-        //
-        .addSetString(getIdentifiers())
-        // opt
-        .addString(getValidationIdentifier())
-        //
-        .asChecksum();
-  }
-
+//  @Override
+//  public Checksum asChecksum() {
+//    return ChecksumBuilder.newInstance()
+//        // ID
+//        .addString(getId())
+//        // Type
+//        .addString(getType())
+//        //
+//        .addSetString(getIdentifiers())
+//        // opt
+//        .addString(getValidationIdentifier())
+//        //
+//        .asChecksum();
+//  }
+//
   @Override
   public SortedSet<String> getIdentifiers() {
     return this.identifiers;

@@ -95,8 +95,10 @@ public final class ChecksumBuilder implements ChecksumEnabled {
   }
 
   public ChecksumBuilder addChecksumEnabled(final ChecksumEnabled s) {
+    if (s == null)
+      return this;
     lockCheck();
-    addBytes(requireNonNull(s).asChecksum().getDigest());
+    addBytes(s.asChecksum().getDigest());
     return this;
   }
 

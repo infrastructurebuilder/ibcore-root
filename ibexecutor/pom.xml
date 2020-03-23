@@ -63,6 +63,10 @@
       <artifactId>joor-java-8</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
 
   </dependencies>
   <build>
@@ -80,7 +84,7 @@
         <executions>
           <execution>
             <id>getPacker</id>
-            <phase>validate</phase>
+            <phase>generate-test-resources</phase>
             <goals>
               <goal>wget</goal>
             </goals>
@@ -88,8 +92,98 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <!-- here the phase you need -->
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/mdo/</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.modello</groupId>
+        <artifactId>modello-maven-plugin</artifactId>
+        <configuration>
+          <version>1.0.0</version>
+          <useJava5>true</useJava5>
+          <models>
+            <model>target/classes/${project.artifactId}.mdo</model>
+            <model>target/classes/${project.artifactId}2.mdo</model>
+          </models>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-java-sources</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+              <goal>xpp3-reader</goal>
+              <goal>xpp3-extended-reader</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>make-site-xsd</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>xsd</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>target/generated-site/resources/xsd</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>make-site-doc</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>xdoc</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.infrastructurebuilder.modello</groupId>
+        <artifactId>modello-maven-plugin-usurped</artifactId>
+        <version>1.11.0.0</version>
+        <configuration>
+          <version>1.0.0</version>
+          <useJava5>true</useJava5>
+          <models>
+            <model>target/classes/${project.artifactId}.mdo</model>
+            <model>target/classes/${project.artifactId}2.mdo</model>
+          </models>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-java-sources</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>xpp3-writer-reflect</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>org/infrastructurebuilder/util/execution/model/**/*</exclude>
+          </excludes>
+        </configuration>
       </plugin>
     </plugins>
   </build>

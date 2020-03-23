@@ -15,14 +15,22 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
+import static org.infrastructurebuilder.IBException.cet;
 
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.Optional;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.infrastructurebuilder.IBException;
 import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public interface GAV extends JSONAndChecksumEnabled, Comparable<GAV> {
   String BASIC_PACKAGING = "jar";
@@ -38,6 +46,8 @@ public interface GAV extends JSONAndChecksumEnabled, Comparable<GAV> {
   String PROVIDED_SCOPE      = "provided";
   String RUNTIME_SCOPE       = "runtime";
   String SNAPSHOT_DESIGNATOR = "-SNAPSHOT";
+  String GAV_PACKAGING       = "packaging";
+  String GAV_TYPE            = "type";
 
   static String asPaxUrl(final GAV v) {
     final String cl = !v.getClassifier().isPresent() ? "" : "/" + v.getClassifier().orElse("");
@@ -46,20 +56,28 @@ public interface GAV extends JSONAndChecksumEnabled, Comparable<GAV> {
   }
 
   @Override
-  default Checksum asChecksum() {
-    return ChecksumBuilder.newInstance().addString(getGroupId()).addString(getArtifactId()).addString(getClassifier())
-        .addString(getVersion()).addString(getExtension()).asChecksum();
-  }
-
-  @Override
   default JSONObject asJSON() {
     return getJSONBuilder().asJSON();
+  }
+
+  default Document asDom() {
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    DocumentBuilder builder = IBException.cet.withReturningTranslation(() -> dbf.newDocumentBuilder());
+    Document doc = builder.newDocument();
+    Element root = doc.createElement("gav");
+    root.setAttribute(GAV_GROUPID, getGroupId());
+    root.setAttribute(GAV_ARTIFACTID, getArtifactId());
+    getVersion().ifPresent(v -> root.setAttribute(GAV_VERSION, v));
+    getClassifier().ifPresent(c -> root.setAttribute(GAV_CLASSIFIER, c));
+    root.setAttribute(GAV_EXTENSION, getExtension());
+    getFile().ifPresent(f -> root.setAttribute(GAV_PATH, f.toString()));
+    return doc;
   }
 
   default Optional<String> asMavenDependencyGet() {
 
     try {
-      final String theVersion    = getVersion().map(v -> v.toString())
+      final String theVersion = getVersion().map(v -> v.toString())
           .orElseThrow(() -> new IllegalArgumentException("No version available"));
       final String theClassifier = getClassifier().map(c -> ":" + c).orElse("");
 
@@ -133,6 +151,7 @@ public interface GAV extends JSONAndChecksumEnabled, Comparable<GAV> {
    * Get the "API version" for semantic versions.
    *
    * Might blow up if you're not a semantic version
+   *
    * @return String with Major.Minor verions
    */
   default Optional<String> getAPIVersion() {
@@ -147,8 +166,56 @@ public interface GAV extends JSONAndChecksumEnabled, Comparable<GAV> {
     return getVersion().orElse(FAKE_AF_VALUE).endsWith(SNAPSHOT_DESIGNATOR);
   }
 
-  GAV withFile(Path file);
+  default GAV withFile(Path file) {
+    return this;
+  }
 
-  boolean equalsIgnoreClassifier(GAV other, boolean ignoreClassifier);
+  default boolean equalsIgnoreClassifier(final GAV other, boolean ignoreClassifier) {
+    if (!this.getExtension().equals(requireNonNull(other).getExtension()))
+      return false;
+    if (!this.getGroupId().equals(other.getGroupId()))
+      return false;
+    if (!this.getArtifactId().equals(other.getArtifactId()))
+      return false;
+    if (!ignoreClassifier && !Objects.equals(getClassifier(), other.getClassifier()))
+      return false;
+    if (!Objects.equals(getVersion(), other.getVersion()))
+      return false;
+    return true;
+
+  }
+
+  @Override
+  default int compareTo(final GAV o) {
+    if (o == null)
+      throw new NullPointerException("compareTo in DefaultGAV was passed a null");
+    if (equals(o))
+      return 0;
+    int cmp = getGroupId().compareTo(o.getGroupId());
+    if (cmp == 0) {
+      cmp = getArtifactId().compareTo(o.getArtifactId());
+      if (cmp == 0) {
+        cmp = cet.withReturningTranslation(() -> {
+          return compareVersion(o);
+        });
+        if (cmp == 0) {
+          cmp = getExtension().compareTo(o.getExtension());
+        }
+
+      }
+    }
+    return cmp;
+  }
+
+  default int compareVersion(final GAV otherVersion) {
+    final String v = otherVersion.getVersion().orElse(null);
+    final String q = getVersion().orElse(null);
+    if (q == null && v == null)
+      return 0;
+    if (q == null)
+      return -1;
+    return q.compareTo(v);
+
+  }
 
 }

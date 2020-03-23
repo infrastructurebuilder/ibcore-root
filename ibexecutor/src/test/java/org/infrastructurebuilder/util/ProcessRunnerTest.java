@@ -15,16 +15,21 @@
  */
 package org.infrastructurebuilder.util;
 
+import static java.time.Duration.ofMinutes;
+import static java.time.Duration.ofSeconds;
+import static java.util.Arrays.asList;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -32,6 +37,7 @@ import java.util.UUID;
 
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -46,7 +52,7 @@ public class ProcessRunnerTest {
   }
 
   private DefaultProcessRunner runner;
-  private Checksum packerCsum;
+  private Checksum             packerCsum;
 
   private Path packerExecutable;
 
@@ -54,16 +60,16 @@ public class ProcessRunnerTest {
 
   private String ttClass;
 
-  private Path ttest1;
-  private boolean isWindows;
+  private Path                ttest1;
+  private boolean             isWindows;
   private TestingPathSupplier wps = new TestingPathSupplier();
-  private Path target;
+  private Path                target;
 
   @Before
   public void setUp() throws Exception {
     target = wps.getRoot();
     scratchDir = target.resolve(UUID.randomUUID().toString());
-    runner = new DefaultProcessRunner(scratchDir, Optional.of(System.out), Optional.of(logger), Optional.of(target));
+    runner = new DefaultProcessRunner(scratchDir, of(System.out), of(logger), of(target));
     isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
 
     packerExecutable = target.resolve("packer" + (isWindows ? ".exe" : "")).toAbsolutePath();
@@ -72,18 +78,37 @@ public class ProcessRunnerTest {
     ttClass = "ThreadTest1S";
   }
 
+  @After
+  public void tearDown() {
+    IBUtils.deletePath(scratchDir);
+  }
+
+  @Test
+  public void testAddlConstructors1() {
+    IBUtils.deletePath(scratchDir);
+    Optional<PrintStream> addl = empty();
+    assertNotNull(new DefaultProcessRunner(scratchDir, addl));
+    logger.info("I totally ran!");
+  }
+
+  @Test
+  public void testAddlConstructors2() {
+    IBUtils.deletePath(scratchDir);
+    Optional<PrintStream> addl = empty();
+    assertNotNull(new DefaultProcessRunner(scratchDir, addl, of(logger)));
+    logger.info("I totally ran!");
+  }
+
   @Test(expected = ProcessException.class)
   public void testAddLocked() {
     final String id = UUID.randomUUID().toString();
     runner = runner.addExecution(id, packerExecutable.toString(),
-        Arrays.asList("version", "-machine-readable", "-color=false"), Optional.empty(), Optional.empty(),
-        Optional.empty(), Optional.of(packerCsum), false, Optional.empty(), Optional.of(target), Optional.empty(),
-        false);
-    runner.lock(Duration.ofSeconds(15), Optional.empty()).lock(Duration.ZERO, Optional.empty());
+        asList("version", "-machine-readable", "-color=false"), empty(), empty(), of(scratchDir), of(packerCsum), false,
+        empty(), of(target), empty(), false);
+    runner.lock(ofSeconds(15), empty()).lock(Duration.ZERO, empty());
     runner = runner.addExecution(id, packerExecutable.toString(),
-        Arrays.asList("version", "-machine-readable", "-color=false"), Optional.empty(), Optional.empty(),
-        Optional.empty(), Optional.of(packerCsum), false, Optional.empty(), Optional.of(target), Optional.empty(),
-        false);
+        asList("version", "-machine-readable", "-color=false"), empty(), empty(), of(scratchDir), of(packerCsum), false,
+        empty(), of(target), empty(), false);
 
   }
 
@@ -91,11 +116,10 @@ public class ProcessRunnerTest {
   public void testDaemon() {
     final String id = UUID.randomUUID().toString();
     final Path in = ttest1.resolve("ThreadTest1S.class");
-    try (ProcessRunner newrunner = runner.addExecution(id, "java", Arrays.asList(ttClass, "1"),
-        Optional.of(Duration.ofMinutes(5)), Optional.of(in), Optional.of(ttest1), Optional.empty(), false,
-        Optional.empty(), Optional.of(target), Optional.empty(), true)) {
+    try (ProcessRunner newrunner = runner.addExecution(id, "java", asList(ttClass, "1"), of(ofMinutes(5)), of(in),
+        of(ttest1), empty(), false, empty(), of(target), empty(), true)) {
       newrunner.setKeepScratchDir(false);
-      newrunner.lock(Duration.ofSeconds(15), Optional.of(25L));
+      newrunner.lock(ofSeconds(15), of(25L));
       final ProcessExecutionResultBag p = runner.get().get();
       assertTrue(p.getDuration().isPresent());
       assertNotNull(p.getStdErrs());
@@ -119,11 +143,10 @@ public class ProcessRunnerTest {
   public void testErrorResult() {
     final String id = UUID.randomUUID().toString();
     final Path in = ttest1.resolve("ThreadTest1S.class");
-    try (ProcessRunner newrunner = runner.addExecution(id, "javac", Arrays.asList(), Optional.of(Duration.ofMinutes(1)),
-        Optional.of(in), Optional.of(ttest1), Optional.empty(), false, Optional.empty(), Optional.of(target),
-        Optional.empty(), true)) {
+    try (ProcessRunner newrunner = runner.addExecution(id, "javac", asList(), of(ofMinutes(1)), of(in), of(wps.getRoot().resolve(id)),
+        empty(), false, empty(), of(target), empty(), true)) {
       newrunner.setKeepScratchDir(false);
-      newrunner.lock(Duration.ofSeconds(15), Optional.of(25L));
+      newrunner.lock(ofSeconds(15), of(25L));
       final ProcessExecutionResultBag p = runner.get().get();
 
       assertTrue(newrunner.hasErrorResult(p.getResults()));
@@ -138,19 +161,19 @@ public class ProcessRunnerTest {
   }
 
   @Test
-  public void testGetExecution() {
+  public void testGetExecution() throws Exception {
     final String id = "default";
     final String executable = "java";
 
-    final List<String> arguments = Arrays.asList("-version");
-    final Optional<Duration> timeout = Optional.empty();
-    final Optional<Path> stdIn = Optional.empty();
-    final Optional<Path> workDirectory = Optional.empty();
-    final Optional<Checksum> checksum = Optional.empty();
+    final List<String> arguments = asList("-version");
+    final Optional<Duration> timeout = empty();
+    final Optional<Path> stdIn = empty();
+    final Optional<Path> workDirectory = of(scratchDir);
+    final Optional<Checksum> checksum = empty();
     final boolean optional = false;
-    final Optional<Map<String, String>> environment = Optional.empty();
+    final Optional<Map<String, String>> environment = empty();
     try (ProcessRunner e2 = runner.addExecution(id, executable, arguments, timeout, stdIn, workDirectory, checksum,
-        optional, environment, Optional.of(scratchDir), Optional.empty(), false).setKeepScratchDir(true)) {
+        optional, environment, of(scratchDir), empty(), false).setKeepScratchDir(true)) {
       final ProcessExecution e = e2.getProcessExecutionForId(id).get();
       assertNotNull(e);
       assertNotNull(e.getStdErr());
@@ -159,9 +182,8 @@ public class ProcessRunnerTest {
       assertNotNull(e.getArguments());
       assertFalse(e.isOptional());
       assertNotNull(e.getExecutable());
-      assertNotNull(e.getExecutionString());
     } catch (final Exception e1) {
-      fail();
+      throw e1;
     }
   }
 
@@ -180,10 +202,9 @@ public class ProcessRunnerTest {
   public void testLongRunningDaemon() {
     final String id = UUID.randomUUID().toString();
     final Path in = ttest1.resolve("ThreadTest1S.class");
-    runner = runner.addExecution(id, "java", Arrays.asList(ttClass, "60"), Optional.of(Duration.ofMinutes(5)),
-        Optional.of(in), Optional.of(ttest1), Optional.empty(), false, Optional.empty(), Optional.of(target),
-        Optional.empty(), true);
-    runner.lock(Duration.ofSeconds(4), Optional.of(25L));
+    runner = runner.addExecution(id, "java", asList(ttClass, "60"), of(ofMinutes(5)), of(in), of(ttest1), empty(),
+        false, empty(), of(target), empty(), true);
+    runner.lock(ofSeconds(4), of(25L));
     final ProcessExecutionResultBag p = runner.get().get();
     assertTrue(p.getDuration().isPresent());
     assertNotNull(p.getStdErrs());
@@ -204,8 +225,7 @@ public class ProcessRunnerTest {
     if (Files.exists(p))
       throw new RuntimeException("Test failed because of a random thing");
 
-    try (ProcessRunner prr = new DefaultProcessRunner(p, Optional.of(System.out), Optional.of(logger),
-        Optional.of(target))) {
+    try (ProcessRunner prr = new DefaultProcessRunner(p, of(System.out), of(logger), of(target))) {
     }
   }
 
@@ -218,11 +238,9 @@ public class ProcessRunnerTest {
     final Path under = p.resolve(id);
     Files.createDirectories(under);
     under.toFile().setReadOnly();
-    try (ProcessRunner pu = new DefaultProcessRunner(p, Optional.of(System.out), Optional.of(logger),
-        Optional.of(target))) {
-      assertNotNull(pu.addExecution(id, "java", Arrays.asList("-version"), Optional.empty(), Optional.empty(),
-          Optional.empty(), Optional.empty(), false, Optional.empty(), Optional.of(scratchDir),
-          Optional.of(Arrays.asList(0)), false));
+    try (ProcessRunner pu = new DefaultProcessRunner(p, of(System.out), of(logger), of(target))) {
+      assertNotNull(pu.addExecution(id, "java", asList("-version"), empty(), empty(), empty(), empty(), false, empty(),
+          of(scratchDir), of(asList(0)), false));
     }
   }
 
@@ -236,8 +254,7 @@ public class ProcessRunnerTest {
     if (!isWindows && !p.toFile().setReadOnly())
       throw new RuntimeException("Cannot set readonly to file");
 
-    try (ProcessRunner prr = new DefaultProcessRunner(p, Optional.of(System.out), Optional.of(logger),
-        Optional.of(target))) {
+    try (ProcessRunner prr = new DefaultProcessRunner(p, of(System.out), of(logger), of(target))) {
 
     }
   }
@@ -261,10 +278,9 @@ public class ProcessRunnerTest {
   public void testwithChecksum() {
     final String id = UUID.randomUUID().toString();
     runner = runner.addExecution(id, packerExecutable.toString(),
-        Arrays.asList("version", "-machine-readable", "-color=false"), Optional.of(Duration.ofSeconds(20)),
-        Optional.empty(), Optional.empty(), Optional.of(packerCsum), false, Optional.empty(), Optional.of(target),
-        Optional.empty(), false);
-    runner.lock(Duration.ofSeconds(15), Optional.empty()).lock(Duration.ZERO, Optional.empty());
+        asList("version", "-machine-readable", "-color=false"), of(ofSeconds(20)), empty(), of(scratchDir),
+        of(packerCsum), false, empty(), of(target), empty(), false);
+    runner.lock(ofSeconds(15), empty()).lock(Duration.ZERO, empty());
     final ProcessExecutionResultBag p = runner.get().get();
     assertTrue(p.getDuration().isPresent());
     assertNotNull(p.getStdErrs());
@@ -283,9 +299,9 @@ public class ProcessRunnerTest {
   public void testwithChecksum2() {
     final String id = UUID.randomUUID().toString();
     runner = runner
-        .addExecution(id, packerExecutable.toString(), Arrays.asList("version", "-machine-readable", "-color=false"),
-            Optional.of(Duration.ofSeconds(20)), Optional.empty(), Optional.empty(), Optional.of(packerCsum), false,
-            Optional.empty(), Optional.of(target), Optional.empty(), false)
+        .addExecution(id, packerExecutable.toString(), asList("version", "-machine-readable", "-color=false"),
+            of(ofSeconds(20)), empty(), of(scratchDir), of(packerCsum), false, empty(), of(target), empty(),
+            false)
 
         .lock();
     final ProcessExecutionResultBag p = runner.get().get();
@@ -306,19 +322,17 @@ public class ProcessRunnerTest {
   public void testwithFakeChecksum() {
     final String id = UUID.randomUUID().toString();
     runner = runner.addExecution(id, packerExecutable.toString(),
-        Arrays.asList("version", "-machine-readable", "-color=false"), Optional.empty(), Optional.empty(),
-        Optional.empty(), Optional.of(new Checksum("abcd")), false, Optional.empty(), Optional.of(target),
-        Optional.empty(), false);
+        asList("version", "-machine-readable", "-color=false"), empty(), empty(), empty(), of(new Checksum("abcd")),
+        false, empty(), of(target), empty(), false);
   }
 
   @Test(expected = ProcessException.class)
   public void testwithNegativeDuration() {
     final String id = UUID.randomUUID().toString();
     runner = runner.addExecution(id, packerExecutable.toString(),
-        Arrays.asList("version", "-machine-readable", "-color=false"), Optional.empty(), Optional.empty(),
-        Optional.empty(), Optional.of(packerCsum), false, Optional.empty(), Optional.of(target), Optional.empty(),
-        false);
-    runner.lock(Duration.ofSeconds(-15), Optional.empty()).lock(Duration.ZERO, Optional.empty());
+        asList("version", "-machine-readable", "-color=false"), empty(), empty(), empty(), of(packerCsum), false,
+        empty(), of(target), empty(), false);
+    runner.lock(ofSeconds(-15), empty()).lock(Duration.ZERO, empty());
   }
 
 }

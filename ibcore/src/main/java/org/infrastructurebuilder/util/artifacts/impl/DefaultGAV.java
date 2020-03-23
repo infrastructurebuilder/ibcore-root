@@ -15,20 +15,23 @@
  */
 package org.infrastructurebuilder.util.artifacts.impl;
 
+import static java.util.Arrays.copyOf;
+import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
+import static org.infrastructurebuilder.IBException.cet;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.infrastructurebuilder.IBException;
 import org.infrastructurebuilder.IBVersionsSupplier;
 import org.infrastructurebuilder.util.artifacts.GAV;
 import org.json.JSONObject;
 
 public class DefaultGAV implements GAV, Comparable<GAV> {
+
 
   public static DefaultGAV copyFromSpec(final GAV hs) {
     return (DefaultGAV) new DefaultGAV(hs.getGroupId(), hs.getArtifactId(), hs.getClassifier().orElse(null),
@@ -37,7 +40,7 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
 
   private String artifactId;
 
-  private Optional<String> classifier = Optional.empty();
+  private Optional<String> classifier = empty();
 
   private String extension;
   private String groupId;
@@ -47,11 +50,11 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
   private final Optional<Path> path;
 
   public DefaultGAV(final JSONObject json) {
-    setGroupId(Objects.requireNonNull(json).getString(GAV_GROUPID));
+    setGroupId(requireNonNull(json).getString(GAV_GROUPID));
     setArtifactId(json.getString(GAV_ARTIFACTID));
     setVersion(json.optString(GAV_VERSION, null));
     setClassifier(json.optString(GAV_CLASSIFIER, null));
-    setExtension(json.optString(GAV_EXTENSION, json.optString("type", json.optString("packaging", null))));
+    setExtension(json.optString(GAV_EXTENSION, json.optString(GAV_TYPE, json.optString(GAV_PACKAGING, null))));
     path = ofNullable(json.optString(GAV_PATH, null)).map(Paths::get);
   }
 
@@ -61,12 +64,12 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
   }
 
   public DefaultGAV(final IBVersionsSupplier from) {
-    this(Objects.requireNonNull(from).getArtifactDependency().get());
+    this(requireNonNull(from).getArtifactDependency().get());
   }
 
   public DefaultGAV(final String from) {
     this();
-    final String[] l = Arrays.copyOf(from.split(":"), 5);
+    final String[] l = copyOf(from.split(":"), 5);
 
     for (int i = 0; i < 5; ++i) {
       switch (i) {
@@ -113,7 +116,7 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
 
   private DefaultGAV() {
     super();
-    path = Optional.empty();
+    path = empty();
   }
 
   private DefaultGAV(final GAV gav, final Path path) {
@@ -126,58 +129,10 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
   }
 
   @Override
-  public int compareTo(final GAV o) {
-    if (o == null)
-      throw new NullPointerException("compareTo in DefaultGAV was passed a null");
-    if (equals(o))
-      return 0;
-    int cmp = getGroupId().compareTo(o.getGroupId());
-    if (cmp == 0) {
-      cmp = getArtifactId().compareTo(o.getArtifactId());
-      if (cmp == 0) {
-        cmp = IBException.cet.withReturningTranslation(() -> {
-          return compareVersion(o);
-        });
-        if (cmp == 0) {
-          cmp = getExtension().compareTo(o.getExtension());
-        }
-
-      }
-    }
-    return cmp;
-  }
-
-  public int compareVersion(final GAV otherVersion) {
-    final String v = otherVersion.getVersion().orElse(null);
-    final String q = getVersion().orElse(null);
-    if (q == null && v == null)
-      return 0;
-    if (q == null)
-      return -1;
-    return q.compareTo(v);
-
-  }
-
-  @Override
   public GAV copy() {
     return new DefaultGAV(asJSON());
   }
 
-  @Override
-  public boolean equalsIgnoreClassifier(final GAV other, boolean ignoreClassifier) {
-    if (!extension.equals(Objects.requireNonNull(other).getExtension()))
-      return false;
-    if (!groupId.equals(other.getGroupId()))
-      return false;
-    if (!artifactId.equals(other.getArtifactId()))
-      return false;
-    if (!ignoreClassifier && !getClassifier().equals(other.getClassifier()))
-      return false;
-    if (!getVersion().equals(other.getVersion()))
-      return false;
-    return true;
-
-  }
 
   @Override
   public boolean equals(final Object obj) {
@@ -233,13 +188,13 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
   }
 
   public DefaultGAV setArtifactId(final String artifactId) {
-    this.artifactId = Objects.requireNonNull(artifactId);
+    this.artifactId = requireNonNull(artifactId);
     return this;
   }
 
   public DefaultGAV setClassifier(final String classifier) {
     if (classifier != null && "".equals(classifier.trim())) {
-      this.classifier = Optional.empty();
+      this.classifier = empty();
     } else {
       this.classifier = ofNullable(classifier);
     }
@@ -252,7 +207,7 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
   }
 
   public DefaultGAV setGroupId(final String groupId) {
-    this.groupId = Objects.requireNonNull(groupId);
+    this.groupId = requireNonNull(groupId);
     return this;
   }
 

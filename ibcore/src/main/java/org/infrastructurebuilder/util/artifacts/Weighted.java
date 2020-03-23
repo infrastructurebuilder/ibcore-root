@@ -16,10 +16,12 @@
 package org.infrastructurebuilder.util.artifacts;
 
 import static java.util.Objects.requireNonNull;
+
 /**
  * Allows us to know the relative weight of a given component within a set.
  *
- * The contract is HIGHER weight has more precedence, so the comparator reverses natural ordering
+ * The contract is HIGHER weight has more precedence, so the comparator reverses
+ * natural ordering
  *
  * Default value is expected to be 0, and most impls should PROBABLY use 0
  *
@@ -27,15 +29,14 @@ import static java.util.Objects.requireNonNull;
  *
  */
 public interface Weighted {
-  public static java.util.Comparator<Weighted> comparator() {
-    return new java.util.Comparator<Weighted>() {
-      @Override
-      public int compare(Weighted o1, Weighted o2) {
-        return requireNonNull(o2, "Weighted Comparator o2").getWeight()
-            .compareTo(requireNonNull(o1, "Weighted Comparator o1").getWeight()); // Sort highest weights first
-      }
-    };
-  }
+
+  public static java.util.Comparator<Weighted> weighted = new java.util.Comparator<Weighted>() {
+    @Override
+    public int compare(Weighted o1, Weighted o2) {
+      // Sort highest weights first
+      return requireNonNull(o2, "Weighted o2").getWeight().compareTo(requireNonNull(o1, "Weighted o1").getWeight());
+    }
+  };
 
   /**
    * Return non-null value for weight

@@ -15,23 +15,29 @@
  */
 package org.infrastructurebuilder.util;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 
-public class ListCapturingLogOutputStream extends CapturingLogOutputStream {
-  private final List<String> list = new ArrayList<>();
+public class ListCapturingLogOutputStream extends CapturingLogOutputStream implements Supplier<List<String>> {
+  private final List<String>          list = new ArrayList<>();
   private final Optional<PrintStream> pw;
+
+  public ListCapturingLogOutputStream(final Path p, final Optional<PrintStream> pw) {
+    this(Optional.of(p), pw);
+  }
 
   public ListCapturingLogOutputStream(final Optional<Path> p, final Optional<PrintStream> pw) {
     super(p);
-    this.pw = Objects.requireNonNull(pw);
+    this.pw = requireNonNull(pw);
   }
 
-  public List<String> getList() {
+  public List<String> get() {
     return list;
   }
 

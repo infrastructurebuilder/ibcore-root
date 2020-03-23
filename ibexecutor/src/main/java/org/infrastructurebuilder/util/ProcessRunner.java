@@ -38,12 +38,6 @@ public interface ProcessRunner extends Supplier<Optional<ProcessExecutionResultB
       Optional<Map<String, String>> environment, Optional<Path> relativeRoot, Optional<List<Integer>> exitCodes,
       boolean background);
 
-  @Override
-  void close() throws Exception;
-
-  @Override
-  Optional<ProcessExecutionResultBag> get();
-
   Optional<PrintStream> getAddl();
 
   Logger getLogger();

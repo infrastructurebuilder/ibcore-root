@@ -15,9 +15,27 @@
  */
 package org.infrastructurebuilder.util;
 
+import static java.lang.Thread.sleep;
+import static java.nio.file.Files.createDirectories;
+import static java.nio.file.Files.createFile;
+import static java.nio.file.Files.exists;
+import static java.nio.file.Files.isDirectory;
+import static java.nio.file.Files.isExecutable;
+import static java.nio.file.Files.isRegularFile;
+import static java.nio.file.Files.isWritable;
+import static java.nio.file.Files.newInputStream;
+import static java.time.Duration.ZERO;
+import static java.time.Duration.between;
+import static java.time.Instant.now;
+import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.ofNullable;
+import static org.infrastructurebuilder.util.IBUtils.deletePath;
+import static org.infrastructurebuilder.util.ProcessException.pet;
+import static org.infrastructurebuilder.util.ProcessExecution.VERY_LONG;
+
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -26,7 +44,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.Vector;
@@ -40,6 +57,8 @@ import java.util.regex.Pattern;
 import javax.inject.Named;
 
 import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.infrastructurebuilder.util.execution.model.DefaultProcessExecution;
+import org.infrastructurebuilder.util.execution.model.DefaultProcessExecutionResult;
 import org.slf4j.Logger;
 import org.slf4j.helpers.NOPLoggerFactory;
 import org.zeroturnaround.exec.InvalidExitValueException;
@@ -50,35 +69,37 @@ import org.zeroturnaround.exec.StartedProcess;
 @Named
 public class DefaultProcessRunner implements ProcessRunner {
   public final static Path touchFile(final Path path) {
-    return ProcessException.pet.withReturningTranslation(() -> {
-      if (Files.exists(path)) {
-        if (!Files.isRegularFile(path) || !Files.isWritable(path))
+    return pet.withReturningTranslation(() -> {
+      if (exists(path)) {
+        if (!isRegularFile(path) || !isWritable(path))
           throw new ProcessException("File " + path.toAbsolutePath() + " is not available to write");
         return path;
       } else {
-        Files.createDirectories(path.getParent());
+        createDirectories(path.getParent());
       }
-      return Files.createFile(path);
+      return createFile(path);
     });
   }
 
   public final Pattern ws = Pattern.compile("\\s");
 
-  private final Optional<PrintStream> addl;
-  private boolean keepScratchDir = false;
-  private final AtomicReference<Set<Future<ProcessExecutionResult>>> locked = new AtomicReference<>(null);
-  private final Logger logger;
-  private final AtomicReference<ProcessExecutionResultBag> result = new AtomicReference<>(null);
+  private final Optional<PrintStream>                                       addl;
+  private boolean                                                           keepScratchDir = false;
+  private final AtomicReference<Set<Future<DefaultProcessExecutionResult>>> locked         = new AtomicReference<>(
+      null);
+  private final Logger                                                      logger;
+  private final AtomicReference<DefaultProcessExecutionResultBag>           result         = new AtomicReference<>(
+      null);
 
-  private final Path scratchDir;
+  private final Path                     scratchDir;
   private final Vector<ProcessExecution> serialList = new Vector<>();
 
   public DefaultProcessRunner(final Path scratchDir, final Optional<PrintStream> addl) {
-    this(scratchDir, addl, Optional.empty(), Optional.empty());
+    this(scratchDir, addl, empty(), empty());
   }
 
   public DefaultProcessRunner(final Path scratchDir, final Optional<PrintStream> addl, final Optional<Logger> logger) {
-    this(scratchDir, addl, logger, Optional.empty(), Optional.of(new Long(100L)));
+    this(scratchDir, addl, logger, empty(), Optional.of(new Long(100L)));
   }
 
   public DefaultProcessRunner(final Path scratchDir, final Optional<PrintStream> addl, final Optional<Logger> logger,
@@ -88,14 +109,14 @@ public class DefaultProcessRunner implements ProcessRunner {
 
   public DefaultProcessRunner(final Path scratchDir, final Optional<PrintStream> addl, final Optional<Logger> logger,
       final Optional<Path> relativeRoot, final Optional<Long> iterimSleepValue) {
-    this.scratchDir = Objects.requireNonNull(scratchDir);
-    if (Files.exists(this.scratchDir))
+    this.scratchDir = requireNonNull(scratchDir);
+    if (exists(this.scratchDir))
       throw new ProcessException("Scratch directory must not exist -> " + this.scratchDir);
-    ProcessException.pet.withTranslation(() -> {
-      Files.createDirectories(scratchDir);
+    pet.withTranslation(() -> {
+      createDirectories(scratchDir);
     });
-    this.addl = Objects.requireNonNull(addl);
-    this.logger = Objects.requireNonNull(logger)
+    this.addl = requireNonNull(addl);
+    this.logger = requireNonNull(logger)
         .orElse(new NOPLoggerFactory().getLogger(DefaultProcessRunner.class.toString()));
   }
 
@@ -103,7 +124,7 @@ public class DefaultProcessRunner implements ProcessRunner {
   public DefaultProcessRunner add(final ProcessExecution e) {
     if (locked.get() != null)
       throw new ProcessException("Already locked");
-    serialList.add(Objects.requireNonNull(e));
+    serialList.add(requireNonNull(e));
     return this;
   }
 
@@ -113,26 +134,26 @@ public class DefaultProcessRunner implements ProcessRunner {
       final Optional<Checksum> checksum, final boolean optional, final Optional<Map<String, String>> environment,
       final Optional<Path> relativeRoot, final Optional<List<Integer>> exitCodes, final boolean background) {
 
-    final Path execScratch = scratchDir.resolve(Objects.requireNonNull(id, "execution id"));
+    final Path execScratch = scratchDir.resolve(requireNonNull(id, "execution id"));
     if (ws.matcher(id).find())
       throw new ProcessException("No whitespace is allowed in execution ids for ProcessRunner");
-    if (!Files.isDirectory(Objects.requireNonNull(execScratch))) {
-      ProcessException.pet.withTranslation(() -> {
-        Files.createDirectories(execScratch);
+    if (!isDirectory(requireNonNull(execScratch))) {
+      pet.withTranslation(() -> {
+        createDirectories(execScratch);
       });
     }
-    if (!Files.isWritable(execScratch))
+    if (!isWritable(execScratch))
       throw new ProcessException("Cannot write to " + execScratch);
     final Path stdOut = execScratch.resolve(STD_OUT_FILENAME);
     touchFile(stdOut);
     final Path stdErr = execScratch.resolve(STD_ERR_FILENAME);
     touchFile(stdErr);
-    final Path p = Paths.get(Objects.requireNonNull(executable));
-    Objects.requireNonNull(checksum).ifPresent(csum -> {
+    final Path p = Paths.get(requireNonNull(executable));
+    requireNonNull(checksum).ifPresent(csum -> {
       Checksum c = null;
-      if (Files.isExecutable(p)) {
+      if (isExecutable(p)) {
         try {
-          c = new Checksum(Files.newInputStream(p));
+          c = new Checksum(newInputStream(p));
         } catch (final IOException e) {
 
         }
@@ -140,20 +161,21 @@ public class DefaultProcessRunner implements ProcessRunner {
       if (!csum.equals(c))
         throw new ProcessException("Checksum of executable " + c + " does not match supplied " + csum);
     });
-    return add(new ProcessExecution(id, executable, Objects.requireNonNull(arguments), timeout, stdOut, stdErr, stdIn,
-        workDirectory, optional, environment, relativeRoot, Objects.requireNonNull(exitCodes), getAddl(), background));
+    return add(new DefaultProcessExecution(id, executable, requireNonNull(arguments), timeout, stdIn,
+        workDirectory.orElseThrow(() -> new ProcessException("Workdirectory is required")), optional, environment,
+        relativeRoot, requireNonNull(exitCodes), getAddl(), background));
   }
 
   @Override
   public void close() throws Exception {
     if (!isKeepScratchDir()) {
-      IBUtils.deletePath(scratchDir);
+      deletePath(scratchDir);
     }
   }
 
   @Override
   public Optional<ProcessExecutionResultBag> get() {
-    return Optional.ofNullable(result.get());
+    return ofNullable(result.get());
   }
 
   @Override
@@ -168,7 +190,7 @@ public class DefaultProcessRunner implements ProcessRunner {
 
   @Override
   public Optional<ProcessExecution> getProcessExecutionForId(final String id) {
-    Objects.requireNonNull(id);
+    requireNonNull(id);
     return serialList.stream().filter(pe -> pe.getId().equals(id)).findFirst();
   }
 
@@ -195,7 +217,7 @@ public class DefaultProcessRunner implements ProcessRunner {
 
   @Override
   public DefaultProcessRunner lock() {
-    return lock(Duration.ZERO, Optional.empty());
+    return lock(ZERO, empty());
   }
 
   @Override
@@ -204,24 +226,22 @@ public class DefaultProcessRunner implements ProcessRunner {
       if (locked.get() != null)
         return this;
       else {
-        Objects.requireNonNull(fin);
-        if (fin.isNegative())
+        if (requireNonNull(fin).isNegative())
           throw new ProcessException("Final duration cannot be negative " + fin);
-        final Instant startedLock = Instant.now();
-        final Instant endLock = startedLock.plus(fin.equals(Duration.ZERO) ? ProcessExecution.VERY_LONG : fin);
-        locked.compareAndSet(null, new HashSet<Future<ProcessExecutionResult>>());
+        final Instant startedLock = now();
+        final Instant endLock = startedLock.plus(fin.equals(ZERO) ? VERY_LONG : fin);
+        locked.compareAndSet(null, new HashSet<Future<DefaultProcessExecutionResult>>());
 
         final MutableProcessExecutionResultBag bag = new MutableProcessExecutionResultBag();
         for (final ProcessExecution pe : serialList) {
           ProcessExecutor pExecutor;
-          pExecutor = pe.getProcessExecutor()
-
-              .addListener(bag);
+          pExecutor = pe.getProcessExecutor().addListener(bag);
           bag.addExecution(pe, pExecutor);
 
           try {
             final StartedProcess s = pExecutor.start();
             final Future<ProcessResult> future = s.getFuture();
+            // FIXME Do futures get an "afterFinish" call anywhere?
             bag.addProcess(pe, s.getProcess());
             if (pe.isBackground()) {
               bag.addFuture(pe, future);
@@ -229,6 +249,7 @@ public class DefaultProcessRunner implements ProcessRunner {
               final ProcessResult res = pe.getTimeout().isPresent()
                   ? future.get(pe.getTimeout().get().get(ChronoUnit.SECONDS), TimeUnit.SECONDS)
                   : future.get();
+                  bag.afterFinish(s.getProcess(), res);
             }
           } catch (InvalidExitValueException | TimeoutException | ExecutionException | InterruptedException
               | IOException te) {
@@ -237,13 +258,10 @@ public class DefaultProcessRunner implements ProcessRunner {
         }
 
         if (!fin.isZero()) {
-          Duration dur = Duration.between(Instant.now(), endLock);
+          Duration dur = between(now(), endLock);
           while (bag.stillRunning() && dur.toNanos() > 0) {
-
-            ProcessException.pet.withTranslation(() -> {
-              Thread.sleep(1000L);
-            });
-            dur = Duration.between(Instant.now(), endLock);
+            pet.withTranslation(() -> sleep(100L));
+            dur = between(now(), endLock);
           }
           if (bag.stillRunning())
             if (bag.destroyRemainingSleepers(sleepAfterDestroy)) {

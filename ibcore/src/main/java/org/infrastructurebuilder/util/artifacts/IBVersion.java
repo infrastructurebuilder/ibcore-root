@@ -25,6 +25,16 @@ public interface IBVersion extends Comparable<IBVersion> {
     public boolean isSatisfiedBy(IBVersion version);
 
     public boolean isSatisfiedBy(String version);
+
+    public IBVersionRange apiVersion();
+  }
+
+  public interface IBVersionBoundedRange {
+    public boolean isSatisfiedBy(IBVersion version);
+
+    public boolean isSatisfiedBy(String version);
+
+    IBVersionBoundedRange apiRange();
   }
 
   public interface IBVersionRequirement {

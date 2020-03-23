@@ -29,7 +29,7 @@ public class OverrideListCapturingOutputStream extends ListCapturingLogOutputStr
   }
 
   @Override
-  public List<String> getList() {
+  public List<String> get() {
     return l2;
   }
 }

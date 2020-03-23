@@ -80,7 +80,7 @@ public class GAVTest {
   @Test
   public void testAsChecksum() {
     assertEquals(
-        "3bce47885ece424b4008b7d57152a0a5f0a0994481d10c61a37060cf7ee1aff3beb7d3fc1bc5e2043d05bab6599a750cf73260b3bdee55e437966886395fc1e7",
+        "845f502e6322cb379272b14f5edafead134a4316be5b25880242a120c99463fd1a8da6a85073b437a0b4ee14c8078bed2bbd2dd21ef89fe97e79714e03a8aa6f",
         gav.asChecksum().toString());
   }
 

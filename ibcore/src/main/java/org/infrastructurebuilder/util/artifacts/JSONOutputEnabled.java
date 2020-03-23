@@ -15,8 +15,15 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
+import java.nio.file.Path;
+import java.util.Optional;
+
 import org.json.JSONObject;
 
 public interface JSONOutputEnabled {
   JSONObject asJSON();
+
+  default Optional<Path> getRelativeRoot() {
+    return Optional.empty();
+  }
 }

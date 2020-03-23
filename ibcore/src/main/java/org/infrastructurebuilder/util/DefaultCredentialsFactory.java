@@ -17,7 +17,7 @@ package org.infrastructurebuilder.util;
 
 import static java.util.Optional.empty;
 import static org.infrastructurebuilder.IBConstants.DEFAULT;
-import static org.infrastructurebuilder.util.artifacts.Weighted.comparator;
+import static org.infrastructurebuilder.util.artifacts.Weighted.weighted;
 
 import java.util.List;
 import java.util.Map;
@@ -34,7 +34,7 @@ public class DefaultCredentialsFactory implements CredentialsFactory {
 
   @Inject
   public DefaultCredentialsFactory(Map<String, CredentialsSupplier> credentialsSuppliers) {
-    this.ss = credentialsSuppliers.values().stream().sorted(comparator()).collect(Collectors.toList());
+    this.ss = credentialsSuppliers.values().stream().sorted(weighted).collect(Collectors.toList());
   }
 
   @Override

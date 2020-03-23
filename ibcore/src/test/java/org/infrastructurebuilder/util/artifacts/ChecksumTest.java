@@ -15,7 +15,7 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
-import static org.infrastructurebuilder.util.IBUtils.UTF_8;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -39,10 +39,10 @@ import org.junit.Test;
 public class ChecksumTest {
 
   private static TestingPathSupplier wps;
-  private Checksum cnull;
-  private Checksum cRick;
-  private Checksum cString;
-  private final String theString = "NEVER_GONNA_GIVE_YOU_UP";
+  private Checksum                   cnull;
+  private Checksum                   cRick;
+  private Checksum                   cString;
+  private final String               theString = "NEVER_GONNA_GIVE_YOU_UP";
 
   @BeforeClass
   public static void setupB4Class() {

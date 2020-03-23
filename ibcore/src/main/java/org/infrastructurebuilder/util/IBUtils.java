@@ -16,11 +16,13 @@
 package org.infrastructurebuilder.util;
 
 import static java.lang.Long.MAX_VALUE;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.walkFileTree;
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static java.util.Comparator.nullsFirst;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.Spliterator.ORDERED;
@@ -37,12 +39,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
@@ -77,6 +81,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
@@ -84,6 +89,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.IBException;
@@ -96,8 +108,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 public class IBUtils {
+
+  public final static String XML_PREFIX = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 
   private static boolean isJar;
   private static boolean isZip;
@@ -117,11 +133,36 @@ public class IBUtils {
     if (!isJar && !isZip)
       throw new IBException("THIS JVM CANNOT HANDLE ARCHIVES.  IBDATA WILL NOT WORK");
   }
+
   public final static Function<Properties, Map<String, String>> propertiesToMapSS = (p) -> {
     final Map<String, String> m = new HashMap<>();
     Optional.ofNullable(p)
         .ifPresent(properties -> properties.stringPropertyNames().forEach(n -> m.put(n, p.getProperty(n))));
     return m;
+  };
+
+  private final static TransformerFactory tf = TransformerFactory.newInstance();
+
+  private final static Supplier<Transformer> tfSupplier = () -> {
+    return cet.withReturningTranslation(() -> tf.newTransformer());
+  };
+
+  private final static DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+  public final static String stringFromDocument(Document document) {
+    StringWriter writer = new StringWriter();
+    cet.withTranslation(() -> tfSupplier.get().transform(new DOMSource((Document) document), new StreamResult(writer)));
+    return writer.toString();
+  }
+
+  public final static Function<String, Optional<Document>> strToDoc = (xmlString) -> {
+    Document doc;
+    try {
+      doc = factory.newDocumentBuilder().parse(new InputSource(new StringReader(xmlString)));
+    } catch (Exception e) {
+      doc = null;
+    }
+    return ofNullable(doc);
   };
 
   public final static boolean isJarArchive() {
@@ -132,14 +173,17 @@ public class IBUtils {
     return isZip;
   }
 
-  public final static java.util.Comparator<String> nullSafeCaseInsensitiveStringComparator = java.util.Comparator
-      .nullsFirst(String::compareToIgnoreCase);
-  public final static java.util.Comparator<String> nullSafeStringComparator = java.util.Comparator
-      .nullsFirst(String::compareTo);
-  public final static java.util.Comparator<java.util.UUID> nullSafeUUIDComparator = java.util.Comparator
-      .nullsFirst(java.util.UUID::compareTo);
-  public final static java.util.Comparator<java.util.Date> nullSafeDateComparator = java.util.Comparator
-      .nullsFirst(java.util.Date::compareTo);
+  public final static java.util.Comparator<String>         nullSafeCaseInsensitiveStringComparator = nullsFirst(
+      String::compareToIgnoreCase);
+  public final static java.util.Comparator<String>         nullSafeStringComparator                = nullsFirst(
+      String::compareTo);
+  public final static java.util.Comparator<java.util.UUID> nullSafeUUIDComparator                  = nullsFirst(
+      java.util.UUID::compareTo);
+  public final static java.util.Comparator<java.util.Date> nullSafeDateComparator                  = nullsFirst(
+      java.util.Date::compareTo);
+
+  public final static java.util.Comparator<java.time.Instant> nullSafeInstantComparator = nullsFirst(
+      java.time.Instant::compareTo);
 
   public final static Function<String, Optional<URL>> nullSafeURLMapper = (s) -> {
     return ofNullable(s).map(u -> cet.withReturningTranslation(() -> translateToWorkableArchiveURL(u)));
@@ -148,6 +192,7 @@ public class IBUtils {
   public final static Function<Object, Optional<String>> nullSafeObjectToString = (o) -> {
     return ofNullable(o).map(k -> k.toString());
   };
+
   /**
    * Map a Map/String,String to a Properties object
    */
@@ -164,15 +209,19 @@ public class IBUtils {
   public final static Function<JSONObject, JSONObject> cheapCopy = j -> {
     return new JSONObject(j.toString());
   };
+
   public final static Function<JSONObject, JSONObject> deepCopy = j -> {
     return new JSONObject(requireNonNull(j), ofNullable(JSONObject.getNames(requireNonNull(j))).orElse(new String[0]));
   };
+
   public final static Function<String, byte[]> getBytes = x -> {
-    return ofNullable(x).orElse("").getBytes(StandardCharsets.UTF_8);
+    return ofNullable(x).orElse("").getBytes(UTF_8);
   };
+
   public final static Function<JSONObject, Map<String, String>> mapJSONToStringString = j -> {
     return requireNonNull(j).toMap().entrySet().stream().collect(toMap(k -> k.getKey(), v -> v.getValue().toString()));
   };
+
   public final static Function<String, String> nullIfBlank = l -> {
     return new String(ofNullable(l).orElse("")).trim().length() > 0 ? l : null;
   };
@@ -181,8 +230,6 @@ public class IBUtils {
       .from(java.time.OffsetDateTime.parse(requireNonNull(s), java.time.format.DateTimeFormatter.ISO_DATE_TIME)));
 
   public final static Pattern p = Pattern.compile("(\\S+):(\\S+):(.*):(.*):(.*)");
-
-  public final static Charset UTF_8 = StandardCharsets.UTF_8;
 
   private final static Random random = new SecureRandom();
 
@@ -351,9 +398,10 @@ public class IBUtils {
         }
 
       });
-      Files.delete(root);
+      if (Files.exists(root))
+        Files.delete(root);
     } catch (final IOException e) {
-      iolog.warn("Fail to delete path", e);
+      iolog.debug("Fail to delete path", e);
     }
 
   }
@@ -369,6 +417,37 @@ public class IBUtils {
 
       return digest;
     }
+  }
+
+  /**
+   * Do not use this to process large files!
+   *
+   * @param ins
+   * @return
+   */
+  public static InputStream readerToInputStream(Reader ins) {
+    return IBException.cet.withReturningTranslation(() -> {
+      char[] b = new char[1024];
+      StringBuilder string = new StringBuilder();
+      int i;
+      while ((i = ins.read(b, 0, b.length)) != -1) {
+        string.append(b, 0, i);
+      }
+      ins.close();
+      return new ByteArrayInputStream(string.toString().getBytes(UTF_8));
+    });
+  }
+
+  /**
+   * Do not use this to process large files!
+   *
+   * @param ins
+   * @return
+   * @throws IOException
+   * @throws NoSuchAlgorithmException
+   */
+  public static byte[] digestReader(final Reader ins) throws IOException, NoSuchAlgorithmException {
+    return digestInputStream(readerToInputStream(ins));
   }
 
   public final static void extractFile(final ZipInputStream zipIn, final Path filePath) throws IOException {
@@ -930,4 +1009,17 @@ public class IBUtils {
     }
   }
 
+  public final static String stringFromDOM(Document d) {
+    Transformer transformer;
+    transformer = cet.withReturningTranslation(() -> tf.newTransformer());
+    transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+    StringWriter outStream = new StringWriter();
+    cet.withTranslation(() -> transformer.transform(new DOMSource(d), new StreamResult(outStream)));
+    return outStream.toString();
+  }
+
+  public final static String removeXMLPrefix(String s) {
+    return (s.startsWith(XML_PREFIX)) ? s.replace(XML_PREFIX, "").trim() : s;
+
+  }
 }

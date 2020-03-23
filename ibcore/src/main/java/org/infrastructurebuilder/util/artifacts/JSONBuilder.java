@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -246,6 +247,16 @@ public final class JSONBuilder implements JSONOutputEnabled {
 
   public JSONBuilder addMapStringString(final String key, final Optional<Map<String, String>> map) {
     requireNonNull(map).ifPresent(s1 -> this.addMapStringString(key, s1));
+    return this;
+  }
+
+  public JSONBuilder addProperties(final String key, final Properties properties) {
+    addJSONObject(key, new JSONObject(requireNonNull(properties)));
+    return this;
+  }
+
+  public JSONBuilder addProperties(final String key, final Optional<Properties> properties) {
+    requireNonNull(properties).ifPresent(s1 -> this.addProperties(key, s1));
     return this;
   }
 

@@ -30,6 +30,7 @@ public interface IBConstants {
   public final static String IBDATA_PREFIX = "IBDataTemp_";
   public final static String IBDATA_SUFFIX = ".ibdata";
 
+  public static final String IBR_MANIFEST = "application/vnd.ibr.manifest.xml";
   public static final String APPLICATION_ACCESS = "application/msaccess";
   public static final String APPLICATION_LIQUIBASE_CHANGELOG = "application/liquibase-changelog+xml";
   public static final String APPLICATION_MSWORD = "application/msword";

@@ -15,19 +15,23 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.newInputStream;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static java.util.UUID.nameUUIDFromBytes;
 import static org.infrastructurebuilder.IBException.cet;
-import static org.infrastructurebuilder.util.IBUtils.UTF_8;
 import static org.infrastructurebuilder.util.IBUtils.digestInputStream;
 import static org.infrastructurebuilder.util.IBUtils.getHex;
 import static org.infrastructurebuilder.util.IBUtils.hexStringToByteArray;
+import static org.infrastructurebuilder.util.IBUtils.readerToInputStream;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -41,8 +45,12 @@ import java.util.function.Supplier;
 
 import org.infrastructurebuilder.IBConstants;
 import org.infrastructurebuilder.IBException;
+import org.json.JSONObject;
 
 public class Checksum implements Comparable<Checksum>, Supplier<Optional<UUID>> {
+  public final static Checksum fromUTF8StringBytes(String s) {
+    return new Checksum(new ByteArrayInputStream(s.getBytes(UTF_8)));
+  }
 
   public final static Checksum getMapStringStringChecksum(final Map<String, String> tags) {
     return cet.withReturningTranslation(() -> {
@@ -87,19 +95,37 @@ public class Checksum implements Comparable<Checksum>, Supplier<Optional<UUID>> 
     this.relativeRoot = requireNonNull(relativeRoot);
   }
 
+  public Checksum(final JSONObject j, final Optional<Path> relativeRoot) {
+    this(new StringReader(j.toString()), relativeRoot);
+  }
+
+  public Checksum(final JSONObject j) {
+    this(new StringReader(j.toString()), empty());
+  }
+
+  public Checksum(final Reader ins) {
+    this(ins, empty());
+  }
+
+  public Checksum(final Reader ins, final Optional<Path> relativeRoot) {
+    this(readerToInputStream(ins), relativeRoot);
+  }
+
   public Checksum(final Path file) {
     this(cet.withReturningTranslation(() -> newInputStream(requireNonNull(file))));
   }
 
   /**
-   * This constructore produces a checksum of a list of checksums.  It DEFINITELY loses fidelity
-   * but for SHA-512 strings it's...OK.
+   * This constructore produces a checksum of a list of checksums. It DEFINITELY
+   * loses fidelity but for SHA-512 strings it's...OK.
+   *
    * @param relativeRoot
    * @param list
    */
   public Checksum(final Optional<Path> relativeRoot, final List<Checksum> list) {
     this(requireNonNull(list).stream()
-        // Collects all checksums as a string into a long string and then gets the checksum of the UTF-8 bytes.
+        // Collects all checksums as a string into a long string and then gets the
+        // checksum of the UTF-8 bytes.
         .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString().getBytes(UTF_8)
     // RelRoot
         , relativeRoot);
