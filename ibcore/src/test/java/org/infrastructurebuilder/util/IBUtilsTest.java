@@ -19,6 +19,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.newOutputStream;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
+import static java.util.UUID.randomUUID;
 import static java.util.stream.Collectors.toList;
 import static org.infrastructurebuilder.util.IBUtils.XML_PREFIX;
 import static org.infrastructurebuilder.util.IBUtils.asIterator;
@@ -73,6 +74,7 @@ import static org.infrastructurebuilder.util.IBUtils.removeXMLPrefix;
 import static org.infrastructurebuilder.util.IBUtils.splitToMap;
 import static org.infrastructurebuilder.util.IBUtils.strToDoc;
 import static org.infrastructurebuilder.util.IBUtils.stringFromDocument;
+import static org.infrastructurebuilder.util.IBUtils.touchFile;
 import static org.infrastructurebuilder.util.IBUtils.translateToWorkableArchiveURL;
 import static org.infrastructurebuilder.util.IBUtils.unzip;
 import static org.infrastructurebuilder.util.IBUtils.writeString;
@@ -310,13 +312,6 @@ public class IBUtilsTest {
   }
 
   @Test
-  public void testChecksumInputStream() throws NoSuchAlgorithmException, IOException {
-    final String checksum = TESTFILE_CHECKSUM;
-    assertEquals("Checksum is " + checksum, checksum,
-        IBUtils.checksumInputStream(Files.newInputStream(testClasses.resolve(TESTFILE))).toString());
-  }
-
-  @Test
   public void testCopy() throws IOException {
     final byte[] b = TESTSTRING.getBytes(UTF_8);
     final ByteArrayInputStream bas = new ByteArrayInputStream(b);
@@ -343,8 +338,8 @@ public class IBUtilsTest {
   @Test
   public void testCopyPaths() throws IOException {
     final Path a = wps.get();
-    final Path b = a.resolve(UUID.randomUUID().toString());
-    final Path c = a.resolve(UUID.randomUUID().toString());
+    final Path b = a.resolve(randomUUID().toString());
+    final Path c = a.resolve(randomUUID().toString());
     writeString(b, ABC);
     final Path d = copy(b, c);
     assertEquals(c, d);
@@ -356,8 +351,8 @@ public class IBUtilsTest {
   @Test(expected = IOException.class)
   public void testCopyPathsFail1() throws IOException {
     final Path a = wps.get();
-    final Path b = a.resolve(UUID.randomUUID().toString());
-    final Path c = a.resolve(UUID.randomUUID().toString());
+    final Path b = a.resolve(randomUUID().toString());
+    final Path c = a.resolve(randomUUID().toString());
     writeString(b, ABC);
     b.toFile().setReadable(false);
     copy(b, c);
@@ -366,8 +361,8 @@ public class IBUtilsTest {
   @Test(expected = IOException.class)
   public void testCopyPathsFail2() throws IOException {
     final Path a = wps.get();
-    final Path b = a.resolve(UUID.randomUUID().toString());
-    final Path c = a.resolve(UUID.randomUUID().toString());
+    final Path b = a.resolve(randomUUID().toString());
+    final Path c = a.resolve(randomUUID().toString());
     Files.createDirectories(a);
     writeString(b, ABC);
     copy(b, c);
@@ -378,25 +373,25 @@ public class IBUtilsTest {
   @Test(expected = IOException.class)
   public void testCopyPathsFail3() throws IOException {
     final Path a = wps.get();
-    final Path b = a.resolve(UUID.randomUUID().toString());
-    final Path c = a.resolve(UUID.randomUUID().toString());
+    final Path b = a.resolve(randomUUID().toString());
+    final Path c = a.resolve(randomUUID().toString());
     copy(b, c);
   }
 
   @Test(expected = NullPointerException.class)
   public void testCopyPathsNull1() throws IOException {
     final Path a = wps.get();
-    final Path b = a.resolve(UUID.randomUUID().toString());
-    final Path c = a.resolve(UUID.randomUUID().toString());
-    a.resolve(UUID.randomUUID().toString());
+    final Path b = a.resolve(randomUUID().toString());
+    final Path c = a.resolve(randomUUID().toString());
+    a.resolve(randomUUID().toString());
     copy(null, c);
   }
 
   @Test(expected = IOException.class)
   public void testCopyPathsNull2() throws IOException {
     final Path a = wps.get();
-    final Path b = a.resolve(UUID.randomUUID().toString());
-    final Path c = a.resolve(UUID.randomUUID().toString());
+    final Path b = a.resolve(randomUUID().toString());
+    final Path c = a.resolve(randomUUID().toString());
     Files.createDirectories(a);
     copy(c, null);
   }
@@ -487,14 +482,14 @@ public class IBUtilsTest {
 
   @Test
   public void testForcePath() throws IOException {
-    final Path s = testDir.resolve(UUID.randomUUID().toString());
+    final Path s = testDir.resolve(randomUUID().toString());
     final Path p2 = forceDirectoryPath(s.toFile());
     assertEquals(s, p2);
   }
 
   @Test(expected = IBException.class)
   public void testForcePathAlreadyAFile() throws IOException {
-    final Path s = testDir.resolve(UUID.randomUUID().toString());
+    final Path s = testDir.resolve(randomUUID().toString());
     IBUtils.writeString(s, ABC);
     forceDirectoryPath(s.toFile());
   }
@@ -902,7 +897,7 @@ public class IBUtilsTest {
     final Path p = Paths.get(".", "target");
     final Path f = Files.createTempFile(p, ABC, "DEF");
     assertTrue("Temp File exists", Files.exists(f, LinkOption.NOFOLLOW_LINKS));
-    final UUID u = UUID.randomUUID();
+    final UUID u = randomUUID();
     final Path q = p.resolve(u.toString());
     IBUtils.moveFileToNewIdPath(f, u);
     assertTrue("Old file does not exist", !Files.exists(f, LinkOption.NOFOLLOW_LINKS));
@@ -1018,7 +1013,7 @@ public class IBUtilsTest {
   public void testUnzipAndDelete() throws IOException {
     final Path p = testClasses.resolve("X.zip");
 
-    final Path t = testDir.resolve(UUID.randomUUID().toString());
+    final Path t = testDir.resolve(randomUUID().toString());
     Files.createDirectories(t);
     final Path f = t.resolve("X").resolve("Y");
 
@@ -1039,7 +1034,7 @@ public class IBUtilsTest {
   public void testUnzipAndDeleteFAKEPATH() throws IOException {
     final Path p = testClasses.resolve("SOMEFAKE.zip");
 
-    final Path t = testDir.resolve(UUID.randomUUID().toString());
+    final Path t = testDir.resolve(randomUUID().toString());
     Files.createDirectories(t);
     final Path f = t.resolve("X").resolve("Y");
 
@@ -1062,7 +1057,7 @@ public class IBUtilsTest {
   public void testUnzipFailUnreadable() throws IOException {
     final Path p = copy(testClasses.resolve("X.zip"), testDir.resolve("Y.zip"));
     p.toFile().setReadable(false);
-    final Path t = testDir.resolve(UUID.randomUUID().toString());
+    final Path t = testDir.resolve(randomUUID().toString());
     Files.createDirectories(t);
     final Path f = t.resolve("X").resolve("Y");
 
@@ -1269,4 +1264,26 @@ public class IBUtilsTest {
     assertEquals(removeXMLPrefix(y), z);
 
   }
+
+  @Test(expected = IBException.class)
+  public void testTouchDir() {
+    touchFile(target);
+  }
+
+  @Test
+  public void testTouchNewFile() {
+    touchFile(target.resolve("ABC"));
+  }
+
+  @Test
+  public void testTouchNewFile2() {
+    touchFile(target.resolve("DEF").resolve("GHI"));
+  }
+
+  @Test
+  public void testIsWindows() {
+    // FIXME Trivial equality test
+    assertEquals(System.getProperty("os.name").toLowerCase().startsWith("windows"), IBUtils.isWindows());
+  }
+
 }

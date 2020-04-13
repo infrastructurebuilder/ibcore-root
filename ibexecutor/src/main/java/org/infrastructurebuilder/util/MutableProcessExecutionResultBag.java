@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
-import org.infrastructurebuilder.util.execution.model.DefaultProcessExecutionResult;
+import org.infrastructurebuilder.util.execution.model.v1_0_0.DefaultProcessExecutionResult;
 import org.zeroturnaround.exec.ProcessExecutor;
 import org.zeroturnaround.exec.ProcessResult;
 import org.zeroturnaround.exec.listener.ProcessListener;

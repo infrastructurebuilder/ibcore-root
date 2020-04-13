@@ -17,15 +17,9 @@ package org.infrastructurebuilder.util;
 
 import static java.nio.file.Files.newInputStream;
 import static java.time.Duration.ofHours;
-import static java.util.Optional.of;
-import static java.util.UUID.randomUUID;
 import static org.infrastructurebuilder.util.ProcessException.pet;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -35,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 import org.infrastructurebuilder.util.artifacts.JSONAndChecksumEnabled;
 import org.infrastructurebuilder.util.artifacts.JSONBuilder;

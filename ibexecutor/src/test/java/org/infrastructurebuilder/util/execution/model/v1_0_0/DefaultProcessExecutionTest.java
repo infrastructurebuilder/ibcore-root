@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.execution.model;
+package org.infrastructurebuilder.util.execution.model.v1_0_0;
 
 import static java.time.Duration.ofMillis;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -34,8 +35,9 @@ import java.util.UUID;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
-import org.infrastructurebuilder.util.execution.model.io.xpp3.ProcessExecutionModelXpp3Reader;
-import org.infrastructurebuilder.util.execution.model.io.xpp3.ProcessExecutionModelXpp3Writer;
+import org.infrastructurebuilder.util.execution.model.v1_0_0.DefaultProcessExecution;
+import org.infrastructurebuilder.util.execution.model.v1_0_0.io.xpp3.ProcessExecutionModelXpp3Reader;
+import org.infrastructurebuilder.util.execution.model.v1_0_0.io.xpp3.ProcessExecutionModelXpp3Writer;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

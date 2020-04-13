@@ -17,6 +17,11 @@ package org.infrastructurebuilder.util;
 
 import static java.lang.Long.MAX_VALUE;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.Files.createDirectories;
+import static java.nio.file.Files.createFile;
+import static java.nio.file.Files.exists;
+import static java.nio.file.Files.isRegularFile;
+import static java.nio.file.Files.isWritable;
 import static java.nio.file.Files.walkFileTree;
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
@@ -28,6 +33,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.Spliterator.ORDERED;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.StreamSupport.stream;
+import static org.infrastructurebuilder.IBConstants.DIGEST_TYPE;
 import static org.infrastructurebuilder.IBException.cet;
 
 import java.io.BufferedOutputStream;
@@ -241,6 +247,10 @@ public class IBUtils {
     return cet.withReturningTranslation(() -> new BufferedReader(new InputStreamReader(ins)).lines());
   }
 
+  public final static boolean isWindows() {
+    return System.getProperty("os.name").toLowerCase().startsWith("windows");
+  }
+
   @SuppressWarnings("unchecked")
   public static <T> Iterator<T> asIterator(final JSONArray array) {
     final List<T> l = new ArrayList<>();
@@ -328,10 +338,6 @@ public class IBUtils {
     }
   }
 
-  public static Checksum checksumInputStream(final InputStream ins) throws NoSuchAlgorithmException, IOException {
-    return new Checksum(digestInputStream(ins));
-  }
-
   public static void copy(final InputStream source, final OutputStream sink) throws IOException {
     final byte[] buffer = new byte[BUFFER_SIZE];
     for (int n = 0; (n = requireNonNull(source, "source").read(buffer)) > 0;) {
@@ -349,7 +355,7 @@ public class IBUtils {
 
   public static Checksum copyAndDigest(final InputStream ins, final OutputStream target)
       throws IOException, NoSuchAlgorithmException {
-    try (DigestInputStream sink = new DigestInputStream(ins, MessageDigest.getInstance(IBConstants.DIGEST_TYPE))) {
+    try (DigestInputStream sink = new DigestInputStream(ins, MessageDigest.getInstance(DIGEST_TYPE))) {
       copy(sink, target);
       final Checksum d = new Checksum(sink.getMessageDigest().digest());
 
@@ -406,16 +412,13 @@ public class IBUtils {
 
   }
 
-  public static byte[] digestInputStream(final InputStream ins) throws IOException, NoSuchAlgorithmException {
-
+  public static byte[] digestInputStream(final InputStream ins) throws IOException {
     final byte[] buf = new byte[BUFFER_SIZE];
-    final MessageDigest md = MessageDigest.getInstance(IBConstants.DIGEST_TYPE);
-    try (DigestInputStream sink = new DigestInputStream(ins, md)) {
+    try (DigestInputStream sink = new DigestInputStream(ins,
+        cet.withReturningTranslation(() -> MessageDigest.getInstance(DIGEST_TYPE)))) {
       while (sink.read(buf) > 0) {
       }
-      final byte[] digest = sink.getMessageDigest().digest();
-
-      return digest;
+      return sink.getMessageDigest().digest();
     }
   }
 
@@ -446,7 +449,7 @@ public class IBUtils {
    * @throws IOException
    * @throws NoSuchAlgorithmException
    */
-  public static byte[] digestReader(final Reader ins) throws IOException, NoSuchAlgorithmException {
+  public static byte[] digestReader(final Reader ins) throws IOException {
     return digestInputStream(readerToInputStream(ins));
   }
 
@@ -1020,6 +1023,19 @@ public class IBUtils {
 
   public final static String removeXMLPrefix(String s) {
     return (s.startsWith(XML_PREFIX)) ? s.replace(XML_PREFIX, "").trim() : s;
-
   }
+
+  public final static Path touchFile(final Path path) {
+    return IBException.cet.withReturningTranslation(() -> {
+      if (exists(path)) {
+        if (!isRegularFile(path) || !isWritable(path))
+          throw new IBException("File " + path.toAbsolutePath() + " is not available to write");
+        return path;
+      } else {
+        createDirectories(path.getParent());
+      }
+      return createFile(path);
+    });
+  }
+
 }

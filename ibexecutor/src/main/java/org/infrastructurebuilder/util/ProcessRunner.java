@@ -22,21 +22,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.slf4j.Logger;
 
 public interface ProcessRunner extends Supplier<Optional<ProcessExecutionResultBag>>, AutoCloseable {
+  public final static Pattern ws = Pattern.compile("\\s");
 
-  String STD_ERR_FILENAME = "stdErr";
-  String STD_OUT_FILENAME = "stdOut";
+  public final static String STD_ERR_FILENAME = "stdErr";
+  public final static String STD_OUT_FILENAME = "stdOut";
 
-  ProcessRunner add(ProcessExecution e);
-
-  ProcessRunner addExecution(String id, String executable, List<String> arguments, Optional<Duration> timeout,
-      Optional<Path> stdIn, Optional<Path> workDirectory, Optional<Checksum> checksum, boolean optional,
-      Optional<Map<String, String>> environment, Optional<Path> relativeRoot, Optional<List<Integer>> exitCodes,
-      boolean background);
+  ProcessRunner add(Supplier<ProcessExecution> e);
 
   Optional<PrintStream> getAddl();
 

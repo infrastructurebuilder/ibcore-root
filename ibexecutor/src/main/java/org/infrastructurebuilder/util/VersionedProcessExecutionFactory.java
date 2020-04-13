@@ -15,15 +15,24 @@
  */
 package org.infrastructurebuilder.util;
 
-import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 
-import java.util.Map;
+import java.io.PrintStream;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
 
-@FunctionalInterface
-public interface ExecutionEnvironmentFilter {
-  public ExecutionEnvironmentFilter defaultFilter = (m) -> {
-    return requireNonNull(m);
-  };
+public interface VersionedProcessExecutionFactory {
 
-  Map<String, String> filter(Map<String, String> inMap);
+  ProcessExecutionFactory getDefaultFactory(Path workDirectory, String id, String executable);
+
+  Optional<ProcessExecutionFactory> getFactoryForVersion(String version, Path workDirectory, String id,
+      String executable);
+
+  default Optional<PrintStream> getAddl() {
+    return empty();
+  }
+
+  Path getScratchDir();
+
 }

@@ -27,6 +27,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Future;
 
 import org.infrastructurebuilder.util.artifacts.JSONBuilder;
@@ -37,6 +38,7 @@ import org.zeroturnaround.exec.ProcessResult;
 
 public interface ProcessExecutionResultBag extends JSONOutputEnabled {
   public static final String EXECUTION_IDS         = "executed-ids";
+  @Deprecated
   public static final String INCOMPLETE_FUTURE_IDS = "incomplete-futures-ids";
   public static final String RESULTS               = "results";
 
@@ -44,7 +46,16 @@ public interface ProcessExecutionResultBag extends JSONOutputEnabled {
 
   Map<String, ProcessExecutionResult> getExecutions();
 
+  /**
+   * This will be removed before 1.0.0
+   * @return
+   */
+  @Deprecated
   Map<String, Future<ProcessResult>> getRunningFutures();
+
+  default Set<String> getIncompleteFuturesIds() {
+    return getRunningFutures().keySet();
+  }
 
   default Optional<Duration> getDuration() {
     return getStart().map(start -> between(start, getEnd().orElseThrow(() -> new ProcessException("No end time"))));
@@ -108,7 +119,7 @@ public interface ProcessExecutionResultBag extends JSONOutputEnabled {
 
         .addJSONArray(EXECUTION_IDS, new JSONArray(getExecutedIds()))
 
-        .addJSONArray(INCOMPLETE_FUTURE_IDS, new JSONArray(getRunningFutures().keySet()))
+        .addJSONArray(INCOMPLETE_FUTURE_IDS, new JSONArray(getIncompleteFuturesIds()))
 
         .addJSONArray(RESULTS, new JSONArray(getExecutions().values().stream().map(v -> v.asJSON()).collect(toList())))
 

@@ -85,9 +85,7 @@ public class Checksum implements Comparable<Checksum>, Supplier<Optional<UUID>> 
 
   public Checksum(final InputStream ins, final Optional<Path> relativeRoot) {
     try {
-      b = ins == null ? null : digestInputStream(ins);
-    } catch (NoSuchAlgorithmException | IOException e) {
-      throw new IBException(e);
+      b = ins == null ? null : cet.withReturningTranslation(() -> digestInputStream(ins));
     } finally {
       if (ins != null)
         cet.withTranslation(() -> ins.close());

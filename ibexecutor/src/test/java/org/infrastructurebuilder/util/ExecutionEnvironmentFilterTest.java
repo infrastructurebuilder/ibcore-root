@@ -15,9 +15,8 @@
  */
 package org.infrastructurebuilder.util;
 
+import static java.util.Collections.emptyMap;
 import static org.junit.Assert.assertNotNull;
-
-import java.util.Collections;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +29,7 @@ public class ExecutionEnvironmentFilterTest {
 
   @Test
   public void testFilter() {
-    assertNotNull(ExecutionEnvironmentFilter.defaultFilter.filter(Collections.emptyMap()));
+    assertNotNull(ExecutionEnvironmentFilter.defaultFilter.filter(emptyMap()));
   }
 
   @Test(expected = NullPointerException.class)

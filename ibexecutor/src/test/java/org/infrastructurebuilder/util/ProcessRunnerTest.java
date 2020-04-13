@@ -17,9 +17,10 @@ package org.infrastructurebuilder.util;
 
 import static java.time.Duration.ofMinutes;
 import static java.time.Duration.ofSeconds;
-import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+import static org.infrastructurebuilder.util.IBUtils.isWindows;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -30,8 +31,6 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -45,37 +44,33 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ProcessRunnerTest {
-  private final static Logger logger = LoggerFactory.getLogger(ProcessRunnerTest.class);
+  private final static Logger              logger                = LoggerFactory.getLogger(ProcessRunnerTest.class);
+  private final static TestingPathSupplier wps                   = new TestingPathSupplier();
+  private final static String[]            PACKER_VERSION_PARAMS = { "version", "-machine-readable", "-color=false" };
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
   }
 
-  private DefaultProcessRunner runner;
-  private Checksum             packerCsum;
-
-  private Path packerExecutable;
-
-  private Path scratchDir;
-
-  private String ttClass;
-
-  private Path                ttest1;
-  private boolean             isWindows;
-  private TestingPathSupplier wps = new TestingPathSupplier();
-  private Path                target;
+  private DefaultProcessRunner             runner;
+  private Checksum                         packerCsum;
+  private Path                             packerExecutable;
+  private Path                             scratchDir;
+  private String                           ttClass;
+  private Path                             ttest1;
+  private Path                             target;
+  private VersionedProcessExecutionFactory vpef;
 
   @Before
   public void setUp() throws Exception {
     target = wps.getRoot();
     scratchDir = target.resolve(UUID.randomUUID().toString());
     runner = new DefaultProcessRunner(scratchDir, of(System.out), of(logger), of(target));
-    isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
-
-    packerExecutable = target.resolve("packer" + (isWindows ? ".exe" : "")).toAbsolutePath();
-    packerCsum = new Checksum(Files.newInputStream(packerExecutable));
+    packerExecutable = target.resolve("packer" + (isWindows() ? ".exe" : "")).toAbsolutePath();
+    packerCsum = new Checksum(packerExecutable);
     ttest1 = wps.getTestClasses();
     ttClass = "ThreadTest1S";
+    vpef = new DefaultVersionedProcessExecutionFactory(scratchDir, Optional.empty());
   }
 
   @After
@@ -102,13 +97,14 @@ public class ProcessRunnerTest {
   @Test(expected = ProcessException.class)
   public void testAddLocked() {
     final String id = UUID.randomUUID().toString();
-    runner = runner.addExecution(id, packerExecutable.toString(),
-        asList("version", "-machine-readable", "-color=false"), empty(), empty(), of(scratchDir), of(packerCsum), false,
-        empty(), of(target), empty(), false);
+    ProcessExecutionFactory e = vpef.getFactoryForVersion("1.0.0", scratchDir, id, packerExecutable.toString()).get()
+
+        .withArguments(PACKER_VERSION_PARAMS)
+
+        .withChecksum(packerCsum);
+    runner = runner.add(e);
     runner.lock(ofSeconds(15), empty()).lock(Duration.ZERO, empty());
-    runner = runner.addExecution(id, packerExecutable.toString(),
-        asList("version", "-machine-readable", "-color=false"), empty(), empty(), of(scratchDir), of(packerCsum), false,
-        empty(), of(target), empty(), false);
+    runner = runner.add(e);
 
   }
 
@@ -116,8 +112,19 @@ public class ProcessRunnerTest {
   public void testDaemon() {
     final String id = UUID.randomUUID().toString();
     final Path in = ttest1.resolve("ThreadTest1S.class");
-    try (ProcessRunner newrunner = runner.addExecution(id, "java", asList(ttClass, "1"), of(ofMinutes(5)), of(in),
-        of(ttest1), empty(), false, empty(), of(target), empty(), true)) {
+    ProcessExecutionFactory e2 = vpef.getDefaultFactory(ttest1, id, "java")
+
+        .withArguments(ttClass, "1")
+
+        .withDuration(ofMinutes(5))
+
+        .withStdIn(in)
+
+        .withRelativeRoot(target)
+
+        .withBackground(true);
+
+    try (ProcessRunner newrunner = runner.add(e2)) {
       newrunner.setKeepScratchDir(false);
       newrunner.lock(ofSeconds(15), of(25L));
       final ProcessExecutionResultBag p = runner.get().get();
@@ -143,8 +150,18 @@ public class ProcessRunnerTest {
   public void testErrorResult() {
     final String id = UUID.randomUUID().toString();
     final Path in = ttest1.resolve("ThreadTest1S.class");
-    try (ProcessRunner newrunner = runner.addExecution(id, "javac", asList(), of(ofMinutes(1)), of(in), of(wps.getRoot().resolve(id)),
-        empty(), false, empty(), of(target), empty(), true)) {
+
+    ProcessExecutionFactory e2 = vpef.getFactoryForVersion("1.0.0", ttest1, id, "javac").get()
+
+        .withDuration(ofMinutes(1))
+
+        .withStdIn(in)
+
+        .withRelativeRoot(target)
+
+        .withBackground(true);
+
+    try (ProcessRunner newrunner = runner.add(e2)) {
       newrunner.setKeepScratchDir(false);
       newrunner.lock(ofSeconds(15), of(25L));
       final ProcessExecutionResultBag p = runner.get().get();
@@ -163,17 +180,11 @@ public class ProcessRunnerTest {
   @Test
   public void testGetExecution() throws Exception {
     final String id = "default";
-    final String executable = "java";
 
-    final List<String> arguments = asList("-version");
-    final Optional<Duration> timeout = empty();
-    final Optional<Path> stdIn = empty();
-    final Optional<Path> workDirectory = of(scratchDir);
-    final Optional<Checksum> checksum = empty();
-    final boolean optional = false;
-    final Optional<Map<String, String>> environment = empty();
-    try (ProcessRunner e2 = runner.addExecution(id, executable, arguments, timeout, stdIn, workDirectory, checksum,
-        optional, environment, of(scratchDir), empty(), false).setKeepScratchDir(true)) {
+    ProcessExecutionFactory e3 = vpef.getFactoryForVersion("1.0.0", scratchDir, id, "java").get();
+
+    try (ProcessRunner e2 = runner.add(e3)) {
+
       final ProcessExecution e = e2.getProcessExecutionForId(id).get();
       assertNotNull(e);
       assertNotNull(e.getStdErr());
@@ -182,7 +193,9 @@ public class ProcessRunnerTest {
       assertNotNull(e.getArguments());
       assertFalse(e.isOptional());
       assertNotNull(e.getExecutable());
-    } catch (final Exception e1) {
+    } catch (
+
+    final Exception e1) {
       throw e1;
     }
   }
@@ -202,8 +215,19 @@ public class ProcessRunnerTest {
   public void testLongRunningDaemon() {
     final String id = UUID.randomUUID().toString();
     final Path in = ttest1.resolve("ThreadTest1S.class");
-    runner = runner.addExecution(id, "java", asList(ttClass, "60"), of(ofMinutes(5)), of(in), of(ttest1), empty(),
-        false, empty(), of(target), empty(), true);
+    ProcessExecutionFactory e2 = vpef.getFactoryForVersion("1.0.0", ttest1, id, "java").get()
+
+        .withArguments(ttClass, "60")
+
+        .withDuration(ofMinutes(5))
+
+        .withStdIn(in)
+
+        .withRelativeRoot(target)
+
+        .withBackground(true);
+
+    runner = runner.add(e2);
     runner.lock(ofSeconds(4), of(25L));
     final ProcessExecutionResultBag p = runner.get().get();
     assertTrue(p.getDuration().isPresent());
@@ -229,20 +253,20 @@ public class ProcessRunnerTest {
     }
   }
 
-  @Test(expected = ProcessException.class)
-  public void testPEFNoScratchUnwriteableExec() throws Exception {
-    final Path p = scratchDir.resolve(UUID.randomUUID().toString());
-    if (Files.exists(p))
-      throw new RuntimeException("Test failed because of a random thing");
-    final String id = UUID.randomUUID().toString();
-    final Path under = p.resolve(id);
-    Files.createDirectories(under);
-    under.toFile().setReadOnly();
-    try (ProcessRunner pu = new DefaultProcessRunner(p, of(System.out), of(logger), of(target))) {
-      assertNotNull(pu.addExecution(id, "java", asList("-version"), empty(), empty(), empty(), empty(), false, empty(),
-          of(scratchDir), of(asList(0)), false));
-    }
-  }
+//  @Test(expected = ProcessException.class)
+//  public void testPEFNoScratchUnwriteableExec() throws Exception {
+//    final Path p = scratchDir.resolve(UUID.randomUUID().toString());
+//    if (Files.exists(p))
+//      throw new RuntimeException("Test failed because of a random thing");
+//    final String id = UUID.randomUUID().toString();
+//    final Path under = p.resolve(id);
+//    Files.createDirectories(under);
+//    under.toFile().setReadOnly();
+//    try (ProcessRunner pu = new DefaultProcessRunner(p, of(System.out), of(logger), of(target))) {
+//      assertNotNull(pu.addExecution(id, "java", asList("-version"), empty(), empty(), empty(), empty(), false, empty(),
+//          of(scratchDir), of(asList(0)), false));
+//    }
+//  }
 
   @Test(expected = ProcessException.class)
   public void testPEFUnwriteable() throws Exception {
@@ -251,7 +275,7 @@ public class ProcessRunnerTest {
       throw new RuntimeException("Test failed because of a random thing");
 
     final Path p = Files.createDirectories(unknown);
-    if (!isWindows && !p.toFile().setReadOnly())
+    if (!isWindows() && !p.toFile().setReadOnly())
       throw new RuntimeException("Cannot set readonly to file");
 
     try (ProcessRunner prr = new DefaultProcessRunner(p, of(System.out), of(logger), of(target))) {
@@ -259,28 +283,21 @@ public class ProcessRunnerTest {
     }
   }
 
-  @Test(expected = ProcessException.class)
-  public void testTouchDir() {
-    DefaultProcessRunner.touchFile(scratchDir);
-  }
-
-  @Test
-  public void testTouchNewFile() {
-    DefaultProcessRunner.touchFile(scratchDir.resolve("ABC"));
-  }
-
-  @Test
-  public void testTouchNewFile2() {
-    DefaultProcessRunner.touchFile(scratchDir.resolve("DEF").resolve("GHI"));
-  }
-
   @Test
   public void testwithChecksum() {
     final String id = UUID.randomUUID().toString();
-    runner = runner.addExecution(id, packerExecutable.toString(),
-        asList("version", "-machine-readable", "-color=false"), of(ofSeconds(20)), empty(), of(scratchDir),
-        of(packerCsum), false, empty(), of(target), empty(), false);
-    runner.lock(ofSeconds(15), empty()).lock(Duration.ZERO, empty());
+    ProcessExecutionFactory e2 = vpef.getFactoryForVersion("1.0.0", scratchDir, id, packerExecutable.toString()).get()
+        // packer checksum
+        .withChecksum(packerCsum)
+        // Execution arguents
+        .withArguments(PACKER_VERSION_PARAMS)
+        // Default max runtime
+        .withDuration(ofSeconds(20))
+        // From the target root
+        .withRelativeRoot(target);
+
+    runner = runner.add(e2);
+    runner.lock(ofSeconds(15), empty()).lock(Duration.ZERO, empty()); // Test double-locking
     final ProcessExecutionResultBag p = runner.get().get();
     assertTrue(p.getDuration().isPresent());
     assertNotNull(p.getStdErrs());
@@ -298,12 +315,20 @@ public class ProcessRunnerTest {
   @Test
   public void testwithChecksum2() {
     final String id = UUID.randomUUID().toString();
-    runner = runner
-        .addExecution(id, packerExecutable.toString(), asList("version", "-machine-readable", "-color=false"),
-            of(ofSeconds(20)), empty(), of(scratchDir), of(packerCsum), false, empty(), of(target), empty(),
-            false)
 
-        .lock();
+    ProcessExecutionFactory e2 = vpef.getFactoryForVersion("1.0.0", scratchDir, id, packerExecutable.toString()).get()
+
+        .withArguments(PACKER_VERSION_PARAMS)
+
+        .withDuration(ofSeconds(20))
+
+        .withRelativeRoot(target)
+
+        .withChecksum(packerCsum)
+
+    ;
+
+    runner = runner.add(e2).lock();
     final ProcessExecutionResultBag p = runner.get().get();
     assertTrue(p.getDuration().isPresent());
     assertNotNull(p.getStdErrs());
@@ -321,18 +346,26 @@ public class ProcessRunnerTest {
   @Test(expected = ProcessException.class)
   public void testwithFakeChecksum() {
     final String id = UUID.randomUUID().toString();
-    runner = runner.addExecution(id, packerExecutable.toString(),
-        asList("version", "-machine-readable", "-color=false"), empty(), empty(), empty(), of(new Checksum("abcd")),
-        false, empty(), of(target), empty(), false);
+    ProcessExecutionFactory e2 = vpef.getFactoryForVersion("1.0.0", scratchDir, id, packerExecutable.toString()).get()
+
+        .withArguments(PACKER_VERSION_PARAMS)
+
+        .withDuration(ofSeconds(20))
+
+        .withRelativeRoot(target)
+
+        .withChecksum(new Checksum("abcd"))
+
+    ;
+    runner.add(e2);
+
   }
 
   @Test(expected = ProcessException.class)
   public void testwithNegativeDuration() {
     final String id = UUID.randomUUID().toString();
-    runner = runner.addExecution(id, packerExecutable.toString(),
-        asList("version", "-machine-readable", "-color=false"), empty(), empty(), empty(), of(packerCsum), false,
-        empty(), of(target), empty(), false);
-    runner.lock(ofSeconds(-15), empty()).lock(Duration.ZERO, empty());
+    runner = runner.add(vpef.getFactoryForVersion("1.0.0", scratchDir, id, packerExecutable.toString()).get())
+        .lock(ofSeconds(-15), empty()).lock(Duration.ZERO, empty());
   }
 
 }

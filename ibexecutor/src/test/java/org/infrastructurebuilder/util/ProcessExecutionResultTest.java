@@ -45,8 +45,8 @@ import java.util.concurrent.TimeoutException;
 
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
-import org.infrastructurebuilder.util.execution.model.DefaultProcessExecution;
-import org.infrastructurebuilder.util.execution.model.DefaultProcessExecutionResult;
+import org.infrastructurebuilder.util.execution.model.v1_0_0.DefaultProcessExecution;
+import org.infrastructurebuilder.util.execution.model.v1_0_0.DefaultProcessExecutionResult;
 import org.joor.Reflect;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -121,9 +121,9 @@ public class ProcessExecutionResultTest {
     stdOut = Arrays.asList("hello", "gentlepersons");
     scratchDir = wps.get();
 
-    stdOutPth = DefaultProcessRunner.touchFile(scratchDir.resolve("extraStdOut"));
+    stdOutPth = IBUtils.touchFile(scratchDir.resolve("extraStdOut"));
 
-    stdErrPth = DefaultProcessRunner.touchFile(scratchDir.resolve("extraStdErr"));
+    stdErrPth = IBUtils.touchFile(scratchDir.resolve("extraStdErr"));
     pe = new DefaultProcessExecution(ID, EXEC, ARGS, empty(), empty(), scratchDir, false, empty(), of(scratchDir),
         empty(), empty(), false);
 
@@ -182,8 +182,7 @@ public class ProcessExecutionResultTest {
   public void testEqualsObject() {
     final DefaultProcessExecution pe2 = new DefaultProcessExecution("abc", EXEC, ARGS, empty(), empty(), scratchDir,
         false, empty(), of(scratchDir), empty(), empty(), false);
-    assertNotEquals(res,
-        new DefaultProcessExecutionResult(pe2, of(0), empty(), ofEpochMilli(100L), ofMillis(100L)));
+    assertNotEquals(res, new DefaultProcessExecutionResult(pe2, of(0), empty(), ofEpochMilli(100L), ofMillis(100L)));
     assertEquals(res, res);
     assertNotEquals(res, "abc");
     assertNotEquals(res, null);
