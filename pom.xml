@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibparent</artifactId>
-    <version>35</version>
+    <version>41</version>
   </parent>
   <artifactId>ibcore-root</artifactId>
   <version>0.17.2-SNAPSHOT</version>
@@ -41,8 +41,8 @@
     </site>
   </distributionManagement>
   <properties>
-    <iblog.version>0.10.0</iblog.version>
-    <ib.exceptions.version>35</ib.exceptions.version>
+    <iblog.version>0.12.0</iblog.version>
+    <ib.exceptions.version>41</ib.exceptions.version>
   </properties>
   <dependencyManagement>
     <dependencies>

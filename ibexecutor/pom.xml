@@ -159,7 +159,7 @@
       <plugin>
         <groupId>org.infrastructurebuilder.modello</groupId>
         <artifactId>modello-maven-plugin-usurped</artifactId>
-        <version>1.11.0.0</version>
+        <version>1.11.0.2</version>
         <configuration>
           <version>1.0.0</version>
           <domAsXpp3>true</domAsXpp3>

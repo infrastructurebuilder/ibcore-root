@@ -1200,6 +1200,7 @@ public class IBUtilsTest {
     assertTrue(IBUtils._matcher("abc.*", "abcdef"));
   }
 
+  @Ignore
   @Test
   public void testTranslateToWorkableArchiveURL() throws IOException {
     Path p = testClasses.resolve("X.zip");
