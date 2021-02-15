@@ -33,7 +33,7 @@ public class DefaultExecutionResponseTest {
   public void setUp() throws Exception {
     errors = Arrays.asList("A", "B");
     i = -1;
-    k = new DefaultExecutionResponse<>(new Integer(i), errors);
+    k = new DefaultExecutionResponse<>( Integer.valueOf(i), errors);
   }
 
   @Test

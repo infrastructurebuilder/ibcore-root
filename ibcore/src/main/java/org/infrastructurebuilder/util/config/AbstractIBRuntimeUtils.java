@@ -20,13 +20,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.SortedSet;
 
-import org.infrastructurebuilder.IBVersionsSupplier;
 import org.infrastructurebuilder.util.BasicCredentials;
 import org.infrastructurebuilder.util.CredentialsFactory;
 import org.infrastructurebuilder.util.LoggerSupplier;
 import org.infrastructurebuilder.util.artifacts.GAV;
 import org.infrastructurebuilder.util.artifacts.IBArtifactVersionMapper;
 import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
+import org.infrastructurebuilder.util.versions.IBVersionsSupplier;
 import org.slf4j.Logger;
 
 abstract public class AbstractIBRuntimeUtils implements IBRuntimeUtils {
@@ -101,5 +101,6 @@ abstract public class AbstractIBRuntimeUtils implements IBRuntimeUtils {
   public Optional<String> getStructuredSupplyTypeClassName(String type) {
     return t2em.getStructuredSupplyTypeClassName(type);
   }
+
 
 }

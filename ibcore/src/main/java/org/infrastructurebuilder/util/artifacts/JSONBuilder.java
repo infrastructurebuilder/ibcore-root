@@ -18,7 +18,6 @@ package org.infrastructurebuilder.util.artifacts;
 import static java.util.Objects.requireNonNull;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;

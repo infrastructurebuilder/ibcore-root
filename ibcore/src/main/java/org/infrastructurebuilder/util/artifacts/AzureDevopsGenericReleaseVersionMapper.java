@@ -15,7 +15,7 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
-import static org.infrastructurebuilder.IBConstants.AZUREDEVOPS;
+import static org.infrastructurebuilder.util.constants.IBConstants.AZUREDEVOPS;
 
 import java.util.Arrays;
 import java.util.Collections;

@@ -18,10 +18,10 @@ package org.infrastructurebuilder.util.config;
 import static java.nio.file.Files.createDirectories;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
-import static org.infrastructurebuilder.IBConstants.MAVEN_TARGET_PATH;
-import static org.infrastructurebuilder.IBConstants.TARGET_DIR_PROPERTY;
-import static org.infrastructurebuilder.IBException.cet;
+import static org.infrastructurebuilder.exceptions.IBException.cet;
 import static org.infrastructurebuilder.util.IBUtils.deletePath;
+import static org.infrastructurebuilder.util.constants.IBConstants.MAVEN_TARGET_PATH;
+import static org.infrastructurebuilder.util.constants.IBConstants.TARGET_DIR_PROPERTY;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,6 +33,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.eclipse.sisu.Nullable;
 
 @Named(WorkingPathSupplier.WORKING)
 public class WorkingPathSupplier implements PathSupplier {
@@ -49,11 +51,11 @@ public class WorkingPathSupplier implements PathSupplier {
     this(new HashMap<>(), new DefaultIdentifierSupplier(), true);
   }
 
-  public WorkingPathSupplier(final Map<String, String> params, @org.eclipse.sisu.Nullable final IdentifierSupplier id) {
+  public WorkingPathSupplier(final Map<String, String> params, @Nullable final IdentifierSupplier id) {
     this(params, id, false);
   }
 
-  public WorkingPathSupplier(final Map<String, String> params, @org.eclipse.sisu.Nullable final IdentifierSupplier id,
+  public WorkingPathSupplier(final Map<String, String> params, @Nullable final IdentifierSupplier id,
       final boolean cleanup) {
     this(() -> cet.withReturningTranslation(() -> Paths
         .get(ofNullable(params.get(WORKING_PATH_KEY))

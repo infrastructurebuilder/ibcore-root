@@ -18,7 +18,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Optional;
 
-import org.infrastructurebuilder.IBConstants;
+import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
 import org.junit.Before;
 import org.junit.Test;

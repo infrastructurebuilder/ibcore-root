@@ -34,8 +34,8 @@ import java.util.SortedSet;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-import org.infrastructurebuilder.IBConstants;
-import org.infrastructurebuilder.IBException;
+import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.util.constants.IBConstants;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

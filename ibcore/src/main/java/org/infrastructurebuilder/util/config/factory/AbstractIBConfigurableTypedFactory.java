@@ -18,6 +18,16 @@ package org.infrastructurebuilder.util.config.factory;
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 import org.infrastructurebuilder.util.config.IBRuntimeUtils;
 
+/**
+ * Abstract impl of IBConfigurableTypedFactory
+ *
+ * This is really to make boilerplate work go down when using genericss
+ *
+ * @author mykel.alvis
+ *
+ * @param <T>
+ * @param <P>
+ */
 abstract public class AbstractIBConfigurableTypedFactory<T, P> extends AbstractIBConfigurableFactory<T>
     implements IBConfigurableTypedFactory<T, P> {
 

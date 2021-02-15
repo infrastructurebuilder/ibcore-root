@@ -17,7 +17,7 @@ package org.infrastructurebuilder.util.crypto;
 
 import static org.junit.Assert.assertEquals;
 
-import org.infrastructurebuilder.IBException;
+import org.infrastructurebuilder.exceptions.IBException;
 import org.junit.Test;
 
 public class DefaultEncryptedSecretSupplierTest {

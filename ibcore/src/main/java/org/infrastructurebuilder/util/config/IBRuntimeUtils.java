@@ -47,7 +47,8 @@ public interface IBRuntimeUtils extends
     // And whatever MIME<->Extension mapping is configured
     , TypeToExtensionMapper
     // Get GAV and other project data from current working project
-    , GAVSupplier {
+    , GAVSupplier
+    {
 
   /**
    * Get an instance of a {@link Path} that the current instance considers a

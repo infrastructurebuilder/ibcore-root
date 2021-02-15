@@ -13,18 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.artifacts;
+package org.infrastructurebuilder.util.artifacts.impl;
 
-import static java.util.Collections.emptyList;
+import org.infrastructurebuilder.util.artifacts.TargetPlatformGAVMapper;
 
-import java.util.List;
+abstract public class AbstractTargetPlatformGAVMapper implements TargetPlatformGAVMapper {
 
-import org.infrastructurebuilder.util.versions.IBVersionsSupplier;
-
-public interface IBArtifactVersionMapper {
-
-  default List<IBVersionsSupplier> getMatchingArtifacts(String groupId, String artifactId) {
-    return emptyList();
+  public AbstractTargetPlatformGAVMapper() {
   }
 
 }

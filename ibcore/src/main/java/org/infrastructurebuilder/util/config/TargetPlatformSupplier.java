@@ -13,18 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.artifacts;
+package org.infrastructurebuilder.util.config;
 
-import static java.util.Collections.emptyList;
+import java.util.Optional;
+import java.util.function.Supplier;
 
-import java.util.List;
+import org.infrastructurebuilder.util.artifacts.TargetPlatform;
 
-import org.infrastructurebuilder.util.versions.IBVersionsSupplier;
-
-public interface IBArtifactVersionMapper {
-
-  default List<IBVersionsSupplier> getMatchingArtifacts(String groupId, String artifactId) {
-    return emptyList();
-  }
+public interface TargetPlatformSupplier extends Supplier<Optional<TargetPlatform>>{
 
 }

@@ -16,7 +16,7 @@
 package org.infrastructurebuilder.util.artifacts;
 
 import static java.util.stream.Collectors.toList;
-import static org.infrastructurebuilder.IBConstants.DEFAULT;
+import static org.infrastructurebuilder.util.constants.IBConstants.DEFAULT;
 
 import java.util.List;
 import java.util.Map;
@@ -26,7 +26,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.infrastructurebuilder.IBVersionsSupplier;
+import org.infrastructurebuilder.util.versions.IBVersionsSupplier;
 
 @Named(DEFAULT)
 @Singleton

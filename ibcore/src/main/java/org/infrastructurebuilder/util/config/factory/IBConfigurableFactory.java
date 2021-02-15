@@ -25,6 +25,14 @@ import org.infrastructurebuilder.util.artifacts.Weighted;
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 import org.infrastructurebuilder.util.config.IBRuntimeUtils;
 
+/**
+ * All IBConfigurableFactory instances have a weighted order, an available logger,
+ * and an IBRuntimeUtils available.
+ * s
+ * @author mykel.alvis
+ *
+ * @param <T>
+ */
 public interface IBConfigurableFactory<T> extends Weighted, LoggerEnabled {
 
   IBConfigurableFactory<T> configure(ConfigMapSupplier config);

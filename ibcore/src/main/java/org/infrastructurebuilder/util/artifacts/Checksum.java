@@ -21,20 +21,18 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static java.util.UUID.nameUUIDFromBytes;
-import static org.infrastructurebuilder.IBException.cet;
+import static org.infrastructurebuilder.exceptions.IBException.cet;
 import static org.infrastructurebuilder.util.IBUtils.digestInputStream;
 import static org.infrastructurebuilder.util.IBUtils.getHex;
 import static org.infrastructurebuilder.util.IBUtils.hexStringToByteArray;
 import static org.infrastructurebuilder.util.IBUtils.readerToInputStream;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.file.Path;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -43,8 +41,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.IBConstants;
-import org.infrastructurebuilder.IBException;
+import org.infrastructurebuilder.util.constants.IBConstants;
 import org.json.JSONObject;
 
 public class Checksum implements Comparable<Checksum>, Supplier<Optional<UUID>> {

@@ -19,15 +19,13 @@ import static java.util.Arrays.copyOf;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
-import static org.infrastructurebuilder.IBException.cet;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
 import java.util.Optional;
 
-import org.infrastructurebuilder.IBVersionsSupplier;
 import org.infrastructurebuilder.util.artifacts.GAV;
+import org.infrastructurebuilder.util.versions.IBVersionsSupplier;
 import org.json.JSONObject;
 
 public class DefaultGAV implements GAV, Comparable<GAV> {

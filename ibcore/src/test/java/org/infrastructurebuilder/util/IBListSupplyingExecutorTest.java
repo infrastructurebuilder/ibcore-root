@@ -27,7 +27,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import org.infrastructurebuilder.IBException;
+import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
 import org.junit.AfterClass;
 import org.junit.Before;

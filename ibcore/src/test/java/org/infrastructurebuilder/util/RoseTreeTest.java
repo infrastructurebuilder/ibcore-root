@@ -29,8 +29,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.artifacts.Checksum;
-import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
 import org.infrastructurebuilder.util.artifacts.JSONAndChecksumEnabled;
 import org.infrastructurebuilder.util.artifacts.impl.AbstractRoseTree;
 import org.json.JSONObject;

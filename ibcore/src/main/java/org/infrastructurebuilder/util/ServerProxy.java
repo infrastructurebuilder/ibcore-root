@@ -16,7 +16,7 @@
 package org.infrastructurebuilder.util;
 
 import static java.util.Objects.requireNonNull;
-import static org.infrastructurebuilder.IBException.cet;
+import static org.infrastructurebuilder.exceptions.IBException.cet;
 import static org.infrastructurebuilder.util.IBUtils.readFile;
 
 import java.nio.file.Files;

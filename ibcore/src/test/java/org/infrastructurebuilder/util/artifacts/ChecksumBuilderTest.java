@@ -16,8 +16,8 @@
 package org.infrastructurebuilder.util.artifacts;
 
 import static java.util.Optional.ofNullable;
-import static org.infrastructurebuilder.IBConstants.MAVEN_TARGET_PATH;
-import static org.infrastructurebuilder.IBConstants.TARGET_DIR_PROPERTY;
+import static org.infrastructurebuilder.util.constants.IBConstants.MAVEN_TARGET_PATH;
+import static org.infrastructurebuilder.util.constants.IBConstants.TARGET_DIR_PROPERTY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
@@ -35,7 +35,7 @@ import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.infrastructurebuilder.IBException;
+import org.infrastructurebuilder.exceptions.IBException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;

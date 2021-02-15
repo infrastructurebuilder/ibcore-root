@@ -18,7 +18,7 @@ package org.infrastructurebuilder.util;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.infrastructurebuilder.IBException;
+import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.ChecksumBuilder;
 import org.infrastructurebuilder.util.artifacts.JSONAndChecksumEnabled;

@@ -20,7 +20,7 @@ import static org.infrastructurebuilder.util.artifacts.IBVersionException.ibt;
 
 import java.util.Objects;
 
-import org.infrastructurebuilder.IBException;
+import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.artifacts.IBVersion;
 import org.infrastructurebuilder.util.artifacts.IBVersionException;
 

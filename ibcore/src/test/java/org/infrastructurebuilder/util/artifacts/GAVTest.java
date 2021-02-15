@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Optional;
 
-import org.infrastructurebuilder.IBException;
+import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
 import org.json.JSONObject;
 import org.junit.Before;

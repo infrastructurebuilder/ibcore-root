@@ -24,7 +24,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 
-import org.infrastructurebuilder.IBException;
+import org.infrastructurebuilder.exceptions.IBException;
 
 public class ConfigMap implements Map<String, Object> {
   private final Map<String, Object> config;

@@ -122,8 +122,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 
-import org.infrastructurebuilder.IBConstants;
-import org.infrastructurebuilder.IBException;
+import org.infrastructurebuilder.util.constants.IBConstants;
+import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.GAV;
 import org.infrastructurebuilder.util.artifacts.IBVersion;
@@ -633,7 +633,7 @@ public class IBUtilsTest {
   @Test
   public void testGetOptInteger() {
     final JSONObject g = new JSONObject().put("X", 1).put("A", false).put("B", JSONObject.NULL);
-    assertEquals("optional Y", getOptInteger(g, "X").get(), new Integer(1));
+    assertEquals("optional Y", getOptInteger(g, "X").get(), Integer.valueOf(1));
     assertFalse("Optional A is not present", getOptInteger(g, "AVC").isPresent());
     try {
       assertFalse("Optional B is not present", getOptInteger(g, "B").isPresent());
@@ -654,7 +654,7 @@ public class IBUtilsTest {
   @Test
   public void testGetOptLong() {
     final JSONObject g = new JSONObject().put("X", 1L).put("A", false).put("B", JSONObject.NULL);
-    assertEquals("optional Y", getOptLong(g, "X").get(), new Long(1));
+    assertEquals("optional Y", getOptLong(g, "X").get(), Long.valueOf(1) );
     assertFalse("Optional A is not present", getOptLong(g, "AVC").isPresent());
     try {
       assertFalse("Optional B is not present", getOptLong(g, "B").isPresent());

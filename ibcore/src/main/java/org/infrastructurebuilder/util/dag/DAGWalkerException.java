@@ -15,7 +15,7 @@
  */
 package org.infrastructurebuilder.util.dag;
 
-import org.infrastructurebuilder.IBException;
+import org.infrastructurebuilder.exceptions.IBException;
 
 public class DAGWalkerException extends IBException {
 

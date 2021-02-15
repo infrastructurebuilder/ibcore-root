@@ -19,7 +19,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
-import org.infrastructurebuilder.IBException;
+import org.infrastructurebuilder.exceptions.IBException;
 
 public class MirrorProxy {
   private String id;
@@ -61,7 +61,7 @@ public class MirrorProxy {
   }
 
   /**
-   * Get the server ID of the repository being mirrored, e.g.,
+   * Get the server IDs of the repositories being mirrored, e.g.,
    *             "central". This MUST NOT match the mirror id.
    *
    * @return String

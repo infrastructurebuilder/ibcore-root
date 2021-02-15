@@ -15,26 +15,22 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
-import static java.util.Optional.ofNullable;
-import static org.infrastructurebuilder.exceptions.IBException.cet;
+import static java.util.Optional.empty;
 
 import java.util.Optional;
-import java.util.UUID;
-import java.util.function.Function;
 
-public interface ChecksumEnabled {
-  /**
-   * This seems weird here but it's super-useful
-   */
-  public final static Function<String, Optional<UUID>> safeMapUUID = (s) -> cet
-      .withReturningTranslation(() -> ofNullable(s).map(UUID::fromString));
-  /**
-   * Also seems weird to be here, but again super useful
-   */
-  public final static Function<String, UUID> nullableSafeMapUUID = uuid -> {
-    return safeMapUUID.apply(uuid).orElse(null);
-  };
+/**
+ * A TargetPlatform is a (unique) string identifier that can be tied to a GAV to
+ * produce a targeted output
+ *
+ * @author mykel.alvis
+ *
+ */
+public interface TargetPlatform {
+  String getPlatformIdentifier();
 
+  default Optional<String> getOperatingSystem() {
+    return empty();
 
-  Checksum asChecksum();
+  }
 }

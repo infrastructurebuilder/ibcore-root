@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.infrastructurebuilder.IBConstants;
+import org.infrastructurebuilder.util.constants.IBConstants;
 
 /**
  * As a [useful] example, this mapper extracts the org from the github.io username groupId mapping

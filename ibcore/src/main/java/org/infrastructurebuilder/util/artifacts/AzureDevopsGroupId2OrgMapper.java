@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.infrastructurebuilder.IBConstants;
+import org.infrastructurebuilder.util.constants.IBConstants;
 
 /**
  * Override matchIt or override and call it from within a subclass using another regex.

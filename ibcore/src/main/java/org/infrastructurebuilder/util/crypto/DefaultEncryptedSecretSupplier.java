@@ -20,7 +20,7 @@ import java.util.Objects;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.infrastructurebuilder.IBException;
+import org.infrastructurebuilder.exceptions.IBException;
 
 @Named
 public class DefaultEncryptedSecretSupplier implements EncryptedSecretSupplier {
