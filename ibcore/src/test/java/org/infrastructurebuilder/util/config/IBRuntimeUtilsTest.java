@@ -15,7 +15,7 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Path;
 import java.util.Optional;
@@ -23,26 +23,26 @@ import java.util.SortedSet;
 
 import org.infrastructurebuilder.util.BasicCredentials;
 import org.infrastructurebuilder.util.artifacts.GAV;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 
 public class IBRuntimeUtilsTest {
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception {
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownAfterClass() throws Exception {
   }
 
   private IBRuntimeUtils t;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     t = new IBRuntimeUtils() {
 
@@ -97,7 +97,7 @@ public class IBRuntimeUtilsTest {
     };
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
   }
 

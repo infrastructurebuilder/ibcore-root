@@ -15,10 +15,10 @@
  */
 package org.infrastructurebuilder.util.crypto;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DefaultEncryptedSecretSupplierTest {
 
@@ -31,13 +31,13 @@ public class DefaultEncryptedSecretSupplierTest {
     assertEquals(RANDOMPASSWORD99, d.get());
   }
 
-  @Test(expected = NullPointerException.class)
-  public void testSetSecretNull() {
+  @Test
+  public void testSetSecretNull() throws NullPointerException {
     d = new DefaultEncryptedSecretSupplier(null);
   }
 
-  @Test(expected = IBException.class)
-  public void testSetSecretWronglen() {
+  @Test
+  public void testSetSecretWronglen() throws IBException {
     d = new DefaultEncryptedSecretSupplier("x");
   }
 

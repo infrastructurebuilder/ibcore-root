@@ -15,7 +15,8 @@
     limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
@@ -37,26 +38,29 @@
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
     </dependency>
+    <!--
     <dependency>
       <groupId>org.eclipse.sisu</groupId>
       <artifactId>org.eclipse.sisu.inject</artifactId>
     </dependency>
+     -->
     <dependency>
       <groupId>org.eclipse.sisu</groupId>
       <artifactId>org.eclipse.sisu.plexus</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.vdurmont</groupId>
+<!--       <groupId>com.vdurmont</groupId> -->
+      <groupId>org.infrastructurebuilder.usurped</groupId>
       <artifactId>semver4j</artifactId>
     </dependency>
-
+<!--
     <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
       <scope>test</scope>
       <classifier>no_aop</classifier>
     </dependency>
+ -->
     <dependency>
       <groupId>org.jooq</groupId>
       <artifactId>joor</artifactId>
@@ -71,14 +75,42 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+<!--
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
+     -->
     <dependency>
-      <groupId>org.skyscreamer</groupId>
+<!--       <groupId>org.skyscreamer</groupId> -->
+      <groupId>org.infrastructurebuilder.usurped</groupId>
       <artifactId>jsonassert</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <build>
+  <!--
+    <plugins>
+      <plugin>
+        <groupId>de.sormuras.junit</groupId>
+        <artifactId>junit-platform-maven-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <skip>false</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+   -->
+  </build>
 </project>

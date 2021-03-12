@@ -17,7 +17,6 @@ package org.infrastructurebuilder.util;
 
 import static java.time.Duration.ofMinutes;
 import static java.time.Duration.ofSeconds;
-import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.infrastructurebuilder.util.IBUtils.isWindows;
@@ -48,7 +47,7 @@ public class ProcessRunnerTest {
   private final static TestingPathSupplier wps                   = new TestingPathSupplier();
   private final static String[]            PACKER_VERSION_PARAMS = { "version", "-machine-readable", "-color=false" };
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception {
   }
 
@@ -61,7 +60,7 @@ public class ProcessRunnerTest {
   private Path                             target;
   private VersionedProcessExecutionFactory vpef;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     target = wps.getRoot();
     scratchDir = target.resolve(UUID.randomUUID().toString());
@@ -73,7 +72,7 @@ public class ProcessRunnerTest {
     vpef = new DefaultVersionedProcessExecutionFactory(scratchDir, Optional.empty());
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     IBUtils.deletePath(scratchDir);
   }

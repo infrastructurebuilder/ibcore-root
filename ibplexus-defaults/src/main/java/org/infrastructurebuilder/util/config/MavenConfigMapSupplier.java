@@ -35,7 +35,7 @@ import org.apache.maven.model.Build;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.sisu.Nullable;
-import org.infrastructurebuilder.IBException;
+import org.infrastructurebuilder.exceptions.IBException;
 
 @Named(ConfigMapSupplier.MAVEN)
 public class MavenConfigMapSupplier extends DefaultConfigMapSupplier {

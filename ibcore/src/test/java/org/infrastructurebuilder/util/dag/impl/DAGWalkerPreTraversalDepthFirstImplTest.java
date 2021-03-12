@@ -15,8 +15,8 @@
  */
 package org.infrastructurebuilder.util.dag.impl;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,30 +25,30 @@ import org.infrastructurebuilder.util.dag.CycleDetectedException;
 import org.infrastructurebuilder.util.dag.DAG;
 import org.infrastructurebuilder.util.dag.DAGBuilder;
 import org.infrastructurebuilder.util.dag.DAGVisitor;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DAGWalkerPreTraversalDepthFirstImplTest {
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception {
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownAfterClass() throws Exception {
   }
 
   private DAGWalkerPreTraversalDepthFirstImpl<String> d;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     d = new DAGWalkerPreTraversalDepthFirstImpl<>();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
   }
 

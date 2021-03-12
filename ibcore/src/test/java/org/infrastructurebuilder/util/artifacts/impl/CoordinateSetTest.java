@@ -15,26 +15,26 @@
  */
 package org.infrastructurebuilder.util.artifacts.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.infrastructurebuilder.util.artifacts.ArtifactServices;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CoordinateSetTest {
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception {
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownAfterClass() throws Exception {
   }
 
@@ -42,7 +42,7 @@ public class CoordinateSetTest {
 
   DefaultGAV l, l1, l3, l4, lnotM;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     l = new DefaultGAV("A", "B", "C", new DefaultIBVersion("1.0.0").getOriginalValue(), "E");
     lnotM = new DefaultGAV("A", "B", "C", new DefaultIBVersion("2.0.0").getOriginalValue(), "E");
@@ -53,35 +53,35 @@ public class CoordinateSetTest {
     l4 = DefaultGAV.copyFromSpec(l3);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
   }
 
   @Test
   public void testCompareTo() {
-    assertFalse("L != l1", l.compareTo(l1) == 0);
-    assertTrue("L == l3", l.compareTo(l3) == 0);
-    assertTrue("L3 == l", l3.compareTo(l) == 0);
+    assertFalse(l.compareTo(l1) == 0);
+    assertTrue(l.compareTo(l3) == 0);
+    assertTrue(l3.compareTo(l) == 0);
   }
 
   public void testCoordinateSetStringStringStringStringString() {
-    assertNotNull("Local setup didn't fail", l);
+    assertNotNull(l);
   }
 
   @Test
   public void testCopyFromSpecFalse() {
-    assertFalse("L1 != l4", l1.equals(l4));
+    assertFalse(l1.equals(l4));
   }
 
   @Test
   public void testCopyFromSpecTrue() {
-    assertEquals("L3 === l4", l3, l4);
+    assertEquals(l3, l4);
   }
 
   @Test
   public void testEqualsObject() {
-    assertEquals("l  equals l3", l, l3);
-    assertNotEquals("L and l1", l, l1);
+    assertEquals(l, l3);
+    assertNotEquals(l, l1);
   }
 
   @Test
@@ -131,7 +131,7 @@ public class CoordinateSetTest {
     l.setClassifier("B");
     assertEquals("Classifier == B", "B", l.getClassifier().orElse(null));
     l.setClassifier(null);
-    assertTrue("Classifier empty", !l.getClassifier().isPresent());
+    assertTrue(!l.getClassifier().isPresent(), "Classifier empty");
   }
 
   @Test

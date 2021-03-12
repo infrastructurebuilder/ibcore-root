@@ -18,7 +18,7 @@ package org.infrastructurebuilder.util.files;
 import static java.nio.file.Files.createTempFile;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
-import static org.infrastructurebuilder.IBException.cet;
+import static org.infrastructurebuilder.exceptions.IBException.cet;
 import static org.infrastructurebuilder.util.IBUtils.copy;
 
 import java.io.IOException;
@@ -31,7 +31,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import org.apache.tika.Tika;
-import org.infrastructurebuilder.IBException;
+import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.files.model.IBResourceModel;
 import org.slf4j.Logger;

@@ -15,23 +15,23 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class PropertiesInjectedConfigMapSupplierTest {
 
   private final static TestingPathSupplier wps = new TestingPathSupplier();
   private static Path target;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception {
     target = new WorkingPathSupplier().getRoot();
   }
@@ -40,7 +40,7 @@ public class PropertiesInjectedConfigMapSupplierTest {
   private List<String> list;
   private DefaultStringListSupplier single;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     list = new ArrayList<>();
     list.add(wps.getTestClasses().resolve("c1.properties").toAbsolutePath().toString());

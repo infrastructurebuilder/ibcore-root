@@ -15,24 +15,24 @@
  */
 package org.infrastructurebuilder.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.Optional;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DefaultURLAndCredsTest {
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception {
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownAfterClass() throws Exception {
   }
 
@@ -40,7 +40,7 @@ public class DefaultURLAndCredsTest {
   private DefaultURLAndCreds e;
   private CredentialsFactory cf;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     d = new DefaultURLAndCreds("url", Optional.empty());
     e = new DefaultURLAndCreds("url2", Optional.of("A"));
@@ -52,7 +52,7 @@ public class DefaultURLAndCredsTest {
     };
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
   }
 

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package org.infrastructurebuilder.util.artifacts;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
-import org.junit.Before;
-import org.junit.Test;
+import org.infrastructurebuilder.util.constants.IBConstants;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class GithubIOGroupId2OrgMapperTest2 {
 
@@ -32,7 +32,7 @@ public class GithubIOGroupId2OrgMapperTest2 {
   private static final String A = "y";
   private GAV gav;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     gh = new GithubIOGroupId2OrgMapper();
     gav = new DefaultGAV("x:" + A + ":" + VER);

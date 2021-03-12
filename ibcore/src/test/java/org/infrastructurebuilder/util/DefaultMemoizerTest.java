@@ -15,20 +15,20 @@
  */
 package org.infrastructurebuilder.util;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.function.Function;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DefaultMemoizerTest {
 
   private Function<Integer, Integer> m;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     final Function<Integer, Integer> f = this::func;
     m = Memoize.memoize(f);
@@ -37,11 +37,11 @@ public class DefaultMemoizerTest {
   @Test
   public void testMemoize() {
     Instant start = Instant.now();
-    assertTrue("+1", m.apply(1) == 2);
-    assertTrue(" > 1000 ms", Duration.between(start, Instant.now()).toMillis() > 1000);
+    assertTrue(m.apply(1) == 2);
+    assertTrue(Duration.between(start, Instant.now()).toMillis() > 1000);
     start = Instant.now();
-    assertTrue("+1", m.apply(1) == 2);
-    assertTrue(" > 1000 ms", Duration.between(start, Instant.now()).toMillis() < 10);
+    assertTrue(m.apply(1) == 2);
+    assertTrue(Duration.between(start, Instant.now()).toMillis() < 10);
 
   }
 

@@ -15,21 +15,21 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class InPlaceLateBindingPathSupplierTest {
 
   private SingletonLateBindingPathSupplier ps;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     this.ps = new SingletonLateBindingPathSupplier();
   }

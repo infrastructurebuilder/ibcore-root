@@ -15,19 +15,19 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.IBVersionsSupplier;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.infrastructurebuilder.util.versions.IBVersionsSupplier;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,11 +35,11 @@ public class DefaultIBArtifactVersionMapperTest {
 
   public final static Logger log = LoggerFactory.getLogger(DefaultIBArtifactVersionMapperTest.class);
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception {
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownAfterClass() throws Exception {
   }
 
@@ -47,7 +47,7 @@ public class DefaultIBArtifactVersionMapperTest {
   private DefaultIBArtifactVersionMapper v;
   private IBVersionsSupplier vs;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     vs = new IBVersionsSupplier() {
 
@@ -81,7 +81,7 @@ public class DefaultIBArtifactVersionMapperTest {
     v = new DefaultIBArtifactVersionMapper( ibvs);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
   }
 

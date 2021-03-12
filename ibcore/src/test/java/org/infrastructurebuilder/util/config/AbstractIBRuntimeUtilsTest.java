@@ -15,8 +15,8 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -28,9 +28,9 @@ import org.infrastructurebuilder.util.FakeTypeToExtensionMapper;
 import org.infrastructurebuilder.util.artifacts.GAV;
 import org.infrastructurebuilder.util.artifacts.IBArtifactVersionMapper;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +39,7 @@ public class AbstractIBRuntimeUtilsTest {
   public final static TestingPathSupplier wps = new TestingPathSupplier();
   public final static GAV                 gav = new DefaultGAV("G:A:1.0.0:jar");
 
-  @AfterClass
+  @AfterAll
   public static void tearDownAfterClass() throws Exception {
     wps.finalize();
   }
@@ -49,7 +49,7 @@ public class AbstractIBRuntimeUtilsTest {
   private IBArtifactVersionMapper avm;
   private FakeGAVSupplier         gavSuppler;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     gavSuppler = new FakeGAVSupplier("G", "A", "1.0.0", null);
     princ = UUID.randomUUID().toString();

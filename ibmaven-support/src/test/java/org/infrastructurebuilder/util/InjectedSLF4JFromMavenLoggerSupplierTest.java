@@ -29,7 +29,7 @@ public class InjectedSLF4JFromMavenLoggerSupplierTest {
   private static final String TESTING_LOGGER = "Testing logger";
   private Log logger;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     logger = new DefaultLog(new ConsoleLogger());
   }

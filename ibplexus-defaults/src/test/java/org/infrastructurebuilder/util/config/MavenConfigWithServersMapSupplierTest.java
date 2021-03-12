@@ -35,7 +35,7 @@ public class MavenConfigWithServersMapSupplierTest extends MavenConfigMapSupplie
   private String ns, ns2;
   private MavenConfigWithServersMapSupplier cms2;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     s = new Settings();
     final Server server = new Server();

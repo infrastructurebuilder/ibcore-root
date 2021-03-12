@@ -15,32 +15,32 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SingletonIncrementingDatedStringSupplierTest {
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception {
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownAfterClass() throws Exception {
   }
 
   private IdentifierSupplier s;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     s = new SingletonIncrementingDatedStringSupplier();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
   }
 

@@ -29,7 +29,7 @@ public class DefaultArchiveFinalizerTest {
   private static final String TEST = "test";
   private DefaultArchiveFinalizer<String> finalizer;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     finalizer = new DefaultArchiveFinalizer<>(TEST);
   }

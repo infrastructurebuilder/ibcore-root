@@ -13,28 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util;
-
-import static java.util.Collections.emptyMap;
-import static org.junit.Assert.assertNotNull;
-
-import org.junit.Before;
-import org.junit.Test;
-
-public class ExecutionEnvironmentFilterTest {
-
-  @BeforeEach
-  public void setUp() throws Exception {
-  }
-
-  @Test
-  public void testFilter() {
-    assertNotNull(ExecutionEnvironmentFilter.defaultFilter.filter(emptyMap()));
-  }
-
-  @Test(expected = NullPointerException.class)
-  public void testNullFilter() {
-    assertNotNull(ExecutionEnvironmentFilter.defaultFilter.filter(null));
-  }
-
+module org.infrastructurebuilder.ibcore.junit.test {
+  requires org.junit.jupiter.api;
 }

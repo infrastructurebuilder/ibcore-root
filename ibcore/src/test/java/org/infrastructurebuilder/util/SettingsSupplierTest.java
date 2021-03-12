@@ -18,19 +18,19 @@ package org.infrastructurebuilder.util;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SettingsSupplierTest {
   private final static TestingPathSupplier wps = new TestingPathSupplier();
@@ -39,15 +39,15 @@ public class SettingsSupplierTest {
   private SettingsSupplier s;
   private ServerProxy s1, s2;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception {
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownAfterClass() throws Exception {
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     s1 = new ServerProxy();
     s2 = new ServerProxy("two", of("SA"), of("Secret"), empty(), empty(), empty(), empty(), empty());
@@ -61,7 +61,7 @@ public class SettingsSupplierTest {
     };
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
   }
 

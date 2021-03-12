@@ -30,7 +30,7 @@ public class ThrowingInputStream extends InputStream {
   public int read() throws IOException {
     if (this.throwable != null)
       try {
-        throw throwable.newInstance();
+        throw throwable.getDeclaredConstructor().newInstance();
       } catch (Throwable e) {
         throw new IOException(e);
       }

@@ -15,13 +15,13 @@
  */
 package org.infrastructurebuilder.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DefaultExecutionResponseTest {
 
@@ -29,7 +29,7 @@ public class DefaultExecutionResponseTest {
   private DefaultExecutionResponse<String, Integer> k;
   private int i;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     errors = Arrays.asList("A", "B");
     i = -1;

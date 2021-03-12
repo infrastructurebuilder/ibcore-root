@@ -16,23 +16,23 @@
 package org.infrastructurebuilder.util.config;
 
 import static java.util.stream.Collectors.toSet;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DefaultConfigMapSupplierTest {
 
   private ConfigMapSupplier supplier;
   private ConfigMap         val;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     supplier = new DefaultConfigMapSupplier();
     val = new ConfigMap();

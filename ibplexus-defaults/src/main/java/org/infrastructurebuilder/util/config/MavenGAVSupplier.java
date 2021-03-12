@@ -15,7 +15,7 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import static org.infrastructurebuilder.IBConstants.MAVEN;
+import static org.infrastructurebuilder.util.constants.IBConstants.MAVEN;
 
 import java.util.Objects;
 import java.util.Optional;

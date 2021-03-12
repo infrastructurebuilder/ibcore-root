@@ -17,7 +17,7 @@ package org.infrastructurebuilder.util.config;
 
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.IBVersionsSupplier;
+import org.infrastructurebuilder.util.versions.IBVersionsSupplier;
 
 public class FakeIBVersionsSupplier implements IBVersionsSupplier {
 

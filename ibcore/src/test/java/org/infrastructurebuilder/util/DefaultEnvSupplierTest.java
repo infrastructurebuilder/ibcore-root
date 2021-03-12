@@ -15,19 +15,19 @@
  */
 package org.infrastructurebuilder.util;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Properties;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DefaultEnvSupplierTest {
 
   private PropertiesSupplier ps;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     ps = new DefaultPropertiesSupplier();
   }

@@ -25,12 +25,11 @@ module org.infrastructurebuilder.ibcore {
   exports org.infrastructurebuilder.util.artifacts.impl;
   exports org.infrastructurebuilder.util.artifacts;
 
-  requires com.vdurmont.semver4j;
+  requires transitive com.vdurmont.semver4j;
   requires java.xml;
   requires javax.inject;
-  requires org.eclipse.sisu.inject;
   requires org.infrastructurebuilder.exceptions;
   requires org.json;
-  requires transitive org.slf4j;
-  requires java.base;
+  requires  org.slf4j;
+  requires org.eclipse.sisu.inject;
 }

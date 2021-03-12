@@ -15,7 +15,7 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.URL;
 import java.nio.file.FileSystems;
@@ -31,9 +31,9 @@ import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ArtifactServicesTest {
   private static class AS implements ArtifactServices {
@@ -105,13 +105,13 @@ public class ArtifactServicesTest {
 
   }
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception {
   }
 
   private ArtifactServices as;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     as = new AS(Arrays.asList(new DefaultGAV("junit", "junit", "", "4.0", "jar").withFile(Paths.get("./junit1.jar")),
         new DefaultGAV("junit", "junitx", "", "4.0", "jar").withFile(Paths.get("./junit2.jar")),
@@ -133,57 +133,57 @@ public class ArtifactServicesTest {
   public void testGetArtifactsMatching() {
     List<GAV> d = as.getArtifactsMatching(new DefaultGAV("junit", "junit", null, "4.0", "jar"), GAV.PROVIDED_SCOPE,
         true, null, null);
-    assertEquals("Size 1", 1, d.size());
+    assertEquals(1, d.size(),"Size 1");
     d = as.getArtifactsMatching(new DefaultGAV("junit", "junit", null, "4.0", "jar"), GAV.PROVIDED_SCOPE, true, "x",
         null);
-    assertEquals("Size 0", 0, d.size());
+    assertEquals(0, d.size(),"Size 0");
     d = as.getArtifactsMatching(new DefaultGAV("junit", "junit", null, "4.0", "jar"), GAV.PROVIDED_SCOPE, true, null,
         "zip");
-    assertEquals("Size 0", 0, d.size());
+    assertEquals(0, d.size(),"Size 0");
     d = as.getArtifactsMatching(new DefaultGAV("junit", "junit", null, "4.0", "jar"), GAV.PROVIDED_SCOPE, true, "x",
         "jar");
-    assertEquals("Size 0", 0, d.size());
+    assertEquals(0, d.size(),"Size 0");
     d = as.getArtifactsMatching(new DefaultGAV("junit", "junit", null, "4.0", "zip"), GAV.PROVIDED_SCOPE, true, "x",
         null);
-    assertEquals("Size 0", 0, d.size());
+    assertEquals(0, d.size(),"Size 0");
   }
 
   @Test
   public void testGetArtifactsRuntime() {
     final List<GAV> d = as.getArtifactsRuntime(new DefaultGAV("junit", "junit", null, "4.0", "jar"));
-    assertEquals("Size 1", 1, d.size());
+    assertEquals(1, d.size(), "Size 1");
   }
 
   @Test
   public void testGetDependencies() {
     final List<Path> d = as.getDependencies(new DefaultGAV("junit", "junit", null, "4.0", "jar"), GAV.RUNTIME_SCOPE);
-    assertEquals("Size 1", 1, d.size());
+    assertEquals(1, d.size());
   }
 
   @Test
   public void testGetDependenciesRuntime() {
     final List<Path> d = as.getDependenciesRuntime(new DefaultGAV("junit", "junit", null, "4.0", "jar"));
-    assertEquals("Size 1", 1, d.size());
+    assertEquals(1, d.size());
   }
 
   @Test
   public void testGetDependencySourceJars() {
     final List<Path> d = as.getDependencySourceJars(new DefaultGAV("junit", "junit", null, "4.0", "jar"),
         GAV.PROVIDED_SCOPE);
-    assertEquals("Size 1", 1, d.size());
+    assertEquals(1, d.size());
   }
 
   @Test
   public void testGetDependencySourcJarsRuntime() {
     final List<Path> d = as.getDependencySourceJarsRuntime(new DefaultGAV("junit", "junit", null, "4.0", "jar"));
-    assertEquals("Size 1", 1, d.size());
+    assertEquals(1, d.size());
   };
 
   @Test
   public void testGetDeployables() {
     final Set<GAV> d = as.getResolvedDeployables(new DefaultGAV("junit", "junit", null, "4.0", "jar"),
         GAV.PROVIDED_SCOPE, true, null, null);
-    assertEquals("Size 1", 1, d.size());
+    assertEquals(1, d.size());
 
   }
 }

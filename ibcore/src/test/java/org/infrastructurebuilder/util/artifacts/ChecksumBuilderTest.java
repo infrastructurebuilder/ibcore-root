@@ -18,9 +18,9 @@ package org.infrastructurebuilder.util.artifacts;
 import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.util.constants.IBConstants.MAVEN_TARGET_PATH;
 import static org.infrastructurebuilder.util.constants.IBConstants.TARGET_DIR_PROPERTY;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -38,8 +38,8 @@ import java.util.TreeSet;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ChecksumBuilderTest {
 
@@ -73,7 +73,7 @@ public class ChecksumBuilderTest {
   private SortedSet<ChecksumEnabled> theSet;
   private ChecksumEnabled longSortable;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     relativeRoot = Optional
         .of(Paths.get(ofNullable(System.getProperty(TARGET_DIR_PROPERTY)).orElse(MAVEN_TARGET_PATH)));
@@ -260,8 +260,8 @@ public class ChecksumBuilderTest {
         sha512.addThrowable(Optional.of(throwable)).asChecksum().toString());
   }
 
-  @Test(expected = IBException.class)
-  public void testLock() {
+  @Test
+  public void testLock() throws IBException {
     final Checksum v = sha512.addString(Optional.of("ABC")).asChecksum();
     assertEquals(abc, v);
     sha512.addString("ABC");

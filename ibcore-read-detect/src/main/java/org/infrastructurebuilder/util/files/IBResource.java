@@ -20,7 +20,7 @@ import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static java.nio.file.StandardOpenOption.READ;
 import static java.util.Objects.hash;
 import static java.util.Optional.empty;
-import static org.infrastructurebuilder.IBException.cet;
+import static org.infrastructurebuilder.exceptions.IBException.cet;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +34,7 @@ import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.IBException;
+import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 
 public interface IBResource extends Supplier<InputStream> {

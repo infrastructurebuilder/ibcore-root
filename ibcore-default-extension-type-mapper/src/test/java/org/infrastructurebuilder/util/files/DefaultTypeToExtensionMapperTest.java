@@ -15,11 +15,11 @@
  */
 package org.infrastructurebuilder.util.files;
 
-import static org.infrastructurebuilder.IBConstants.APPLICATION_XML;
-import static org.infrastructurebuilder.IBConstants.DEFAULT_EXTENSION;
-import static org.infrastructurebuilder.IBConstants.ORG_W3C_DOM_NODE;
-import static org.infrastructurebuilder.IBConstants.VIDEO_AVI_1;
-import static org.infrastructurebuilder.IBConstants.XML;
+import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_XML;
+import static org.infrastructurebuilder.util.constants.IBConstants.DEFAULT_EXTENSION;
+import static org.infrastructurebuilder.util.constants.IBConstants.ORG_W3C_DOM_NODE;
+import static org.infrastructurebuilder.util.constants.IBConstants.VIDEO_AVI_1;
+import static org.infrastructurebuilder.util.constants.IBConstants.XML;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -34,7 +34,7 @@ public class DefaultTypeToExtensionMapperTest {
 
   private TypeToExtensionMapper t2e;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     t2e = new DefaultTypeToExtensionMapper();
   }

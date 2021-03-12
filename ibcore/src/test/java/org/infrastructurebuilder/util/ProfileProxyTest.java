@@ -15,23 +15,23 @@
  */
 package org.infrastructurebuilder.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Properties;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ProfileProxyTest {
 
   private static final String ID = "id";
   private ProfileProxy pp;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     pp = new ProfileProxy(ID, true, Optional.empty(), Collections.emptyList(), new Properties(),
         Collections.emptyList());

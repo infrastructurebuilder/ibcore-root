@@ -15,9 +15,9 @@
  */
 package org.infrastructurebuilder.util.config.factory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -26,11 +26,11 @@ import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 import org.infrastructurebuilder.util.config.DefaultConfigMapSupplier;
 import org.infrastructurebuilder.util.config.IBRuntimeUtils;
 import org.infrastructurebuilder.util.config.IBRuntimeUtilsTesting;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,24 +38,24 @@ public class AbstractIBConfigurableParamFactoryTest {
   public final static Logger         log = LoggerFactory.getLogger(AbstractIBConfigurableParamFactoryTest.class);
   public final static IBRuntimeUtils ibr = new IBRuntimeUtilsTesting(log);
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception {
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownAfterClass() throws Exception {
   }
 
   private FakeIBConfigurableParamFactory k;
   private ConfigMapSupplier              cms;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     cms = new DefaultConfigMapSupplier();
     k = new FakeIBConfigurableParamFactory(ibr);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
   }
 

@@ -15,14 +15,14 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class GithubGenericReleaseVersionMapperTest extends TestWeightedAndIdentified {
 
@@ -30,7 +30,7 @@ public class GithubGenericReleaseVersionMapperTest extends TestWeightedAndIdenti
   private GithubGenericReleaseVersionMapper vm;
   private DefaultGAV gav1;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     this.vm = new GithubGenericReleaseVersionMapper();
     this.gav1 = new DefaultGAV("a", "b", x1_0_0, "zip");

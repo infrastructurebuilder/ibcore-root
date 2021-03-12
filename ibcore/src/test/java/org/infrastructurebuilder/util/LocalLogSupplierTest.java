@@ -15,11 +15,11 @@
  */
 package org.infrastructurebuilder.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +28,7 @@ public class LocalLogSupplierTest {
 
   private LocalLogSupplier l;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     l = new LocalLogSupplier();
   }

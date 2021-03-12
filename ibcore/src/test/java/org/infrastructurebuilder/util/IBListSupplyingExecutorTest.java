@@ -15,8 +15,8 @@
  */
 package org.infrastructurebuilder.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,9 +29,9 @@ import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +40,7 @@ public class IBListSupplyingExecutorTest {
   private final static Logger log = LoggerFactory.getLogger(IBListSupplyingExecutorTest.class);
   private final static TestingPathSupplier wps = new TestingPathSupplier();
 
-  @AfterClass
+  @AfterAll
   public static void tearDownAfterClass() throws Exception {
     wps.finalize();
   }
@@ -49,7 +49,7 @@ public class IBListSupplyingExecutorTest {
   private EnvSupplier config;
   private Map<String, String> map;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     this.e = new ETest(() -> log);
     this.map = new HashMap<>();

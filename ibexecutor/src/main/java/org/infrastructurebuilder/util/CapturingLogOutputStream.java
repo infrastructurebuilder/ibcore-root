@@ -19,7 +19,7 @@ import static java.nio.file.Files.createDirectories;
 import static java.nio.file.Files.newBufferedWriter;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
-import static org.infrastructurebuilder.IBException.cet;
+import static org.infrastructurebuilder.exceptions.IBException.cet;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

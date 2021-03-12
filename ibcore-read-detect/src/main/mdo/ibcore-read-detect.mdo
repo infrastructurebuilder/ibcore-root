@@ -167,10 +167,10 @@
         this.path = java.nio.file.Paths.get(getFilePath());
       }
       if (this.path == null && getSourceURL().isPresent()) {
-        this.path = java.nio.file.Paths.get(org.infrastructurebuilder.IBException.cet
+        this.path = java.nio.file.Paths.get(org.infrastructurebuilder.exceptions.IBException.cet
             .withReturningTranslation(() -> getSourceURL().get().toURI()));
       }
-      return java.util.Optional.ofNullable(path).orElseThrow(() -> new org.infrastructurebuilder.IBException("No available path"));
+      return java.util.Optional.ofNullable(path).orElseThrow(() -> new org.infrastructurebuilder.exceptions.IBException("No available path"));
     }
   ]]>
           </code>
@@ -193,7 +193,7 @@
             <![CDATA[
     @Override
     public java.util.Optional<java.net.URL> getSourceURL() {
-      return java.util.Optional.ofNullable(getSource()).map(u -> org.infrastructurebuilder.IBException.cet.withReturningTranslation(() -> org.infrastructurebuilder.util.IBUtils.translateToWorkableArchiveURL(u)));
+      return java.util.Optional.ofNullable(getSource()).map(u -> org.infrastructurebuilder.exceptions.IBException.cet.withReturningTranslation(() -> org.infrastructurebuilder.util.IBUtils.translateToWorkableArchiveURL(u)));
     }
   ]]>
           </code>

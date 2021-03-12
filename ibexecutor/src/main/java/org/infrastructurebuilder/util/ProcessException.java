@@ -15,7 +15,7 @@
  */
 package org.infrastructurebuilder.util;
 
-import org.infrastructurebuilder.IBException;
+import org.infrastructurebuilder.exceptions.IBException;
 
 import com.mscharhag.et.ET;
 import com.mscharhag.et.ExceptionTranslator;

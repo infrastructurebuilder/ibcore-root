@@ -35,7 +35,7 @@ public class DefaultResolveOutcomeTest {
   private List<URL> resolved;
   private ResolveOutcome r;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     url = new URL(URL + "/somethingelse");
     URL u1 = new URL(URL + "/1"), u2 = new URL(URL + "/2");

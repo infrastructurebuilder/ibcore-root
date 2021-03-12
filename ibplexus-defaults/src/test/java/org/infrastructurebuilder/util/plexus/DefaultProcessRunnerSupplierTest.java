@@ -44,7 +44,7 @@ public class DefaultProcessRunnerSupplierTest {
   public final static org.slf4j.Logger log = LoggerFactory.getLogger(DefaultProcessRunnerSupplierTest.class);
   private static Path random_target;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception {
     random_target = Paths.get(Optional.ofNullable(System.getProperty("target")).orElse("./target")).toRealPath()
         .toAbsolutePath().resolve(UUID.randomUUID().toString());
@@ -55,7 +55,7 @@ public class DefaultProcessRunnerSupplierTest {
 
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownAfterClass() throws Exception {
     IBUtils.deletePath(random_target);
   }
@@ -66,7 +66,7 @@ public class DefaultProcessRunnerSupplierTest {
   private DefaultProcessRunnerSupplier prs;
   private List<ExtendedListSupplier> suppliers;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     list = Arrays.asList(DefaultStringListSupplier.ISOVERRIDE, "/c1.properties");
     suppliers = Arrays.asList(new DefaultStringListSupplier(list));

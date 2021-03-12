@@ -35,7 +35,6 @@ import java.util.UUID;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
-import org.infrastructurebuilder.util.execution.model.v1_0_0.DefaultProcessExecution;
 import org.infrastructurebuilder.util.execution.model.v1_0_0.io.xpp3.ProcessExecutionModelXpp3Reader;
 import org.infrastructurebuilder.util.execution.model.v1_0_0.io.xpp3.ProcessExecutionModelXpp3Writer;
 import org.junit.After;
@@ -50,11 +49,11 @@ public class DefaultProcessExecutionTest {
   public final static Logger              log = LoggerFactory.getLogger(DefaultProcessExecutionTest.class);
   public final static TestingPathSupplier wps = new TestingPathSupplier();
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception {
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownAfterClass() throws Exception {
   }
 
@@ -64,7 +63,7 @@ public class DefaultProcessExecutionTest {
   private Path                            workDirectory;
   private String                          id;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     id = UUID.randomUUID().toString();
     String executable = wps.getRoot().resolve("packer").toAbsolutePath().toString();
@@ -83,7 +82,7 @@ public class DefaultProcessExecutionTest {
 
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     wps.finalize();
   }

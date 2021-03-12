@@ -16,7 +16,7 @@
 package org.infrastructurebuilder.util.config;
 
 import static java.util.stream.Collectors.toList;
-import static org.infrastructurebuilder.IBConstants.MAVEN;
+import static org.infrastructurebuilder.util.constants.IBConstants.MAVEN;
 
 import java.util.List;
 

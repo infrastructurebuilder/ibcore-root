@@ -79,12 +79,12 @@ import static org.infrastructurebuilder.util.IBUtils.translateToWorkableArchiveU
 import static org.infrastructurebuilder.util.IBUtils.unzip;
 import static org.infrastructurebuilder.util.IBUtils.writeString;
 import static org.infrastructurebuilder.util.IBUtils.zipEntryToUrl;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -122,7 +122,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 
-import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.artifacts.GAV;
@@ -130,15 +129,16 @@ import org.infrastructurebuilder.util.artifacts.IBVersion;
 import org.infrastructurebuilder.util.artifacts.JSONOutputEnabled;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
+import org.infrastructurebuilder.util.constants.IBConstants;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.w3c.dom.Document;
 
@@ -164,7 +164,7 @@ public class IBUtilsTest {
   private static final String        TESTSTRING             = "ABCDE";
   private static final String        URL                    = "https://www.google.com";
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception {
     wps = new TestingPathSupplier();
     objects = new JSONObject[] { new JSONObject("{ x : 1}"), new JSONObject("{x:2}"), new JSONObject("{x:3}") };
@@ -181,19 +181,19 @@ public class IBUtilsTest {
 
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownAfterClass() throws Exception {
     wps.finalize();
   }
 
   private Path testDir;
 
-  @After
+  @AfterEach
   public void after() {
     deletePath(testDir);
   }
 
-  @Before
+  @BeforeEach
   public void before() throws IOException {
     testDir = wps.get();
   }
@@ -202,9 +202,9 @@ public class IBUtilsTest {
   public void testMoveAtomicDirectory() throws IOException {
     Path source = wps.get();
     Path target = wps.get();
-    Path adir = Files.createDirectories(source.resolve("A"));
-    Path bdir = Files.createDirectories(adir.resolve("B"));
-    Path cfile = writeString(bdir.resolve("C"), "HI");
+    Path adir   = Files.createDirectories(source.resolve("A"));
+    Path bdir   = Files.createDirectories(adir.resolve("B"));
+    Path cfile  = writeString(bdir.resolve("C"), "HI");
     IBUtils.moveAtomic(source, target);
     assertTrue(Files.exists(target.resolve("A").resolve("B").resolve("C")));
   }
@@ -213,13 +213,13 @@ public class IBUtilsTest {
   public void testEnumerationAsStream() {
     List<String> a = Arrays.asList("A", "B", "C", "D", "E");
 
-    String[] s = new String[5];
+    String[]     s = new String[5];
     s = a.toArray(s);
     StringJoiner q = new StringJoiner("\t");
     a.forEach(ss -> q.add(ss));
-    String v = q.toString();
+    String              v = q.toString();
     Enumeration<Object> e = new StringTokenizer(v);
-    List<String> k = IBUtils.enumerationAsStream(e, true).map(Object::toString).collect(Collectors.toList());
+    List<String>        k = IBUtils.enumerationAsStream(e, true).map(Object::toString).collect(Collectors.toList());
     assertEquals(a, k);
   }
 
@@ -234,21 +234,21 @@ public class IBUtilsTest {
 
   @Test
   public void canConstructor() {
-    assertNotNull("Can construct one", new IBUtils());
+    assertNotNull(new IBUtils());
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
   }
 
   @Test
   public void testAsIterator() {
     final Iterator<JSONObject> i = asIterator(new JSONArray(asList(objects)));
-    int c = 0;
+    int                        c = 0;
     while (i.hasNext()) {
       JSONAssert.assertEquals(objects[c], i.next(), true);
       c += 1;
@@ -257,17 +257,17 @@ public class IBUtilsTest {
 
   @Test
   public void testAsJSONObjectStream() {
-    final JSONArray a = new JSONArray(asList(objects));
+    final JSONArray        a = new JSONArray(asList(objects));
     final List<JSONObject> x = asJSONObjectStream(a).collect(toList());
-    assertEquals("Lists equal", asList(objects), x);
+    assertEquals(asList(objects), x);
   }
 
   @Test
   public void testAsJSONObjectStream2() {
-    final JSONArray a = new JSONArray(asList(objects));
+    final JSONArray          a = new JSONArray(asList(objects));
     final Stream<JSONObject> y = asStream(a);
-    final List<JSONObject> x = y.collect(toList());
-    assertEquals("Lists equal", asList(objects), x);
+    final List<JSONObject>   x = y.collect(toList());
+    assertEquals(asList(objects), x);
   }
 
   @Test
@@ -285,17 +285,17 @@ public class IBUtilsTest {
 
   @Test
   public void testAsStringStream() {
-    final String[] s = new String[] { "A", "B", "C" };
-    final List<String> l = asList(s);
-    final JSONArray j = new JSONArray(l);
+    final String[]       s = new String[] { "A", "B", "C" };
+    final List<String>   l = asList(s);
+    final JSONArray      j = new JSONArray(l);
     final Stream<String> y = asStringStream(j);
-    assertEquals("Lists same", l, y.collect(toList()));
+    assertEquals(l, y.collect(toList()));
   }
 
   @Test
   public void testASUrl() {
-    final String src = "https://www.google.com/a?b";
-    final Optional<URL> u = IBUtils.asURL(src);
+    final String        src = "https://www.google.com/a?b";
+    final Optional<URL> u   = IBUtils.asURL(src);
     assertTrue(u.isPresent());
     assertTrue(u.get().toExternalForm().contains(src));
     assertFalse(IBUtils.asURL("abc").isPresent());
@@ -303,8 +303,8 @@ public class IBUtilsTest {
 
   @Test
   public void testCheapCopy() {
-    final Double d = 1.2;
-    final Float f = 1.2F;
+    final Double     d = 1.2;
+    final Float      f = 1.2F;
     final JSONObject j = new JSONObject().put("X", f);
     final JSONObject k = new JSONObject().put("X", d);
     JSONAssert.assertEquals(k, cheapCopy.apply(j), true);
@@ -313,17 +313,17 @@ public class IBUtilsTest {
 
   @Test
   public void testCopy() throws IOException {
-    final byte[] b = TESTSTRING.getBytes(UTF_8);
-    final ByteArrayInputStream bas = new ByteArrayInputStream(b);
+    final byte[]                b   = TESTSTRING.getBytes(UTF_8);
+    final ByteArrayInputStream  bas = new ByteArrayInputStream(b);
     final ByteArrayOutputStream bos = new ByteArrayOutputStream();
     copy(bas, bos);
-    assertTrue("Arrays must be equal after copy", Arrays.equals(b, bos.toByteArray()));
+    assertTrue(Arrays.equals(b, bos.toByteArray()), "Arrays must be equal after copy");
   }
 
   @Test
   public void testCopyAndDigestInputStream() throws IOException, NoSuchAlgorithmException {
-    final String x = ABC;
-    Checksum y;
+    final String   x        = ABC;
+    Checksum       y;
     final Checksum expected = new Checksum(ABC_CHECKSUM);
     try (ByteArrayInputStream bis = new ByteArrayInputStream(x.getBytes(UTF_8));
         ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
@@ -332,7 +332,7 @@ public class IBUtilsTest {
       bos.close();
     }
     expected.equals(y);
-    assertEquals("Set the hex stream to " + expected, expected, y);
+    assertEquals(expected, y, "Set the hex stream to " + expected);
   }
 
   @Test
@@ -348,7 +348,7 @@ public class IBUtilsTest {
     deletePath(a);
   }
 
-  @Test(expected = IOException.class)
+  @Test
   public void testCopyPathsFail1() throws IOException {
     final Path a = wps.get();
     final Path b = a.resolve(randomUUID().toString());
@@ -358,7 +358,7 @@ public class IBUtilsTest {
     copy(b, c);
   }
 
-  @Test(expected = IOException.class)
+  @Test
   public void testCopyPathsFail2() throws IOException {
     final Path a = wps.get();
     final Path b = a.resolve(randomUUID().toString());
@@ -370,7 +370,7 @@ public class IBUtilsTest {
     copy(b, c);
   }
 
-  @Test(expected = IOException.class)
+  @Test
   public void testCopyPathsFail3() throws IOException {
     final Path a = wps.get();
     final Path b = a.resolve(randomUUID().toString());
@@ -378,8 +378,8 @@ public class IBUtilsTest {
     copy(b, c);
   }
 
-  @Test(expected = NullPointerException.class)
-  public void testCopyPathsNull1() throws IOException {
+  @Test
+  public void testCopyPathsNull1() throws NullPointerException, IOException {
     final Path a = wps.get();
     final Path b = a.resolve(randomUUID().toString());
     final Path c = a.resolve(randomUUID().toString());
@@ -387,7 +387,7 @@ public class IBUtilsTest {
     copy(null, c);
   }
 
-  @Test(expected = IOException.class)
+  @Test
   public void testCopyPathsNull2() throws IOException {
     final Path a = wps.get();
     final Path b = a.resolve(randomUUID().toString());
@@ -400,25 +400,30 @@ public class IBUtilsTest {
   public void testCoptToDeletedOnExitTemp() throws IOException {
     String prefix = "testpre";
     String suffix = ".tmp";
-    Path p = wps.getTestClasses().resolve(TESTFILE);
-    Path target = null;
+    Path   p      = wps.getTestClasses().resolve(TESTFILE);
+    Path   target = null;
     try (InputStream source = Files.newInputStream(p)) {
       target = copyToDeletedOnExitTempPath(prefix, suffix, source);
     }
     assertEquals(new Checksum(p), new Checksum(target));
   }
 
-  @Test(expected = NullPointerException.class)
-  public void testCopyAndDigestNullStream() throws NoSuchAlgorithmException, IOException {
-    copyAndDigest(null, null);
+  @Test
+  public void testCopyAndDigestNullStream() throws NullPointerException{
+    try {
+      copyAndDigest(null, null);
+    } catch (NoSuchAlgorithmException | IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
   @Test
   public void testDeepCopy() {
-    final Double d = 1.2;
-    final Float f = 1.2F;
-    final JSONObject j = new JSONObject().put("X", f);
-    final JSONObject k = new JSONObject().put("X", d);
+    final Double     d  = 1.2;
+    final Float      f  = 1.2F;
+    final JSONObject j  = new JSONObject().put("X", f);
+    final JSONObject k  = new JSONObject().put("X", d);
     final JSONObject j1 = deepCopy.apply(j);
     final JSONObject k1 = deepCopy.apply(k);
     JSONAssert.assertEquals(j, j1, true);
@@ -434,43 +439,48 @@ public class IBUtilsTest {
 
   @Test
   public void testDigestInputStream() throws IOException, NoSuchAlgorithmException {
-    final String x = ABC;
-    Checksum y;
+    final String   x        = ABC;
+    Checksum       y;
     final Checksum expected = new Checksum(ABC_CHECKSUM);
     try (ByteArrayInputStream bis = new ByteArrayInputStream(x.getBytes(UTF_8))) {
       y = new Checksum(bis);
       bis.close();
     }
-    assertEquals("Set the hex stream to " + expected, expected, y);
+    assertEquals(expected, y);
   }
 
-  @Test(expected = IOException.class)
-  public void testDigestInputStreamFail() throws IOException, NoSuchAlgorithmException {
-    Checksum y;
+  @Test
+  public void testDigestInputStreamFail() throws IOException{
+    Checksum       y;
     final Checksum expected = new Checksum(ABC_CHECKSUM);
     try (InputStream bis = Files.newInputStream(Paths.get("NOSUCHFILE"))) {
       y = new Checksum(bis);
       bis.close();
     }
-    assertEquals("Set the hex stream to " + expected, expected, y);
+    assertEquals( expected, y);
   }
 
-  @Test(expected = NullPointerException.class)
-  public void testDigestNullStream() throws NoSuchAlgorithmException, IOException {
-    digestInputStream(null);
+  @Test
+  public void testDigestNullStream() throws NullPointerException{
+    try {
+      digestInputStream(null);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
-  @Test(expected = IOException.class)
+  @Test
   public void testFailReadFile() throws IOException {
     final Path p = testClasses.resolve(FAKEFILE);
 
     readFile(p);
   }
 
-  @Test(expected = IOException.class)
+  @Test
   public void testFailUnzip() throws IOException {
     final Path p = testClasses.resolve(FAKEFILE);
-    Path t;
+    Path       t;
     try {
       t = Files.createTempDirectory("X");
     } catch (final IOException e) {
@@ -482,15 +492,20 @@ public class IBUtilsTest {
 
   @Test
   public void testForcePath() throws IOException {
-    final Path s = testDir.resolve(randomUUID().toString());
+    final Path s  = testDir.resolve(randomUUID().toString());
     final Path p2 = forceDirectoryPath(s.toFile());
     assertEquals(s, p2);
   }
 
-  @Test(expected = IBException.class)
-  public void testForcePathAlreadyAFile() throws IOException {
+  @Test
+  public void testForcePathAlreadyAFile() throws IBException {
     final Path s = testDir.resolve(randomUUID().toString());
-    IBUtils.writeString(s, ABC);
+    try {
+      IBUtils.writeString(s, ABC);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     forceDirectoryPath(s.toFile());
   }
 
@@ -498,7 +513,7 @@ public class IBUtilsTest {
   public void testFromHexString() throws IOException {
     final String y = "XX YY ZZ";
     final String x = getHex(y.getBytes(UTF_8));
-    InputStream i = null;
+    InputStream  i = null;
     try {
       i = inputStreamFromHexString(x);
       final ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -515,7 +530,7 @@ public class IBUtilsTest {
   @Test
   public void testGeneratRandomPassword() {
     final String x = generateRandomPassword();
-    assertEquals("String len is 48", 48, x.length());
+    assertEquals(48, x.length());
   }
 
   @Test
@@ -545,7 +560,7 @@ public class IBUtilsTest {
     final byte[] b = { 0x00, 0x01, 0x03, 0x0f };
     final String s = getHex(b);
     assertEquals("0,1,3,f", "0001030f", s);
-    assertTrue("original", Arrays.equals(b, hexStringToByteArray(s)));
+    assertTrue(Arrays.equals(b, hexStringToByteArray(s)));
   }
 
   @Test
@@ -553,7 +568,7 @@ public class IBUtilsTest {
     final byte[] b = { 0x00, 0x01, 0x03, 0x0f };
     final String s = getHex(b, IBConstants.UTF8);
     assertEquals("0,1,3,f", "0001030f", s);
-    assertTrue("original", Arrays.equals(b, hexStringToByteArray(s)));
+    assertTrue(Arrays.equals(b, hexStringToByteArray(s)));
   }
 
   @Test
@@ -563,11 +578,11 @@ public class IBUtilsTest {
 
   @Test
   public void testGetHexStringFromInputStream() throws IOException {
-    final byte[] b = { 0x00, 0x01, 0x03, 0x0f };
+    final byte[]               b   = { 0x00, 0x01, 0x03, 0x0f };
     final ByteArrayInputStream ins = new ByteArrayInputStream(b);
-    final String s = getHexStringFromInputStream(ins);
+    final String               s   = getHexStringFromInputStream(ins);
     assertEquals("0,1,3,f", "0001030f", s);
-    assertTrue("original", Arrays.equals(b, hexStringToByteArray(s)));
+    assertTrue(Arrays.equals(b, hexStringToByteArray(s)));
   }
 
   @Test
@@ -585,7 +600,7 @@ public class IBUtilsTest {
 
   @Test
   public void testGetJSONArrayAsListString() {
-    final JSONObject j = new JSONObject().put("X", new JSONArray(asList("1", "2")));
+    final JSONObject   j = new JSONObject().put("X", new JSONArray(asList("1", "2")));
     final List<String> s = IBUtils.getJSONArrayAsListString(j, "X");
     assertEquals(2, s.size());
     assertTrue(s.contains("1"));
@@ -604,7 +619,7 @@ public class IBUtilsTest {
 
   @Test
   public void testGetMapStringStringFromJSONObject() {
-    final JSONObject j = new JSONObject();
+    final JSONObject    j = new JSONObject();
     Map<String, String> m = getMapStringStringFromJSONObject(j);
     assertEquals(0, m.size());
     m = getMapStringStringFromJSONObject(null);
@@ -619,10 +634,10 @@ public class IBUtilsTest {
   @Test
   public void testGetOptBoolean() {
     final JSONObject g = new JSONObject().put("X", true).put("A", false).put("B", JSONObject.NULL);
-    assertEquals("optional Y", getOptBoolean(g, "X").get(), true);
-    assertFalse("Optional A is not present", getOptBoolean(g, "AVC").isPresent());
+    assertEquals(getOptBoolean(g, "X").get(), true);
+    assertFalse(getOptBoolean(g, "AVC").isPresent());
     try {
-      assertFalse("Optional B is not present", getOptBoolean(g, "B").isPresent());
+      assertFalse(getOptBoolean(g, "B").isPresent());
       fail("B is no a boolean?");
     } catch (final JSONException e) {
 
@@ -633,10 +648,10 @@ public class IBUtilsTest {
   @Test
   public void testGetOptInteger() {
     final JSONObject g = new JSONObject().put("X", 1).put("A", false).put("B", JSONObject.NULL);
-    assertEquals("optional Y", getOptInteger(g, "X").get(), Integer.valueOf(1));
-    assertFalse("Optional A is not present", getOptInteger(g, "AVC").isPresent());
+    assertEquals(getOptInteger(g, "X").get(), Integer.valueOf(1));
+    assertFalse(getOptInteger(g, "AVC").isPresent());
     try {
-      assertFalse("Optional B is not present", getOptInteger(g, "B").isPresent());
+      assertFalse(getOptInteger(g, "B").isPresent());
     } catch (final NumberFormatException e) {
       assertTrue(true);
     }
@@ -646,18 +661,18 @@ public class IBUtilsTest {
   @Test
   public void testGetOptional() {
     final JSONObject g = new JSONObject().put("X", "Y").put("A", " ").put("B", JSONObject.NULL);
-    assertEquals("optional Y", getOptString(g, "X").get(), "Y");
-    assertFalse("Optional A is not present", getOptString(g, "A").isPresent());
-    assertFalse("Optional B is not present", getOptString(g, "B").isPresent());
+    assertEquals(getOptString(g, "X").get(), "Y");
+    assertFalse(getOptString(g, "A").isPresent());
+    assertFalse(getOptString(g, "B").isPresent());
   }
 
   @Test
   public void testGetOptLong() {
     final JSONObject g = new JSONObject().put("X", 1L).put("A", false).put("B", JSONObject.NULL);
-    assertEquals("optional Y", getOptLong(g, "X").get(), Long.valueOf(1) );
-    assertFalse("Optional A is not present", getOptLong(g, "AVC").isPresent());
+    assertEquals(getOptLong(g, "X").get(), Long.valueOf(1), "optional Y");
+    assertFalse(getOptLong(g, "AVC").isPresent(), "Optional A is not present");
     try {
-      assertFalse("Optional B is not present", getOptLong(g, "B").isPresent());
+      assertFalse(getOptLong(g, "B").isPresent(), "Optional B is not present");
       fail("B is no a Long?");
     } catch (final JSONException e) {
 
@@ -669,9 +684,9 @@ public class IBUtilsTest {
   public void testGetOptString() {
     final JSONObject g = new JSONObject().put("X", "1").put("A", false).put("B", JSONObject.NULL);
     assertEquals("optional Y", getOptString(g, "X").get(), new String("1"));
-    assertFalse("Optional A is not present", getOptString(g, "AVC").isPresent());
+    assertFalse(getOptString(g, "AVC").isPresent(), "Optional A is not present");
     try {
-      assertFalse("Optional B is not present", getOptString(g, "B").isPresent());
+      assertFalse(getOptString(g, "B").isPresent(), "Optional B is not present");
     } catch (final JSONException e) {
       fail("B is no a String?");
 
@@ -706,160 +721,167 @@ public class IBUtilsTest {
 
   @Test
   public void testHex8Digit() {
-    assertFalse("False if null", hex8Digit(null));
-    assertFalse("False if len != 8", hex8Digit(ABC));
-    assertFalse("False if cannot parse", hex8Digit("ABCDEFGH"));
-    assertTrue("True!", hex8Digit("ABCD1234"));
+    assertFalse(hex8Digit(null), "False if null");
+    assertFalse(hex8Digit(ABC), "False if len != 8");
+    assertFalse(hex8Digit("ABCDEFGH"), "False if cannot parse");
+    assertTrue(hex8Digit("ABCD1234"));
 
   }
 
   @Test
   public void testJSONArray() {
-    final JSONArray expected = new JSONArray(asList(new FakeJSONOutputEnabled().asJSON()));
-    final List<? extends JSONOutputEnabled> v = asList(new FakeJSONOutputEnabled());
-    final JSONArray actual = getJSONArrayFromJSONOutputEnabled(v);
+    final JSONArray                         expected = new JSONArray(asList(new FakeJSONOutputEnabled().asJSON()));
+    final List<? extends JSONOutputEnabled> v        = asList(new FakeJSONOutputEnabled());
+    final JSONArray                         actual   = getJSONArrayFromJSONOutputEnabled(v);
     JSONAssert.assertEquals(expected, actual, true);
   }
 
   @Test
   public void testJSONtoMapStringString() {
-    final JSONObject j = new JSONObject().put("X", "Y");
+    final JSONObject          j = new JSONObject().put("X", "Y");
     final Map<String, String> m = new HashMap<>();
     m.put("X", "Y");
     final Map<String, String> k = mapJSONToStringString.apply(j);
     assertEquals(m, k);
   }
 
-  @Test(expected = IBException.class)
-  public void testMapStringToURLorNullBad() {
+  @Test
+  public void testMapStringToURLorNullBad() throws IBException {
     IBUtils.mapStringToURLOrNull(Optional.of("Blethc"));
   }
 
   @Test
   public void testMapStringToURLorNullEmpty() {
-    assertNull("Empty is null", IBUtils.mapStringToURLOrNull(Optional.empty()));
+
+    assertNull(IBUtils.mapStringToURLOrNull(Optional.empty()));
   }
 
   @Test
   public void testMapStringToURLorNullGood() throws MalformedURLException {
     final String STRINGX = "http://www.google.com";
-    final URL u = new URL(STRINGX);
-    final URL u1 = IBUtils.mapStringToURLOrNull(Optional.of(STRINGX));
-    assertEquals("STrings match", u, u1);
+    final URL    u       = new URL(STRINGX);
+    final URL    u1      = IBUtils.mapStringToURLOrNull(Optional.of(STRINGX));
+    assertEquals(u, u1);
 
   }
 
-  @Test(expected = NullPointerException.class)
-  public void testMapStringToURLorNullNull() throws MalformedURLException {
+  @Test
+  public void testMapStringToURLorNullNull() throws NullPointerException {
     final String STRINGX = "http://www.google.com";
-    final URL u = new URL(STRINGX);
-    final URL u1 = IBUtils.mapStringToURLOrNull(null);
-    assertEquals("STrings match", u, u1);
+    URL          u;
+    try {
+      u = new URL(STRINGX);
+      final URL u1 = IBUtils.mapStringToURLOrNull(null);
+      assertEquals(u, u1);
+    } catch (MalformedURLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
 
   }
 
   @Test
   public void testMatchesJSON() {
     HashMap<Pattern, Pattern> matches;
-    final Pattern x = Pattern.compile("X");
-    final Pattern y = Pattern.compile("Y");
-    final Pattern a = Pattern.compile("A");
-    final Pattern b = Pattern.compile("B");
+    final Pattern             x = Pattern.compile("X");
+    final Pattern             y = Pattern.compile("Y");
+    final Pattern             a = Pattern.compile("A");
+    final Pattern             b = Pattern.compile("B");
     Pattern.compile("C");
-    final Pattern One = Pattern.compile("1");
+    final Pattern    One = Pattern.compile("1");
     final JSONObject obj = new JSONObject();
     obj.put("X", "Y").put("A", "B").put("C", 1);
     matches = new HashMap<>();
     matches.put(x, y);
-    assertTrue("First match", matches(obj, matches));
+    assertTrue(matches(obj, matches));
     matches = new HashMap<>();
     matches.put(x, null);
-    assertTrue("Second match", matches(obj, matches));
+    assertTrue(matches(obj, matches));
     matches = new HashMap<>();
     matches.put(null, y);
-    assertTrue("Third match", matches(obj, matches));
+    assertTrue(matches(obj, matches));
     matches = new HashMap<>();
     matches.put(a, b);
-    assertTrue("Fourth match", matches(obj, matches));
+    assertTrue(matches(obj, matches));
     matches = new HashMap<>();
     matches.put(a, One);
-    assertFalse("Fifth match", matches(obj, matches));
+    assertFalse(matches(obj, matches));
     matches = new HashMap<>();
     matches.put(b, a);
-    assertFalse("Sixth match", matches(obj, matches));
+    assertFalse(matches(obj, matches));
     matches = new HashMap<>();
-    assertTrue("Seventh match", matches(obj, matches));
+    assertTrue(matches(obj, matches));
   }
 
   @Test
   public void testMergeJSONArray() {
-    final JSONArray a = new JSONArray(asList("A", "B"));
-    final JSONArray c = new JSONArray(asList("C", "D"));
-    final JSONArray z = mergeJSONArray(a, c);
+    final JSONArray a      = new JSONArray(asList("A", "B"));
+    final JSONArray c      = new JSONArray(asList("C", "D"));
+    final JSONArray z      = mergeJSONArray(a, c);
     final JSONArray actual = new JSONArray(asList("D", "C", "B", "A"));
     JSONAssert.assertEquals(z, actual, false);
   }
 
   @Test
   public void testMergeJSONArray2() {
-    final JSONArray a = new JSONArray(asList("A", "B"));
-    final JSONArray z = mergeJSONArray(a, "C");
+    final JSONArray a      = new JSONArray(asList("A", "B"));
+    final JSONArray z      = mergeJSONArray(a, "C");
     final JSONArray actual = new JSONArray(asList("C", "B", "A"));
     JSONAssert.assertEquals(z, actual, false);
   }
 
   @Test
   public void testMergeJSONArray3() {
-    final String a = "A";
-    final JSONArray c = new JSONArray(asList("C", "D"));
-    final JSONArray z = mergeJSONArray(c, a);
+    final String    a      = "A";
+    final JSONArray c      = new JSONArray(asList("C", "D"));
+    final JSONArray z      = mergeJSONArray(c, a);
     final JSONArray actual = new JSONArray(asList("D", "C", "A"));
     JSONAssert.assertEquals(z, actual, false);
   }
 
   @Test
   public void testMergeJSONArrayAlreadyPresent() {
-    final JSONArray a = new JSONArray(asList("A", "B"));
-    final JSONArray z = mergeJSONArray(a, "B");
+    final JSONArray a      = new JSONArray(asList("A", "B"));
+    final JSONArray z      = mergeJSONArray(a, "B");
     final JSONArray actual = new JSONArray(asList("B", "A"));
     JSONAssert.assertEquals(z, actual, false);
   }
 
   @Test
   public void testMergeJSONObject() {
-    final String j = jj.toString();
-    final String k2 = jjNull3.toString();
+    final String     j  = jj.toString();
+    final String     k2 = jjNull3.toString();
 
-    final JSONObject x = mergeJsonObjects(new JSONObject(j), new JSONObject(k2));
+    final JSONObject x  = mergeJsonObjects(new JSONObject(j), new JSONObject(k2));
 
-    assertNotNull("X is not null", x);
+    assertNotNull(x);
 
-    assertEquals("X has 6 keys", 6, x.keySet().size());
+    assertEquals(6, x.keySet().size());
 
     final JSONObject j1 = new JSONObject().put("X", new JSONArray("[1]"));
     final JSONObject j2 = new JSONObject().put("X", new JSONArray("[2]"));
 
     final JSONObject j3 = mergeJsonObjects(j1, j2);
 
-    JSONArray j4 = j3.getJSONArray("X");
-    assertTrue("Size 2", j4.length() == 2);
+    JSONArray        j4 = j3.getJSONArray("X");
+    assertTrue(j4.length() == 2);
 
     final JSONObject j5 = new JSONObject().put("Y", j1);
     final JSONObject j6 = new JSONObject().put("Y", j2).put("Z", "z");
     final JSONObject j7 = mergeJsonObjects(j5, j6);
     final JSONObject j8 = j7.getJSONObject("Y");
     j4 = j8.getJSONArray("X");
-    assertTrue("Size 2", j4.length() == 2);
+    assertTrue(j4.length() == 2);
     assertEquals("z", "z", j7.getString("Z"));
     assertTrue(j7.has("Y"));
 
-    final JSONObject j9 = new JSONObject().put("X", "3");
+    final JSONObject j9  = new JSONObject().put("X", "3");
 
-    JSONObject j10 = mergeJsonObjects(j3, j9);
-    assertEquals("X has 3", 3, j10.getJSONArray("X").length());
+    JSONObject       j10 = mergeJsonObjects(j3, j9);
+    assertEquals(3, j10.getJSONArray("X").length());
 
     j10 = mergeJsonObjects(j9, j3);
-    assertEquals("X has 3", 3, j10.getJSONArray("X").length());
+    assertEquals(3, j10.getJSONArray("X").length());
   }
 
   @Test
@@ -896,12 +918,12 @@ public class IBUtilsTest {
   public void testMoveFileToNewIdPath() throws IOException {
     final Path p = Paths.get(".", "target");
     final Path f = Files.createTempFile(p, ABC, "DEF");
-    assertTrue("Temp File exists", Files.exists(f, LinkOption.NOFOLLOW_LINKS));
+    assertTrue(Files.exists(f, LinkOption.NOFOLLOW_LINKS), "Temp File exists");
     final UUID u = randomUUID();
     final Path q = p.resolve(u.toString());
     IBUtils.moveFileToNewIdPath(f, u);
-    assertTrue("Old file does not exist", !Files.exists(f, LinkOption.NOFOLLOW_LINKS));
-    assertTrue("Moved file does exist", Files.exists(q, LinkOption.NOFOLLOW_LINKS));
+    assertTrue(!Files.exists(f, LinkOption.NOFOLLOW_LINKS), "Old file does not exist");
+    assertTrue(Files.exists(q, LinkOption.NOFOLLOW_LINKS), "Moved file does exist");
   }
 
   @Test
@@ -915,9 +937,15 @@ public class IBUtilsTest {
     assertEquals("false", h.get("Z"));
   }
 
-  @Test(expected = NoSuchFileException.class)
-  public void testNonExistentReadJsonObjectFromPath() throws IOException {
-    final JSONObject j = readJsonObject(testClasses.resolve("doesnotexist.json"));
+  @Test
+  public void testNonExistentReadJsonObjectFromPath() throws NoSuchFileException {
+    JSONObject j = null;
+    try {
+      j = readJsonObject(testClasses.resolve("doesnotexist.json"));
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     assertEquals("Got E", "E", j.getJSONObject("C").getString("D"));
   }
 
@@ -960,7 +988,7 @@ public class IBUtilsTest {
 
   @Test
   public void testReadFile() throws IOException {
-    final Path p = testClasses.resolve(X_TXT);
+    final Path   p = testClasses.resolve(X_TXT);
 
     final String v = readFile(p, Charset.defaultCharset());
 
@@ -973,16 +1001,16 @@ public class IBUtilsTest {
 
   @Test
   public void testReadFilePath() throws IOException {
-    final Path p = testClasses.resolve(X_TXT);
+    final Path   p = testClasses.resolve(X_TXT);
     final String v = readFile(p);
     assertEquals("ABC_123", "ABC_123", v);
   }
 
   @Test
   public void testReadJsonObjectFromPath() throws IOException {
-    final Path p = testClasses.resolve("somefile.json");
+    final Path       p = testClasses.resolve("somefile.json");
     final JSONObject j = readJsonObject(p);
-    JSONObject k;
+    JSONObject       k;
     try (InputStream ins = Files.newInputStream(p)) {
       k = readToJSONObject(ins);
     }
@@ -999,9 +1027,9 @@ public class IBUtilsTest {
 
   @Test
   public void testSplitToMapAndJoinFromMap() {
-    final JSONObject a = new JSONObject().put("X", "Y").put("Z", "false");
+    final JSONObject          a = new JSONObject().put("X", "Y").put("Z", "false");
     final Map<String, String> m = splitToMap(a);
-    assertEquals("Size is 2", 2, m.size());
+    assertEquals(2, m.size());
     assertEquals("X = Y", "Y", m.get("X"));
     assertEquals("Z is false", "false", m.get("Z"));
 
@@ -1017,95 +1045,124 @@ public class IBUtilsTest {
     Files.createDirectories(t);
     final Path f = t.resolve("X").resolve("Y");
 
-    assertFalse(CANNOT_READ_TARGET_DIR, Files.isDirectory(f));
-    assertFalse(TESTFILE + " is not a file", Files.isRegularFile(f.resolve(TESTFILE)));
+    assertFalse(Files.isDirectory(f));
+    assertFalse(Files.isRegularFile(f.resolve(TESTFILE)));
 
     unzip(p, t);
-    assertTrue("I can read the target dir", Files.isDirectory(f));
-    assertTrue(TESTFILE + " is a file", Files.isRegularFile(f.resolve(TESTFILE)));
+    assertTrue(Files.isDirectory(f));
+    assertTrue(Files.isRegularFile(f.resolve(TESTFILE)));
 
-    assertTrue("t is a dir", Files.isDirectory(t));
+    assertTrue(Files.isDirectory(t));
     deletePath(t);
-    assertFalse("t is no longer a dir", Files.isDirectory(t));
-    assertFalse(TESTFILE + " is not a file", Files.isRegularFile(f.resolve(TESTFILE)));
+    assertFalse(Files.isDirectory(t));
+    assertFalse(Files.isRegularFile(f.resolve(TESTFILE)));
   }
 
-  @Test(expected = NoSuchFileException.class)
-  public void testUnzipAndDeleteFAKEPATH() throws IOException {
+  @Test
+  public void testUnzipAndDeleteFAKEPATH() throws NoSuchFileException {
     final Path p = testClasses.resolve("SOMEFAKE.zip");
 
     final Path t = testDir.resolve(randomUUID().toString());
-    Files.createDirectories(t);
+    try {
+      Files.createDirectories(t);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     final Path f = t.resolve("X").resolve("Y");
 
-    assertFalse(CANNOT_READ_TARGET_DIR, Files.isDirectory(f));
-    assertFalse(TESTFILE + " is not a file", Files.isRegularFile(f.resolve(TESTFILE)));
+    assertFalse(Files.isDirectory(f));
+    assertFalse(Files.isRegularFile(f.resolve(TESTFILE)));
 
-    unzip(p, t);
-    assertTrue("I can read the target dir", Files.isDirectory(f));
-    assertTrue(TESTFILE + " is a file", Files.isRegularFile(f.resolve(TESTFILE)));
+    try {
+      unzip(p, t);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    assertTrue(Files.isDirectory(f));
+    assertTrue(Files.isRegularFile(f.resolve(TESTFILE)));
 
-    assertTrue("t is a dir", Files.isDirectory(t));
+    assertTrue(Files.isDirectory(t));
     deletePath(t);
-    assertFalse("t is no longer a dir", Files.isDirectory(t));
-    assertFalse(TESTFILE + " is not a file", Files.isRegularFile(f.resolve(TESTFILE)));
+    assertFalse(Files.isDirectory(t));
+    assertFalse(Files.isRegularFile(f.resolve(TESTFILE)));
   }
 
-  @Ignore
+  @Disabled
 
-  @Test(expected = AccessDeniedException.class)
-  public void testUnzipFailUnreadable() throws IOException {
-    final Path p = copy(testClasses.resolve("X.zip"), testDir.resolve("Y.zip"));
-    p.toFile().setReadable(false);
-    final Path t = testDir.resolve(randomUUID().toString());
-    Files.createDirectories(t);
-    final Path f = t.resolve("X").resolve("Y");
+  @Test
+  public void testUnzipFailUnreadable() throws AccessDeniedException {
+    try {
+      final Path p = copy(testClasses.resolve("X.zip"), testDir.resolve("Y.zip"));
+      p.toFile().setReadable(false);
+      final Path t = testDir.resolve(randomUUID().toString());
+      Files.createDirectories(t);
+      final Path f = t.resolve("X").resolve("Y");
 
-    assertFalse(CANNOT_READ_TARGET_DIR, Files.isDirectory(f));
-    assertFalse(TESTFILE + " is not a file", Files.isRegularFile(f.resolve(TESTFILE)));
+      assertFalse(Files.isDirectory(f));
+      assertFalse(Files.isRegularFile(f.resolve(TESTFILE)));
 
-    unzip(p, t);
-    assertTrue("I can read the target dir", Files.isDirectory(f));
-    assertTrue(TESTFILE + " is a file", Files.isRegularFile(f.resolve(TESTFILE)));
+      unzip(p, t);
+      assertTrue(Files.isDirectory(f));
+      assertTrue(Files.isRegularFile(f.resolve(TESTFILE)));
 
-    assertTrue("t is a dir", Files.isDirectory(t));
-    deletePath(t);
-    assertFalse("t is no longer a dir", Files.isDirectory(t));
-    assertFalse(TESTFILE + " is not a file", Files.isRegularFile(f.resolve(TESTFILE)));
+      assertTrue(Files.isDirectory(t));
+      deletePath(t);
+      assertFalse(Files.isDirectory(t));
+      assertFalse(Files.isRegularFile(f.resolve(TESTFILE)));
+    } catch (IOException e) {
+
+    }
   }
 
-  @Test(expected = NoSuchFileException.class)
-  public void testUnzipFailUnreadable2() throws IOException {
+  @Test
+  public void testUnzipFailUnreadable2() throws NoSuchFileException {
     final Path p = Paths.get("does", "not", "exist.zip");
-    unzip(p, testDir);
+    try {
+      unzip(p, testDir);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
 
   }
 
-  @Test(expected = IOException.class)
+  @Test
   public void testUnzipNotAZipFile() throws IOException {
     unzip(testDir, testDir);
   }
 
-  @Test(expected = NullPointerException.class)
-  public void testUnzipNull() throws IOException {
-    unzip(null, null);
+  @Test
+  public void testUnzipNull() throws NullPointerException {
+    try {
+      unzip(null, null);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
-  @Test(expected = NoSuchFileException.class)
-  public void testUnzipUnavailablePath() throws IOException {
-    unzip(Paths.get("target", "DOES_NOT_EXIST"), Paths.get("target", "traget"));
+  @Test
+  public void testUnzipUnavailablePath() throws NoSuchFileException {
+    try {
+      unzip(Paths.get("target", "DOES_NOT_EXIST"), Paths.get("target", "traget"));
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
   @Test
   public void testVerifyJarfile() throws IOException {
-    final String name = testClasses.resolve(JUNIT_4_8_2_JAR).toAbsolutePath().toString();
-    final JarFile j = new JarFile(name);
+    final String  name = testClasses.resolve(JUNIT_4_8_2_JAR).toAbsolutePath().toString();
+    final JarFile j    = new JarFile(name);
     IBUtils.verify(j);
   }
 
   @Test
   public void testWriteString() throws IOException {
-    final Path p = Paths.get("target", "somefile");
+    final Path p  = Paths.get("target", "somefile");
     final Path v2 = writeString(p, "ABC_123");
     assertEquals(v2, p);
     final String v = readFile(p);
@@ -1115,23 +1172,23 @@ public class IBUtilsTest {
   @Test
   public void testZipCreateMap() {
     Map<String, String> m = getZipFileCreateMap(true);
-    assertEquals("1 entry", 1, m.size());
+    assertEquals(1, m.size());
     assertEquals("Equals true", m.get("create"), "true");
 
     m = getZipFileCreateMap(false);
-    assertEquals("1 entry", 1, m.size());
+    assertEquals(1, m.size());
     assertEquals("Equals true", m.get("create"), "false");
 
     m = getZipFileCreateMap(null);
-    assertEquals("1 entry", 1, m.size());
+    assertEquals(1, m.size());
     assertEquals("Equals true", m.get("create"), "false");
   }
 
   @Test
   public void testZipEntryToURL() throws MalformedURLException {
-    final ZipEntry e = new ZipEntry("a");
+    final ZipEntry      e = new ZipEntry("a");
     final Optional<URL> p = Optional.of(new URL("file://x.zip"));
-    final URL r = zipEntryToUrl(p, e).get();
+    final URL           r = zipEntryToUrl(p, e).get();
     assertEquals("jar:file://x.zip!/a", r.toExternalForm());
     assertFalse(zipEntryToUrl(Optional.empty(), e).isPresent());
 
@@ -1141,10 +1198,10 @@ public class IBUtilsTest {
   public void testZipFilesystem() throws IOException {
     final Path p = testClasses.resolve("X.zip");
     try (FileSystem zipFs = getZipFileSystem(p, false)) {
-      final Path src = zipFs.getPath("X/Y/rick.jpg");
+      final Path src        = zipFs.getPath("X/Y/rick.jpg");
       final Path targetFile = Paths.get(".", "target", "testfile.rick.jpg");
       Files.copy(src, targetFile, StandardCopyOption.REPLACE_EXISTING);
-      assertEquals("Size 22152", 22152, Files.size(targetFile));
+      assertEquals(22152, Files.size(targetFile));
     }
 
   }
@@ -1163,31 +1220,31 @@ public class IBUtilsTest {
 
   @Test
   public void testIntneralSgiPath() {
-    GAV g = new DefaultGAV("X:Y:1.0.0");
+    GAV    g = new DefaultGAV("X:Y:1.0.0");
     String s = IBUtils.toInternalSignaturePath(g);
     assertEquals("X:Y::1.0.0:jar", s);
   }
 
   @Test
   public void getVersion() {
-    GAV g = new DefaultGAV("X:Y:1.0.0");
+    GAV       g   = new DefaultGAV("X:Y:1.0.0");
     IBVersion ibv = IBUtils.getVersion(g).get();
     assertEquals("1.0.0", ibv.getValue());
   }
 
   @Test
   public void testGeAFlinemaePath() {
-    GAV g = new DefaultGAV("X:Y:1.0.0");
+    GAV    g = new DefaultGAV("X:Y:1.0.0");
     String s = IBUtils.getArtifactFilenamePath(g);
     assertEquals("Y-1.0.0.jar", s);
-    GAV g2 = new DefaultGAV("X:Y:1.0.0:abc:jeff");
+    GAV    g2 = new DefaultGAV("X:Y:1.0.0:abc:jeff");
     String s2 = IBUtils.getArtifactFilenamePath(g2);
     assertEquals("Y-1.0.0-jeff.abc", s2);
   }
 
   @Test
   public void testAPIVersion() {
-    GAV g = new DefaultGAV("X:Y:1.0.0");
+    GAV       g = new DefaultGAV("X:Y:1.0.0");
     IBVersion c = IBUtils.apiVersion(g).get();
     assertEquals("1.0", c.getValue());
   }
@@ -1200,20 +1257,20 @@ public class IBUtilsTest {
     assertTrue(IBUtils._matcher("abc.*", "abcdef"));
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void testTranslateToWorkableArchiveURL() throws IOException {
-    Path p = testClasses.resolve("X.zip");
-    URL k = p.toUri().toURL();
-    String e = k.toExternalForm() + "!/rick.jpg";
-    URL u = translateToWorkableArchiveURL("jar:" + e);
-    URL v = translateToWorkableArchiveURL("zip:" + e);
+    Path   p       = testClasses.resolve("X.zip");
+    URL    k       = p.toUri().toURL();
+    String e       = k.toExternalForm() + "!/rick.jpg";
+    URL    u       = translateToWorkableArchiveURL("jar:" + e);
+    URL    v       = translateToWorkableArchiveURL("zip:" + e);
 
-    URL first = new URL("https://file-examples.com/wp-content/uploads/2017/02/zip_2MB.zip");
+    URL    first   = new URL("https://file-examples.com/wp-content/uploads/2017/02/zip_2MB.zip");
     String secondA = "zip:" + first.toExternalForm() + "!/zip_10MB/" + "file-sample_1MB.doc";
-    URL second = translateToWorkableArchiveURL(secondA);
+    URL    second  = translateToWorkableArchiveURL(secondA);
 
-    Path cc = wps.get().resolve("file-sample_1MB.doc");
+    Path   cc      = wps.get().resolve("file-sample_1MB.doc");
     try (OutputStream outs = newOutputStream(cc); InputStream ins = second.openStream()) {
       IBUtils.copy(ins, outs);
     }
@@ -1231,7 +1288,7 @@ public class IBUtilsTest {
   @Test
   public void testReadInputStreamAsStringStream() throws IOException {
     try (InputStream ins = Files.newInputStream(testClasses.resolve("somefile.json"))) {
-      JSONObject j = new JSONObject(readInputStreamAsStringStream(ins).collect(Collectors.joining("\n")));
+      JSONObject j  = new JSONObject(readInputStreamAsStringStream(ins).collect(Collectors.joining("\n")));
       JSONObject t2 = readJsonObject(testClasses.resolve("somefile.json"));
       JSONAssert.assertEquals(t2, j, true);
     }
@@ -1239,19 +1296,19 @@ public class IBUtilsTest {
 
   @Test
   public void testPathOfZip() throws IOException {
-    String[] p = ("jar:" + wps.getTestClasses().resolve(JUNIT_4_8_2_JAR).toUri().toURL().toExternalForm() + "!/")
+    String[] p   = ("jar:" + wps.getTestClasses().resolve(JUNIT_4_8_2_JAR).toUri().toURL().toExternalForm() + "!/")
         .split("!");
-    Path zip = getRootFromURL(p);
+    Path     zip = getRootFromURL(p);
     assertNotNull(zip);
-    Path file = zip.resolve("LICENSE.txt");
-    String s = readFile(file);
+    Path   file = zip.resolve("LICENSE.txt");
+    String s    = readFile(file);
     assertTrue(s.startsWith("BSD"));
   }
 
   @Test
   public void testStringFromDom() {
-    String x = XML_PREFIX + "\n" + "<tag/>";
-    String y = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><tag/>";
+    String   x        = XML_PREFIX + "\n" + "<tag/>";
+    String   y        = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><tag/>";
     Document document = strToDoc.apply(x).get();
     assertEquals(y, stringFromDocument(document));
   }
@@ -1266,8 +1323,8 @@ public class IBUtilsTest {
 
   }
 
-  @Test(expected = IBException.class)
-  public void testTouchDir() {
+  @Test
+  public void testTouchDir() throws IBException {
     touchFile(target);
   }
 

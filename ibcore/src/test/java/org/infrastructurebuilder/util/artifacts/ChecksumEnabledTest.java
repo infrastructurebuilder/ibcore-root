@@ -16,36 +16,36 @@
 package org.infrastructurebuilder.util.artifacts;
 
 import static org.infrastructurebuilder.util.artifacts.ChecksumEnabled.safeMapUUID;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.UUID;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ChecksumEnabledTest {
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception {
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownAfterClass() throws Exception {
   }
 
   private UUID t;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     t= UUID.randomUUID();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
   }
 

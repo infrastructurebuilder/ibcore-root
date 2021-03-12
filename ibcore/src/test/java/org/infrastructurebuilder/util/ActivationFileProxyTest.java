@@ -17,18 +17,18 @@ package org.infrastructurebuilder.util;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ActivationFileProxyTest {
 
@@ -39,7 +39,7 @@ public class ActivationFileProxyTest {
   private Optional<Path> exists, missing;
 
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     fp = new ActivationFileProxy(empty(), empty());
     exists = of(wps.get());
@@ -48,7 +48,7 @@ public class ActivationFileProxyTest {
     f3 = new ActivationFileProxy(exists, empty());
   }
 
-  @After
+  @AfterEach
   public void teardown() {
     wps.finalize();
   }

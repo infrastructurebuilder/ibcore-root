@@ -15,10 +15,10 @@
  */
 package org.infrastructurebuilder.util.dag;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Set;
@@ -26,17 +26,17 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.util.dag.DAGBuilder.MutableDAGImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DAG2UUIDTest {
 
-  private UUID a, b, c, d, e;
-  private MutableDAG<UUID> dag, dag1, dag2;
+  private UUID                a, b, c, d, e;
+  private MutableDAG<UUID>    dag, dag1, dag2;
   private MutableVertex<UUID> dV;
-  MutableVertex<UUID> cV;
+  MutableVertex<UUID>         cV;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     a = UUID.randomUUID();
     b = UUID.randomUUID();
@@ -60,7 +60,7 @@ public class DAG2UUIDTest {
     dag2.addEdge(b, d);
   }
 
-  @Test(expected = CycleDetectedException.class)
+  @Test
   public final void testAddEdgeVertexOfTVertexOfT() throws CycleDetectedException {
     cV = dag1.getVertex(c);
     dV = dag1.getVertex(d);
@@ -76,22 +76,22 @@ public class DAG2UUIDTest {
       dag1.addEdge(dV, cV);
     } catch (final CycleDetectedException e) {
       final String msg2 = e.getMessage();
-      assertTrue("Message has c id", msg2.contains(c.toString()));
-      assertTrue("Message has d id", msg2.contains(d.toString()));
+      assertTrue(msg2.contains(c.toString()), "Message has c id");
+      assertTrue(msg2.contains(d.toString()), "Message has d id");
       final String message = e.cycleToString();
       c.toString();
       d.toString();
-      assertTrue("Message has c id", message.contains(c.toString()));
-      assertTrue("Message has d id", message.contains(d.toString()));
+      assertTrue(message.contains(c.toString()), "Message has c id");
+      assertTrue(message.contains(d.toString()), "Message has d id");
     }
   }
 
   @Test
   public final void testEquals() throws CycleDetectedException {
-    assertEquals("Self", dag1, dag1);
-    assertNotEquals("Not null", dag1, null);
-    assertNotEquals("Not String", dag1, "A");
-    assertEquals("dag1 and dag2 are basically the same", dag1, dag2);
+    assertEquals(dag1, dag1);
+    assertNotEquals(dag1, null);
+    assertNotEquals(dag1, "A");
+    assertEquals(dag1, dag2);
     final MutableDAG<UUID> dag3 = new DAGBuilder.MutableDAGImpl<>();
     dag3.addVertex(a);
     dag3.addVertex(b);
@@ -102,98 +102,97 @@ public class DAG2UUIDTest {
   @Test
   public final void testGetChildLabels() {
     final List<UUID> l = dag1.getChildLabels(a);
-    assertEquals("There 2 childred of a", 2, l.size());
-    assertTrue("b and d are those children", l.contains(b) && l.contains(d));
+    assertEquals(2, l.size());
+    assertTrue(l.contains(b) && l.contains(d));
   }
 
   @Test
   public final void testGetLabels() {
-    final Set<UUID> l = dag.getLabels();
+    final Set<UUID> l  = dag.getLabels();
     final Set<UUID> l1 = dag1.getLabels();
-    assertEquals("No labels in dag", 0, l.size());
-    assertEquals("4 labels in dag", 4, l1.size());
-    assertTrue("dag1 labels contains d", l1.contains(d));
+    assertEquals(0, l.size());
+    assertEquals(4, l1.size());
+    assertTrue(l1.contains(d));
   }
 
   @Test
   public final void testGetParentLabels() {
     final List<UUID> l = dag1.getParentLabels(d);
-    assertTrue("Parent labels contains a", l.contains(a));
-    assertEquals("Has 2 elements", 2, l.size());
+    assertTrue(l.contains(a));
+    assertEquals(2, l.size());
     dag1.addVertex(e);
-    assertEquals("e has no parents", 0, dag1.getParentLabels(e).size());
+    assertEquals(0, dag1.getParentLabels(e).size());
   }
 
   @Test
   public final void testGetSuccessorLabels() {
     List<UUID> z = dag1.getSuccessorLabels(a);
-    assertEquals("Successors is 3", 3, z.size());
+    assertEquals(3, z.size());
     z = dag1.getSuccessorLabels(d);
-    assertTrue("has self", z.contains(d));
-    assertEquals("Successors is 1", 1, z.size());
+    assertTrue(z.contains(d));
+    assertEquals(1, z.size());
   }
 
   @Test
   public final void testGetVerticies() {
-    assertEquals("dag vertices = 0", 0, dag.getVerticies().size());
-    assertEquals("dag1 vertices = 4", 4, dag1.getVerticies().size());
-    assertFalse("dag1 does not contain e",
-        dag1.getVerticies().stream().map(v -> v.getLabel()).collect(Collectors.toSet()).contains(e));
+    assertEquals(0, dag.getVerticies().size());
+    assertEquals(4, dag1.getVerticies().size());
+    assertFalse(dag1.getVerticies().stream().map(v -> v.getLabel()).collect(Collectors.toSet()).contains(e));
   }
 
   @Test
   public final void testHasEdge() {
-    assertFalse("dag has no edge for b to d", dag.hasEdge(b, d));
-    assertTrue("dag1 has b -> d", dag1.hasEdge(b, d));
+    assertFalse(dag.hasEdge(b, d));
+    assertTrue(dag1.hasEdge(b, d));
   }
 
   @Test
   public final void testHash() {
-    assertEquals("Empty dag hash is 961", 961, dag.hashCode());
+    assertEquals(961, dag.hashCode());
   }
 
   @Test
   public final void testIsConnected() throws CloneNotSupportedException {
     dag2.addVertex(e);
 
-    assertTrue("a is connected", dag2.isConnected(c));
-    assertTrue("a is connected", dag2.isConnected(a));
-    assertFalse("e is not connected", dag2.isConnected(e));
+    assertTrue(dag2.isConnected(c));
+    assertTrue(dag2.isConnected(a));
+    assertFalse(dag2.isConnected(e));
   }
 
   @Test
   public final void testIsRoot() {
     dag1.addVertex(e);
-    assertTrue("C is a root", dag1.getVertex(c).isRoot());
-    assertTrue("E is a root", dag1.getVertex(e).isRoot());
-    assertFalse("A is not a root", dag1.getVertex(a).isRoot());
+    assertTrue(dag1.getVertex(c).isRoot());
+    assertTrue(dag1.getVertex(e).isRoot());
+    assertFalse(dag1.getVertex(a).isRoot());
   }
 
   @Test
   public final void testRemoveEdgeTT() {
-    assertTrue("dag1 has a->b", dag1.hasEdge(a, b));
+    assertTrue(dag1.hasEdge(a, b));
     dag1.removeEdge(a, b);
-    assertFalse("No longer an a->b edge", dag1.hasEdge(a, b));
+    assertFalse(dag1.hasEdge(a, b));
   }
 
   @Test
   public final void testSortEntireGraph() throws CloneNotSupportedException {
     dag2.addVertex(e);
     final List<UUID> z = new DAGBuilder.MutableDAGImpl.MutableTopologicalSorterImpl<UUID>().sort(dag2);
-    assertEquals("sorted output is size 5", 5, z.size());
+    assertEquals(5, z.size());
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   @Test
   public final void testVertexEquals() throws CycleDetectedException {
     cV = dag1.getVertex(c);
-    assertEquals("c is c", cV, cV);
-    assertNotEquals("c is not null", cV, null);
-    assertNotEquals("c is not a String", cV, "abc");
+    assertEquals(cV, cV);
+    assertNotEquals(cV, null);
+    assertNotEquals(cV, "abc");
     final MutableVertex c1V = new DAGBuilder.MutableDAGImpl.MutableVertexImpl(cV.getLabel(),
         new DAGBuilder.MutableDAGImpl.MutableTopologicalSorterImpl());
-    assertNotEquals("Children aren't equal", c1V, cV);
-    assertEquals("Equal dags have equal vertex", dag1.getVertex(c), dag2.getVertex(c));
+    assertNotEquals(c1V, cV);
+    assertEquals(dag1.getVertex(c), dag2.getVertex(c));
     final MutableDAG<UUID> dag4 = new MutableDAGImpl<>();
     dag4.addEdge(a, b);
     dag4.addVertex(c);
@@ -202,7 +201,7 @@ public class DAG2UUIDTest {
     dag4.addEdge(a, d);
     dag4.addEdge(b, d);
     dag4.addEdge(e, c);
-    assertNotEquals("Same children different parents is different", dag1.getVertex(c), dag4.getVertex(c));
+    assertNotEquals(dag1.getVertex(c), dag4.getVertex(c));
   }
 
 }

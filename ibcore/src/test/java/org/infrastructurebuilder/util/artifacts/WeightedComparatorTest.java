@@ -15,17 +15,17 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class WeightedComparatorTest {
 
   private Weighted w1, w2;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     w1 = new Weighted() {
     };

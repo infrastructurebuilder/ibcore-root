@@ -15,11 +15,11 @@
  */
 package org.infrastructurebuilder.util.dag;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,11 +32,11 @@ import org.infrastructurebuilder.util.dag.DAGBuilder.MutableDAGImpl;
 import org.infrastructurebuilder.util.dag.DAGBuilder.MutableDAGImpl.DAGImpl.DepthFirstTopologicalSorterImpl;
 import org.infrastructurebuilder.util.dag.impl.DAGWalkerPreTraversalDepthFirstImpl;
 import org.joor.Reflect;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DAGBuilderTest {
 
@@ -46,11 +46,11 @@ public class DAGBuilderTest {
   private static final String THREE = "3";
   private static final String TWO = "2";
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception {
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownAfterClass() throws Exception {
   }
 
@@ -60,7 +60,7 @@ public class DAGBuilderTest {
   private MutableDAGImpl<String> dag;
   private DAGBuilder<String> md;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     b = new DAGBuilder<String>().addEdge(ONE, TWO).addEdge(TWO, THREE).addEdge(ONE, FOUR).build();
     c = new DAGBuilder<>(b).build();
@@ -73,7 +73,7 @@ public class DAGBuilderTest {
     assertNotNull(dag);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
   }
 
@@ -86,7 +86,7 @@ public class DAGBuilderTest {
     final MutableVertex<String> four = d1.addVertex(FOUR);
     d1.addEdge(one, two).addEdge(two, three).addEdge(one, four);
     final DAG<String> g = d1.build();
-    assertEquals("d1 == b", b, g);
+    assertEquals(b, g);
     final List<String> l = Arrays.asList(TWO, FOUR, TWO, FOUR);
     final List<String> k = g.getChildLabels(ONE);
     final Set<String> m = g.getLabels();
@@ -100,9 +100,9 @@ public class DAGBuilderTest {
 
   @Test
   public void testDAGBuilderDAGOfT() throws CycleDetectedException {
-    assertEquals("Really same", b, c);
-    assertNotEquals("Not same ", b, d);
-    assertNotEquals("Not same old same old", b, new DAGBuilder<>(b).addEdge(ONE, THREE).build());
+    assertEquals(b, c);
+    assertNotEquals(b, d);
+    assertNotEquals(b, new DAGBuilder<>(b).addEdge(ONE, THREE).build());
 
   }
 
@@ -184,7 +184,7 @@ public class DAGBuilderTest {
 
     d1.removeEdge(two, four);
 
-    assertEquals("d1 == b", b, d1.build());
+    assertEquals(b, d1.build());
   }
 
   @Test
@@ -201,7 +201,7 @@ public class DAGBuilderTest {
 
     d1.removeEdge(TWO, FOUR);
 
-    assertEquals("d1 == b", b, d1.build());
+    assertEquals(b, d1.build());
   }
 
   @Test
@@ -215,7 +215,7 @@ public class DAGBuilderTest {
 
     final DepthFirstTopologicalSorterImpl<String> s = new DepthFirstTopologicalSorterImpl<>();
     final List<String> a = s.sort(d1.build());
-    assertEquals("Aray is 3 4 2 1 ", Arrays.asList(THREE, FOUR, TWO, ONE), a);
+    assertEquals(Arrays.asList(THREE, FOUR, TWO, ONE), a);
   }
 
   @Test

@@ -16,26 +16,26 @@
 package org.infrastructurebuilder.util;
 
 import static java.util.Optional.of;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DefaultCredentialsFactoryTest {
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception {
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownAfterClass() throws Exception {
   }
 
@@ -45,7 +45,7 @@ public class DefaultCredentialsFactoryTest {
   private String                           url;
   private Optional<String>                 creds;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     url = "someurl";
     creds = of("Y");
@@ -53,7 +53,7 @@ public class DefaultCredentialsFactoryTest {
     uc = new DefaultURLAndCreds(url, creds);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
   }
 

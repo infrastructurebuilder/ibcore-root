@@ -15,17 +15,17 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TSupplierTest {
 
   private TSupplier<String> t;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     t = new TSupplier<>();
   }

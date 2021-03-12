@@ -85,7 +85,7 @@ public class ProcessExecutionResultTest {
 
   private Path stdErrPth;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     merb = new MutableProcessExecutionResultBag();
     future = new Future<ProcessResult>() {

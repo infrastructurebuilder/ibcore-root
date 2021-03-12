@@ -15,19 +15,19 @@
  */
 package org.infrastructurebuilder.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ActivationPropertyProxyTest {
 
   private ActivationPropertyProxy app, app2;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     app = new ActivationPropertyProxy("ABC", Optional.empty());
     app2 = new ActivationPropertyProxy("ABC", Optional.of("def"));

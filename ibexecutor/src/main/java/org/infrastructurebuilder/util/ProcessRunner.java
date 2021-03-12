@@ -16,15 +16,12 @@
 package org.infrastructurebuilder.util;
 
 import java.io.PrintStream;
-import java.nio.file.Path;
 import java.time.Duration;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
-import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.slf4j.Logger;
 
 public interface ProcessRunner extends Supplier<Optional<ProcessExecutionResultBag>>, AutoCloseable {

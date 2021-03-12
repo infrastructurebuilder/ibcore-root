@@ -16,12 +16,12 @@
 package org.infrastructurebuilder.util.artifacts;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,10 +31,10 @@ import java.util.Map;
 
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class ChecksumTest {
 
@@ -44,12 +44,12 @@ public class ChecksumTest {
   private Checksum                   cString;
   private final String               theString = "NEVER_GONNA_GIVE_YOU_UP";
 
-  @BeforeClass
+  @BeforeAll
   public static void setupB4Class() {
     wps = new TestingPathSupplier();
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     cnull = new Checksum();
     cRick = new Checksum(wps.getTestClasses().resolve("rick.jpg"));
@@ -62,8 +62,8 @@ public class ChecksumTest {
     assertEquals("UUID of cString is " + uuid, uuid, cString.get().get().toString());
   }
 
-  @Test(expected = IBException.class)
-  public void testBadInputStreamSupplier() {
+  @Test
+  public void testBadInputStreamSupplier() throws IBException {
     new Checksum(() -> new InputStream() {
       @Override
       public int read() throws IOException {
@@ -74,17 +74,17 @@ public class ChecksumTest {
 
   @Test
   public void testChecksum() {
-    assertNotNull("Default checksum is still a checksum", cnull);
+    assertNotNull(cnull);
   }
 
   @Test
   public void testChecksumByteArray() {
     final byte[] x = { 78, 69, 86, 69, 82, 95, 71, 79, 78, 78, 65, 95, 71, 73, 86, 69, 95, 89, 79, 85, 95, 85, 80 };
     final Checksum c = new Checksum(x);
-    assertEquals("Same as cString", cString, c);
+    assertEquals(cString, c);
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void testChecksumInputStream() {
     fail("Not yet implemented");
@@ -96,7 +96,7 @@ public class ChecksumTest {
     assertEquals("checksum of test string is " + testChecksum, testChecksum, cString.toString());
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void testChecksumSupplierOfInputStream() {
     fail("Not yet implemented");
@@ -104,35 +104,35 @@ public class ChecksumTest {
 
   @Test
   public void testCompareTo() {
-    assertTrue("rick == rick", cRick.compareTo(cRick) == 0);
-    assertTrue("rick < cString", cRick.compareTo(cString) < 0);
-    assertTrue("null <  rick", cnull.compareTo(cRick) < 0);
-    assertTrue("rick >  null", cRick.compareTo(new Checksum((byte[]) null)) > 0);
+    assertTrue(cRick.compareTo(cRick) == 0);
+    assertTrue( cRick.compareTo(cString) < 0);
+    assertTrue(cnull.compareTo(cRick) < 0);
+    assertTrue( cRick.compareTo(new Checksum((byte[]) null)) > 0);
   }
 
   @Test
   public void testEqualsObject() {
-    assertEquals("Same", cString, cString);
-    assertNotEquals("Nulls", cString, null);
-    assertNotEquals("Class wrong", cString, "ABC");
-    assertEquals("Chekcsum of string", cString, new Checksum(theString.getBytes(UTF_8)));
-    assertNotEquals("Not same as rick", cString, cRick);
+    assertEquals(cString, cString);
+    assertNotEquals(cString, null);
+    assertNotEquals(cString, "ABC");
+    assertEquals(cString, new Checksum(theString.getBytes(UTF_8)));
+    assertNotEquals( cString, cRick);
   }
 
   @Test
   public void testGetDigest() {
     final byte[] x = { 78, 69, 86, 69, 82, 95, 71, 79, 78, 78, 65, 95, 71, 73, 86, 69, 95, 89, 79, 85, 95, 85, 80 };
 
-    assertTrue("Digest is same", Arrays.equals(x, cString.getDigest()));
+    assertTrue(Arrays.equals(x, cString.getDigest()));
   }
 
   @Test
   public void testHashCode() {
     final int rickHash = cRick.hashCode();
-    assertFalse("Hashcode for rick is not 0", rickHash == 0);
-    assertEquals("Hashcode didn't change", rickHash, cRick.hashCode());
+    assertFalse( rickHash == 0);
+    assertEquals(rickHash, cRick.hashCode());
 
-    assertEquals("Null hash is 31", 31, cnull.hashCode());
+    assertEquals(31, cnull.hashCode());
   }
 
   @Test
@@ -147,7 +147,7 @@ public class ChecksumTest {
   @Test
   public void testNullInputStreamSupplier() {
     final Checksum c = new Checksum(() -> null);
-    assertEquals("Null iSsupplier == null checksum", new Checksum((byte[]) null), c);
+    assertEquals(new Checksum((byte[]) null), c);
   }
 
 }

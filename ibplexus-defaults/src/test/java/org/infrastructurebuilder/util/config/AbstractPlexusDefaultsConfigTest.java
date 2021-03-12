@@ -64,7 +64,7 @@ abstract public class AbstractPlexusDefaultsConfigTest {
   @Rule
   public MockitoRule mockitoRule = MockitoJUnit.rule();
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception {
     target = wps.getRoot();
     testClasses = wps.getTestClasses();
@@ -113,7 +113,7 @@ abstract public class AbstractPlexusDefaultsConfigTest {
     return new MavenConfigMapSupplier(mp, ms, me);
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void testSetMavenProject() {
     final ConfigMap map = getCms().get();

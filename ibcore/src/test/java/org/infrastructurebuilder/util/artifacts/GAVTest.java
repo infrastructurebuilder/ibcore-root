@@ -17,19 +17,19 @@ package org.infrastructurebuilder.util.artifacts;
 
 import static org.infrastructurebuilder.util.artifacts.GAV.BASIC_PACKAGING;
 import static org.infrastructurebuilder.util.artifacts.GAV.SNAPSHOT_DESIGNATOR;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
 
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
 import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 public class GAVTest {
@@ -50,7 +50,7 @@ public class GAVTest {
   private GAV        gavs;
   private JSONObject j;
 
-  @Before
+  @BeforeEach
   public void before() {
     gav = new DefaultGAV(X, Y, ACLASSIFIER, V_1_0_0, BASIC_PACKAGING);
     gavs = new DefaultGAV(X, Y, ACLASSIFIER, V_1_0_0 + SNAPSHOT_DESIGNATOR, BASIC_PACKAGING);
@@ -71,8 +71,8 @@ public class GAVTest {
     assertEquals("1.0", gav.getAPIVersion().get());
   }
 
-  @Test(expected = NullPointerException.class)
-  public void compareToNull() {
+  @Test
+  public void compareToNull() throws NullPointerException{
     final DefaultGAV v = new DefaultGAV(X, Y, ACLASSIFIER, V_1_0_0, BASIC_PACKAGING);
     v.compareTo(null);
   }
@@ -99,10 +99,10 @@ public class GAVTest {
 
   @Test
   public void testAsMavenDependencyGet() {
-    assertEquals("as mvn dep get", "X:y:1.0.0:jar:a", gav.asMavenDependencyGet().get());
-    assertFalse("as mvn dep get2", gavNoV.asMavenDependencyGet().isPresent());
-    assertEquals("as mvn dep get", "X:y:1.0.0-SNAPSHOT:jar:a", gavs.asMavenDependencyGet().get());
-    assertEquals("as mvn dep get", "X:y:1.0.0:jar", gav2NoC.asMavenDependencyGet().get());
+    assertEquals("X:y:1.0.0:jar:a", gav.asMavenDependencyGet().get());
+    assertFalse(gavNoV.asMavenDependencyGet().isPresent());
+    assertEquals("X:y:1.0.0-SNAPSHOT:jar:a", gavs.asMavenDependencyGet().get());
+    assertEquals("X:y:1.0.0:jar", gav2NoC.asMavenDependencyGet().get());
 
   }
 
@@ -139,8 +139,8 @@ public class GAVTest {
 
   @Test
   public void testConstruction() {
-    assertNotNull("IBVersioned", new DefaultGAV("ACLASSIFIER", "B", "1.0"));
-    assertNotNull("StringVersioned", new DefaultGAV("ACLASSIFIER", "B", "1.0"));
+    assertNotNull(new DefaultGAV("ACLASSIFIER", "B", "1.0"));
+    assertNotNull(new DefaultGAV("ACLASSIFIER", "B", "1.0"));
 
   }
 
@@ -190,8 +190,8 @@ public class GAVTest {
 
   }
 
-  @Test(expected = IBException.class)
-  public void testGetDefaultSignaturePathFail() {
+  @Test
+  public void testGetDefaultSignaturePathFail() throws IBException {
     assertEquals("mvn:" + X + SLASH + Y + SLASH + V_1_0_0 + SLASH + BASIC_PACKAGING + SLASH + ACLASSIFIER,
         gavNoV.getDefaultSignaturePath());
   }
@@ -214,8 +214,8 @@ public class GAVTest {
 
   @Test
   public void testIsSnapshot() {
-    assertFalse("as mvn dep get", gav.isSnapshot());
-    assertFalse("as mvn dep get2", gavNoV.isSnapshot());
-    assertTrue("as mvn dep get", gavs.isSnapshot());
+    assertFalse(gav.isSnapshot());
+    assertFalse(gavNoV.isSnapshot());
+    assertTrue( gavs.isSnapshot());
   }
 }

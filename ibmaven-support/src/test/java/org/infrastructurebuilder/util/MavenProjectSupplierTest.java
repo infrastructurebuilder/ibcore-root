@@ -27,7 +27,7 @@ public class MavenProjectSupplierTest {
   private MavenProjectSupplier mps;
   private MavenProject p;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     p = new MavenProjectStub();
     mps = new MavenProjectSupplier();

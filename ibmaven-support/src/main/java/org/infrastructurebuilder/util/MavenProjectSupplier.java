@@ -19,7 +19,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.apache.maven.project.MavenProject;
-import org.infrastructurebuilder.IBConstants;
+import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.config.TSupplier;
 
 @Named(IBConstants.MAVEN)

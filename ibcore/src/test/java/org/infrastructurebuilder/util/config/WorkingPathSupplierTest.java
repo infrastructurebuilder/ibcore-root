@@ -15,8 +15,8 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,9 +24,9 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class WorkingPathSupplierTest {
 
@@ -35,13 +35,13 @@ public class WorkingPathSupplierTest {
 
   private ConsecutiveIDSupplier cid;
 
-  @After
+  @AfterEach
   public void after() throws Exception {
     w.finalize();
     w2.finalize();
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     cid = new ConsecutiveIDSupplier();
     w = new TestingPathSupplier();

@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibparent</artifactId>
-    <version>41</version>
+    <version>42-SNAPSHOT</version>
   </parent>
   <artifactId>ibcore-root</artifactId>
   <version>0.17.3-SNAPSHOT</version>
@@ -42,7 +42,7 @@
   </distributionManagement>
   <properties>
     <iblog.version>0.12.0</iblog.version>
-    <ib.exceptions.version>41</ib.exceptions.version>
+    <ib.exceptions.version>42-SNAPSHOT</ib.exceptions.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -129,6 +129,31 @@
             <systemPropertyVariables>
               <target_dir>${project.build.directory}</target_dir>
             </systemPropertyVariables>
+          </configuration>
+        </plugin>
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.infrastructurebuilder.modello</groupId>
+                    <artifactId>modello-maven-plugin-usurped</artifactId>
+                    <versionRange>[1.11.0.2,)</versionRange>
+                    <goals>
+                      <goal>xpp3-writer-reflect</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
           </configuration>
         </plugin>
       </plugins>

@@ -15,18 +15,18 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DefaultStringListSupplierTest {
 
@@ -34,7 +34,7 @@ private final static TestingPathSupplier wps = new TestingPathSupplier();
   private static Path target;
   private static Path testClasses;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception {
     target = wps.getRoot();
     testClasses = wps.getTestClasses();
@@ -51,7 +51,7 @@ private final static TestingPathSupplier wps = new TestingPathSupplier();
     assertEquals(0, s1.get().size());
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     list = Arrays.asList(testClasses.resolve("a.properties").toString(), testClasses.resolve("b.xml").toString());
     s2 = new DefaultStringListSupplier(list2a);

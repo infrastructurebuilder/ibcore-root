@@ -15,15 +15,15 @@
  */
 package org.infrastructurebuilder.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DefaultBasicCredentialsMapSupplierTest {
 
@@ -31,7 +31,7 @@ public class DefaultBasicCredentialsMapSupplierTest {
   private DefaultBasicCredentialsMapSupplier cs;
   private Map<String, BasicCredentials> testData, replaceData1;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     testData = new HashMap<>();
     replaceData1 = new HashMap<>();
@@ -46,14 +46,14 @@ public class DefaultBasicCredentialsMapSupplierTest {
 
   }
 
-  @Test(expected = IBCryptoException.class)
-  public void testExtends1() {
+  @Test
+  public void testExtends1() throws IBCryptoException{
     assertEquals(2, cs.get().size());
     cs.addCredentials("C", cCreds);
   }
 
-  @Test(expected = IBCryptoException.class)
-  public void testExtends2() {
+  @Test
+  public void testExtends2() throws IBCryptoException{
     cs.addCredentials("B", bCreds);
     Map<String, BasicCredentials> m = cs.get();
     assertNotNull(m);

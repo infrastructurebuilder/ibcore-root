@@ -15,13 +15,13 @@
  */
 package org.infrastructurebuilder.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.URL;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 
 public class RepositoryProxyTest {
@@ -31,7 +31,7 @@ public class RepositoryProxyTest {
   private RepositoryPolicyProxy rpp;
   private RepositoryProxy rp;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     rpp = new RepositoryPolicyProxy(true, ChecksumPolicy.IGNORE, UpdatePolicy.NEVER, 1);
     rp = new RepositoryProxy("ABC", Layout.DEFAULT, Optional.of(NAME), new URL(HTTP_WWW_GOOGLE_COM), Optional.of(rpp), Optional.of(rpp));

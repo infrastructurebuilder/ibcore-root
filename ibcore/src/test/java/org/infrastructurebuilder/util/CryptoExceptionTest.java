@@ -15,10 +15,10 @@
  */
 package org.infrastructurebuilder.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CryptoExceptionTest {
 
@@ -26,13 +26,13 @@ public class CryptoExceptionTest {
 
   @Test
   public void testIBCryptoException() {
-    assertNotNull("Empty", new IBCryptoException());
+    assertNotNull(new IBCryptoException());
   }
 
   @Test
   public void testIBCryptoExceptionString() {
     final IBCryptoException x = new IBCryptoException(STRING);
-    assertNotNull("String", x);
+    assertNotNull(x);
     assertEquals("String same", STRING, x.getMessage());
   }
 
@@ -40,26 +40,26 @@ public class CryptoExceptionTest {
   public void testIBCryptoExceptionStringThrowable() {
     final Throwable t = new NullPointerException();
     final IBCryptoException x = new IBCryptoException(STRING, t);
-    assertNotNull("Throwable", x);
-    assertEquals("String same", STRING, x.getMessage());
-    assertEquals("Same throwable", t, x.getCause());
+    assertNotNull(x);
+    assertEquals(STRING, x.getMessage());
+    assertEquals(t, x.getCause());
   }
 
   @Test
   public void testIBCryptoExceptionStringThrowableBooleanBoolean() {
     final Throwable t = new NullPointerException();
     final IBCryptoException x = new IBCryptoException(STRING, t, false, false);
-    assertNotNull("Throwable", x);
-    assertEquals("String same", STRING, x.getMessage());
-    assertEquals("Same throwable", t, x.getCause());
+    assertNotNull(x);
+    assertEquals(STRING, x.getMessage());
+    assertEquals(t, x.getCause());
   }
 
   @Test
   public void testIBCryptoExceptionThrowable() {
     final Throwable t = new NullPointerException();
     final IBCryptoException x = new IBCryptoException(t);
-    assertNotNull("Throwable", x);
-    assertEquals("Same throwable", t, x.getCause());
+    assertNotNull(x);
+    assertEquals(t, x.getCause());
   }
 
 }

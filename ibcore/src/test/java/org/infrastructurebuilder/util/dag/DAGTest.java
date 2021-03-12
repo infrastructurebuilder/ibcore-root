@@ -15,15 +15,15 @@
  */
 package org.infrastructurebuilder.util.dag;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DAGTest {
   @Test
@@ -40,20 +40,20 @@ public class DAGTest {
     dag.addVertex("a");
     final MutableVertex<String> v = dag.getVertex("a");
     assertFalse(v.equals("ABC"));
-    assertEquals("Test ", 1, dag.getVerticies().size());
+    assertEquals(1, dag.getVerticies().size());
 
     assertEquals("Test ", "a", dag.getVertex("a").getLabel());
 
     dag.addVertex("a");
 
-    assertEquals("Test ", 1, dag.getVerticies().size());
+    assertEquals(1, dag.getVerticies().size());
 
     assertEquals("Test ", "a", dag.getVertex("a").getLabel());
 
     dag.addVertex("b");
     assertFalse(dag.getVertex("b").isConnected());
     assertFalse(dag.isConnected("b"));
-    assertEquals("Test ", 2, dag.getVerticies().size());
+    assertEquals( 2, dag.getVerticies().size());
 
     assertFalse(dag.hasEdge("a", "b"));
 
@@ -63,9 +63,9 @@ public class DAGTest {
 
     final MutableVertex b = dag.getVertex("b");
 
-    assertEquals("Test ", "a", a.getLabel());
+    assertEquals( "a", a.getLabel());
 
-    assertEquals("Test ", "b", b.getLabel());
+    assertEquals( "b", b.getLabel());
 
     dag.addEdge("a", "b");
     assertTrue(dag.isConnected("b"));
@@ -80,19 +80,19 @@ public class DAGTest {
 
     dag.addEdge("c", "d");
 
-    assertEquals("Test ", 4, dag.getVerticies().size());
+    assertEquals(4, dag.getVerticies().size());
 
     final MutableVertex c = dag.getVertex("c");
 
     final MutableVertex d = dag.getVertex("d");
 
-    assertEquals("Test ", "a", a.getLabel());
+    assertEquals("a", a.getLabel());
 
-    assertEquals("Test ", "b", b.getLabel());
+    assertEquals("b", b.getLabel());
 
-    assertEquals("Test ", "c", c.getLabel());
+    assertEquals( "c", c.getLabel());
 
-    assertEquals("Test ", "d", d.getLabel());
+    assertEquals("d", d.getLabel());
 
     assertFalse(dag.hasEdge("b", "a"));
 
@@ -106,7 +106,7 @@ public class DAGTest {
 
     final Set<String> labels = dag.getLabels();
 
-    assertEquals("Test ", 4, labels.size());
+    assertEquals(4, labels.size());
 
     assertTrue(labels.contains("a"));
 
@@ -122,13 +122,13 @@ public class DAGTest {
 
     assertTrue(d.getParents().contains(a));
 
-    assertEquals("Test ", 2, a.getChildren().size());
+    assertEquals(2, a.getChildren().size());
 
     assertTrue(a.getChildLabels().contains("b"));
 
     assertTrue(a.getChildLabels().contains("d"));
 
-    assertEquals("Test ", 2, d.getParents().size());
+    assertEquals(2, d.getParents().size());
 
     assertTrue(d.getParentLabels().contains("a"));
 
@@ -179,7 +179,7 @@ public class DAGTest {
 
     expected.add("b");
 
-    assertEquals("Test ", expected, actual);
+    assertEquals(expected, actual);
   }
 
 }

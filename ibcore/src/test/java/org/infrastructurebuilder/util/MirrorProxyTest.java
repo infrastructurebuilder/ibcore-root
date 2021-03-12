@@ -17,7 +17,7 @@ package org.infrastructurebuilder.util;
 
 import static org.infrastructurebuilder.util.Layout.DEFAULT;
 import static org.infrastructurebuilder.util.Layout.LEGACY;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -26,8 +26,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MirrorProxyTest {
 
@@ -43,7 +43,7 @@ public class MirrorProxyTest {
   Optional<String> name = Optional.of(NAME);
   String url = "http://www.example.com/somemirror";
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     m = new MirrorProxy(id, layout, mirrorOf, mirrorOfLayouts, name, new URL(url));
   }
@@ -58,8 +58,8 @@ public class MirrorProxyTest {
     assertEquals(DEFAULT, m.getLayout());
   }
 
-  @Test(expected = IBException.class)
-  public void failit() {
+  @Test
+  public void failit() throws IBException {
     m.isProxyOf("A");
   }
 

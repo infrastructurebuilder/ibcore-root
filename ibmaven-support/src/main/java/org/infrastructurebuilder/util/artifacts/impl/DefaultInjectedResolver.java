@@ -15,7 +15,7 @@
  */
 package org.infrastructurebuilder.util.artifacts.impl;
 
-import static org.infrastructurebuilder.IBException.cet;
+import static org.infrastructurebuilder.exceptions.IBException.cet;
 
 import java.net.URL;
 import java.util.List;

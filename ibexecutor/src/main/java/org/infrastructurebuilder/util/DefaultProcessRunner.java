@@ -71,12 +71,12 @@ public class DefaultProcessRunner implements ProcessRunner {
   }
 
   public DefaultProcessRunner(final Path scratchDir, final Optional<PrintStream> addl, final Optional<Logger> logger) {
-    this(scratchDir, addl, logger, empty(), Optional.of(new Long(100L)));
+    this(scratchDir, addl, logger, empty(), Optional.of(Long.valueOf(100L)));
   }
 
   public DefaultProcessRunner(final Path scratchDir, final Optional<PrintStream> addl, final Optional<Logger> logger,
       final Optional<Path> relativeRoot) {
-    this(scratchDir, addl, logger, relativeRoot, Optional.of(new Long(100L)));
+    this(scratchDir, addl, logger, relativeRoot, Optional.of(Long.valueOf(100L)));
   }
 
   public DefaultProcessRunner(final Path scratchDir, final Optional<PrintStream> addl, final Optional<Logger> logger,

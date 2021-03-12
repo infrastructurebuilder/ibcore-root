@@ -18,11 +18,11 @@ package org.infrastructurebuilder.util;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.infrastructurebuilder.util.IBUtils.deepCopy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -32,8 +32,8 @@ import java.util.Optional;
 import org.infrastructurebuilder.util.artifacts.JSONAndChecksumEnabled;
 import org.infrastructurebuilder.util.artifacts.impl.AbstractRoseTree;
 import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 public class RoseTreeTest {
@@ -113,7 +113,7 @@ public class RoseTreeTest {
 
   private X testObject0, testObject1, testObject2;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     testJson0 = new JSONObject().put("X", "1").put("Y", "2");
     testJson1 = new JSONObject().put("X", "2").put("Y", "4");
@@ -138,37 +138,37 @@ public class RoseTreeTest {
   public void testEqualsNotSame() {
     final RoseTest rose3 = new RoseTest(new X(testJson0), emptyList());
     final RoseTest rose4 = new RoseTest(new X(testJson0), emptyList());
-    assertEquals("Equals not same ", rose3, rose4);
-    assertEquals("Different hash codes?", rose3.hashCode(), rose4.hashCode());
-    assertNotEquals("Not equal to null?", rose3, null);
+    assertEquals(rose3, rose4);
+    assertEquals(rose3.hashCode(), rose4.hashCode());
+    assertNotEquals(rose3, null);
   }
 
   @Test
   public void testGetChildren() {
-    assertEquals("rose2 has no children", 0, rose2.getChildren().size());
-    assertEquals("rose0 has 2 children", 2, rose0.getChildren().size());
+    assertEquals(0, rose2.getChildren().size());
+    assertEquals(2, rose0.getChildren().size());
     final List<RoseTree<X>> x = rose0.getChildren();
-    assertTrue("Rose0 contains rose1", x.contains(rose1));
-    assertTrue("Rose0 contains rose2", x.contains(rose2));
+    assertTrue(x.contains(rose1));
+    assertTrue(x.contains(rose2));
   }
 
   @Test
   public void testGetValue() {
-    assertEquals("Testing testObject0", testObject0, rose0.getValue());
-    assertEquals("Testing testObject1", testObject1, rose1.getValue());
+    assertEquals(testObject0, rose0.getValue());
+    assertEquals(testObject1, rose1.getValue());
   }
 
   @Test
   public void testHasChildren() {
-    assertTrue("Rose0 has children", rose0.hasChildren());
-    assertFalse("Rose1 has no children", rose1.hasChildren());
+    assertTrue(rose0.hasChildren());
+    assertFalse(rose1.hasChildren());
   }
 
   @Test
   public void testJSON() {
     final RoseTree<X> b = rose1.withChild(rose2);
-    assertTrue("B has a child of rose2", b.getChildren().contains(rose2));
-    assertNotNull("JSON is valid", b.asJSON());
+    assertTrue(b.getChildren().contains(rose2));
+    assertNotNull(b.asJSON());
 
   }
 
@@ -181,15 +181,15 @@ public class RoseTreeTest {
   @Test
   public void testWithChild() {
     final RoseTree<X> b = rose1.withChild(rose2);
-    assertTrue("B has a child of rose2", b.getChildren().contains(rose2));
-    assertFalse("B does not have a child of rose0", b.getChildren().contains(rose0));
+    assertTrue(b.getChildren().contains(rose2));
+    assertFalse(b.getChildren().contains(rose0));
   }
 
   @Test
   public void testWithChildren() {
     final RoseTest rose3 = new RoseTest(new X(testJson0), emptyList());
     final RoseTree<X> b = rose1.withChildren(asList(rose2, rose3));
-    assertEquals("b has 2 children", 2, b.getChildren().size());
+    assertEquals(2, b.getChildren().size());
   }
 
 }

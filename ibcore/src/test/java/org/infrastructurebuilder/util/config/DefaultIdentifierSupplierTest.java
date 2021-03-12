@@ -17,14 +17,14 @@ package org.infrastructurebuilder.util.config;
 
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DefaultIdentifierSupplierTest {
 
   private IdentifierSupplier s;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     s = new DefaultIdentifierSupplier();
   }

@@ -16,10 +16,10 @@
 package org.infrastructurebuilder.util;
 
 import static java.util.Optional.of;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ActivationOSProxyTest {
 
@@ -29,7 +29,7 @@ public class ActivationOSProxyTest {
   private static final String I386 = "i386";
   private ActivationOSProxy a;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     a = new ActivationOSProxy(of(I386), of(WINDOWS), of(MYNAME), of(_1_0_0));
   }

@@ -15,28 +15,28 @@
  */
 package org.infrastructurebuilder.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Optional;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("unused")
 public class BasicCredentialsImplTest {
-  static final String PASSWORD = "Y";
+  static final String PASSWORD  = "Y";
   static final String PRINCIPAL = "X";
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception {
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownAfterClass() throws Exception {
   }
 
@@ -48,7 +48,7 @@ public class BasicCredentialsImplTest {
   private DefaultBasicCredentials y;
   private DefaultBasicCredentials z;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     x = new DefaultBasicCredentials(PRINCIPAL, Optional.ofNullable(PASSWORD));
     y = new DefaultBasicCredentials(PRINCIPAL, Optional.ofNullable(PASSWORD));
@@ -64,31 +64,31 @@ public class BasicCredentialsImplTest {
 
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
   }
 
   @Test
   public void testAbstractCredentialsImpl() {
-    assertNotNull("Created one", x);
+    assertNotNull(x);
   }
 
   @Test
   public void testEqualsAndHash() {
 
-    assertEquals("Hash of equals are equal", x.hashCode(), y.hashCode());
-    assertEquals("Equal are equal", x, x);
-    assertEquals("Equal are equal", x, y);
-    assertNotEquals("Not vs null", x, null);
+    assertEquals(x.hashCode(), y.hashCode(), "Hash of equals are equal");
+    assertEquals(x, x, "Equal are equal");
+    assertEquals(x, y, "Equal are equal");
+    assertNotEquals(x, null, "Not vs null");
     assertNotEquals("Not vs string", x, "ABC");
-    assertEquals("B is d", b, d);
+    assertEquals(b, d, "B is d");
 
-    assertNotEquals("D is not e", d, e);
+    assertNotEquals(d, e, "D is not e");
 
-    assertNotEquals("X is not I", x, i);
-    assertEquals("I is J", i, j);
+    assertNotEquals(x, i, "X is not I");
+    assertEquals(i, j, "I is J");
 
-    assertNotEquals("K is not J", k, j);
+    assertNotEquals(k, j, "K is not J");
 
   }
 

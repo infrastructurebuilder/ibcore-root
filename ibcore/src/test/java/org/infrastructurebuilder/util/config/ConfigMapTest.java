@@ -16,17 +16,17 @@
 package org.infrastructurebuilder.util.config;
 
 import static java.util.stream.Collectors.toList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ConfigMapTest {
 
@@ -35,7 +35,7 @@ public class ConfigMapTest {
   private Object o = UUID.randomUUID();
   private ConfigMap m3;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     m = new HashMap<>();
     m.put("A", o);
@@ -53,8 +53,8 @@ public class ConfigMapTest {
     assertEquals(o, m3.getRequired("A"));
   }
 
-  @Test(expected = IBException.class)
-  public void testGetRequiredNotPResent() {
+  @Test
+  public void testGetRequiredNotPResent() throws IBException {
     assertEquals(o, m3.getRequired("Q"));
   }
 

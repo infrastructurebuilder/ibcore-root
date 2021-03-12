@@ -15,14 +15,14 @@
  */
 package org.infrastructurebuilder.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ProxyProxyTest {
 
@@ -34,7 +34,7 @@ public class ProxyProxyTest {
   private static final String ABC = "ABC";
   private ProxyProxy pp;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     pp = new ProxyProxy(ABC, DEF_COM, Arrays.asList(ONE_COM), Optional.of(PASSWORD), 8081, HTTPS, Optional.of(USERNAME),
         true);

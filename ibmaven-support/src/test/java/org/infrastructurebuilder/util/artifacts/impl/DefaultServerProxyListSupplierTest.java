@@ -31,7 +31,7 @@ public class DefaultServerProxyListSupplierTest {
 
   private ServerProxyListSupplier spl;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     Settings s = new Settings();
     Server s1 = new Server(), s2 = new Server();

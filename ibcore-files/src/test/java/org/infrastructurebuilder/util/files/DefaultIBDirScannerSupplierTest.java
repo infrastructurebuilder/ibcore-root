@@ -39,13 +39,13 @@ public class DefaultIBDirScannerSupplierTest {
   private static Path test1;
   private DefaultIBDirScannerSupplier ibdss;
 
-  @BeforeClass
+  @BeforeAll
   public static void setupClass() {
     testClasses = wps.getTestClasses();
     test1 = testClasses.resolve("test1");
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     StringListSupplier include1 = () -> Arrays.asList("**/*");
     StringListSupplier exclude1 = () -> Arrays.asList("b");

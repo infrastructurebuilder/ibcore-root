@@ -15,11 +15,12 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
+import static org.infrastructurebuilder.util.constants.IBConstants.GITHUB;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.infrastructurebuilder.util.artifacts.*;
-import org.infrastructurebuilder.util.constants.IBConstants.GITHUB;
+
 import javax.inject.Named;
 /**
  * This maps to a list of "release versions" for some known golang release types that generally

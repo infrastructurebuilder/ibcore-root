@@ -15,7 +15,7 @@
  */
 package org.infrastructurebuilder.util.files.model;
 
-import static org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM;
+import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
 import static org.infrastructurebuilder.util.IBUtilsTest.TESTFILE;
 import static org.infrastructurebuilder.util.IBUtilsTest.TESTFILE_CHECKSUM;
 import static org.junit.Assert.assertEquals;
@@ -31,7 +31,6 @@ import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
 import org.infrastructurebuilder.util.files.IBResource;
-import org.infrastructurebuilder.util.files.model.IBResourceModel;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +43,7 @@ public class IBResourceModelTest {
   private Checksum checksum;
   private IBResource def;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     wps = new TestingPathSupplier();
     Path source = wps.getTestClasses().resolve(TESTFILE);
@@ -78,7 +77,7 @@ public class IBResourceModelTest {
     };
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     wps.finalize();
   }
@@ -110,7 +109,7 @@ public class IBResourceModelTest {
   @Test
   public void testGet() {
     assertEquals(checksum, new Checksum(c1.get()));
-    assertEquals(new Long(22152), c1.size());
+    assertEquals(Long.valueOf(22152), c1.size());
     assertFalse(c1.getSourceURL().isPresent());
   }
 

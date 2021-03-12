@@ -15,11 +15,11 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class GithubIOGroupId2OrgMapperTest {
 
@@ -27,7 +27,7 @@ public class GithubIOGroupId2OrgMapperTest {
   private static final String IO_GITHUB = "io.github.";
   private GithubIOGroupId2OrgMapper m;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     this.m = new GithubIOGroupId2OrgMapper();
   }
@@ -36,7 +36,7 @@ public class GithubIOGroupId2OrgMapperTest {
   public void testApply() {
     assertEquals(TESTORG, m.apply(IO_GITHUB + TESTORG).get());
     assertEquals(TESTORG, m.apply(IO_GITHUB + TESTORG + ".otherthingy").get());
-    assertFalse(TESTORG, m.apply("com.github." + TESTORG).isPresent());
+    assertFalse(m.apply("com.github." + TESTORG).isPresent());
 
   }
 

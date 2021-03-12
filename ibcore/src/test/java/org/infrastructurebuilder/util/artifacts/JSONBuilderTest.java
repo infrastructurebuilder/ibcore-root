@@ -32,8 +32,8 @@ import java.util.Set;
 import org.infrastructurebuilder.util.RoseTreeTest;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 public class JSONBuilderTest {
@@ -41,7 +41,7 @@ public class JSONBuilderTest {
   private JSONBuilder jb;
   private Path target;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     jb = JSONBuilder.newInstance();
     target = Paths.get(Optional.ofNullable(System.getProperty("target")).orElse("./target")).toRealPath()

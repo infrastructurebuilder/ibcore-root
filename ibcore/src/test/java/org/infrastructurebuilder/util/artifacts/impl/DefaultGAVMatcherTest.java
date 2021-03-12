@@ -15,7 +15,7 @@
  */
 package org.infrastructurebuilder.util.artifacts.impl;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
 
@@ -23,8 +23,8 @@ import org.infrastructurebuilder.util.artifacts.GAV;
 import org.infrastructurebuilder.util.artifacts.GAVMatcher;
 import org.infrastructurebuilder.util.artifacts.IBVersion;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultIBVersion.RangeOperator;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DefaultGAVMatcherTest {
 
@@ -32,7 +32,7 @@ public class DefaultGAVMatcherTest {
   private GAV gav,gav2,gav3;
   private IBVersion i;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     i = new DefaultIBVersion("1.0.0");
     m = new DefaultGAVMatcher(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),

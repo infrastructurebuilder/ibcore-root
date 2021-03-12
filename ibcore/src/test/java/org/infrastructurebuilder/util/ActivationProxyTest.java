@@ -15,13 +15,13 @@
  */
 package org.infrastructurebuilder.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ActivationProxyTest {
 
@@ -38,7 +38,7 @@ public class ActivationProxyTest {
   private String propertyName;
   private Optional<String> value;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     activeByDefault = false;
     afp = new ActivationFileProxy(Optional.empty(), Optional.empty());

@@ -15,31 +15,31 @@
  */
 package org.infrastructurebuilder.util.config.factory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
 
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DefaultProcessableTypedTest {
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception {
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownAfterClass() throws Exception {
   }
 
   private DefaultProcessableTyped<String> k;
   private DefaultProcessableTyped<String> m;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     k = new DefaultProcessableTyped<>("t", Optional.of("p"), false, "X");
     m = new DefaultProcessableTyped<>("p", "Y");

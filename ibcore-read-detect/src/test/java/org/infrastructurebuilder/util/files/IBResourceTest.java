@@ -15,9 +15,9 @@
  */
 package org.infrastructurebuilder.util.files;
 
-import static org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM;
-import static org.infrastructurebuilder.IBConstants.APPLICATION_ZIP;
-import static org.infrastructurebuilder.IBConstants.TEXT_PLAIN;
+import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
+import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_ZIP;
+import static org.infrastructurebuilder.util.constants.IBConstants.TEXT_PLAIN;
 import static org.infrastructurebuilder.util.files.DefaultIBResource.copyToDeletedOnExitTempChecksumAndPath;
 import static org.infrastructurebuilder.util.files.DefaultIBResource.copyToTempChecksumAndPath;
 import static org.junit.Assert.assertEquals;
@@ -33,7 +33,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.infrastructurebuilder.IBException;
+import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.artifacts.Checksum;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
 import org.junit.Before;
@@ -48,7 +48,7 @@ public class IBResourceTest {
   private TestingPathSupplier wps;
   private Path testFile;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     this.wps = new TestingPathSupplier();
     testFile = this.wps.getTestClasses().resolve(TFILE_TEST);

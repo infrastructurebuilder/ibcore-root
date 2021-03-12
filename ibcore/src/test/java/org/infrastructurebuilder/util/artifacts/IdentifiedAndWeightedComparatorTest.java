@@ -15,14 +15,14 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Comparator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class IdentifiedAndWeightedComparatorTest {
 
@@ -30,7 +30,7 @@ public class IdentifiedAndWeightedComparatorTest {
   private Comparator<IdentifiedAndWeighted> c;
   private IdentifiedAndWeighted i4;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     i1 = new IC2("A", 1);
     i2 = new IC2("B", 1);

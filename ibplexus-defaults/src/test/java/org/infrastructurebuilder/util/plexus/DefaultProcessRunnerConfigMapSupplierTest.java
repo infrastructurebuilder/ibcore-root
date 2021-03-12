@@ -28,7 +28,7 @@ public class DefaultProcessRunnerConfigMapSupplierTest {
   private DefaultConfigMapSupplier c;
   private DefaultProcessRunnerConfigMapSupplier d;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     c = new DefaultConfigMapSupplier();
     c.addValue(PROCESS_NAMESPACE + "X", "B");
