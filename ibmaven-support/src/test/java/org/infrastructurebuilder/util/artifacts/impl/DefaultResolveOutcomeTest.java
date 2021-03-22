@@ -15,7 +15,9 @@
  */
 package org.infrastructurebuilder.util.artifacts.impl;
 
-import static org.junit.Assert.assertEquals;
+
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -24,8 +26,8 @@ import java.util.List;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.infrastructurebuilder.util.artifacts.ResolveOutcome;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DefaultResolveOutcomeTest {
 

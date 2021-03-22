@@ -15,13 +15,13 @@
  */
 package org.infrastructurebuilder.util.plexus;
 
-import static org.infrastructurebuilder.util.plexus.ProcessRunnerSupplier.PROCESS_NAMESPACE;
-import static org.junit.Assert.assertEquals;
+import static org.infrastructurebuilder.util.executor.plexus.ProcessRunnerSupplier.PROCESS_NAMESPACE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.DefaultConfigMapSupplier;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DefaultProcessRunnerConfigMapSupplierTest {
 

@@ -94,12 +94,12 @@ public class BasicCredentialsImplTest {
 
   @Test
   public void testGetPassword() {
-    assertEquals("Password is " + PASSWORD, PASSWORD, x.getSecret().get());
+    assertEquals(PASSWORD, x.getSecret().get());
   }
 
   @Test
   public void testGetPrincipal() {
-    assertEquals("Principal is " + PRINCIPAL, PRINCIPAL, x.getKeyId());
+    assertEquals(PRINCIPAL, x.getKeyId());
   }
 
 }

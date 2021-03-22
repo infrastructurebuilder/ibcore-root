@@ -20,16 +20,14 @@ module org.infrastructurebuilder.ibcore {
   exports org.infrastructurebuilder.util.files;
   exports org.infrastructurebuilder.util.constants;
   exports org.infrastructurebuilder.util;
-  exports org.infrastructurebuilder.util.dag;
-  exports org.infrastructurebuilder.util.dag.impl;
   exports org.infrastructurebuilder.util.artifacts.impl;
   exports org.infrastructurebuilder.util.artifacts;
 
   requires transitive com.vdurmont.semver4j;
+  requires transitive org.infrastructurebuilder.exceptions;
+  requires transitive org.json;
+  requires org.slf4j;
   requires java.xml;
   requires javax.inject;
-  requires org.infrastructurebuilder.exceptions;
-  requires org.json;
-  requires  org.slf4j;
   requires org.eclipse.sisu.inject;
 }

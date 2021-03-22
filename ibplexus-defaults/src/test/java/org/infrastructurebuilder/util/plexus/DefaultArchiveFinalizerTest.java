@@ -15,14 +15,15 @@
  */
 package org.infrastructurebuilder.util.plexus;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 import org.codehaus.plexus.archiver.zip.ZipUnArchiver;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DefaultArchiveFinalizerTest {
 
@@ -56,7 +57,7 @@ public class DefaultArchiveFinalizerTest {
 
   @Test
   public void testGetVirtualFiles() {
-    assertTrue("No virtual files", finalizer.getVirtualFiles().isEmpty());
+    assertTrue(finalizer.getVirtualFiles().isEmpty(), "No virtual files");
   }
 
 }

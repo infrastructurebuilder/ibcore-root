@@ -15,7 +15,7 @@
  */
 package org.infrastructurebuilder.util.plexus;
 
-import static org.infrastructurebuilder.util.plexus.ProcessRunnerSupplier.PROCESS_NAMESPACE;
+import static org.infrastructurebuilder.util.executor.plexus.ProcessRunnerSupplier.PROCESS_NAMESPACE;
 
 import java.util.Collections;
 import java.util.stream.Collectors;

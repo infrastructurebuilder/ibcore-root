@@ -15,8 +15,8 @@
  */
 package org.infrastructurebuilder.util.files;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -25,9 +25,10 @@ import java.util.Map;
 
 import org.infrastructurebuilder.util.config.StringListSupplier;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.infrastructurebuilder.util.files.impl.DefaultIBDirScannerSupplier;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -22,14 +22,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class DefaultBasicCredentialsMapSupplierTest {
 
-  private DefaultBasicCredentials aCreds, bCreds, cCreds, dCreds;
+  private DefaultBasicCredentials            aCreds, bCreds, cCreds, dCreds;
   private DefaultBasicCredentialsMapSupplier cs;
-  private Map<String, BasicCredentials> testData, replaceData1;
+  private Map<String, BasicCredentials>      testData, replaceData1;
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -47,14 +48,14 @@ public class DefaultBasicCredentialsMapSupplierTest {
   }
 
   @Test
-  public void testExtends1() throws IBCryptoException{
+  public void testExtends1() {
     assertEquals(2, cs.get().size());
-    cs.addCredentials("C", cCreds);
+    Assertions.assertThrows(IBCryptoException.class, () -> cs.addCredentials("C", cCreds));
   }
 
   @Test
-  public void testExtends2() throws IBCryptoException{
-    cs.addCredentials("B", bCreds);
+  public void testExtends2() throws IBCryptoException {
+    Assertions.assertThrows(IBCryptoException.class, () -> cs.addCredentials("B", bCreds));
     Map<String, BasicCredentials> m = cs.get();
     assertNotNull(m);
     BasicCredentials c = m.get("B");

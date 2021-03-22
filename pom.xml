@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibparent</artifactId>
-    <version>42-SNAPSHOT</version>
+    <version>44</version>
   </parent>
   <artifactId>ibcore-root</artifactId>
   <version>0.17.3-SNAPSHOT</version>
@@ -42,7 +42,7 @@
   </distributionManagement>
   <properties>
     <iblog.version>0.12.0</iblog.version>
-    <ib.exceptions.version>42-SNAPSHOT</ib.exceptions.version>
+    <ib.exceptions.version>44</ib.exceptions.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -62,6 +62,11 @@
         <groupId>org.infrastructurebuilder</groupId>
         <artifactId>ibcore</artifactId>
         <type>test-jar</type>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder</groupId>
+        <artifactId>ibcore-dag</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -167,6 +172,7 @@
   </build>
   <modules>
     <module>ibcore</module>
+    <module>ibcore-dag</module>
     <module>ibexecutor</module>
     <module>ibplexus-defaults</module>
     <module>ibmaven-support</module>

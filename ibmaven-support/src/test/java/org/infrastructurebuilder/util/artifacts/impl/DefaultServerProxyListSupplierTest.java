@@ -15,7 +15,8 @@
  */
 package org.infrastructurebuilder.util.artifacts.impl;
 
-import static org.junit.Assert.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,8 +25,8 @@ import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.infrastructurebuilder.util.ServerProxy;
 import org.infrastructurebuilder.util.ServerProxyListSupplier;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DefaultServerProxyListSupplierTest {
 

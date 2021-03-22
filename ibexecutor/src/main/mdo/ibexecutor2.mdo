@@ -16,7 +16,7 @@
   <defaults>
     <default>
       <key>package</key>
-      <value>${project.groupId}.util.execution.model</value>
+      <value>${project.groupId}.util.executor.execution.model</value>
     </default>
   </defaults>
 
@@ -32,7 +32,7 @@
       <description>Persistence for ibexecutor ProcessExecutionResult instances</description>
       <version>1.0.0+</version>
       <interfaces>
-        <interface>org.infrastructurebuilder.util.ProcessExecutionResult</interface>
+        <interface>org.infrastructurebuilder.util.executor.ProcessExecutionResult</interface>
       </interfaces>
       <fields>
         <field>
@@ -124,7 +124,7 @@
     this.pe = null;
   }
 
-  public DefaultProcessExecutionResult(final org.infrastructurebuilder.util.ProcessExecution pe2, java.util.Optional<Integer> exitCode, java.util.Optional<Throwable> exception2,
+  public DefaultProcessExecutionResult(final org.infrastructurebuilder.util.executor.ProcessExecution pe2, java.util.Optional<Integer> exitCode, java.util.Optional<Throwable> exception2,
       java.time.Instant startTime, java.time.Duration between) {
     this.pe = pe2;
     this.id = pe2.getId();
@@ -210,9 +210,9 @@
           <version>1.0.0+</version>
           <code>
             <![CDATA[
-    private final org.infrastructurebuilder.util.ProcessExecution pe;
+    private final org.infrastructurebuilder.util.executor.ProcessExecution pe;
     @Override
-    public java.util.Optional<org.infrastructurebuilder.util.ProcessExecution> getExecution() {
+    public java.util.Optional<org.infrastructurebuilder.util.executor.ProcessExecution> getExecution() {
       return java.util.Optional.ofNullable(pe);
     }
             ]]>
@@ -253,9 +253,9 @@
   public boolean equals(Object obj) {
     if (this == obj)
       return true;
-    if (!(obj instanceof org.infrastructurebuilder.util.ProcessExecutionResult))
+    if (!(obj instanceof org.infrastructurebuilder.util.executor.ProcessExecutionResult))
       return false;
-    org.infrastructurebuilder.util.ProcessExecutionResult other = (org.infrastructurebuilder.util.ProcessExecutionResult) obj;
+    org.infrastructurebuilder.util.executor.ProcessExecutionResult other = (org.infrastructurebuilder.util.executor.ProcessExecutionResult) obj;
     return java.util.Objects.equals(id, other.getId());
   }
 

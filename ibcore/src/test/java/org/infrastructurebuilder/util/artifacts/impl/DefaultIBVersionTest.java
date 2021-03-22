@@ -18,6 +18,7 @@ package org.infrastructurebuilder.util.artifacts.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import org.infrastructurebuilder.util.artifacts.IBVersion.VersionDiff;
 import org.infrastructurebuilder.util.artifacts.IBVersionException;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultIBVersion.DefaultIBVersionRange;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultIBVersion.RangeOperator;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -217,10 +219,10 @@ public class DefaultIBVersionTest {
   }
 
   @Test
-  public void testEquals() throws IBVersionException {
-
-    assertNotEquals(new DefaultIBVersion(null), new DefaultIBVersion(_1_0_0), "Null semver != nonnull");
-    assertNotEquals(new DefaultIBVersion(null), new DefaultIBVersion(null), "Null semver == null");
+  public void testEquals() {
+    assertThrows(IBVersionException.class,
+        () -> assertNotEquals(new DefaultIBVersion(null), new DefaultIBVersion(_1_0_0), "Null semver != nonnull"));
+//    assertNotEquals(new DefaultIBVersion(null), new DefaultIBVersion(null), "Null semver == null");
   }
 
   @Test
@@ -275,8 +277,8 @@ public class DefaultIBVersionTest {
   }
 
   @Test
-  public void testNullVersion() throws IBVersionException {
-    new DefaultIBVersion(null);
+  public void testNullVersion() {
+    Assertions.assertThrows(IBVersionException.class, () -> new DefaultIBVersion(null));
   }
 
   @Test
@@ -358,7 +360,7 @@ public class DefaultIBVersionTest {
   }
 
   @Test
-  public void testNull() throws IBVersionException{
-    new DefaultIBVersion(null);
+  public void testNull() {
+    assertThrows(IBVersionException.class, () -> new DefaultIBVersion(null));
   }
 }

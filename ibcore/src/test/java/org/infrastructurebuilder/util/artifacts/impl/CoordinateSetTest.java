@@ -86,50 +86,50 @@ public class CoordinateSetTest {
 
   @Test
   public void testFromFullSignaturePath() {
-    assertEquals("Full sig is as expect (" + fullSig + ")", fullSig, l.getDefaultSignaturePath());
+    assertEquals( fullSig, l.getDefaultSignaturePath(), "Full sig is as expect (" + fullSig + ")");
   }
 
   @Test
   public void testGetArtifactId() {
-    assertEquals("Art = B", "B", l.getArtifactId());
+    assertEquals( "B", l.getArtifactId());
   }
 
   @Test
   public void testGetClassifier() {
-    assertEquals("Classifier = C", "C", l.getClassifier().orElse(null));
+    assertEquals( "C", l.getClassifier().orElse(null));
   }
 
   @Test
   public void testgetExtension() {
-    assertEquals("Packaging = E", "E", l.getExtension());
+    assertEquals("E", l.getExtension());
   }
 
   @Test
   public void testGetGroupId() {
-    assertEquals("Group = A", "A", l.getGroupId());
+    assertEquals("A", l.getGroupId());
   }
 
   @Test
   public void testGetType() {
-    assertEquals("Type of null is " + ArtifactServices.BASIC_PACKAGING, ArtifactServices.BASIC_PACKAGING,
+    assertEquals(ArtifactServices.BASIC_PACKAGING,
         l1.getExtension());
   }
 
   @Test
   public void testGetVersion() {
-    assertEquals("IBVersion 1.0.0", "1.0.0", l.getVersion().get());
+    assertEquals( "1.0.0", l.getVersion().get());
   }
 
   @Test
   public void testSetArtifactId() {
     l.setArtifactId("B");
-    assertEquals("ArtifactId is B", "B", l.getArtifactId());
+    assertEquals("B", l.getArtifactId());
   }
 
   @Test
   public void testSetClassifier() {
     l.setClassifier("B");
-    assertEquals("Classifier == B", "B", l.getClassifier().orElse(null));
+    assertEquals( "B", l.getClassifier().orElse(null));
     l.setClassifier(null);
     assertTrue(!l.getClassifier().isPresent(), "Classifier empty");
   }
@@ -137,13 +137,13 @@ public class CoordinateSetTest {
   @Test
   public void testSetExtension() {
     l.setExtension("X");
-    assertEquals("Package is X", "X", l.getExtension());
+    assertEquals("X", l.getExtension());
   }
 
   @Test
   public void testSetGroupId() {
     l.setGroupId("G");
-    assertEquals("Group is G", "G", l.getGroupId());
+    assertEquals( "G", l.getGroupId());
   }
 
   @Test

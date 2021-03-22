@@ -38,6 +38,7 @@ import java.util.TreeSet;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -264,7 +265,7 @@ public class ChecksumBuilderTest {
   public void testLock() throws IBException {
     final Checksum v = sha512.addString(Optional.of("ABC")).asChecksum();
     assertEquals(abc, v);
-    sha512.addString("ABC");
+    Assertions.assertThrows(IBException.class, () -> sha512.addString("ABC"));
   }
 
   private final static class LS implements Comparable<LS>, ChecksumEnabled {

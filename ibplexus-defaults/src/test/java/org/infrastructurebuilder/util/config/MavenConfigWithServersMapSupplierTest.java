@@ -16,13 +16,13 @@
 package org.infrastructurebuilder.util.config;
 
 import static org.infrastructurebuilder.util.config.ConfigMapSupplier.MAVEN_SETTINGS_SERVER_NAMESPACE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MavenConfigWithServersMapSupplierTest extends MavenConfigMapSupplierTest {
 

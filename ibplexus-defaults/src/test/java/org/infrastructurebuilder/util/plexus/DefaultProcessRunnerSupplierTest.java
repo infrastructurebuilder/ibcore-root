@@ -15,7 +15,9 @@
  */
 package org.infrastructurebuilder.util.plexus;
 
-import static org.junit.Assert.assertNotNull;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,14 +31,14 @@ import java.util.UUID;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.infrastructurebuilder.util.IBUtils;
-import org.infrastructurebuilder.util.ProcessException;
 import org.infrastructurebuilder.util.config.DefaultStringListSupplier;
 import org.infrastructurebuilder.util.config.ExtendedListSupplier;
 import org.infrastructurebuilder.util.config.PropertiesInjectedConfigMapSupplier;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.infrastructurebuilder.util.executor.ProcessException;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
 public class DefaultProcessRunnerSupplierTest {
@@ -83,10 +85,10 @@ public class DefaultProcessRunnerSupplierTest {
     assertNotNull(prs.get());
   }
 
-  @Test(expected = ProcessException.class)
+  @Test
   public void testNonexistent() {
     final PropertiesInjectedConfigMapSupplier cms4 = new PropertiesInjectedConfigMapSupplier(Arrays
         .asList(new DefaultStringListSupplier(Arrays.asList(DefaultStringListSupplier.ISOVERRIDE, "/c4.properties"))));
-    prs = new DefaultProcessRunnerSupplier(cms4, logger);
+    assertThrows(ProcessException.class, () -> new DefaultProcessRunnerSupplier(cms4, logger));
   }
 }

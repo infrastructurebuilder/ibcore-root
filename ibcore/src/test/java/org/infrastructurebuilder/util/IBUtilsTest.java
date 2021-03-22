@@ -21,6 +21,7 @@ import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static java.util.UUID.randomUUID;
 import static java.util.stream.Collectors.toList;
+import static org.infrastructurebuilder.exceptions.IBException.cet;
 import static org.infrastructurebuilder.util.IBUtils.XML_PREFIX;
 import static org.infrastructurebuilder.util.IBUtils.asIterator;
 import static org.infrastructurebuilder.util.IBUtils.asJSONObjectStream;
@@ -83,6 +84,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -349,51 +351,53 @@ public class IBUtilsTest {
   }
 
   @Test
-  public void testCopyPathsFail1() throws IOException {
+  public void testCopyPathsFail1() {
     final Path a = wps.get();
     final Path b = a.resolve(randomUUID().toString());
     final Path c = a.resolve(randomUUID().toString());
-    writeString(b, ABC);
+    cet.withTranslation(() -> writeString(b, ABC));
     b.toFile().setReadable(false);
-    copy(b, c);
+    assertThrows(IOException.class, () -> copy(b, c));
   }
 
   @Test
-  public void testCopyPathsFail2() throws IOException {
+  public void testCopyPathsFail2() {
     final Path a = wps.get();
     final Path b = a.resolve(randomUUID().toString());
     final Path c = a.resolve(randomUUID().toString());
-    Files.createDirectories(a);
-    writeString(b, ABC);
-    copy(b, c);
+    cet.withTranslation(() -> {
+      Files.createDirectories(a);
+      writeString(b, ABC);
+      copy(b, c);
+    });
     c.toFile().setWritable(false);
-    copy(b, c);
+    assertThrows(IOException.class, () -> copy(b, c));
   }
 
   @Test
-  public void testCopyPathsFail3() throws IOException {
+  public void testCopyPathsFail3() {
     final Path a = wps.get();
     final Path b = a.resolve(randomUUID().toString());
     final Path c = a.resolve(randomUUID().toString());
-    copy(b, c);
+    assertThrows(IOException.class, () -> copy(b, c));
   }
 
   @Test
-  public void testCopyPathsNull1() throws NullPointerException, IOException {
+  public void testCopyPathsNull1() {
     final Path a = wps.get();
     final Path b = a.resolve(randomUUID().toString());
     final Path c = a.resolve(randomUUID().toString());
     a.resolve(randomUUID().toString());
-    copy(null, c);
+    assertThrows(NullPointerException.class, () -> copy(null, c));
   }
 
   @Test
-  public void testCopyPathsNull2() throws IOException {
+  public void testCopyPathsNull2() {
     final Path a = wps.get();
     final Path b = a.resolve(randomUUID().toString());
     final Path c = a.resolve(randomUUID().toString());
-    Files.createDirectories(a);
-    copy(c, null);
+    cet.withTranslation(() -> Files.createDirectories(a));
+    assertThrows(IOException.class, () -> copy(c, null));
   }
 
   @Test
@@ -409,13 +413,10 @@ public class IBUtilsTest {
   }
 
   @Test
-  public void testCopyAndDigestNullStream() throws NullPointerException{
-    try {
+  public void testCopyAndDigestNullStream() throws NullPointerException {
+    assertThrows(NullPointerException.class, () -> {
       copyAndDigest(null, null);
-    } catch (NoSuchAlgorithmException | IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    });
   }
 
   @Test
@@ -450,44 +451,44 @@ public class IBUtilsTest {
   }
 
   @Test
-  public void testDigestInputStreamFail() throws IOException{
-    Checksum       y;
-    final Checksum expected = new Checksum(ABC_CHECKSUM);
-    try (InputStream bis = Files.newInputStream(Paths.get("NOSUCHFILE"))) {
-      y = new Checksum(bis);
-      bis.close();
-    }
-    assertEquals( expected, y);
+  public void testDigestInputStreamFail() throws IOException {
+    assertThrows(IOException.class, () -> {
+      Checksum       y;
+      final Checksum expected = new Checksum(ABC_CHECKSUM);
+      try (InputStream bis = Files.newInputStream(Paths.get("NOSUCHFILE"))) {
+        y = new Checksum(bis);
+        bis.close();
+      }
+      assertEquals(expected, y);
+    });
   }
 
   @Test
-  public void testDigestNullStream() throws NullPointerException{
-    try {
+  public void testDigestNullStream() {
+    assertThrows(NullPointerException.class, () -> {
       digestInputStream(null);
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    });
+
   }
 
   @Test
   public void testFailReadFile() throws IOException {
-    final Path p = testClasses.resolve(FAKEFILE);
+    assertThrows(IOException.class, () -> {
 
-    readFile(p);
+      final Path p = testClasses.resolve(FAKEFILE);
+
+      readFile(p);
+    });
   }
 
   @Test
-  public void testFailUnzip() throws IOException {
+  public void testFailUnzip() {
     final Path p = testClasses.resolve(FAKEFILE);
-    Path       t;
-    try {
-      t = Files.createTempDirectory("X");
-    } catch (final IOException e) {
-      throw new IBException(e);
-    }
+    Path       t = cet.withReturningTranslation(() -> {
+                   return Files.createTempDirectory("X");
+                 });
     t.toFile().deleteOnExit();
-    unzip(p, t);
+    assertThrows(IOException.class, () -> unzip(p, t));
   }
 
   @Test
@@ -500,13 +501,10 @@ public class IBUtilsTest {
   @Test
   public void testForcePathAlreadyAFile() throws IBException {
     final Path s = testDir.resolve(randomUUID().toString());
-    try {
+    assertThrows(IBException.class, () -> {
       IBUtils.writeString(s, ABC);
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    forceDirectoryPath(s.toFile());
+      forceDirectoryPath(s.toFile());
+    });
   }
 
   @Test
@@ -518,7 +516,7 @@ public class IBUtilsTest {
       i = inputStreamFromHexString(x);
       final ByteArrayOutputStream bos = new ByteArrayOutputStream();
       copy(i, bos);
-      assertEquals("Strings are equal", y, bos.toString());
+      assertEquals(y, bos.toString());
       return;
     } finally {
       if (i != null) {
@@ -559,7 +557,7 @@ public class IBUtilsTest {
   public void testGetHex() {
     final byte[] b = { 0x00, 0x01, 0x03, 0x0f };
     final String s = getHex(b);
-    assertEquals("0,1,3,f", "0001030f", s);
+    assertEquals("0001030f", s);
     assertTrue(Arrays.equals(b, hexStringToByteArray(s)));
   }
 
@@ -567,13 +565,13 @@ public class IBUtilsTest {
   public void testGetHexCharset() {
     final byte[] b = { 0x00, 0x01, 0x03, 0x0f };
     final String s = getHex(b, IBConstants.UTF8);
-    assertEquals("0,1,3,f", "0001030f", s);
+    assertEquals("0001030f", s);
     assertTrue(Arrays.equals(b, hexStringToByteArray(s)));
   }
 
   @Test
   public void testGetHexNull() {
-    assertNull("Result of null is null", getHex(null));
+    assertNull(getHex(null));
   }
 
   @Test
@@ -581,7 +579,7 @@ public class IBUtilsTest {
     final byte[]               b   = { 0x00, 0x01, 0x03, 0x0f };
     final ByteArrayInputStream ins = new ByteArrayInputStream(b);
     final String               s   = getHexStringFromInputStream(ins);
-    assertEquals("0,1,3,f", "0001030f", s);
+    assertEquals("0001030f", s);
     assertTrue(Arrays.equals(b, hexStringToByteArray(s)));
   }
 
@@ -683,7 +681,7 @@ public class IBUtilsTest {
   @Test
   public void testGetOptString() {
     final JSONObject g = new JSONObject().put("X", "1").put("A", false).put("B", JSONObject.NULL);
-    assertEquals("optional Y", getOptString(g, "X").get(), new String("1"));
+    assertEquals(getOptString(g, "X").get(), new String("1"));
     assertFalse(getOptString(g, "AVC").isPresent(), "Optional A is not present");
     try {
       assertFalse(getOptString(g, "B").isPresent(), "Optional B is not present");
@@ -694,6 +692,7 @@ public class IBUtilsTest {
 
   }
 
+  @Disabled
   @Test
   public void testGetServerProxies() {
     final List<ServerProxy> a = getServicesFor(ServerProxy.class);
@@ -746,8 +745,8 @@ public class IBUtilsTest {
   }
 
   @Test
-  public void testMapStringToURLorNullBad() throws IBException {
-    IBUtils.mapStringToURLOrNull(Optional.of("Blethc"));
+  public void testMapStringToURLorNullBad() {
+    assertThrows(IBException.class, () -> IBUtils.mapStringToURLOrNull(Optional.of("Blethc")));
   }
 
   @Test
@@ -767,16 +766,14 @@ public class IBUtilsTest {
 
   @Test
   public void testMapStringToURLorNullNull() throws NullPointerException {
-    final String STRINGX = "http://www.google.com";
-    URL          u;
-    try {
+    assertThrows(NullPointerException.class, () -> {
+
+      final String STRINGX = "http://www.google.com";
+      URL          u;
       u = new URL(STRINGX);
       final URL u1 = IBUtils.mapStringToURLOrNull(null);
       assertEquals(u, u1);
-    } catch (MalformedURLException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    });
 
   }
 
@@ -939,14 +936,11 @@ public class IBUtilsTest {
 
   @Test
   public void testNonExistentReadJsonObjectFromPath() throws NoSuchFileException {
-    JSONObject j = null;
-    try {
+    assertThrows(NoSuchFileException.class, () -> {
+      JSONObject j = null;
       j = readJsonObject(testClasses.resolve("doesnotexist.json"));
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    assertEquals("Got E", "E", j.getJSONObject("C").getString("D"));
+      assertEquals("Got E", "E", j.getJSONObject("C").getString("D"));
+    });
   }
 
   @Test
@@ -992,10 +986,10 @@ public class IBUtilsTest {
 
     final String v = readFile(p, Charset.defaultCharset());
 
-    assertEquals("Strings are same", "ABC_123", v);
+    assertEquals("ABC_123", v);
 
     try (InputStream ins = Files.newInputStream(p)) {
-      assertEquals("Strings are same", "ABC_123", readToString(ins, Charset.defaultCharset()));
+      assertEquals("ABC_123", readToString(ins, Charset.defaultCharset()));
     }
   }
 
@@ -1015,8 +1009,8 @@ public class IBUtilsTest {
       k = readToJSONObject(ins);
     }
 
-    assertEquals("Got E", "E", j.getJSONObject("C").getString("D"));
-    assertEquals("Got E", "E", k.getJSONObject("C").getString("D"));
+    assertEquals("E", j.getJSONObject("C").getString("D"));
+    assertEquals("E", k.getJSONObject("C").getString("D"));
   }
 
   @Test
@@ -1030,8 +1024,8 @@ public class IBUtilsTest {
     final JSONObject          a = new JSONObject().put("X", "Y").put("Z", "false");
     final Map<String, String> m = splitToMap(a);
     assertEquals(2, m.size());
-    assertEquals("X = Y", "Y", m.get("X"));
-    assertEquals("Z is false", "false", m.get("Z"));
+    assertEquals("Y", m.get("X"));
+    assertEquals("false", m.get("Z"));
 
     final JSONObject b = joinFromMap(m);
     JSONAssert.assertEquals(a, b, true);
@@ -1059,7 +1053,7 @@ public class IBUtilsTest {
   }
 
   @Test
-  public void testUnzipAndDeleteFAKEPATH() throws NoSuchFileException {
+  public void testUnzipAndDeleteFAKEPATH() throws IOException {
     final Path p = testClasses.resolve("SOMEFAKE.zip");
 
     final Path t = testDir.resolve(randomUUID().toString());
@@ -1074,19 +1068,14 @@ public class IBUtilsTest {
     assertFalse(Files.isDirectory(f));
     assertFalse(Files.isRegularFile(f.resolve(TESTFILE)));
 
-    try {
-      unzip(p, t);
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    assertTrue(Files.isDirectory(f));
-    assertTrue(Files.isRegularFile(f.resolve(TESTFILE)));
-
-    assertTrue(Files.isDirectory(t));
-    deletePath(t);
-    assertFalse(Files.isDirectory(t));
-    assertFalse(Files.isRegularFile(f.resolve(TESTFILE)));
+    assertThrows(IOException.class, () -> unzip(p, t));
+//    assertTrue(Files.isDirectory(f));
+//    assertTrue(Files.isRegularFile(f.resolve(TESTFILE)));
+//
+//    assertTrue(Files.isDirectory(t));
+//    deletePath(t);
+//    assertFalse(Files.isDirectory(t));
+//    assertFalse(Files.isRegularFile(f.resolve(TESTFILE)));
   }
 
   @Disabled
@@ -1130,17 +1119,16 @@ public class IBUtilsTest {
 
   @Test
   public void testUnzipNotAZipFile() throws IOException {
-    unzip(testDir, testDir);
+    assertThrows(IOException.class, () -> {
+      unzip(testDir, testDir);
+    });
   }
 
   @Test
   public void testUnzipNull() throws NullPointerException {
-    try {
+    assertThrows(NullPointerException.class, () -> {
       unzip(null, null);
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    });
   }
 
   @Test
@@ -1173,15 +1161,15 @@ public class IBUtilsTest {
   public void testZipCreateMap() {
     Map<String, String> m = getZipFileCreateMap(true);
     assertEquals(1, m.size());
-    assertEquals("Equals true", m.get("create"), "true");
+    assertEquals(m.get("create"), "true");
 
     m = getZipFileCreateMap(false);
     assertEquals(1, m.size());
-    assertEquals("Equals true", m.get("create"), "false");
+    assertEquals(m.get("create"), "false");
 
     m = getZipFileCreateMap(null);
     assertEquals(1, m.size());
-    assertEquals("Equals true", m.get("create"), "false");
+    assertEquals(m.get("create"), "false");
   }
 
   @Test
@@ -1324,8 +1312,8 @@ public class IBUtilsTest {
   }
 
   @Test
-  public void testTouchDir() throws IBException {
-    touchFile(target);
+  public void testTouchDir() {
+    assertThrows(IBException.class, () -> touchFile(target));
   }
 
   @Test

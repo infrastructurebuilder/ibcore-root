@@ -30,6 +30,11 @@
   <description>Standard interfaces for running applications as a heavyweight process</description>
 	<!-- URL for site gen -->
   <url>${github.url.base}/${project.artifactId}</url>
+  <properties>
+  <test.coverage.percentage.required>30</test.coverage.percentage.required>
+  <jacoco.max.missed.classes>20</jacoco.max.missed.classes>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.infrastructurebuilder</groupId>
@@ -48,6 +53,7 @@
       <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
 <!--       <groupId>org.skyscreamer</groupId> -->
       <groupId>org.infrastructurebuilder.usurped</groupId>

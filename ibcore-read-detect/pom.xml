@@ -45,8 +45,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -188,7 +188,7 @@
         <artifactId>jacoco-maven-plugin</artifactId>
         <configuration>
           <excludes>
-            <exclude>org/infrastructurebuilder/util/files/model/**/*</exclude>
+            <exclude>org/infrastructurebuilder/util/fileresources/model/**/*</exclude>
           </excludes>
         </configuration>
       </plugin>

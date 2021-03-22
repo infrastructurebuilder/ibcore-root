@@ -28,6 +28,7 @@ import java.util.Optional;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
 import org.json.JSONObject;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -46,9 +47,9 @@ public class GAVTest {
   private DefaultGAV          gav3;
   private DefaultGAV          gavNoC;
 //  private DefaultGAV gavNoC2;
-  private GAV        gavNoV;
-  private GAV        gavs;
-  private JSONObject j;
+  private GAV                 gavNoV;
+  private GAV                 gavs;
+  private JSONObject          j;
 
   @BeforeEach
   public void before() {
@@ -72,9 +73,9 @@ public class GAVTest {
   }
 
   @Test
-  public void compareToNull() throws NullPointerException{
+  public void compareToNull() throws NullPointerException {
     final DefaultGAV v = new DefaultGAV(X, Y, ACLASSIFIER, V_1_0_0, BASIC_PACKAGING);
-    v.compareTo(null);
+    Assertions.assertThrows(NullPointerException.class, () -> v.compareTo(null));
   }
 
   @Test
@@ -192,8 +193,9 @@ public class GAVTest {
 
   @Test
   public void testGetDefaultSignaturePathFail() throws IBException {
-    assertEquals("mvn:" + X + SLASH + Y + SLASH + V_1_0_0 + SLASH + BASIC_PACKAGING + SLASH + ACLASSIFIER,
-        gavNoV.getDefaultSignaturePath());
+    Assertions.assertThrows(IBException.class,
+        () -> assertEquals("mvn:" + X + SLASH + Y + SLASH + V_1_0_0 + SLASH + BASIC_PACKAGING + SLASH + ACLASSIFIER,
+            gavNoV.getDefaultSignaturePath()));
   }
 
   @Test
@@ -204,7 +206,7 @@ public class GAVTest {
   @Test
   public void testGetStringVersion() {
     final String target = V_1_0_0;
-    assertEquals("String version is " + target, target, gav.getVersion().get());
+    assertEquals(target, gav.getVersion().get());
   }
 
   @Test
@@ -216,6 +218,6 @@ public class GAVTest {
   public void testIsSnapshot() {
     assertFalse(gav.isSnapshot());
     assertFalse(gavNoV.isSnapshot());
-    assertTrue( gavs.isSnapshot());
+    assertTrue(gavs.isSnapshot());
   }
 }

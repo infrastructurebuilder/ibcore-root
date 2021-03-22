@@ -18,11 +18,12 @@ package org.infrastructurebuilder.util.crypto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.infrastructurebuilder.exceptions.IBException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class DefaultEncryptedSecretSupplierTest {
 
-  private static final String RANDOMPASSWORD99 = "RANDOMPASSWORD99";
+  private static final String            RANDOMPASSWORD99 = "RANDOMPASSWORD99";
   private DefaultEncryptedSecretSupplier d;
 
   @Test
@@ -33,12 +34,12 @@ public class DefaultEncryptedSecretSupplierTest {
 
   @Test
   public void testSetSecretNull() throws NullPointerException {
-    d = new DefaultEncryptedSecretSupplier(null);
+    Assertions.assertThrows(NullPointerException.class, () -> d = new DefaultEncryptedSecretSupplier(null));
   }
 
   @Test
   public void testSetSecretWronglen() throws IBException {
-    d = new DefaultEncryptedSecretSupplier("x");
+    Assertions.assertThrows(IBException.class, () -> d = new DefaultEncryptedSecretSupplier("x"));
   }
 
 }

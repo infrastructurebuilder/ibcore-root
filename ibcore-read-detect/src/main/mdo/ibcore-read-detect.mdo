@@ -14,7 +14,7 @@
   <defaults>
     <default>
       <key>package</key>
-      <value>${project.groupId}.util.files.model</value>
+      <value>${project.groupId}.util.fileresources.model</value>
     </default>
   </defaults>
 
@@ -26,7 +26,7 @@
       <version>1.0.0+</version>
       <interfaces>
         <interface>
-          <![CDATA[org.infrastructurebuilder.util.files.IBResource]]>
+          <![CDATA[org.infrastructurebuilder.util.fileresources.IBResource]]>
         </interface>
       </interfaces>
       <fields>
@@ -180,7 +180,7 @@
           <code>
             <![CDATA[
     @Override
-    public org.infrastructurebuilder.util.files.IBResource moveTo(java.nio.file.Path target) throws java.io.IOException {
+    public org.infrastructurebuilder.util.fileresources.IBResource moveTo(java.nio.file.Path target) throws java.io.IOException {
       org.infrastructurebuilder.util.IBUtils.moveAtomic(getPath(), target);
       return new IBResourceModel(target.toAbsolutePath().toString(),getFileChecksum(), getType(), getSource(), getName(),getMostRecentReadTime().orElse(null));
     }
@@ -273,7 +273,7 @@
       java.nio.file.Path path
       // Checksum
       , org.infrastructurebuilder.util.artifacts.Checksum checksum) {
-    this(path, checksum, org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM);
+    this(path, checksum, org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM);
   }
 
   ]]>
@@ -289,7 +289,7 @@
   @Override
   public java.io.InputStream get() {
     setMostRecentReadTime(new java.util.Date());
-    return org.infrastructurebuilder.util.files.IBResource.super.get();
+    return org.infrastructurebuilder.util.fileresources.IBResource.super.get();
   }
 
 

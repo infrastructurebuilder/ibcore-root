@@ -25,15 +25,16 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.infrastructurebuilder.exceptions.IBException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class ConfigMapTest {
 
-  private static final Object ABC = "ABC";
+  private static final Object     ABC = "ABC";
   private HashMap<String, Object> m;
-  private Object o = UUID.randomUUID();
-  private ConfigMap m3;
+  private Object                  o   = UUID.randomUUID();
+  private ConfigMap               m3;
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -55,7 +56,7 @@ public class ConfigMapTest {
 
   @Test
   public void testGetRequiredNotPResent() throws IBException {
-    assertEquals(o, m3.getRequired("Q"));
+    Assertions.assertThrows(IBException.class, () -> assertEquals(o, m3.getRequired("Q")));
   }
 
   @Test
@@ -73,9 +74,9 @@ public class ConfigMapTest {
   @Test
   public void testGetObject() {
     assertEquals(o, m3.get("A"));
-    m3.put((String)ABC, o);
+    m3.put((String) ABC, o);
     assertTrue(m3.containsKey(ABC));
-    assertEquals(o, m3.get((Object)ABC));
+    assertEquals(o, m3.get((Object) ABC));
   }
 
   @Test
@@ -89,7 +90,8 @@ public class ConfigMapTest {
   @Test
   public void testPutAll() {
     m3.clear();
-    m3.putAll(m);;
+    m3.putAll(m);
+    ;
     assertTrue(m3.containsValue(o));
   }
 

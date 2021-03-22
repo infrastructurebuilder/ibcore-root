@@ -31,6 +31,7 @@ import java.util.Map;
 
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.config.TestingPathSupplier;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -59,17 +60,17 @@ public class ChecksumTest {
   @Test
   public void testAsUUID() {
     final String uuid = "747a8830-5c25-3d28-ab17-81ed541f236e";
-    assertEquals("UUID of cString is " + uuid, uuid, cString.get().get().toString());
+    assertEquals(uuid, cString.get().get().toString());
   }
 
   @Test
-  public void testBadInputStreamSupplier() throws IBException {
-    new Checksum(() -> new InputStream() {
+  public void testBadInputStreamSupplier() {
+    Assertions.assertThrows(IBException.class, () -> new Checksum(() -> new InputStream() {
       @Override
       public int read() throws IOException {
         throw new IOException("FAIL, suckah!");
       }
-    });
+    }));
   }
 
   @Test
@@ -79,7 +80,7 @@ public class ChecksumTest {
 
   @Test
   public void testChecksumByteArray() {
-    final byte[] x = { 78, 69, 86, 69, 82, 95, 71, 79, 78, 78, 65, 95, 71, 73, 86, 69, 95, 89, 79, 85, 95, 85, 80 };
+    final byte[]   x = { 78, 69, 86, 69, 82, 95, 71, 79, 78, 78, 65, 95, 71, 73, 86, 69, 95, 89, 79, 85, 95, 85, 80 };
     final Checksum c = new Checksum(x);
     assertEquals(cString, c);
   }
@@ -93,7 +94,7 @@ public class ChecksumTest {
   @Test
   public void testChecksumString() {
     final String testChecksum = "4e455645525f474f4e4e415f474956455f594f555f5550";
-    assertEquals("checksum of test string is " + testChecksum, testChecksum, cString.toString());
+    assertEquals(testChecksum, cString.toString());
   }
 
   @Disabled
@@ -105,9 +106,9 @@ public class ChecksumTest {
   @Test
   public void testCompareTo() {
     assertTrue(cRick.compareTo(cRick) == 0);
-    assertTrue( cRick.compareTo(cString) < 0);
+    assertTrue(cRick.compareTo(cString) < 0);
     assertTrue(cnull.compareTo(cRick) < 0);
-    assertTrue( cRick.compareTo(new Checksum((byte[]) null)) > 0);
+    assertTrue(cRick.compareTo(new Checksum((byte[]) null)) > 0);
   }
 
   @Test
@@ -116,7 +117,7 @@ public class ChecksumTest {
     assertNotEquals(cString, null);
     assertNotEquals(cString, "ABC");
     assertEquals(cString, new Checksum(theString.getBytes(UTF_8)));
-    assertNotEquals( cString, cRick);
+    assertNotEquals(cString, cRick);
   }
 
   @Test
@@ -129,7 +130,7 @@ public class ChecksumTest {
   @Test
   public void testHashCode() {
     final int rickHash = cRick.hashCode();
-    assertFalse( rickHash == 0);
+    assertFalse(rickHash == 0);
     assertEquals(rickHash, cRick.hashCode());
 
     assertEquals(31, cnull.hashCode());
@@ -141,7 +142,7 @@ public class ChecksumTest {
     s.put("A", "B");
     s.put("B", "A");
     final String val = "420630d340defad8521c53d765c5fec23cd2e642ef7323b02d500af33e145e228f441fb655a72213dfd73e66240d4a9fd9f410ae9a7ea87d50d2f013305ed144";
-    assertEquals("Checksum is val", val, Checksum.getMapStringStringChecksum(s).toString());
+    assertEquals(val, Checksum.getMapStringStringChecksum(s).toString());
   }
 
   @Test
