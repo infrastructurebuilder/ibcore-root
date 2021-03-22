@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.apache.maven.project.MavenProject;
+import org.infrastructurebuilder.util.mavensupport.MavenProjectSupplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

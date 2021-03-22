@@ -13,28 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util;
+package org.infrastructurebuilder.util.mavensupport;
 
-import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
-import org.apache.maven.plugin.logging.Log;
-import org.infrastructurebuilder.util.logging.SLF4JFromMavenLogger;
-import org.slf4j.Logger;
+import org.apache.maven.project.MavenProject;
+import org.infrastructurebuilder.util.constants.IBConstants;
+import org.infrastructurebuilder.util.config.TSupplier;
 
-@Named(InjectedSLF4JFromMavenLoggerSupplier.LOG)
-public class InjectedSLF4JFromMavenLoggerSupplier implements LoggerSupplier {
-  public static final String LOG = "maven-log";
-  private final Log mavenLog;
+@Named(IBConstants.MAVEN)
+@Singleton
+public class MavenProjectSupplier extends TSupplier<MavenProject>  {
 
-  @Inject
-  public InjectedSLF4JFromMavenLoggerSupplier(Log mavenLog) {
-    this.mavenLog = mavenLog;
-  }
-
-  @Override
-  public Logger get() {
-    // TODO Auto-generated method stub
-    return new SLF4JFromMavenLogger(this.mavenLog);
-  }
 }
