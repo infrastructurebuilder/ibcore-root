@@ -26,7 +26,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.util.dag.CycleDetectedException;
-import org.infrastructurebuilder.util.dag.DAGBuilder;
 import org.infrastructurebuilder.util.dag.MutableDAG;
 import org.infrastructurebuilder.util.dag.MutableVertex;
 import org.infrastructurebuilder.util.dag.impl.DAGBuilderImpl.MutableDAGImpl;

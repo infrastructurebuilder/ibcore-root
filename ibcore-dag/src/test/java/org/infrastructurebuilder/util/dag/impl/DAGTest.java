@@ -24,11 +24,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.infrastructurebuilder.util.dag.CycleDetectedException;
-import org.infrastructurebuilder.util.dag.DAGBuilder;
 import org.infrastructurebuilder.util.dag.MutableDAG;
 import org.infrastructurebuilder.util.dag.MutableVertex;
 import org.junit.jupiter.api.Test;
-import org.infrastructurebuilder.util.dag.*;
 public class DAGTest {
   @Test
   public void testCycleException() {

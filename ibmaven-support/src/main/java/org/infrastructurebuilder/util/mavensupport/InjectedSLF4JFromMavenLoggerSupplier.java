@@ -35,7 +35,6 @@ public class InjectedSLF4JFromMavenLoggerSupplier implements LoggerSupplier {
 
   @Override
   public Logger get() {
-    // TODO Auto-generated method stub
     return new SLF4JFromMavenLogger(this.mavenLog);
   }
 }

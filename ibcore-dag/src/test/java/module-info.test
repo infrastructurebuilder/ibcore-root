@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-open module test.org.infrastructurebuilder.ibcore {
+open module test.org.infrastructurebuilder.ibcore.dag {
   exports org.infrastructurebuilder.util.config;
   exports org.infrastructurebuilder.util.crypto;
   exports org.infrastructurebuilder.util.config.factory;

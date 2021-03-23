@@ -23,8 +23,9 @@ import java.util.List;
 
 import org.infrastructurebuilder.util.dag.CycleDetectedException;
 import org.infrastructurebuilder.util.dag.DAG;
-import org.infrastructurebuilder.util.dag.DAGBuilder;
+import org.infrastructurebuilder.util.dag.DAGVisitResult;
 import org.infrastructurebuilder.util.dag.DAGVisitor;
+import org.infrastructurebuilder.util.dag.Vertex;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -66,6 +67,11 @@ public class DAGWalkerPreTraversalDepthFirstImplTest {
   public void testWalk() throws CycleDetectedException {
     final DAG<String> dag = new DAGBuilderImpl<String>().addEdge("A", "B").build();
     final List<DAGVisitor<String>> visitors = Arrays.asList(new DAGVisitor<String>() {
+      @Override
+      public DAGVisitResult visitNode(Vertex<String> node) {
+        // I am at `node`!
+        return DAGVisitResult.CONTINUE;
+      }
     });
     d.walk(dag, visitors);
     assertFalse(visitors.get(0).getVisitationState().isPresent());

@@ -37,7 +37,6 @@ import org.infrastructurebuilder.util.dag.MutableVertex;
 import org.infrastructurebuilder.util.dag.Vertex;
 import org.infrastructurebuilder.util.dag.impl.DAGBuilderImpl.MutableDAGImpl;
 import org.infrastructurebuilder.util.dag.impl.DAGBuilderImpl.MutableDAGImpl.DAGImpl.DepthFirstTopologicalSorterImpl;
-import org.joor.Reflect;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;

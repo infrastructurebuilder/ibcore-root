@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-module org.infrastructurebuilder.ibcore.dag {
-  exports org.infrastructurebuilder.util.dag;
-
-  requires org.infrastructurebuilder.exceptions;
-  requires org.slf4j;
+module org.infrastructurebuilder.data.util.files {
+  exports org.infrastructurebuilder.data.util.files;
+  requires org.infrastructurebuilder.ibcore;
 }
