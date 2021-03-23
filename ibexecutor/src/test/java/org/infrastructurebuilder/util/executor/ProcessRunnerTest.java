@@ -15,14 +15,15 @@
  */
 package org.infrastructurebuilder.util.executor;
 
-import static org.infrastructurebuilder.util.IBUtils.*;
 import static java.time.Duration.ofMinutes;
 import static java.time.Duration.ofSeconds;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.infrastructurebuilder.util.IBUtils.isWindows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
