@@ -16,7 +16,7 @@
 package org.infrastructurebuilder.util;
 
 import static java.util.Optional.empty;
-import static org.infrastructurebuilder.util.artifacts.Weighted.weighted;
+import static org.infrastructurebuilder.util.Weighted.weighted;
 import static org.infrastructurebuilder.util.constants.IBConstants.DEFAULT;
 
 import java.util.List;

@@ -35,6 +35,16 @@
   <url>${github.url.base}/${project.artifactId}</url>
   <dependencies>
     <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore-config</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore-config</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
       <scope>provided</scope>

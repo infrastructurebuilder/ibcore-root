@@ -36,7 +36,7 @@ import javax.inject.Named;
 import org.apache.tools.ant.DirectoryScanner;
 import org.eclipse.sisu.Description;
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.config.PathSupplier;
+import org.infrastructurebuilder.util.PathSupplier;
 import org.infrastructurebuilder.util.config.StringListSupplier;
 import org.infrastructurebuilder.util.files.IBDirScanner;
 import org.infrastructurebuilder.util.files.IBDirScannerSupplier;

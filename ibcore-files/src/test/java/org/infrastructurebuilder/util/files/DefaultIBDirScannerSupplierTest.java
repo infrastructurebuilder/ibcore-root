@@ -23,8 +23,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.infrastructurebuilder.util.TestingPathSupplier;
 import org.infrastructurebuilder.util.config.StringListSupplier;
-import org.infrastructurebuilder.util.config.TestingPathSupplier;
 import org.infrastructurebuilder.util.files.impl.DefaultIBDirScannerSupplier;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

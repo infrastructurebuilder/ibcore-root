@@ -18,8 +18,6 @@ package org.infrastructurebuilder.util;
 import java.util.Optional;
 import java.util.SortedSet;
 
-import org.infrastructurebuilder.util.artifacts.JSONAndChecksumEnabled;
-
 public interface CryptoIdentifier extends JSONAndChecksumEnabled {
 
   default boolean absolutelyMatch(final CryptoIdentifier i) {

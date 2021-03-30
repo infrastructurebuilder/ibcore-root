@@ -214,8 +214,8 @@
           <code>
             <![CDATA[
     @Override
-    public org.infrastructurebuilder.util.artifacts.Checksum getChecksum() {
-      return new org.infrastructurebuilder.util.artifacts.Checksum(getFileChecksum());
+    public org.infrastructurebuilder.util.Checksum getChecksum() {
+      return new org.infrastructurebuilder.util.Checksum(getFileChecksum());
     }
   ]]>
           </code>
@@ -228,7 +228,7 @@
       // Path
       java.nio.file.Path path
       // Checksum
-      , org.infrastructurebuilder.util.artifacts.Checksum checksum
+      , org.infrastructurebuilder.util.Checksum checksum
       // Type
       , String type) {
     this(path, checksum, type, java.util.Optional.empty(), java.util.Optional.empty(), java.util.Optional.empty());
@@ -245,7 +245,7 @@
       // Path
       java.nio.file.Path path
       // Checksum
-      , org.infrastructurebuilder.util.artifacts.Checksum checksum
+      , org.infrastructurebuilder.util.Checksum checksum
       // Type
       , String type
       // Source
@@ -272,7 +272,7 @@
       // Path
       java.nio.file.Path path
       // Checksum
-      , org.infrastructurebuilder.util.artifacts.Checksum checksum) {
+      , org.infrastructurebuilder.util.Checksum checksum) {
     this(path, checksum, org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM);
   }
 

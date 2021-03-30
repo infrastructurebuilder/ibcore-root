@@ -17,7 +17,7 @@ package org.infrastructurebuilder.data.util.files;
 
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.artifacts.IdentifiedAndWeighted;
+import org.infrastructurebuilder.util.IdentifiedAndWeighted;
 
 /**
  * Default-weighted data tuple with the MIME type as the identifier

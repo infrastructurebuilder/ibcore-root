@@ -66,6 +66,28 @@
       </dependency>
       <dependency>
         <groupId>org.infrastructurebuilder</groupId>
+        <artifactId>ibcore-config</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder</groupId>
+        <artifactId>ibcore-config</artifactId>
+        <type>test-jar</type>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder</groupId>
+        <artifactId>ibcore-artifacts</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder</groupId>
+        <artifactId>ibcore-artifacts</artifactId>
+        <type>test-jar</type>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder</groupId>
         <artifactId>ibcore-dag</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -172,6 +194,8 @@
   </build>
   <modules>
     <module>ibcore</module>
+    <module>ibcore-config</module>
+    <module>ibcore-artifacts</module>
     <module>ibcore-dag</module>
     <module>ibexecutor</module>
     <module>ibplexus-defaults</module>

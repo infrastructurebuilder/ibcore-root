@@ -30,8 +30,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Future;
 
-import org.infrastructurebuilder.util.artifacts.JSONBuilder;
-import org.infrastructurebuilder.util.artifacts.JSONOutputEnabled;
+import org.infrastructurebuilder.util.JSONBuilder;
+import org.infrastructurebuilder.util.JSONOutputEnabled;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.zeroturnaround.exec.ProcessResult;

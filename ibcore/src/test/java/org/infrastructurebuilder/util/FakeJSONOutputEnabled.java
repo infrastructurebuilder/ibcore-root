@@ -15,7 +15,6 @@
  */
 package org.infrastructurebuilder.util;
 
-import org.infrastructurebuilder.util.artifacts.JSONOutputEnabled;
 import org.json.JSONObject;
 
 public class FakeJSONOutputEnabled implements JSONOutputEnabled {

@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
 
-import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.infrastructurebuilder.util.Checksum;
 import org.infrastructurebuilder.util.fileresources.model.IBResourceModel;
 
 /**

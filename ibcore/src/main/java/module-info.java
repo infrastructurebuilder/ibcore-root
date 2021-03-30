@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 module org.infrastructurebuilder.ibcore {
-  exports org.infrastructurebuilder.util.config;
   exports org.infrastructurebuilder.util.crypto;
-  exports org.infrastructurebuilder.util.config.factory;
   exports org.infrastructurebuilder.util.files;
   exports org.infrastructurebuilder.util.constants;
   exports org.infrastructurebuilder.util;
-  exports org.infrastructurebuilder.util.artifacts.impl;
-  exports org.infrastructurebuilder.util.artifacts;
+  exports org.infrastructurebuilder.util.impl;
 
   requires transitive com.vdurmont.semver4j;
   requires transitive org.infrastructurebuilder.exceptions;

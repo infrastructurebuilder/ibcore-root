@@ -32,7 +32,7 @@ import java.util.function.Function;
 
 import org.apache.tika.Tika;
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.infrastructurebuilder.util.Checksum;
 import org.infrastructurebuilder.util.fileresources.model.IBResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

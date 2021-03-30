@@ -104,11 +104,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.artifacts.Checksum;
-import org.infrastructurebuilder.util.artifacts.GAV;
-import org.infrastructurebuilder.util.artifacts.IBVersion;
-import org.infrastructurebuilder.util.artifacts.JSONOutputEnabled;
-import org.infrastructurebuilder.util.artifacts.impl.DefaultIBVersion;
+import org.infrastructurebuilder.util.impl.DefaultIBVersion;
 import org.infrastructurebuilder.util.constants.IBConstants;
 import org.json.JSONArray;
 import org.json.JSONObject;

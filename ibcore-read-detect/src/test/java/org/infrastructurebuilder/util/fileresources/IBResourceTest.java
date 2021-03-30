@@ -18,7 +18,8 @@ package org.infrastructurebuilder.util.fileresources;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_ZIP;
 import static org.infrastructurebuilder.util.constants.IBConstants.TEXT_PLAIN;
-import static org.infrastructurebuilder.util.fileresources.DefaultIBResource.*;
+import static org.infrastructurebuilder.util.fileresources.DefaultIBResource.copyToDeletedOnExitTempChecksumAndPath;
+import static org.infrastructurebuilder.util.fileresources.DefaultIBResource.copyToTempChecksumAndPath;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -34,8 +35,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.artifacts.Checksum;
-import org.infrastructurebuilder.util.config.TestingPathSupplier;
+import org.infrastructurebuilder.util.Checksum;
+import org.infrastructurebuilder.util.TestingPathSupplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

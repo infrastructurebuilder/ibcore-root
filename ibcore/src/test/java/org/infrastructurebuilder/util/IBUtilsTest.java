@@ -125,12 +125,11 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.artifacts.Checksum;
-import org.infrastructurebuilder.util.artifacts.GAV;
-import org.infrastructurebuilder.util.artifacts.IBVersion;
-import org.infrastructurebuilder.util.artifacts.JSONOutputEnabled;
-import org.infrastructurebuilder.util.artifacts.impl.DefaultGAV;
-import org.infrastructurebuilder.util.config.TestingPathSupplier;
+import org.infrastructurebuilder.util.Checksum;
+import org.infrastructurebuilder.util.GAV;
+import org.infrastructurebuilder.util.IBVersion;
+import org.infrastructurebuilder.util.JSONOutputEnabled;
+import org.infrastructurebuilder.util.impl.DefaultGAV;
 import org.infrastructurebuilder.util.constants.IBConstants;
 import org.json.JSONArray;
 import org.json.JSONException;

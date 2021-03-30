@@ -17,8 +17,6 @@ package org.infrastructurebuilder.util;
 
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.artifacts.Weighted;
-
 public interface CredentialsSupplier extends Weighted {
   Optional<BasicCredentials> getCredentialsFor(String query);
 

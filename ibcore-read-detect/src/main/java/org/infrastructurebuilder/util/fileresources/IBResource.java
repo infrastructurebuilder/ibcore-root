@@ -35,7 +35,7 @@ import java.util.StringJoiner;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.artifacts.Checksum;
+import org.infrastructurebuilder.util.Checksum;
 
 public interface IBResource extends Supplier<InputStream> {
 

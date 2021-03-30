@@ -35,9 +35,10 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.repository.RepositorySystem;
 import org.eclipse.aether.util.artifact.JavaScopes;
-import org.infrastructurebuilder.util.artifacts.GAV;
+import org.infrastructurebuilder.util.GAV;
 import org.infrastructurebuilder.util.artifacts.InjectedResolver;
 import org.infrastructurebuilder.util.artifacts.ResolveOutcome;
+import org.infrastructurebuilder.util.impl.DefaultGAV;
 
 @Named
 public class DefaultInjectedResolver implements InjectedResolver {

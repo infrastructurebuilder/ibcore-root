@@ -38,7 +38,13 @@
   <dependencies>
     <dependency>
       <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore-config</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
       <artifactId>ibcore</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.zeroturnaround</groupId>

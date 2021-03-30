@@ -17,6 +17,7 @@ package org.infrastructurebuilder.util;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.util.IBUtils.deepCopy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -27,10 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
-import org.infrastructurebuilder.util.artifacts.JSONAndChecksumEnabled;
-import org.infrastructurebuilder.util.artifacts.impl.AbstractRoseTree;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,8 +41,8 @@ public class RoseTreeTest {
     public static final String TREE_CHILDREN = "children";
 
     public RoseTest(final X value, final List<RoseTree<X>> children) {
-      super(value, Optional.ofNullable(children).map(c -> Collections.unmodifiableList(c))
-          .orElseThrow(() -> new IllegalArgumentException("Children can not be null.\n\t" + "Children : " + children)));
+      super(value, ofNullable(children).map(Collections::unmodifiableList)
+          .orElseThrow(() -> new IllegalArgumentException("Children cannot be null")));
     }
 
     @Override
@@ -99,19 +97,19 @@ public class RoseTreeTest {
 
     @Override
     public int hashCode() {
-      final int prime = 31;
-      int result = 1;
+      final int prime  = 31;
+      int       result = 1;
       result = prime * result + (a == null ? 0 : asChecksum().hashCode());
       return result;
     }
 
   }
 
-  private RoseTest rose0, rose1, rose2;
+  private RoseTest   rose0, rose1, rose2;
 
   private JSONObject testJson0, testJson1, testJson2;
 
-  private X testObject0, testObject1, testObject2;
+  private X          testObject0, testObject1, testObject2;
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -129,9 +127,9 @@ public class RoseTreeTest {
   @Test
   public void testAsChecksum() {
     final String rose1checksum = "57be5e8db73583d93774c737de925b39e67cfa1ef03c0cdea0c34ebf41669aef87fab36c33225157f7fcfd34f34a50ac91d54aa2781bf884f6aa7f4e74968ced";
-    assertEquals( rose1checksum, rose1.asChecksum().toString());
+    assertEquals(rose1checksum, rose1.asChecksum().toString());
     final String rose0Checksum = "49f9207ff5c6c339a3850ecce2172e327d6f8a8dc63f62fd2be277e8145f17d309167dabc9cf3650e1367f995ce90fe685113250a1226d089b7e42818ef1073f";
-    assertEquals( rose0Checksum, rose0.asChecksum().toString());
+    assertEquals(rose0Checksum, rose0.asChecksum().toString());
   }
 
   @Test
@@ -187,8 +185,8 @@ public class RoseTreeTest {
 
   @Test
   public void testWithChildren() {
-    final RoseTest rose3 = new RoseTest(new X(testJson0), emptyList());
-    final RoseTree<X> b = rose1.withChildren(asList(rose2, rose3));
+    final RoseTest    rose3 = new RoseTest(new X(testJson0), emptyList());
+    final RoseTree<X> b     = rose1.withChildren(asList(rose2, rose3));
     assertEquals(2, b.getChildren().size());
   }
 

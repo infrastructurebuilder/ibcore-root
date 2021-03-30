@@ -43,9 +43,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.infrastructurebuilder.util.Checksum;
 import org.infrastructurebuilder.util.IBUtils;
-import org.infrastructurebuilder.util.artifacts.Checksum;
-import org.infrastructurebuilder.util.config.TestingPathSupplier;
+import org.infrastructurebuilder.util.TestingPathSupplier;
 import org.infrastructurebuilder.util.executor.DefaultProcessExecutionResultBag;
 import org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream;
 import org.infrastructurebuilder.util.executor.MutableProcessExecutionResultBag;

@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 module org.infrastructurebuilder.util.executor {
-  requires  org.infrastructurebuilder.ibcore;
+  requires transitive org.infrastructurebuilder.ibcore;
+  requires transitive org.infrastructurebuilder.ibcore.config;
 //
 //  requires transitive com.vdurmont.semver4j;
   requires  org.infrastructurebuilder.exceptions;

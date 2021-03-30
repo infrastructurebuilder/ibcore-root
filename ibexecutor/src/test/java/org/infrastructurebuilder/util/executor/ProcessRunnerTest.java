@@ -35,8 +35,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.infrastructurebuilder.util.IBUtils;
-import org.infrastructurebuilder.util.artifacts.Checksum;
-import org.infrastructurebuilder.util.config.TestingPathSupplier;
+import org.infrastructurebuilder.util.Checksum;
+import org.infrastructurebuilder.util.TestingPathSupplier;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

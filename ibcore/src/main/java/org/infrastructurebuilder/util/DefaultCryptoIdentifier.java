@@ -21,7 +21,6 @@ import java.util.Optional;
 import java.util.SortedSet;
 import java.util.UUID;
 
-import org.infrastructurebuilder.util.artifacts.JSONBuilder;
 import org.json.JSONObject;
 
 public class DefaultCryptoIdentifier implements CryptoIdentifier {

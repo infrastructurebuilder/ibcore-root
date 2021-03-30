@@ -82,7 +82,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.infrastructurebuilder.util.artifacts.IdentifiedAndWeighted;
+import org.infrastructurebuilder.util.IdentifiedAndWeighted;
 import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
 
 @Named

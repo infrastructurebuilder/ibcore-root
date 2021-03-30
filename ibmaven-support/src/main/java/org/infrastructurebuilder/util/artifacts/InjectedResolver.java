@@ -19,6 +19,7 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.infrastructurebuilder.util.GAV;
 
 public interface InjectedResolver {
 

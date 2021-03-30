@@ -24,9 +24,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.util.artifacts.Identified;
-import org.infrastructurebuilder.util.artifacts.JSONBuilder;
-import org.infrastructurebuilder.util.artifacts.JSONOutputEnabled;
+import org.infrastructurebuilder.util.JSONBuilder;
 import org.json.JSONObject;
 
 public class ServerProxy implements Identified, JSONOutputEnabled, Supplier<BasicCredentials> {

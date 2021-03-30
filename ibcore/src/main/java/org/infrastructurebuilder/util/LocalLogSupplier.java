@@ -15,7 +15,6 @@
  */
 package org.infrastructurebuilder.util;
 
-import org.infrastructurebuilder.util.config.TSupplier;
 import org.slf4j.Logger;
 
 @javax.inject.Named(LocalLogSupplier.NAME)
