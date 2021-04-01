@@ -23,8 +23,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.infrastructurebuilder.util.IdentifierSupplier;
-import org.infrastructurebuilder.util.WorkingPathSupplier;
+import org.infrastructurebuilder.util.core.IdentifierSupplier;
+import org.infrastructurebuilder.util.core.WorkingPathSupplier;
 
 @Named(IncrementingDatedWorkingPathSupplier.INCREMENTING_DATED_WPS)
 @Singleton

@@ -17,7 +17,7 @@ package org.infrastructurebuilder.util.config;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.infrastructurebuilder.util.IdentifierSupplier;
+import org.infrastructurebuilder.util.core.IdentifierSupplier;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;

@@ -17,7 +17,7 @@ package org.infrastructurebuilder.util.config;
 
 import java.nio.file.Path;
 
-import org.infrastructurebuilder.util.TSupplier;
+import org.infrastructurebuilder.util.core.TSupplier;
 
 //@javax.inject.Named(IBDATA_WORKING_PATH_SUPPLIER)
 @javax.inject.Singleton

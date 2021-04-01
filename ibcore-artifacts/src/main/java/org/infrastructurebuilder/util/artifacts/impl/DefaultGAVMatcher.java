@@ -19,9 +19,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-import org.infrastructurebuilder.util.GAV;
-import org.infrastructurebuilder.util.GAVMatcher;
-import org.infrastructurebuilder.util.IBVersion.IBVersionRange;
+import org.infrastructurebuilder.util.core.GAV;
+import org.infrastructurebuilder.util.core.GAVMatcher;
+import org.infrastructurebuilder.util.core.IBVersion.IBVersionRange;
 
 public class DefaultGAVMatcher implements GAVMatcher {
 //  private final static Pattern allString = Pattern.compile(".*");

@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-module org.infrastructurebuilder.ibcore {
+module org.infrastructurebuilder.util.core {
   exports org.infrastructurebuilder.util.crypto;
-  exports org.infrastructurebuilder.util.files;
   exports org.infrastructurebuilder.util.constants;
-  exports org.infrastructurebuilder.util;
-  exports org.infrastructurebuilder.util.impl;
+  exports org.infrastructurebuilder.util.core;
+  exports org.infrastructurebuilder.util.settings;
+  exports org.infrastructurebuilder.util.credentials.basic;
 
   requires transitive com.vdurmont.semver4j;
   requires transitive org.infrastructurebuilder.exceptions;

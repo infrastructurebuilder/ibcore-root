@@ -15,12 +15,10 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import java.util.Objects;
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.GAV;
-import org.infrastructurebuilder.util.TargetPlatform;
-import org.infrastructurebuilder.util.impl.DefaultGAV;
+import org.infrastructurebuilder.util.core.DefaultGAV;
+import org.infrastructurebuilder.util.core.GAV;
 
 public class FakeGAVSupplier implements GAVSupplier {
 
@@ -50,10 +48,5 @@ public class FakeGAVSupplier implements GAVSupplier {
     return Optional.ofNullable(this.description);
   }
 
-  @Override
-  public Optional<GAV> getTargetedGAV(TargetPlatform platform) {
-    Objects.requireNonNull(platform);
-    return Optional.of(getGAV());
-  }
 
 }

@@ -18,8 +18,8 @@ package org.infrastructurebuilder.util.artifacts;
 import java.util.List;
 import java.util.function.Function;
 
-import org.infrastructurebuilder.util.GAV;
-import org.infrastructurebuilder.util.IdentifiedAndWeighted;
+import org.infrastructurebuilder.util.core.GAV;
+import org.infrastructurebuilder.util.core.IdentifiedAndWeighted;
 
 /**
  * Some resolver systems might need a bit of help mapping the resolved versions correctly.

@@ -20,14 +20,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.SortedSet;
 
-import org.infrastructurebuilder.util.BasicCredentials;
-import org.infrastructurebuilder.util.CredentialsFactory;
-import org.infrastructurebuilder.util.GAV;
-import org.infrastructurebuilder.util.IBArtifactVersionMapper;
-import org.infrastructurebuilder.util.LoggerSupplier;
-import org.infrastructurebuilder.util.PathSupplier;
-//import org.infrastructurebuilder.util.artifacts.IBArtifactVersionMapper;
-import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
+import org.infrastructurebuilder.util.core.GAV;
+import org.infrastructurebuilder.util.core.IBArtifactVersionMapper;
+import org.infrastructurebuilder.util.core.LoggerSupplier;
+import org.infrastructurebuilder.util.core.PathSupplier;
+import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
+import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
+import org.infrastructurebuilder.util.credentials.basic.CredentialsFactory;
 import org.infrastructurebuilder.util.versions.IBVersionsSupplier;
 import org.slf4j.Logger;
 

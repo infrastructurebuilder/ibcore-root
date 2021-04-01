@@ -17,8 +17,8 @@ package org.infrastructurebuilder.util.config;
 
 import java.util.UUID;
 
-import org.infrastructurebuilder.util.DefaultIdentifierSupplier;
-import org.infrastructurebuilder.util.IdentifierSupplier;
+import org.infrastructurebuilder.util.core.DefaultIdentifierSupplier;
+import org.infrastructurebuilder.util.core.IdentifierSupplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

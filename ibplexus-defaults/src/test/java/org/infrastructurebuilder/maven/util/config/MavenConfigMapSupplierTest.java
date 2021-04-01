@@ -19,7 +19,6 @@ package org.infrastructurebuilder.maven.util.config;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.infrastructurebuilder.maven.util.config.MavenConfigMapSupplier;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.junit.jupiter.api.Test;
 

@@ -33,8 +33,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.infrastructurebuilder.util.IBUtils;
-import org.infrastructurebuilder.util.TestingPathSupplier;
+import org.infrastructurebuilder.util.core.IBUtils;
+import org.infrastructurebuilder.util.core.TestingPathSupplier;
 import org.infrastructurebuilder.util.executor.execution.model.v1_0_0.io.xpp3.ProcessExecutionModelXpp3Reader;
 import org.infrastructurebuilder.util.executor.execution.model.v1_0_0.io.xpp3.ProcessExecutionModelXpp3Writer;
 import org.junit.jupiter.api.AfterAll;

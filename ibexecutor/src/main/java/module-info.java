@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 module org.infrastructurebuilder.util.executor {
-  requires transitive org.infrastructurebuilder.ibcore;
-  requires transitive org.infrastructurebuilder.ibcore.config;
-//
-//  requires transitive com.vdurmont.semver4j;
+  requires transitive org.infrastructurebuilder.util.core;
+  requires transitive org.infrastructurebuilder.util.config;
+
+  exports org.infrastructurebuilder.util.executor;
+  exports org.infrastructurebuilder.util.executor.execution.model.v1_0_0;
+  exports org.infrastructurebuilder.util.executor.execution.model.v1_0_0.io.xpp3;
+  exports org.infrastructurebuilder.util.executor.plexus;
   requires  org.infrastructurebuilder.exceptions;
-//  requires transitive org.json;
   requires org.slf4j;
-  requires zt.exec;
   requires java.xml;
-//  requires javax.inject;
-//  requires org.eclipse.sisu.inject;
   requires plexus.utils;
+  requires zt.exec;
 }

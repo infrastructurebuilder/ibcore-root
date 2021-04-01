@@ -21,8 +21,8 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.SortedSet;
 
-import org.infrastructurebuilder.util.BasicCredentials;
-import org.infrastructurebuilder.util.GAV;
+import org.infrastructurebuilder.util.core.GAV;
+import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;

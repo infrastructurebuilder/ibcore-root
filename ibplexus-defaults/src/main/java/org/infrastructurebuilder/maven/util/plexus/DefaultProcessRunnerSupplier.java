@@ -28,13 +28,13 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.codehaus.plexus.logging.Logger;
-import org.infrastructurebuilder.util.logging.SLF4JFromMavenLogger;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 import org.infrastructurebuilder.util.executor.DefaultProcessRunner;
 import org.infrastructurebuilder.util.executor.ProcessException;
 import org.infrastructurebuilder.util.executor.ProcessRunner;
 import org.infrastructurebuilder.util.executor.plexus.ProcessRunnerSupplier;
+import org.infrastructurebuilder.util.logging.SLF4JFromMavenLogger;
 
 
 @Named

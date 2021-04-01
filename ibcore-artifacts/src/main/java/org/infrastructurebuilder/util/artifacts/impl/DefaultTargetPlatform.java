@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.infrastructurebuilder.util.TargetPlatform;
+import org.infrastructurebuilder.util.artifacts.TargetPlatform;
 
 public class DefaultTargetPlatform implements TargetPlatform {
 

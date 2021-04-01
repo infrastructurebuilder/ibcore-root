@@ -19,12 +19,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.GAV;
-import org.infrastructurebuilder.util.GAVMatcher;
-import org.infrastructurebuilder.util.IBVersion;
-import org.infrastructurebuilder.util.RangeOperator;
-import org.infrastructurebuilder.util.impl.DefaultGAV;
-import org.infrastructurebuilder.util.impl.DefaultIBVersion;
+import org.infrastructurebuilder.util.core.DefaultGAV;
+import org.infrastructurebuilder.util.core.DefaultIBVersion;
+import org.infrastructurebuilder.util.core.GAV;
+import org.infrastructurebuilder.util.core.GAVMatcher;
+import org.infrastructurebuilder.util.core.IBVersion;
+import org.infrastructurebuilder.util.core.RangeOperator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

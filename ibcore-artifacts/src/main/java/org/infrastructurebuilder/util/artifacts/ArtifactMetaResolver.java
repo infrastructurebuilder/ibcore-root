@@ -18,8 +18,8 @@ package org.infrastructurebuilder.util.artifacts;
 import java.util.Optional;
 import java.util.function.Function;
 
-import org.infrastructurebuilder.util.GAV;
-import org.infrastructurebuilder.util.IdentifiedAndWeighted;
+import org.infrastructurebuilder.util.core.GAV;
+import org.infrastructurebuilder.util.core.IdentifiedAndWeighted;
 
 /**
  *

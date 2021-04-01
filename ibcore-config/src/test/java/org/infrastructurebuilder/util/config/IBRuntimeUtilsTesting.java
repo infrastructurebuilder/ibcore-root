@@ -15,13 +15,13 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import org.infrastructurebuilder.util.CredentialsFactory;
-import org.infrastructurebuilder.util.GAV;
-import org.infrastructurebuilder.util.IBArtifactVersionMapper;
-import org.infrastructurebuilder.util.PathSupplier;
-import org.infrastructurebuilder.util.TestingPathSupplier;
 import org.infrastructurebuilder.util.config.factory.FakeCredentialsFactory;
-import org.infrastructurebuilder.util.impl.DefaultGAV;
+import org.infrastructurebuilder.util.core.DefaultGAV;
+import org.infrastructurebuilder.util.core.GAV;
+import org.infrastructurebuilder.util.core.IBArtifactVersionMapper;
+import org.infrastructurebuilder.util.core.PathSupplier;
+import org.infrastructurebuilder.util.core.TestingPathSupplier;
+import org.infrastructurebuilder.util.credentials.basic.CredentialsFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

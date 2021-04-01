@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-module org.infrastructurebuilder.ibcore.config {
+module org.infrastructurebuilder.util.config {
   exports org.infrastructurebuilder.util.config;
   exports org.infrastructurebuilder.util.config.factory;
 
-  requires transitive org.infrastructurebuilder.ibcore;
+  requires transitive org.infrastructurebuilder.util.core;
 
   requires transitive com.vdurmont.semver4j;
   requires transitive org.infrastructurebuilder.exceptions;

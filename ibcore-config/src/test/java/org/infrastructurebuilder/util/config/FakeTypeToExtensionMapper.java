@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.SortedSet;
 
-import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
+import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
 
 public class FakeTypeToExtensionMapper implements TypeToExtensionMapper {
 

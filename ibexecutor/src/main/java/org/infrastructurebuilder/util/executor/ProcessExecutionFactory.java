@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.util.Checksum;
+import org.infrastructurebuilder.util.core.Checksum;
 
 /**
  * A {@code ProcessExecutionFactory} must, by contract, supply the work directory as a

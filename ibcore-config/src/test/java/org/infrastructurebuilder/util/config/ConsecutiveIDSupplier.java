@@ -19,7 +19,7 @@ import java.util.EmptyStackException;
 import java.util.Stack;
 import java.util.UUID;
 
-import org.infrastructurebuilder.util.IdentifierSupplier;
+import org.infrastructurebuilder.util.core.IdentifierSupplier;
 
 /**
  * This isn't what I thought it was.  I think I forgot to implement this properly

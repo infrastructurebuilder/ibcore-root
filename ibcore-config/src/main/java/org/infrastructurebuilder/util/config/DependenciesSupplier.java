@@ -18,7 +18,7 @@ package org.infrastructurebuilder.util.config;
 import java.util.List;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.util.GAV;
+import org.infrastructurebuilder.util.core.GAV;
 
 public interface DependenciesSupplier extends Supplier<List<GAV>> {
 

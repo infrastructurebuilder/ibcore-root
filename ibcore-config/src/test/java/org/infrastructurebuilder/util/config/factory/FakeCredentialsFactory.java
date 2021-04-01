@@ -17,8 +17,8 @@ package org.infrastructurebuilder.util.config.factory;
 
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.BasicCredentials;
-import org.infrastructurebuilder.util.CredentialsFactory;
+import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
+import org.infrastructurebuilder.util.credentials.basic.CredentialsFactory;
 
 public class FakeCredentialsFactory implements CredentialsFactory {
 

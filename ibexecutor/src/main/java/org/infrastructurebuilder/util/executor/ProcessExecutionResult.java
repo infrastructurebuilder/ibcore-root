@@ -23,8 +23,8 @@ import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 
-import org.infrastructurebuilder.util.JSONAndChecksumEnabled;
-import org.infrastructurebuilder.util.JSONBuilder;
+import org.infrastructurebuilder.util.core.JSONAndChecksumEnabled;
+import org.infrastructurebuilder.util.core.JSONBuilder;
 import org.json.JSONObject;
 
 public interface ProcessExecutionResult extends JSONAndChecksumEnabled {

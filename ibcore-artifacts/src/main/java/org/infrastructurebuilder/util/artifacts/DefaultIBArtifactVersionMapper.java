@@ -26,7 +26,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.infrastructurebuilder.util.IBArtifactVersionMapper;
+import org.infrastructurebuilder.util.core.IBArtifactVersionMapper;
 import org.infrastructurebuilder.util.versions.IBVersionsSupplier;
 
 @Named(DEFAULT)

@@ -23,7 +23,7 @@ import static java.time.Instant.now;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
-import static org.infrastructurebuilder.util.IBUtils.deletePath;
+import static org.infrastructurebuilder.util.core.IBUtils.deletePath;
 import static org.infrastructurebuilder.util.executor.ProcessException.pet;
 
 import java.io.IOException;

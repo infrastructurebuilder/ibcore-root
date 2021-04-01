@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-module org.infrastructurebuilder.ibcore.artifacts {
-  exports org.infrastructurebuilder.util.artifacts.impl;
+module org.infrastructurebuilder.util.artifacts {
   exports org.infrastructurebuilder.util.artifacts;
+  exports org.infrastructurebuilder.util.artifacts.impl;
 
-  requires org.infrastructurebuilder.ibcore;
+  requires org.infrastructurebuilder.util.core;
+  requires org.infrastructurebuilder.util.config;
   requires transitive com.vdurmont.semver4j;
   requires transitive org.infrastructurebuilder.exceptions;
   requires transitive org.json;

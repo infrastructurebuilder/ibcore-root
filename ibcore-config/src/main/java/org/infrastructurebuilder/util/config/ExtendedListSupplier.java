@@ -15,6 +15,8 @@
  */
 package org.infrastructurebuilder.util.config;
 
+import org.infrastructurebuilder.util.core.StringListSupplier;
+
 public interface ExtendedListSupplier extends StringListSupplier {
   boolean isFile();
 

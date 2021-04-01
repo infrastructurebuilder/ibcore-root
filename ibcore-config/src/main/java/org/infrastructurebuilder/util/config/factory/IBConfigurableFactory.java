@@ -20,10 +20,10 @@ import static java.util.Optional.empty;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.util.LoggerEnabled;
-import org.infrastructurebuilder.util.Weighted;
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 import org.infrastructurebuilder.util.config.IBRuntimeUtils;
+import org.infrastructurebuilder.util.core.LoggerEnabled;
+import org.infrastructurebuilder.util.core.Weighted;
 
 /**
  * All IBConfigurableFactory instances have a weighted order, an available logger,

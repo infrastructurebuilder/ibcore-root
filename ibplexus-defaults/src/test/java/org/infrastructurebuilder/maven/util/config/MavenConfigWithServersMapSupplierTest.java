@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
-import org.infrastructurebuilder.maven.util.config.MavenConfigWithServersMapSupplier;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

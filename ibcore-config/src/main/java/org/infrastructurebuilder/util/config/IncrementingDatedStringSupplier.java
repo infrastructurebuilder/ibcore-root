@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Named;
 
-import org.infrastructurebuilder.util.IdentifierSupplier;
+import org.infrastructurebuilder.util.core.IdentifierSupplier;
 
 @Named(IncrementingDatedStringSupplier.INCREMENTING_DATED_STRING_SUPPLIER)
 public class IncrementingDatedStringSupplier implements IdentifierSupplier {

@@ -22,8 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.infrastructurebuilder.util.artifacts.ArtifactServices;
-import org.infrastructurebuilder.util.impl.DefaultGAV;
-import org.infrastructurebuilder.util.impl.DefaultIBVersion;
+import org.infrastructurebuilder.util.core.DefaultGAV;
+import org.infrastructurebuilder.util.core.DefaultIBVersion;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;

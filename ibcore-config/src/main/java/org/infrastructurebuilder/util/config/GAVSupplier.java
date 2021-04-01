@@ -15,19 +15,13 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import static java.util.Optional.empty;
-
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.GAV;
-import org.infrastructurebuilder.util.TargetPlatform;
+import org.infrastructurebuilder.util.core.GAV;
 
 public interface GAVSupplier {
   GAV getGAV();
 
   Optional<String> getDescription();
 
-  default Optional<GAV> getTargetedGAV(TargetPlatform platform) {
-    return empty();
-  }
 }

@@ -17,7 +17,6 @@ package org.infrastructurebuilder.maven.util.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.infrastructurebuilder.maven.util.config.MavenGAVSupplier;
 import org.junit.jupiter.api.Test;
 
 public class MavenGAVSupplierTest extends AbstractPlexusDefaultsConfigTest {

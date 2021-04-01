@@ -30,12 +30,11 @@ import java.util.UUID;
 
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
-import org.infrastructurebuilder.util.IBUtils;
 import org.infrastructurebuilder.util.config.DefaultStringListSupplier;
 import org.infrastructurebuilder.util.config.ExtendedListSupplier;
 import org.infrastructurebuilder.util.config.PropertiesInjectedConfigMapSupplier;
+import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.executor.ProcessException;
-import org.infrastructurebuilder.maven.util.plexus.DefaultProcessRunnerSupplier;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

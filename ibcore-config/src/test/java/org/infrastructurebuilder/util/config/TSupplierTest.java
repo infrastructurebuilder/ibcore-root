@@ -18,7 +18,7 @@ package org.infrastructurebuilder.util.config;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.infrastructurebuilder.util.TSupplier;
+import org.infrastructurebuilder.util.core.TSupplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -188,7 +188,7 @@
         <artifactId>jacoco-maven-plugin</artifactId>
         <configuration>
           <excludes>
-            <exclude>org/infrastructurebuilder/util/fileresources/model/**/*</exclude>
+            <exclude>org/infrastructurebuilder/util/readdetect/model/**/*</exclude>
           </excludes>
         </configuration>
       </plugin>

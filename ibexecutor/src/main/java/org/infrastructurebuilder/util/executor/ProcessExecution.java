@@ -29,8 +29,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import org.infrastructurebuilder.util.JSONAndChecksumEnabled;
-import org.infrastructurebuilder.util.JSONBuilder;
+import org.infrastructurebuilder.util.core.JSONAndChecksumEnabled;
+import org.infrastructurebuilder.util.core.JSONBuilder;
 import org.json.JSONObject;
 import org.zeroturnaround.exec.ProcessExecutor;
 

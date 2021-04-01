@@ -20,11 +20,11 @@ import static java.util.Collections.emptyList;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.infrastructurebuilder.util.CredentialsFactory;
-import org.infrastructurebuilder.util.GAV;
-import org.infrastructurebuilder.util.IBArtifactVersionMapper;
-import org.infrastructurebuilder.util.LoggerEnabled;
-import org.infrastructurebuilder.util.files.TypeToExtensionMapper;
+import org.infrastructurebuilder.util.core.GAV;
+import org.infrastructurebuilder.util.core.IBArtifactVersionMapper;
+import org.infrastructurebuilder.util.core.LoggerEnabled;
+import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
+import org.infrastructurebuilder.util.credentials.basic.CredentialsFactory;
 
 /**
  * An {@code IBRuntimeUtils} instance is an aggregation of every

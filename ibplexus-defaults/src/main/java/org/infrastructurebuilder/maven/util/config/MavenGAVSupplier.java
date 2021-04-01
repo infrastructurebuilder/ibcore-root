@@ -26,9 +26,9 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.apache.maven.project.MavenProject;
-import org.infrastructurebuilder.util.GAV;
 import org.infrastructurebuilder.util.config.GAVSupplier;
-import org.infrastructurebuilder.util.impl.DefaultGAV;
+import org.infrastructurebuilder.util.core.DefaultGAV;
+import org.infrastructurebuilder.util.core.GAV;
 
 @Named(MAVEN)
 @Singleton

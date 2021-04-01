@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-module org.infrastructurebuilder.data.util.files {
-  exports org.infrastructurebuilder.data.util.files;
-  requires org.infrastructurebuilder.ibcore;
+module org.infrastructurebuilder.util.extensionmapper.basic {
+  exports org.infrastructurebuilder.util.extensionmapper.basic;
+
+  requires org.infrastructurebuilder.util.core;
 }

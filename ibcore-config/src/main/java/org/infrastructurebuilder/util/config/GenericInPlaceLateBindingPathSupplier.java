@@ -17,7 +17,7 @@ package org.infrastructurebuilder.util.config;
 
 import java.nio.file.Path;
 
-import org.infrastructurebuilder.util.TSupplier;
+import org.infrastructurebuilder.util.core.TSupplier;
 
 @javax.inject.Named("generic")
 public class GenericInPlaceLateBindingPathSupplier extends TSupplier<Path> {
