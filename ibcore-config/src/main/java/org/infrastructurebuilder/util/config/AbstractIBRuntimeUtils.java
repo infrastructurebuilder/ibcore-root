@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.SortedSet;
 
 import org.infrastructurebuilder.util.core.GAV;
+import org.infrastructurebuilder.util.core.GAVSupplier;
 import org.infrastructurebuilder.util.core.IBArtifactVersionMapper;
 import org.infrastructurebuilder.util.core.LoggerSupplier;
 import org.infrastructurebuilder.util.core.PathSupplier;

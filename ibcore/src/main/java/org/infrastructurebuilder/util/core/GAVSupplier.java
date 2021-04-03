@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.config;
+package org.infrastructurebuilder.util.core;
 
 import java.util.Optional;
-
-import org.infrastructurebuilder.util.core.GAV;
 
 public interface GAVSupplier {
   GAV getGAV();

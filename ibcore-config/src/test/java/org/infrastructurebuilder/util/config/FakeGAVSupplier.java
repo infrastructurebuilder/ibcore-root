@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import org.infrastructurebuilder.util.core.DefaultGAV;
 import org.infrastructurebuilder.util.core.GAV;
+import org.infrastructurebuilder.util.core.GAVSupplier;
 
 public class FakeGAVSupplier implements GAVSupplier {
 

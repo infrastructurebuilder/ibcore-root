@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import org.infrastructurebuilder.util.core.GAV;
+import org.infrastructurebuilder.util.core.GAVSupplier;
 import org.infrastructurebuilder.util.core.IBArtifactVersionMapper;
 import org.infrastructurebuilder.util.core.LoggerEnabled;
 import org.infrastructurebuilder.util.core.TypeToExtensionMapper;

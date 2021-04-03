@@ -36,7 +36,6 @@ public interface GAV extends JSONAndChecksumEnabled, Comparable<GAV> {
   String BASIC_PACKAGING = "jar";
   String COMPILE_SCOPE   = "compile";
 
-  String FAKE_AF_VALUE       = "___@#!#!@#!@#!";
   String GAV_ARTIFACTID      = "artifactId";
   String GAV_CLASSIFIER      = "classifier";
   String GAV_EXTENSION       = "extension";
