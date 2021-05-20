@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -125,9 +125,8 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.settings.ServerProxy;
 import org.infrastructurebuilder.util.constants.IBConstants;
-import org.infrastructurebuilder.util.core.IBUtils;
+import org.infrastructurebuilder.util.settings.ServerProxy;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

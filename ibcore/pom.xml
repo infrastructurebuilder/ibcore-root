@@ -30,6 +30,18 @@
 	<!-- URL for site gen -->
   <url>${github.url.base}/${project.artifactId}</url>
   <properties>
+
+    <hashicorp.boundary.download.skip>false</hashicorp.boundary.download.skip>
+    <hashicorp.consul.download.skip>false</hashicorp.consul.download.skip>
+    <hashicorp.nomad.download.skip>false</hashicorp.nomad.download.skip>
+    <hashicorp.packer.download.skip>false</hashicorp.packer.download.skip>
+    <hashicorp.sentinel.download.skip>false</hashicorp.sentinel.download.skip>
+    <hashicorp.terraform.download.skip>false</hashicorp.terraform.download.skip>
+    <hashicorp.vault.download.skip>false</hashicorp.vault.download.skip>
+    <hashicorp.vagrant.download.skip>false</hashicorp.vagrant.download.skip>
+    <hashicorp.waypoint.download.skip>false</hashicorp.waypoint.download.skip>
+    
+    
     <test.coverage.percentage.required>91</test.coverage.percentage.required>
     <jacoco.max.missed.classes>3</jacoco.max.missed.classes>
   </properties>
@@ -69,10 +81,6 @@
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>

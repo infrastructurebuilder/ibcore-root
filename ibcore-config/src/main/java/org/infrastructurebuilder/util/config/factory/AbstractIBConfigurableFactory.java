@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,12 +17,12 @@ package org.infrastructurebuilder.util.config.factory;
 
 import static java.util.Optional.ofNullable;
 
+import java.lang.System.Logger;
 import java.util.Objects;
 import java.util.Optional;
 
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 import org.infrastructurebuilder.util.config.IBRuntimeUtils;
-import org.slf4j.Logger;
 
 abstract public class AbstractIBConfigurableFactory<T> implements IBConfigurableFactory<T> {
 

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,7 +29,6 @@ import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
 import org.infrastructurebuilder.util.credentials.basic.CredentialsFactory;
 import org.infrastructurebuilder.util.versions.IBVersionsSupplier;
-import org.slf4j.Logger;
 
 abstract public class AbstractIBRuntimeUtils implements IBRuntimeUtils {
 
@@ -75,7 +74,7 @@ abstract public class AbstractIBRuntimeUtils implements IBRuntimeUtils {
   }
 
   @Override
-  public Logger getLog() {
+  public System.Logger getLog() {
     return ls.get();
   }
 

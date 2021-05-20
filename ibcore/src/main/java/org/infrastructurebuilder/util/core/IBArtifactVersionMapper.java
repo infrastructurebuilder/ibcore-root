@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,16 +15,12 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import static java.util.Collections.emptyList;
-
 import java.util.List;
 
 import org.infrastructurebuilder.util.versions.IBVersionsSupplier;
 
 public interface IBArtifactVersionMapper {
 
-  default List<IBVersionsSupplier> getMatchingArtifacts(String groupId, String artifactId) {
-    return emptyList();
-  }
+  List<IBVersionsSupplier> getMatchingArtifacts(String groupId, String artifactId);
 
 }

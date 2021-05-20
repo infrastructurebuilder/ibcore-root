@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
 
 public interface ProcessRunner extends Supplier<Optional<ProcessExecutionResultBag>>, AutoCloseable {
   public final static Pattern ws = Pattern.compile("\\s");
@@ -34,7 +33,7 @@ public interface ProcessRunner extends Supplier<Optional<ProcessExecutionResultB
 
   Optional<PrintStream> getAddl();
 
-  Logger getLogger();
+  System.Logger getLogger();
 
   Optional<ProcessExecution> getProcessExecutionForId(String id);
 

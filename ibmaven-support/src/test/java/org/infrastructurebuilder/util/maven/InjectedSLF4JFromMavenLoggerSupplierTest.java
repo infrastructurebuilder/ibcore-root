@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,10 @@
 package org.infrastructurebuilder.util.maven;
 
 
+import static java.lang.System.Logger.Level.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.lang.System.Logger;
 
 import org.apache.maven.monitor.logging.DefaultLog;
 import org.apache.maven.plugin.logging.Log;
@@ -24,7 +27,6 @@ import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.infrastructurebuilder.util.maven.mavensupport.InjectedSLF4JFromMavenLoggerSupplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
 
 public class InjectedSLF4JFromMavenLoggerSupplierTest {
 
@@ -40,10 +42,10 @@ public class InjectedSLF4JFromMavenLoggerSupplierTest {
   public void testInjectedSLF4JFromMavenLoggerSupplier() {
     Logger m = new InjectedSLF4JFromMavenLoggerSupplier(logger).get();
     assertNotNull(m);
-    m.info(TESTING_LOGGER);
-    m.debug(TESTING_LOGGER); // NOTE: Does not log to the testing console
-    m.warn(TESTING_LOGGER);
-    m.error(TESTING_LOGGER);
+    m.log(INFO, TESTING_LOGGER);
+    m.log(DEBUG,TESTING_LOGGER); // NOTE: Does not log to the testing console
+    m.log(WARNING,TESTING_LOGGER);
+    m.log(ERROR, TESTING_LOGGER);
   }
 
 }

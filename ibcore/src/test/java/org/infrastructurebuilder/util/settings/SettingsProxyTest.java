@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,8 +27,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.settings.ServerProxy;
-import org.infrastructurebuilder.util.settings.SettingsProxy;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

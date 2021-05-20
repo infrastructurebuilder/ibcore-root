@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,13 +17,12 @@ module org.infrastructurebuilder.util.artifacts {
   exports org.infrastructurebuilder.util.artifacts;
   exports org.infrastructurebuilder.util.artifacts.impl;
 
-  requires org.infrastructurebuilder.util.core;
+  requires transitive org.infrastructurebuilder.util.core;
   requires org.infrastructurebuilder.util.config;
   requires transitive com.vdurmont.semver4j;
   requires transitive org.infrastructurebuilder.exceptions;
   requires transitive org.json;
-  requires org.slf4j;
-  requires java.xml;
+  requires transitive java.xml;
   requires javax.inject;
   requires org.eclipse.sisu.inject;
 }

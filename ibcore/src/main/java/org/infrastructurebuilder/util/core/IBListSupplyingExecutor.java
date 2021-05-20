@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,11 +19,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-import org.slf4j.Logger;
 
 public interface IBListSupplyingExecutor<T, C> extends Supplier<List<T>> {
 
-  Logger getLog();
+  System.Logger getLog();
 
   default List<String> getRequiredConfigItems() {
     return Collections.emptyList();

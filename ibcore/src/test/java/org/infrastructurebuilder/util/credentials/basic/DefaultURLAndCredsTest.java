@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
-import org.infrastructurebuilder.util.credentials.basic.CredentialsFactory;
-import org.infrastructurebuilder.util.credentials.basic.DefaultBasicCredentials;
-import org.infrastructurebuilder.util.credentials.basic.DefaultURLAndCreds;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;

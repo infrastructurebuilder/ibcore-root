@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,13 +26,15 @@ import java.util.Collections;
 import java.util.List;
 
 import org.infrastructurebuilder.util.core.DefaultIBVersion;
-import org.infrastructurebuilder.util.core.IBVersion;
-import org.infrastructurebuilder.util.core.IBVersionException;
-import org.infrastructurebuilder.util.core.RangeOperator;
+import org.infrastructurebuilder.util.core.DefaultIBVersion.DefaultIBVersionBoundedRange;
 import org.infrastructurebuilder.util.core.DefaultIBVersion.DefaultIBVersionRange;
+import org.infrastructurebuilder.util.core.IBVersion;
+import org.infrastructurebuilder.util.core.IBVersion.IBVersionBoundedRange;
 import org.infrastructurebuilder.util.core.IBVersion.IBVersionRequirement;
 import org.infrastructurebuilder.util.core.IBVersion.IBVersionType;
 import org.infrastructurebuilder.util.core.IBVersion.VersionDiff;
+import org.infrastructurebuilder.util.core.IBVersionException;
+import org.infrastructurebuilder.util.core.RangeOperator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -217,6 +219,13 @@ public class DefaultIBVersionTest {
     assertFalse(testRange.isSatisfiedBy(new DefaultIBVersion("0.9.9")),
         "version range GTE 1.0.0 not satisfied by IBVersion(0.9.9)");
 
+    assertEquals(">=1.0", testRange.apiVersion().toString());
+  }
+  
+  @Test 
+  public void testDEfaultIBVersionBoundedRange() {
+    final IBVersionBoundedRange x = DefaultIBVersionBoundedRange.versionBoundedRangeFrom(_1_0_0,_2_2_2);
+    assertEquals(">=1.0.0,<2.2.2",x.toString());
   }
 
   @Test
@@ -364,4 +373,10 @@ public class DefaultIBVersionTest {
   public void testNull() {
     assertThrows(IBVersionException.class, () -> new DefaultIBVersion(null));
   }
+  
+  @Test
+  public void testString() {
+    assertEquals("1.2.3",new DefaultIBVersion("1.2.3").toString());
+  }
+  
 }

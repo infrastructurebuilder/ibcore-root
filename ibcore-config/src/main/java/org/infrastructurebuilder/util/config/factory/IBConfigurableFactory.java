@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +28,7 @@ import org.infrastructurebuilder.util.core.Weighted;
 /**
  * All IBConfigurableFactory instances have a weighted order, an available logger,
  * and an IBRuntimeUtils available.
- * s
+ *
  * @author mykel.alvis
  *
  * @param <T>

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,4 +17,5 @@ module org.infrastructurebuilder.util.extensionmapper.basic {
   exports org.infrastructurebuilder.util.extensionmapper.basic;
 
   requires org.infrastructurebuilder.util.core;
+  requires javax.inject;
 }

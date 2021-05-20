@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,6 +48,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.System.Logger;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -107,8 +108,6 @@ import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.constants.IBConstants;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
@@ -236,7 +235,7 @@ public class IBUtils {
 
   static final int BUFFER_SIZE = 10240;
 
-  private static final Logger iolog = LoggerFactory.getLogger(IBUtils.class);
+  private static final Logger iolog = System.getLogger(IBUtils.class.getName());
 
   public static Stream<String> readInputStreamAsStringStream(InputStream ins) {
     return cet.withReturningTranslation(() -> new BufferedReader(new InputStreamReader(ins)).lines());
@@ -402,7 +401,7 @@ public class IBUtils {
       if (Files.exists(root))
         Files.delete(root);
     } catch (final IOException e) {
-      iolog.debug("Fail to delete path", e);
+      iolog.log(Logger.Level.DEBUG,"Fail to delete path", e);
     }
 
   }
@@ -796,7 +795,7 @@ public class IBUtils {
 
       });
     } catch (final IOException e) {
-      iolog.warn("Fail to move entirely", e);
+      iolog.log(Logger.Level.WARNING,"Fail to move entirely", e);
     }
     return target;
 

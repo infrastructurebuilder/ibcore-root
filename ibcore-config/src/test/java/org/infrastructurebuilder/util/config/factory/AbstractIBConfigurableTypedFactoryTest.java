@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.System.Logger;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -30,11 +31,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class AbstractIBConfigurableTypedFactoryTest {
-  public final static Logger         log = LoggerFactory.getLogger(AbstractIBConfigurableTypedFactoryTest.class);
+  public final static Logger         log = System.getLogger(AbstractIBConfigurableTypedFactoryTest.class.getName());
   public final static IBRuntimeUtils ibr = new IBRuntimeUtilsTesting(log);
 
   @BeforeAll
@@ -66,7 +65,7 @@ public class AbstractIBConfigurableTypedFactoryTest {
 
   @Test
   public void testGetInstance() {
-    s.getLog().info("Testing getInstance (and getLog())");
+    s.getLog().log(Logger.Level.INFO,"Testing getInstance (and getLog())");
     assertFalse(s.getConfig().isPresent());
     IBConfigurableFactory<String> s1 = s.configure(cms);
     assertFalse(s.getConfig().isPresent());
@@ -79,7 +78,7 @@ public class AbstractIBConfigurableTypedFactoryTest {
 
   @Test
   public void testGetInstance2() {
-    s.getLog().info("Testing getInstance (and getLog())");
+    s.getLog().log(Logger.Level.INFO,"Testing getInstance (and getLog())");
     assertFalse(s.getConfig().isPresent());
     IBConfigurableFactory<String> s1 = s.configure(cms);
     assertFalse(s.getConfig().isPresent());

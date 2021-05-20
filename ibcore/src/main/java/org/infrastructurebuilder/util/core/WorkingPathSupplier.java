@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -68,6 +68,18 @@ public class WorkingPathSupplier implements PathSupplier {
     this.id = ofNullable(id).orElse(new DefaultIdentifierSupplier());
     this.root = requireNonNull(root).get();
   }
+  
+  public WorkingPathSupplier(final PathSupplier newRoot, final WorkingPathSupplier overridden) {
+    this.id = requireNonNull(overridden).id;
+    this.cleanup = overridden.cleanup;
+    this.root = requireNonNull(newRoot).get();
+  }
+
+  protected WorkingPathSupplier(WorkingPathSupplier workingPathSupplier) {
+    this.id = requireNonNull(workingPathSupplier).id;
+    this.cleanup = workingPathSupplier.cleanup;
+    this.root = workingPathSupplier.root;
+  }
 
   @Override
   public void finalize() {
@@ -93,5 +105,6 @@ public class WorkingPathSupplier implements PathSupplier {
   public Path getRoot() {
     return root;
   }
+  
 
 }

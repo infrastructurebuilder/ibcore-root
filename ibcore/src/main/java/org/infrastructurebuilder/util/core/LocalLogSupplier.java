@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,7 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import org.slf4j.Logger;
+import java.lang.System.Logger;
 
 @javax.inject.Named(LocalLogSupplier.NAME)
 @javax.inject.Singleton

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,12 +28,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.lang.System; import java.lang.System.Logger;
+
 
 public class DefaultIBArtifactVersionMapperTest {
 
-  public final static Logger log = LoggerFactory.getLogger(DefaultIBArtifactVersionMapperTest.class);
+  public final static Logger log = System.getLogger(DefaultIBArtifactVersionMapperTest.class.getName());
 
   @BeforeAll
   public static void setUpBeforeClass() throws Exception {

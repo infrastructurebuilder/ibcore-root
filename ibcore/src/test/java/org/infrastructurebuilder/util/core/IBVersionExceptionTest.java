@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,6 @@ package org.infrastructurebuilder.util.core;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.infrastructurebuilder.util.core.IBVersionException;
 import org.junit.jupiter.api.Test;
 
 public class IBVersionExceptionTest {

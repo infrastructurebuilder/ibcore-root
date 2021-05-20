@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,6 @@ package org.infrastructurebuilder.util.settings;
 import static java.util.Optional.of;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.infrastructurebuilder.util.settings.ActivationOSProxy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

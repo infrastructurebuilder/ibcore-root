@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibparent</artifactId>
-    <version>48</version>
+    <version>52</version>
   </parent>
   <artifactId>ibcore-root</artifactId>
   <version>0.17.3-SNAPSHOT</version>
@@ -41,8 +41,8 @@
     </site>
   </distributionManagement>
   <properties>
-    <iblog.version>0.12.0</iblog.version>
-    <ib.exceptions.version>47</ib.exceptions.version>
+    <iblog.version>0.13.1</iblog.version>
+    <ib.exceptions.version>52</ib.exceptions.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -122,15 +122,25 @@
         <version>${ib.exceptions.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.infrastructurebuilder.util</groupId>
+        <groupId>org.infrastructurebuilder.util.logging</groupId>
         <artifactId>iblogconfig</artifactId>
         <version>${iblog.version}</version>
         <classifier>debug</classifier>
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.infrastructurebuilder.util</groupId>
+        <groupId>org.infrastructurebuilder.util.logging</groupId>
         <artifactId>iblog-slf4j-component</artifactId>
+        <version>${iblog.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder.util.logging</groupId>
+        <artifactId>iblog-JDKSL-component</artifactId>
+        <version>${iblog.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder.util.logging</groupId>
+        <artifactId>iblog-noop-component</artifactId>
         <version>${iblog.version}</version>
       </dependency>
 
@@ -156,58 +166,6 @@
             <systemPropertyVariables>
               <target_dir>${project.build.directory}</target_dir>
             </systemPropertyVariables>
-          </configuration>
-        </plugin>
-        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.infrastructurebuilder.modello</groupId>
-                    <artifactId>modello-maven-plugin-usurped</artifactId>
-                    <versionRange>[1.11.0.2,)</versionRange>
-                    <goals>
-                      <goal>xpp3-writer-reflect</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore></ignore>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.eclipse.sisu</groupId>
-                    <artifactId>sisu-maven-plugin</artifactId>
-                    <versionRange>[0.3.4,)</versionRange>
-                    <goals>
-                      <goal>test-index</goal>
-                      <goal>main-index</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore></ignore>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-toolchains-plugin</artifactId>
-                    <versionRange>[3.0.0,)</versionRange>
-                    <goals>
-                      <goal>toolchain</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore></ignore>
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
           </configuration>
         </plugin>
       </plugins>

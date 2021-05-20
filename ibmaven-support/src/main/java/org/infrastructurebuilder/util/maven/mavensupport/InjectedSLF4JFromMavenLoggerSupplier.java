@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,13 +15,14 @@
  */
 package org.infrastructurebuilder.util.maven.mavensupport;
 
+import java.lang.System.Logger;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.maven.plugin.logging.Log;
 import org.infrastructurebuilder.util.core.LoggerSupplier;
-import org.infrastructurebuilder.util.logging.SLF4JFromMavenLogger;
-import org.slf4j.Logger;
+import org.infrastructurebuilder.util.logging.JDKSLFromMavenLogger;
 
 @Named(InjectedSLF4JFromMavenLoggerSupplier.LOG)
 public class InjectedSLF4JFromMavenLoggerSupplier implements LoggerSupplier {
@@ -35,6 +36,6 @@ public class InjectedSLF4JFromMavenLoggerSupplier implements LoggerSupplier {
 
   @Override
   public Logger get() {
-    return new SLF4JFromMavenLogger(this.mavenLog);
+    return new JDKSLFromMavenLogger(this.mavenLog);
   }
 }

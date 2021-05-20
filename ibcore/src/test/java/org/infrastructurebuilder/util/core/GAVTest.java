@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,8 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Optional;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.core.DefaultGAV;
-import org.infrastructurebuilder.util.core.GAV;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,7 +34,7 @@ import org.infrastructurebuilder.util.executor.DefaultProcessRunner;
 import org.infrastructurebuilder.util.executor.ProcessException;
 import org.infrastructurebuilder.util.executor.ProcessRunner;
 import org.infrastructurebuilder.util.executor.plexus.ProcessRunnerSupplier;
-import org.infrastructurebuilder.util.logging.SLF4JFromMavenLogger;
+import org.infrastructurebuilder.util.logging.JDKSLFromMavenLogger;
 
 
 @Named
@@ -45,14 +45,14 @@ public class DefaultProcessRunnerSupplier implements ProcessRunnerSupplier {
   private final Path buildDir;
   private final ConfigMap cfgMap;
   private final Optional<Long> interimSleep;
-  private final Optional<org.slf4j.Logger> logger;
+  private final Optional<System.Logger> logger;
   private final Optional<Path> relativeRoot;
   private final Path scratchDir;
 
   @Inject
   public DefaultProcessRunnerSupplier(final ConfigMapSupplier cms, final Logger logger) {
     cfgMap = Objects.requireNonNull(cms, "ConfigMapSupplier to DefaultProcessRunnerSupplier").get();
-    this.logger = Optional.of(new SLF4JFromMavenLogger(Objects.requireNonNull(logger)));
+    this.logger = Optional.of(new JDKSLFromMavenLogger(Objects.requireNonNull(logger)));
 
     addl = Optional.ofNullable(cfgMap.getString(PROCESS_EXECUTOR_SYSTEM_OUT)).map(Boolean::valueOf)
         .flatMap(b -> Optional.ofNullable(b ? System.out : null));

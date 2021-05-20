@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.core.TestingPathSupplier;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

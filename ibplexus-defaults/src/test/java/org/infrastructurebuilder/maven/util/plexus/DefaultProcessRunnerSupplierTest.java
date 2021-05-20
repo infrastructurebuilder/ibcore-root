@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,11 +39,11 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.LoggerFactory;
+
 
 public class DefaultProcessRunnerSupplierTest {
 
-  public final static org.slf4j.Logger log = LoggerFactory.getLogger(DefaultProcessRunnerSupplierTest.class);
+  public final static System.Logger log = System.getLogger(DefaultProcessRunnerSupplierTest.class.getName());
   private static Path random_target;
 
   @BeforeAll

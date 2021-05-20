@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,12 +15,12 @@
  */
 package org.infrastructurebuilder.util.config.factory;
 
+import java.lang.System.Logger;
 import java.util.Objects;
 import java.util.Optional;
 
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 import org.infrastructurebuilder.util.config.IBRuntimeUtils;
-import org.slf4j.Logger;
 
 abstract public class AbstractIBConfigurableParamFactory<T, P> implements IBConfigurableParamFactory<T, P> {
 

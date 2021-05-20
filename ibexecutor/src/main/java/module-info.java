@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,4 +26,5 @@ module org.infrastructurebuilder.util.executor {
   requires java.xml;
   requires plexus.utils;
   requires zt.exec;
+  requires iblog.noop.component;
 }

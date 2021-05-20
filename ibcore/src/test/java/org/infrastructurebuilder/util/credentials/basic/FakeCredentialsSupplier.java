@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,9 +18,6 @@ package org.infrastructurebuilder.util.credentials.basic;
 import static java.util.Optional.ofNullable;
 
 import java.util.Optional;
-
-import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
-import org.infrastructurebuilder.util.credentials.basic.CredentialsSupplier;
 
 public class FakeCredentialsSupplier implements CredentialsSupplier {
 

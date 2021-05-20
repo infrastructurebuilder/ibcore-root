@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.lang.System.Logger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
@@ -34,11 +35,9 @@ import org.apache.tika.Tika;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DefaultIBResource extends IBResourceModel {
-  private final static Logger log = LoggerFactory.getLogger(DefaultIBResource.class);
+  private final static Logger log = System.getLogger(DefaultIBResource.class.getName());
   private static final long serialVersionUID = 5978749189830232137L;
   private final static Tika tika = new Tika();
 
@@ -75,11 +74,11 @@ public class DefaultIBResource extends IBResourceModel {
 
   public final static Function<Path, String> toType = (path) -> {
     synchronized (tika) {
-      log.debug("Detecting path " + path);
+      log.log(Logger.Level.DEBUG,"Detecting path " + path);
       org.apache.tika.metadata.Metadata md = new org.apache.tika.metadata.Metadata();
       md.set(org.apache.tika.metadata.Metadata.RESOURCE_NAME_KEY, path.toAbsolutePath().toString());
       try (Reader p = tika.parse(path, md)) {
-        log.debug(" Metadata is " + md);
+        log.log(Logger.Level.DEBUG," Metadata is " + md);
         return tika.detect(path);
       } catch (IOException e) {
         throw new IBException("Failed during attempt to get tika type", e);

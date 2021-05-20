@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -89,8 +89,8 @@ public final class DefaultIBVersion implements IBVersion {
     }
 
     private DefaultIBVersionBoundedRange(IBVersionRange lower2, IBVersionRange upper2) {
-      this.upper = requireNonNull(lower2);
-      this.lower = requireNonNull(upper2);
+      this.lower = requireNonNull(lower2);
+      this.upper = requireNonNull(upper2);
     }
 
     @Override
@@ -105,7 +105,7 @@ public final class DefaultIBVersion implements IBVersion {
 
     @Override
     public String toString() {
-      return this.lower.toString() + this.upper.toString();
+      return this.lower.toString() + ","+ this.upper.toString();
     }
 
     @Override

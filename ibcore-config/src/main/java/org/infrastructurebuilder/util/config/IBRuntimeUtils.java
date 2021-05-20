@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,9 +41,9 @@ import org.infrastructurebuilder.util.credentials.basic.CredentialsFactory;
 public interface IBRuntimeUtils extends
     // Wrap internal CredentialsFactory
     CredentialsFactory
-    // Load all internal artifact versions
+    // Load internal artifact versions
     , IBArtifactVersionMapper
-    // provide single logger configuraiton (sorry if you don't like this)
+    // provide single logger configuration (sorry if you don't like this)
     , LoggerEnabled
     // And whatever MIME<->Extension mapping is configured
     , TypeToExtensionMapper

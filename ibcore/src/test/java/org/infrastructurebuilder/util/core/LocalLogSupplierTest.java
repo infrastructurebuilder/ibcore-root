@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,13 @@ package org.infrastructurebuilder.util.core;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.infrastructurebuilder.util.core.LocalLogSupplier;
+import java.lang.System.Logger;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class LocalLogSupplierTest {
-  public final static Logger log = LoggerFactory.getLogger(LocalLogSupplierTest.class);
+  public final static Logger log = System.getLogger(LocalLogSupplierTest.class.getName());
 
   private LocalLogSupplier l;
 

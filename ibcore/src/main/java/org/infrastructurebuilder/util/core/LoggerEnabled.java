@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,7 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import org.slf4j.Logger;
 
 public interface LoggerEnabled {
-  Logger getLog();
+  System.Logger getLog();
 }
