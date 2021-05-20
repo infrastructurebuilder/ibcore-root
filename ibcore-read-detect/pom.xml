@@ -45,8 +45,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -55,11 +55,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.infrastructurebuilder.util</groupId>
-      <artifactId>iblog-slf4j-component</artifactId>
+      <groupId>org.infrastructurebuilder.util.logging</groupId>
+      <artifactId>iblog-JDKSL-component</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.infrastructurebuilder.util</groupId>
+      <groupId>org.infrastructurebuilder.util.logging</groupId>
       <artifactId>iblogconfig</artifactId>
       <classifier>debug</classifier>
       <scope>test</scope>
@@ -188,7 +188,7 @@
         <artifactId>jacoco-maven-plugin</artifactId>
         <configuration>
           <excludes>
-            <exclude>org/infrastructurebuilder/util/files/model/**/*</exclude>
+            <exclude>org/infrastructurebuilder/util/readdetect/model/**/*</exclude>
           </excludes>
         </configuration>
       </plugin>

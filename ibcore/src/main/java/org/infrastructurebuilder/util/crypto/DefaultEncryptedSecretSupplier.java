@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,7 @@ import java.util.Objects;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.infrastructurebuilder.IBException;
+import org.infrastructurebuilder.exceptions.IBException;
 
 @Named
 public class DefaultEncryptedSecretSupplier implements EncryptedSecretSupplier {

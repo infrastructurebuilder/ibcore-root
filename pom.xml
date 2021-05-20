@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibparent</artifactId>
-    <version>41</version>
+    <version>52</version>
   </parent>
   <artifactId>ibcore-root</artifactId>
   <version>0.17.3-SNAPSHOT</version>
@@ -41,8 +41,8 @@
     </site>
   </distributionManagement>
   <properties>
-    <iblog.version>0.12.0</iblog.version>
-    <ib.exceptions.version>41</ib.exceptions.version>
+    <iblog.version>0.13.1</iblog.version>
+    <ib.exceptions.version>52</ib.exceptions.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -62,6 +62,33 @@
         <groupId>org.infrastructurebuilder</groupId>
         <artifactId>ibcore</artifactId>
         <type>test-jar</type>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder</groupId>
+        <artifactId>ibcore-config</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder</groupId>
+        <artifactId>ibcore-config</artifactId>
+        <type>test-jar</type>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder</groupId>
+        <artifactId>ibcore-artifacts</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder</groupId>
+        <artifactId>ibcore-artifacts</artifactId>
+        <type>test-jar</type>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder</groupId>
+        <artifactId>ibcore-dag</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -95,15 +122,25 @@
         <version>${ib.exceptions.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.infrastructurebuilder.util</groupId>
+        <groupId>org.infrastructurebuilder.util.logging</groupId>
         <artifactId>iblogconfig</artifactId>
         <version>${iblog.version}</version>
         <classifier>debug</classifier>
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.infrastructurebuilder.util</groupId>
+        <groupId>org.infrastructurebuilder.util.logging</groupId>
         <artifactId>iblog-slf4j-component</artifactId>
+        <version>${iblog.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder.util.logging</groupId>
+        <artifactId>iblog-JDKSL-component</artifactId>
+        <version>${iblog.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder.util.logging</groupId>
+        <artifactId>iblog-noop-component</artifactId>
         <version>${iblog.version}</version>
       </dependency>
 
@@ -142,6 +179,9 @@
   </build>
   <modules>
     <module>ibcore</module>
+    <module>ibcore-config</module>
+    <module>ibcore-artifacts</module>
+    <module>ibcore-dag</module>
     <module>ibexecutor</module>
     <module>ibplexus-defaults</module>
     <module>ibmaven-support</module>

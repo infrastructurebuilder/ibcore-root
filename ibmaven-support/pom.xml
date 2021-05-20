@@ -47,12 +47,16 @@
       <artifactId>ibcore</artifactId>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore-config</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.infrastructurebuilder.util</groupId>
+      <groupId>org.infrastructurebuilder.util.logging</groupId>
       <artifactId>iblogconfig</artifactId>
       <classifier>debug</classifier>
       <scope>test</scope>
@@ -62,7 +66,8 @@
       <artifactId>maven-resolver-util</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.skyscreamer</groupId>
+<!--       <groupId>org.skyscreamer</groupId> -->
+      <groupId>org.infrastructurebuilder.usurped</groupId>
       <artifactId>jsonassert</artifactId>
       <scope>test</scope>
     </dependency>

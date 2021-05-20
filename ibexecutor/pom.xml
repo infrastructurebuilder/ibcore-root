@@ -16,7 +16,8 @@
     limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
@@ -29,10 +30,21 @@
   <description>Standard interfaces for running applications as a heavyweight process</description>
 	<!-- URL for site gen -->
   <url>${github.url.base}/${project.artifactId}</url>
+  <properties>
+    <test.coverage.percentage.required>30</test.coverage.percentage.required>
+    <jacoco.max.missed.classes>20</jacoco.max.missed.classes>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore-config</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
       <artifactId>ibcore</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.zeroturnaround</groupId>
@@ -43,12 +55,13 @@
       <artifactId>zt-process-killer</artifactId>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.skyscreamer</groupId>
+<!--       <groupId>org.skyscreamer</groupId> -->
+      <groupId>org.infrastructurebuilder.usurped</groupId>
       <artifactId>jsonassert</artifactId>
       <scope>test</scope>
       <exclusions>
@@ -67,7 +80,10 @@
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.infrastructurebuilder.util.logging</groupId>
+      <artifactId>iblog-noop-component</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -185,7 +201,7 @@
         <artifactId>jacoco-maven-plugin</artifactId>
         <configuration>
           <excludes>
-            <exclude>org/infrastructurebuilder/util/execution/model/**/*</exclude>
+            <exclude>org/infrastructurebuilder/util/executor/execution/model/**/*</exclude>
           </excludes>
         </configuration>
       </plugin>

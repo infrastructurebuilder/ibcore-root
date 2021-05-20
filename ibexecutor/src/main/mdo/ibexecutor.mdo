@@ -16,7 +16,7 @@
   <defaults>
     <default>
       <key>package</key>
-      <value>${project.groupId}.util.execution.model</value>
+      <value>${project.groupId}.util.executor.execution.model</value>
     </default>
   </defaults>
 
@@ -32,7 +32,7 @@
       <description>Persistence for ibexecutor ProcessExecution instances</description>
       <version>1.0.0+</version>
       <interfaces>
-        <interface>org.infrastructurebuilder.util.ProcessExecution</interface>
+        <interface>org.infrastructurebuilder.util.executor.ProcessExecution</interface>
       </interfaces>
       <fields>
         <field>
@@ -181,10 +181,26 @@
     this.setOptional(optional);
     this.setEnvironment(environment.orElse(null));
     this.setRelativeRoot(relativeRoot);
-    this.setExitValuesAsIntegers(exitValues.orElse(org.infrastructurebuilder.util.ProcessExecution.DEFAULT_EXIT));
+    this.setExitValuesAsIntegers(exitValues.orElse(org.infrastructurebuilder.util.executor.ProcessExecution.DEFAULT_EXIT));
     this.addl = java.util.Objects.requireNonNull(addl).orElse(null);
     this.setBackground(background);
   }
+
+    DefaultProcessExecution(final String id, final String executable, final java.util.List<String> arguments,
+      final java.util.Optional<java.time.Duration> timeout, final java.util.Optional<java.nio.file.Path> stdIn,
+      final java.nio.file.Path workDirectory, final boolean optional,
+      final java.util.Optional<java.util.Map<String, String>> environment,
+      final java.util.Optional<java.nio.file.Path> relativeRoot,
+      final java.util.Optional<java.util.List<Integer>> exitValues, final java.util.Optional<java.io.PrintStream> addl,
+      final boolean background,
+      final org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream stdout,
+      final org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream stderr) {
+    this(id, executable, arguments, timeout, stdIn, workDirectory, optional, environment, relativeRoot, exitValues,
+        addl, background);
+    this.stdOut = stdout;
+    this.stdErr = stderr;
+  }
+
             ]]>
           </code>
         </codeSegment>
@@ -197,7 +213,7 @@
   @Override
   public org.zeroturnaround.exec.ProcessExecutor getProcessExecutor() {
     if (this.executor == null)
-      this.executor = org.infrastructurebuilder.util.ProcessExecution.super.getProcessExecutor();
+      this.executor = org.infrastructurebuilder.util.executor.ProcessExecution.super.getProcessExecutor();
     return this.executor;
   }
 
@@ -252,7 +268,7 @@
             <![CDATA[
     private java.nio.file.Path w = null;
     public java.nio.file.Path getWorkDirectory() {
-      return java.util.Optional.ofNullable(this.w).orElseThrow(() -> new org.infrastructurebuilder.util.ProcessException("No work directory"));
+      return java.util.Optional.ofNullable(this.w).orElseThrow(() -> new org.infrastructurebuilder.util.executor.ProcessException("No work directory"));
     }
     public void setWorkDirectory(java.nio.file.Path w) {
       this.w = java.util.Objects.requireNonNull(w);
@@ -278,8 +294,8 @@
           <code>
             <![CDATA[
 
-    private org.infrastructurebuilder.util.ListCapturingLogOutputStream stdOut;
-    private org.infrastructurebuilder.util.ListCapturingLogOutputStream stdErr;
+    private org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream stdOut;
+    private org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream stdErr;
             ]]>
           </code>
         </codeSegment>
@@ -288,15 +304,15 @@
           <code>
             <![CDATA[
     @Override
-    public org.infrastructurebuilder.util.ListCapturingLogOutputStream getStdErr() {
+    public org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream getStdErr() {
       if (this.stdErr == null)
-        this.stdErr = new org.infrastructurebuilder.util.ListCapturingLogOutputStream(getWorkDirectory().resolve(java.util.UUID.randomUUID().toString() + ".stderr"), getAdditionalPrintStream());
+        this.stdErr = new org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream(getWorkDirectory().resolve(java.util.UUID.randomUUID().toString() + ".stderr"), getAdditionalPrintStream());
       return this.stdErr;
     }
     @Override
-    public org.infrastructurebuilder.util.ListCapturingLogOutputStream getStdOut() {
+    public org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream getStdOut() {
       if (this.stdOut == null)
-        this.stdOut = new org.infrastructurebuilder.util.ListCapturingLogOutputStream(getWorkDirectory().resolve(java.util.UUID.randomUUID().toString() + ".stdout"), getAdditionalPrintStream());
+        this.stdOut = new org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream(getWorkDirectory().resolve(java.util.UUID.randomUUID().toString() + ".stdout"), getAdditionalPrintStream());
       return this.stdOut;
     }
             ]]>

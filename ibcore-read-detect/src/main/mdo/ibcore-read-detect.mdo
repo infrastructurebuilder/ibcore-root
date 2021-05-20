@@ -14,7 +14,7 @@
   <defaults>
     <default>
       <key>package</key>
-      <value>${project.groupId}.util.files.model</value>
+      <value>${project.groupId}.util.readdetect.model</value>
     </default>
   </defaults>
 
@@ -26,7 +26,7 @@
       <version>1.0.0+</version>
       <interfaces>
         <interface>
-          <![CDATA[org.infrastructurebuilder.util.files.IBResource]]>
+          <![CDATA[org.infrastructurebuilder.util.readdetect.IBResource]]>
         </interface>
       </interfaces>
       <fields>
@@ -167,10 +167,10 @@
         this.path = java.nio.file.Paths.get(getFilePath());
       }
       if (this.path == null && getSourceURL().isPresent()) {
-        this.path = java.nio.file.Paths.get(org.infrastructurebuilder.IBException.cet
+        this.path = java.nio.file.Paths.get(org.infrastructurebuilder.exceptions.IBException.cet
             .withReturningTranslation(() -> getSourceURL().get().toURI()));
       }
-      return java.util.Optional.ofNullable(path).orElseThrow(() -> new org.infrastructurebuilder.IBException("No available path"));
+      return java.util.Optional.ofNullable(path).orElseThrow(() -> new org.infrastructurebuilder.exceptions.IBException("No available path"));
     }
   ]]>
           </code>
@@ -180,8 +180,8 @@
           <code>
             <![CDATA[
     @Override
-    public org.infrastructurebuilder.util.files.IBResource moveTo(java.nio.file.Path target) throws java.io.IOException {
-      org.infrastructurebuilder.util.IBUtils.moveAtomic(getPath(), target);
+    public org.infrastructurebuilder.util.readdetect.IBResource moveTo(java.nio.file.Path target) throws java.io.IOException {
+      org.infrastructurebuilder.util.core.IBUtils.moveAtomic(getPath(), target);
       return new IBResourceModel(target.toAbsolutePath().toString(),getFileChecksum(), getType(), getSource(), getName(),getMostRecentReadTime().orElse(null));
     }
   ]]>
@@ -193,7 +193,7 @@
             <![CDATA[
     @Override
     public java.util.Optional<java.net.URL> getSourceURL() {
-      return java.util.Optional.ofNullable(getSource()).map(u -> org.infrastructurebuilder.IBException.cet.withReturningTranslation(() -> org.infrastructurebuilder.util.IBUtils.translateToWorkableArchiveURL(u)));
+      return java.util.Optional.ofNullable(getSource()).map(u -> org.infrastructurebuilder.exceptions.IBException.cet.withReturningTranslation(() -> org.infrastructurebuilder.util.core.IBUtils.translateToWorkableArchiveURL(u)));
     }
   ]]>
           </code>
@@ -214,8 +214,8 @@
           <code>
             <![CDATA[
     @Override
-    public org.infrastructurebuilder.util.artifacts.Checksum getChecksum() {
-      return new org.infrastructurebuilder.util.artifacts.Checksum(getFileChecksum());
+    public org.infrastructurebuilder.util.core.Checksum getChecksum() {
+      return new org.infrastructurebuilder.util.core.Checksum(getFileChecksum());
     }
   ]]>
           </code>
@@ -228,7 +228,7 @@
       // Path
       java.nio.file.Path path
       // Checksum
-      , org.infrastructurebuilder.util.artifacts.Checksum checksum
+      , org.infrastructurebuilder.util.core.Checksum checksum
       // Type
       , String type) {
     this(path, checksum, type, java.util.Optional.empty(), java.util.Optional.empty(), java.util.Optional.empty());
@@ -245,7 +245,7 @@
       // Path
       java.nio.file.Path path
       // Checksum
-      , org.infrastructurebuilder.util.artifacts.Checksum checksum
+      , org.infrastructurebuilder.util.core.Checksum checksum
       // Type
       , String type
       // Source
@@ -272,8 +272,8 @@
       // Path
       java.nio.file.Path path
       // Checksum
-      , org.infrastructurebuilder.util.artifacts.Checksum checksum) {
-    this(path, checksum, org.infrastructurebuilder.IBConstants.APPLICATION_OCTET_STREAM);
+      , org.infrastructurebuilder.util.core.Checksum checksum) {
+    this(path, checksum, org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM);
   }
 
   ]]>
@@ -289,7 +289,7 @@
   @Override
   public java.io.InputStream get() {
     setMostRecentReadTime(new java.util.Date());
-    return org.infrastructurebuilder.util.files.IBResource.super.get();
+    return org.infrastructurebuilder.util.readdetect.IBResource.super.get();
   }
 
 

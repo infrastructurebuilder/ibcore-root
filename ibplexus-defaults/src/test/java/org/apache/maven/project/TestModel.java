@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,7 @@ package org.apache.maven.project;
 import java.util.Properties;
 
 import org.apache.maven.model.Model;
-import org.infrastructurebuilder.util.plexus.ProcessRunnerSupplier;
+import org.infrastructurebuilder.util.executor.plexus.ProcessRunnerSupplier;
 
 public class TestModel extends Model {
 

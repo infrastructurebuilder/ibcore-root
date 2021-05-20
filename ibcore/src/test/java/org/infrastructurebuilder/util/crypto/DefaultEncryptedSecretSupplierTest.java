@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,14 +15,15 @@
  */
 package org.infrastructurebuilder.util.crypto;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.infrastructurebuilder.IBException;
-import org.junit.Test;
+import org.infrastructurebuilder.exceptions.IBException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class DefaultEncryptedSecretSupplierTest {
 
-  private static final String RANDOMPASSWORD99 = "RANDOMPASSWORD99";
+  private static final String            RANDOMPASSWORD99 = "RANDOMPASSWORD99";
   private DefaultEncryptedSecretSupplier d;
 
   @Test
@@ -31,14 +32,14 @@ public class DefaultEncryptedSecretSupplierTest {
     assertEquals(RANDOMPASSWORD99, d.get());
   }
 
-  @Test(expected = NullPointerException.class)
-  public void testSetSecretNull() {
-    d = new DefaultEncryptedSecretSupplier(null);
+  @Test
+  public void testSetSecretNull() throws NullPointerException {
+    Assertions.assertThrows(NullPointerException.class, () -> d = new DefaultEncryptedSecretSupplier(null));
   }
 
-  @Test(expected = IBException.class)
-  public void testSetSecretWronglen() {
-    d = new DefaultEncryptedSecretSupplier("x");
+  @Test
+  public void testSetSecretWronglen() throws IBException {
+    Assertions.assertThrows(IBException.class, () -> d = new DefaultEncryptedSecretSupplier("x"));
   }
 
 }

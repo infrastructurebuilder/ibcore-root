@@ -2,34 +2,34 @@
 <component-set>
   <components>
       <component>
-      <role>org.infrastructurebuilder.util.config.ConfigMapSupplier</role>
+      <role>org.infrastructurebuilder.maven.util.config.ConfigMapSupplier</role>
       <role-hint>processrunnerconfig</role-hint>
-      <implementation>org.infrastructurebuilder.util.plexus.DefaultProcessRunnerConfigMapSupplier</implementation>
+      <implementation>org.infrastructurebuilder.maven.util.plexus.DefaultProcessRunnerConfigMapSupplier</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
       <description></description>
       <isolated-realm>false</isolated-realm>
       <requirements>
         <requirement>
-          <role>org.infrastructurebuilder.util.config.ConfigMapSupplier</role>
+          <role>org.infrastructurebuilder.maven.util.config.ConfigMapSupplier</role>
           <role-hint>maven</role-hint>
           <field-name>configMapSupplier</field-name>
         </requirement>
       </requirements>
     </component>
     <component>
-      <role>org.infrastructurebuilder.util.config.ConfigMapSupplier</role>
+      <role>org.infrastructurebuilder.maven.util.config.ConfigMapSupplier</role>
       <role-hint>properties-injected</role-hint>
-      <implementation>org.infrastructurebuilder.util.config.PropertiesInjectedConfigMapSupplier</implementation>
+      <implementation>org.infrastructurebuilder.maven.util.config.PropertiesInjectedConfigMapSupplier</implementation>
       <description>Properties Injected with all availalbe StringListSuppliers</description>
       <isolated-realm>false</isolated-realm>
       <requirements>
         <requirement>
-          <role>org.infrastructurebuilder.util.config.ExtendedListSupplier</role>
+          <role>org.infrastructurebuilder.maven.util.config.ExtendedListSupplier</role>
           <field-name>suppliers</field-name>
           <optional>true</optional>
         </requirement>
         <requirement>
-          <role>org.infrastructurebuilder.util.config.ExtendedListSupplier</role>
+          <role>org.infrastructurebuilder.maven.util.config.ExtendedListSupplier</role>
           <field-name>single</field-name>
           <optional>true</optional>
         </requirement>

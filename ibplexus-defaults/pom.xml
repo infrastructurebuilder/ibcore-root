@@ -35,6 +35,16 @@
   <url>${github.url.base}/${project.artifactId}</url>
   <dependencies>
     <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore-config</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore-config</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
       <scope>provided</scope>
@@ -43,11 +53,6 @@
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-project</artifactId>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
@@ -70,11 +75,11 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.infrastructurebuilder.util</groupId>
-      <artifactId>iblog-slf4j-component</artifactId>
+      <groupId>org.infrastructurebuilder.util.logging</groupId>
+      <artifactId>iblog-JDKSL-component</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.infrastructurebuilder.util</groupId>
+      <groupId>org.infrastructurebuilder.util.logging</groupId>
       <artifactId>iblogconfig</artifactId>
       <classifier>debug</classifier>
       <scope>test</scope>
@@ -84,6 +89,12 @@
       <artifactId>joor</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+
 
     <dependency>
       <groupId>org.mockito</groupId>

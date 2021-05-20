@@ -6,9 +6,9 @@
   </system-properties>
   <components>
     <component>
-      <role>org.infrastructurebuilder.util.config.ExtendedListSupplier</role>
+      <role>org.infrastructurebuilder.maven.util.config.ExtendedListSupplier</role>
       <role-hint>testc1</role-hint>
-      <implementation>org.infrastructurebuilder.util.config.DefaultStringListSupplier</implementation>
+      <implementation>org.infrastructurebuilder.maven.util.config.DefaultStringListSupplier</implementation>
       <instantiation-strategy>singleton</instantiation-strategy>
       <description>C1 string list config</description>
       <isolated-realm>false</isolated-realm>
@@ -20,9 +20,9 @@
       </configuration>
     </component>
     <component>
-      <role>org.infrastructurebuilder.util.config.ExtendedListSupplier</role>
+      <role>org.infrastructurebuilder.maven.util.config.ExtendedListSupplier</role>
       <role-hint>testc2</role-hint>
-      <implementation>org.infrastructurebuilder.util.config.DefaultStringListSupplier</implementation>
+      <implementation>org.infrastructurebuilder.maven.util.config.DefaultStringListSupplier</implementation>
       <instantiation-strategy>singleton</instantiation-strategy>
       <description>C2 string list config</description>
       <isolated-realm>false</isolated-realm>
@@ -36,15 +36,15 @@
       </configuration>
     </component>
     <component>
-      <role>org.infrastructurebuilder.util.config.ConfigMapSupplier</role>
+      <role>org.infrastructurebuilder.maven.util.config.ConfigMapSupplier</role>
       <role-hint>list1</role-hint>
-      <implementation>org.infrastructurebuilder.util.config.PropertiesInjectedConfigMapSupplier</implementation>
+      <implementation>org.infrastructurebuilder.maven.util.config.PropertiesInjectedConfigMapSupplier</implementation>
       <instantiation-strategy>singleton</instantiation-strategy>
       <description>C1 string list config</description>
       <isolated-realm>false</isolated-realm>
       <requirements>
         <requirement>
-          <role>org.infrastructurebuilder.util.config.ExtendedListSupplier</role>
+          <role>org.infrastructurebuilder.maven.util.config.ExtendedListSupplier</role>
           <field-name>suppliers</field-name>
         </requirement>
       </requirements>
@@ -59,15 +59,15 @@
       <isolated-realm>false</isolated-realm>
     </component>
     <component>
-      <role>org.infrastructurebuilder.util.plexus.ProcessRunnerSupplier</role>
+      <role>org.infrastructurebuilder.maven.util.plexus.ProcessRunnerSupplier</role>
       <role-hint>testme</role-hint>
-      <implementation>org.infrastructurebuilder.util.plexus.DefaultProcessRunnerSupplier</implementation>
+      <implementation>org.infrastructurebuilder.maven.util.plexus.DefaultProcessRunnerSupplier</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
       <description>Plexus-configured supplier for ProcessRunners</description>
       <isolated-realm>false</isolated-realm>
       <requirements>
         <requirement>
-          <role>org.infrastructurebuilder.util.config.ConfigMapSupplier</role>
+          <role>org.infrastructurebuilder.maven.util.config.ConfigMapSupplier</role>
           <role-hint>list1</role-hint>
           <field-name>processRunnerConfigMapSupplier</field-name>
         </requirement>
