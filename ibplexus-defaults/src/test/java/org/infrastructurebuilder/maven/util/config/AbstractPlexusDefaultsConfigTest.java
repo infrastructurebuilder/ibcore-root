@@ -15,8 +15,8 @@
  */
 package org.infrastructurebuilder.maven.util.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -41,10 +41,9 @@ import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
-import org.junit.Rule;
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
@@ -63,8 +62,8 @@ abstract public class AbstractPlexusDefaultsConfigTest {
   private static Set<Artifact> artifacts;
   private static Artifact art1;
   public static File destination;
-  @Rule
-  public MockitoRule mockitoRule = MockitoJUnit.rule();
+//  @Rule
+//  public MockitoRule mockitoRule = MockitoJUnit.rule();
 
   @BeforeAll
   public static void setUpBeforeClass() throws Exception {

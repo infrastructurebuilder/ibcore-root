@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibparent</artifactId>
-    <version>52</version>
+    <version>56</version>
   </parent>
   <artifactId>ibcore-root</artifactId>
   <version>0.17.4-SNAPSHOT</version>
@@ -42,7 +42,7 @@
   </distributionManagement>
   <properties>
     <iblog.version>0.13.1</iblog.version>
-    <ib.exceptions.version>52</ib.exceptions.version>
+    <ib.exceptions.version>53</ib.exceptions.version>
   </properties>
   <dependencyManagement>
     <dependencies>

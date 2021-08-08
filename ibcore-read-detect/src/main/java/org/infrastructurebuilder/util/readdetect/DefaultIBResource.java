@@ -32,6 +32,8 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import org.apache.tika.Tika;
+import org.apache.tika.config.TikaConfig;
+import org.apache.tika.metadata.TikaCoreProperties;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
@@ -72,11 +74,11 @@ public class DefaultIBResource extends IBResourceModel {
     });
   }
 
-  public final static Function<Path, String> toType = (path) -> {
+  public final static Function<Path, String> toType = (path) -> {       
     synchronized (tika) {
       log.log(Logger.Level.DEBUG,"Detecting path " + path);
       org.apache.tika.metadata.Metadata md = new org.apache.tika.metadata.Metadata();
-      md.set(org.apache.tika.metadata.Metadata.RESOURCE_NAME_KEY, path.toAbsolutePath().toString());
+      md.set(TikaCoreProperties.RESOURCE_NAME_KEY, path.toAbsolutePath().toString());
       try (Reader p = tika.parse(path, md)) {
         log.log(Logger.Level.DEBUG," Metadata is " + md);
         return tika.detect(path);
