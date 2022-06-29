@@ -19,7 +19,6 @@ import static java.nio.file.Files.newInputStream;
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static java.nio.file.StandardOpenOption.READ;
 import static java.util.Objects.hash;
-import static java.util.Optional.empty;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
 
 import java.io.IOException;
@@ -28,7 +27,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
@@ -67,17 +68,16 @@ public interface IBResource extends Supplier<InputStream> {
   IBResource moveTo(Path target) throws IOException;
 
   /**
-   * Sub-types may, at their discretion, return a {@link Date} of the most
-   * recent "get()" call.  The generated IBResourceModel doesn't because it's
-   * really a persistence mechanism and that value isn't relevant.
+   * Sub-types may, at their discretion, return a {@link Date} of the most recent
+   * "get()" call. The generated IBResourceModel doesn't because it's really a
+   * persistence mechanism and that value isn't relevant.
+   *
    * @return
    */
-  default Optional<Date> getMostRecentReadTime() {
-    return empty();
-  }
+  Optional<Date> getMostRecentReadTime();
 
   default InputStream get() {
-    java.util.List<java.nio.file.OpenOption> o = new java.util.ArrayList<>();
+    List<OpenOption> o = new ArrayList<>();
     o.add(READ);
     if (getPath().getClass().getCanonicalName().contains("Zip")) {
 
@@ -89,13 +89,9 @@ public interface IBResource extends Supplier<InputStream> {
     return cet.withReturningTranslation(() -> newInputStream(getPath(), readOptions));
   }
 
-  default Optional<URL> getSourceURL() {
-    return empty();
-  }
+  Optional<URL> getSourceURL();
 
-  default Optional<String> getSourceName() {
-    return empty();
-  }
+  Optional<String> getSourceName();
 
   default int defaultHashCode() {
     return hash(getChecksum(), getPath(), getSourceName(), getSourceURL(), getType());

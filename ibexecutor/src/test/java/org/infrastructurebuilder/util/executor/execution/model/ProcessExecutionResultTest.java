@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.executor.execution.model.v1_0_0;
+package org.infrastructurebuilder.util.executor.execution.model;
 
 import static java.time.Duration.ofHours;
 import static java.time.Duration.ofMillis;
@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -63,34 +64,34 @@ import org.zeroturnaround.exec.ProcessOutput;
 import org.zeroturnaround.exec.ProcessResult;
 
 public class ProcessExecutionResultTest {
-  public final static TestingPathSupplier   wps  = new TestingPathSupplier();
-  private static final List<String>         ARGS = Arrays.asList("-version");
+  public final static TestingPathSupplier wps = new TestingPathSupplier();
+  private static final List<String> ARGS = Arrays.asList("-version");
 
-  private static final String               EXEC = "java";
-  private static final String               ID   = "default";
+  private static final String EXEC = "java";
+  private static final String ID = "default";
 
-  private Future<ProcessResult>             future;
+  private Future<ProcessResult> future;
   private OverrideListCapturingOutputStream lpaoE;
   private OverrideListCapturingOutputStream lpaoO;
-  private MutableProcessExecutionResultBag  merb;
+  private MutableProcessExecutionResultBag merb;
 
-  private DefaultProcessExecution           pe;
+  private DefaultProcessExecution pe;
 
-  private PrintStream                       pr;
+  private PrintStream pr;
 
-  private DefaultProcessExecutionResult     res;
+  private DefaultProcessExecutionResult res;
 
-  private ProcessExecutionResult            res3;
+  private ProcessExecutionResult res3;
 
-  private Path                              scratchDir;
+  private Path scratchDir;
 
-  private List<String>                      stdErr;
+  private List<String> stdErr;
 
-  private List<String>                      stdOut;
+  private List<String> stdOut;
 
-  private Path                              stdOutPth;
+  private Path stdOutPth;
 
-  private Path                              stdErrPth;
+  private Path stdErrPth;
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -137,20 +138,19 @@ public class ProcessExecutionResultTest {
     pe = new DefaultProcessExecution(ID, EXEC, ARGS, empty(), empty(), scratchDir, false, empty(), of(scratchDir),
         empty(), empty(), false, lpaoO, lpaoE);
 
-
-    res = new DefaultProcessExecutionResult(pe, of(0), empty(), ofEpochMilli(100L), ofMillis(100L));
+    res = new DefaultProcessExecutionResult(pe, Optional.of(0), empty(), ofEpochMilli(100L), ofMillis(100L));
     res3 = new DefaultProcessExecutionResult(pe, of(0), empty(), ofEpochMilli(100L), ofMillis(100L));
     pr = new PrintStream(new ByteArrayOutputStream());
   }
 
   @Test
   public void testAsJSON() {
-    final JSONObject a      = res.asJSON();
-    String           start  = a.getString(START);
-    JSONObject       e      = a.getJSONObject(EXECUTION);
-    String           se     = e.getString("stderr");
-    String           so     = e.getString("stdout");
-    final String     t      = "{\n" + " \"start\": \"1970-01-01T00:00:00.100Z\",\n" + "  \"execution\": {\n"
+    final JSONObject a = res.asJSON();
+    String start = a.getString(START);
+    JSONObject e = a.getJSONObject(EXECUTION);
+    String se = e.getString("stderr");
+    String so = e.getString("stdout");
+    final String t = "{\n" + " \"start\": \"1970-01-01T00:00:00.100Z\",\n" + "  \"execution\": {\n"
         + "    \"arguments\": [\"-version\"],\n" + "    \"optional\": false,\n" + "    \"id\": \"default\",\n"
         + "\"environment\": {}," + "    \"stdout\": \"" + so + "\",\n" + "    \"stderr\": \"" + se + "\",\n"
         + "    \"executable\": \"java\"\n" + "  },\n" + "  \"result-code\": 0,\n" + "  \"runtime\": \"PT0.1S\",\n"
@@ -246,10 +246,10 @@ public class ProcessExecutionResultTest {
 
   @Test
   public void testMerbLock() {
-    final DefaultProcessExecutionResultBag b  = merb.lock();
-    final JSONObject                       jj = new JSONObject(
+    final DefaultProcessExecutionResultBag b = merb.lock();
+    final JSONObject jj = new JSONObject(
         "{\n" + "  \"executed-ids\": [],\n" + "  \"results\": [],\n" + "  \"incomplete-futures-ids\": []\n" + "}");
-    final JSONObject                       b2 = b.asJSON();
+    final JSONObject b2 = b.asJSON();
     JSONAssert.assertEquals(jj, b2, true);
     assertEquals(new ArrayList<String>(), b.getErrors());
     merb.addFuture(pe, future);
@@ -261,11 +261,10 @@ public class ProcessExecutionResultTest {
 
   @Test
   public void testNegativeDuration() throws Exception {
-    try (ProcessExecution vv = new DefaultProcessExecution(ID, EXEC, ARGS, of(ofHours(-1)), empty(), scratchDir, false,
-        empty(), of(scratchDir), empty(), empty(), false)) {
-      Assertions.assertThrows(ProcessException.class, () -> vv.getProcessExecutor());
-    }
-    ;
+
+    ProcessExecution vv = new DefaultProcessExecution(ID, EXEC, ARGS, of(ofHours(-1)), empty(), scratchDir, false,
+        empty(), of(scratchDir), empty(), empty(), false);
+    Assertions.assertThrows(ProcessException.class, () -> vv.getProcessExecutor());
   }
 
   @Test
@@ -291,9 +290,9 @@ public class ProcessExecutionResultTest {
 
   @Test
   public void testTimes() {
-    final Instant  x   = ofEpochMilli(100L);
-    final Duration d   = ofMillis(100L);
-    final Instant  end = x.plus(d);
+    final Instant x = ofEpochMilli(100L);
+    final Duration d = ofMillis(100L);
+    final Instant end = x.plus(d);
     assertEquals(x, res.getStartTime());
     assertEquals(d, res.getRunningtime());
     assertEquals(end, res.getEndTime());

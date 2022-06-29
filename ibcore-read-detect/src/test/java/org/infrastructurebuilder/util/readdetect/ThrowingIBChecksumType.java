@@ -18,17 +18,19 @@ package org.infrastructurebuilder.util.readdetect;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
 
 /**
- * Just a testing implementation that allows us to throw an excetion when get is called
+ * Just a testing implementation that allows us to throw an excetion when get is
+ * called
  *
  * @author mykel.alvis
  *
  */
-public class ThrowingIBChecksumType extends IBResourceModel {
+public class ThrowingIBChecksumType extends DefaultIBResource {
 
   /**
    *
@@ -36,7 +38,7 @@ public class ThrowingIBChecksumType extends IBResourceModel {
   private static final long serialVersionUID = 5376806798385645619L;
 
   public ThrowingIBChecksumType() throws IOException {
-    super(Paths.get("."), new Checksum(), "doesnt/matter");
+    super(Paths.get("."), new Checksum(), Optional.of("doesnt/matter"));
   }
 
   @Override

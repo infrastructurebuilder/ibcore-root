@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.executor.execution.model.v1_0_0;
+package org.infrastructurebuilder.util.executor.execution.model;
 
 import static java.nio.file.Files.isDirectory;
 import static java.nio.file.Files.isExecutable;
@@ -90,7 +90,7 @@ public class ProcessExectionFactoryv1_0_0 implements ProcessExecutionFactory {
       if (!csum.equals(c))
         throw new ProcessException("Checksum of executable " + c + " does not match supplied " + csum);
     });
-    return new org.infrastructurebuilder.util.executor.execution.model.v1_0_0.DefaultProcessExecution(this.id, this.executable,
+    return new DefaultProcessExecution(this.id, this.executable,
         ofNullable(args).orElse(new ArrayList<>()), ofNullable(timeout), ofNullable(stdIn), this.workDirectory,
         optional, ofNullable(env), ofNullable(relativeRoot), ofNullable(exitCodes), parent.getAddl(), background);
   }

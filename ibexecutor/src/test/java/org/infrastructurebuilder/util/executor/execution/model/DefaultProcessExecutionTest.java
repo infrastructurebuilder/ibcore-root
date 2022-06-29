@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.executor.execution.model.v1_0_0;
+package org.infrastructurebuilder.util.executor.execution.model;
 
 import static java.time.Duration.ofMillis;
 import static java.util.Optional.empty;
@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.System.Logger;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Arrays;
@@ -35,14 +36,14 @@ import java.util.UUID;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
-import org.infrastructurebuilder.util.executor.execution.model.v1_0_0.io.xpp3.ProcessExecutionModelXpp3Reader;
-import org.infrastructurebuilder.util.executor.execution.model.v1_0_0.io.xpp3.ProcessExecutionModelXpp3Writer;
+import org.infrastructurebuilder.util.executor.execution.model.v2_0_0.GeneratedProcessExecution;
+import org.infrastructurebuilder.util.executor.execution.model.v2_0_0.io.xpp3.ProcessExecutionModelXpp3Reader;
+import org.infrastructurebuilder.util.executor.execution.model.v2_0_0.io.xpp3.ProcessExecutionModelXpp3WriterEx;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.lang.System; import java.lang.System.Logger;
 
 
 public class DefaultProcessExecutionTest {
@@ -58,8 +59,9 @@ public class DefaultProcessExecutionTest {
   }
 
   private ProcessExecutionModelXpp3Reader r;
-  private ProcessExecutionModelXpp3Writer w;
-  private DefaultProcessExecution         p1, p2;
+  private ProcessExecutionModelXpp3WriterEx w;
+  GeneratedProcessExecution p1;
+  private DefaultProcessExecution         p2;
   private Path                            workDirectory;
   private String                          id;
 
@@ -70,12 +72,12 @@ public class DefaultProcessExecutionTest {
     List<String> arguments = Arrays.asList("--version");
     Optional<Duration> timeout = of(ofMillis(30000L));
     r = new ProcessExecutionModelXpp3Reader();
-    w = new ProcessExecutionModelXpp3Writer();
+    w = new ProcessExecutionModelXpp3WriterEx();
     workDirectory = wps.get();
 
-    p1 = new DefaultProcessExecution();
+    p1 = new GeneratedProcessExecution();
     p1.setId(id);
-    p1.setRoot(workDirectory.toAbsolutePath().toString());
+    p1.setRelativeRoot(workDirectory.toAbsolutePath().toString());
 
     p2 = new DefaultProcessExecution(id, executable, arguments, timeout, empty(), workDirectory, true,
         of(new HashMap<>()), of(wps.getRoot()), empty(), empty(), false);
@@ -97,12 +99,12 @@ public class DefaultProcessExecutionTest {
   public void testRW() throws IOException, XmlPullParserException {
     StringWriter w2 = new StringWriter();
     w.setFileComment("COMMENT");
-    w.write(w2, p2.clone());
+    w.write(w2, p1.clone());
     String x = IBUtils.removeXMLPrefix(w2.toString());
     assertNotNull(x);
 
     StringReader w3 = new StringReader(x);
-    DefaultProcessExecution p3 = r.read(w3);
+    GeneratedProcessExecution p3 = r.read(w3);
 
     assertTrue(p3.getId().equals(id));
 

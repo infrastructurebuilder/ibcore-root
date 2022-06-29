@@ -15,6 +15,7 @@
  */
 package org.infrastructurebuilder.util.readdetect;
 
+import static org.infrastructurebuilder.exceptions.IBException.cet;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_ZIP;
 import static org.infrastructurebuilder.util.constants.IBConstants.TEXT_PLAIN;
@@ -31,6 +32,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -115,6 +117,11 @@ public class IBResourceTest {
   @Test
   public void testFromPath() {
     IBResource cset = DefaultIBResource.fromPath(testFile);
+    long d = new Date().toInstant().toEpochMilli();
+    InputStream g = cet.withReturningTranslation(() -> cset.get());
+    cet.withTranslation(() -> g.close());
+    assertTrue(cset.getMostRecentReadTime().get().toInstant().toEpochMilli()-d < 3);
+
     assertEquals(183, cset.getPath().toFile().length());
     assertEquals(CHECKSUMVAL, cset.getChecksum().toString());
     assertEquals(APPLICATION_ZIP, cset.getType());

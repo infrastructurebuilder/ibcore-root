@@ -352,6 +352,9 @@ public class IBUtilsTest {
     final Path c = a.resolve(randomUUID().toString());
     cet.withTranslation(() -> writeString(b, ABC));
     b.toFile().setReadable(false);
+    if (IBUtils.isWindows()) {
+      cet.withTranslation(() -> Files.delete(b));
+    }
     assertThrows(IOException.class, () -> copy(b, c));
   }
 
@@ -1194,7 +1197,7 @@ public class IBUtilsTest {
     final Path p = testClasses.resolve("NOSUCHFILE.FOO.zip");
     try (FileSystem zipFs = getZipFileSystem(p, false)) {
       fail("This shouldn't work");
-    } catch (final FileSystemNotFoundException e) {
+    } catch (final FileSystemNotFoundException | NoSuchFileException e) {
 
     } catch (final IOException e) {
       fail("Nope!");

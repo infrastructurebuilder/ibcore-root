@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.readdetect.model;
+package org.infrastructurebuilder.util.readdetect;
 
+import static java.util.Optional.of;
+import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
 import static org.infrastructurebuilder.util.core.IBUtilsTest.TESTFILE;
 import static org.infrastructurebuilder.util.core.IBUtilsTest.TESTFILE_CHECKSUM;
-import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -30,7 +31,6 @@ import java.util.UUID;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
-import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
 public class IBResourceModelTest {
 
   private TestingPathSupplier wps;
-  private IBResourceModel c1, c2;
+  private DefaultIBResource c1, c2;
   private Path path;
   private Checksum checksum;
   private IBResource def;
@@ -50,31 +50,10 @@ public class IBResourceModelTest {
     path = wps.get().resolve(UUID.randomUUID().toString());
     IBUtils.copy(source, path);
     checksum = new Checksum(TESTFILE_CHECKSUM);
-    c2 = new IBResourceModel(path, checksum);
-    c1 = new IBResourceModel(path, checksum, "ABC");
+    c2 = new DefaultIBResource(path, checksum);
+    c1 = new DefaultIBResource(path, checksum, of("ABC"));
 
-    def = new IBResource() {
-
-      @Override
-      public Path getPath() {
-        return null;
-      }
-
-      @Override
-      public Checksum getChecksum() {
-        return null;
-      }
-
-      @Override
-      public String getType() {
-        return null;
-      }
-
-      @Override
-      public IBResource moveTo(Path target) throws IOException {
-        return null;
-      }
-    };
+    def = new DefaultIBResource();
   }
 
   @AfterEach
@@ -102,7 +81,7 @@ public class IBResourceModelTest {
 
   @Test
   public void testGetType() {
-    assertEquals(APPLICATION_OCTET_STREAM, c2.getType());
+    assertEquals("image/jpeg", c2.getType());
     assertEquals("ABC", c1.getType());
   }
 
@@ -132,7 +111,7 @@ public class IBResourceModelTest {
 
   @Test
   public void testEqualsHash() {
-    IBResourceModel c3 = new IBResourceModel(path, checksum, "ABC");
+    DefaultIBResource c3 = new DefaultIBResource(path, checksum, of("ABC"));
     c1.hashCode();
     c1.hashCode();
     c1.hashCode();
@@ -147,7 +126,7 @@ public class IBResourceModelTest {
 
   @Test
   public void testRootInterfaceSourceURL() {
-    IBResource q = new IBResourceModel();
+    DefaultIBResource q = new DefaultIBResource();
     assertFalse(q.getSourceURL().isPresent());
     assertFalse(q.getSourceName().isPresent());
   }

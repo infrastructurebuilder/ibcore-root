@@ -18,13 +18,13 @@ module org.infrastructurebuilder.util.executor {
   requires transitive org.infrastructurebuilder.util.config;
 
   exports org.infrastructurebuilder.util.executor;
-  exports org.infrastructurebuilder.util.executor.execution.model.v1_0_0;
-  exports org.infrastructurebuilder.util.executor.execution.model.v1_0_0.io.xpp3;
+  exports org.infrastructurebuilder.util.executor.execution.model.v2_0_0;
+  exports org.infrastructurebuilder.util.executor.execution.model.v2_0_0.io.xpp3;
   exports org.infrastructurebuilder.util.executor.plexus;
   requires  org.infrastructurebuilder.exceptions;
   requires org.slf4j;
   requires java.xml;
   requires plexus.utils;
   requires zt.exec;
-  requires iblog.noop.component;
+  requires org.infrastructurebuilder.util.logging.noop;
 }

@@ -20,15 +20,10 @@
 
   <classes>
     <!-- MODEL -->
-    <class xml.tagName="IBResourceModel" rootElement="true">
+    <class xml.tagName="IBResourceModel" rootElement="true" java.clone="deep">
       <name>IBResourceModel</name>
       <description>Iterim persistence data for IBResource</description>
       <version>1.0.0+</version>
-      <interfaces>
-        <interface>
-          <![CDATA[org.infrastructurebuilder.util.readdetect.IBResource]]>
-        </interface>
-      </interfaces>
       <fields>
         <field>
           <name>filePath</name>
@@ -48,7 +43,6 @@
           <name>type</name>
           <version>1.0.0+</version>
           <required>true</required>
-          <defaultValue>application/octet-stream</defaultValue>
           <description>MIME type of file</description>
           <type>String</type>
         </field>
@@ -66,253 +60,14 @@
           <description>Optional name data</description>
           <type>String</type>
         </field>
-        <field java.getter="false">
+        <field >
           <name>mostRecentReadTime</name>
           <version>1.0.0+</version>
           <required>false</required>
-          <description>Source URL (to be evaluated as a URL)</description>
+          <description>Time "get()" was most recently called</description>
           <type>Date</type>
         </field>
       </fields>
-      <codeSegments>
-
-        <codeSegment>
-          <version>1.0.0+</version>
-          <comment>This is the value used for getPath( and is the means for executing the get() call</comment>
-          <code>
-            <![CDATA[
-    private  java.nio.file.Path path;
-  ]]>
-          </code>
-        </codeSegment>
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-    public IBResourceModel() {
-      this((String)null,null,null, null, null, null);
-    }
-  ]]>
-          </code>
-        </codeSegment>
-        <codeSegment>
-          <code>
-            <![CDATA[
-    protected IBResourceModel(
-      String filePath
-      ,String checksum
-      ,String type
-      ,String source
-      ,String name
-      ,java.util.Date mostRecentRead
-      ) {
-      super();
-      this.filePath = filePath;
-      this.fileChecksum = checksum;
-      this.type = type;
-      this.source = source;
-      this.name = name;
-      this.path = null;
-      this.mostRecentReadTime = mostRecentRead;
-    }
-  ]]>
-        </code>
-        </codeSegment>
-
-        <codeSegment>
-          <version>1.0.0+</version>
-          <comment>HashCode using methods</comment>
-          <code>
-            <![CDATA[
-    @Override
-    public int hashCode() {
-      return defaultHashCode();
-    }
-  ]]>
-          </code>
-        </codeSegment>
-        <codeSegment>
-          <version>1.0.0+</version>
-          <comment>equals() using methods</comment>
-          <code>
-            <![CDATA[
-   @Override
-    public boolean equals(Object obj) {
-      return defaultEquals(obj);
-    }  ]]>
-          </code>
-        </codeSegment>
-
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-    @Override
-    public String toString() {
-      return defaultToString();
-    }
-
-  ]]>
-          </code>
-        </codeSegment>
-
-        <codeSegment>
-          <version>1.0.0+</version>
-          <comment>Fetch the path from the sourceURL (if present) or the filePath.  Otherwise die.</comment>
-          <code>
-            <![CDATA[
-    @Override
-    public java.nio.file.Path getPath() {
-      if (this.path == null && this.getFilePath() != null) {
-        this.path = java.nio.file.Paths.get(getFilePath());
-      }
-      if (this.path == null && getSourceURL().isPresent()) {
-        this.path = java.nio.file.Paths.get(org.infrastructurebuilder.exceptions.IBException.cet
-            .withReturningTranslation(() -> getSourceURL().get().toURI()));
-      }
-      return java.util.Optional.ofNullable(path).orElseThrow(() -> new org.infrastructurebuilder.exceptions.IBException("No available path"));
-    }
-  ]]>
-          </code>
-        </codeSegment>
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-    @Override
-    public org.infrastructurebuilder.util.readdetect.IBResource moveTo(java.nio.file.Path target) throws java.io.IOException {
-      org.infrastructurebuilder.util.core.IBUtils.moveAtomic(getPath(), target);
-      return new IBResourceModel(target.toAbsolutePath().toString(),getFileChecksum(), getType(), getSource(), getName(),getMostRecentReadTime().orElse(null));
-    }
-  ]]>
-          </code>
-        </codeSegment>
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-    @Override
-    public java.util.Optional<java.net.URL> getSourceURL() {
-      return java.util.Optional.ofNullable(getSource()).map(u -> org.infrastructurebuilder.exceptions.IBException.cet.withReturningTranslation(() -> org.infrastructurebuilder.util.core.IBUtils.translateToWorkableArchiveURL(u)));
-    }
-  ]]>
-          </code>
-        </codeSegment>
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-    @Override
-    public java.util.Optional<String> getSourceName() {
-      return java.util.Optional.ofNullable(getName());
-    }
-  ]]>
-          </code>
-        </codeSegment>
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-    @Override
-    public org.infrastructurebuilder.util.core.Checksum getChecksum() {
-      return new org.infrastructurebuilder.util.core.Checksum(getFileChecksum());
-    }
-  ]]>
-          </code>
-        </codeSegment>
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-  public IBResourceModel(
-      // Path
-      java.nio.file.Path path
-      // Checksum
-      , org.infrastructurebuilder.util.core.Checksum checksum
-      // Type
-      , String type) {
-    this(path, checksum, type, java.util.Optional.empty(), java.util.Optional.empty(), java.util.Optional.empty());
-  }
-
-  ]]>
-          </code>
-        </codeSegment>
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-  public IBResourceModel(
-      // Path
-      java.nio.file.Path path
-      // Checksum
-      , org.infrastructurebuilder.util.core.Checksum checksum
-      // Type
-      , String type
-      // Source
-      , java.util.Optional<java.net.URL> sourceURL
-      // Name
-      , java.util.Optional<String> name
-      , java.util.Optional<java.util.Date> readDate) {
-    this(java.util.Objects.requireNonNull(path).toAbsolutePath().toString(),
-        java.util.Objects.requireNonNull(checksum).toString()
-        , java.util.Objects.requireNonNull(type)
-        , java.util.Objects.requireNonNull(sourceURL).map(java.net.URL::toExternalForm).orElse(null)
-        ,java.util.Objects.requireNonNull(name).orElse(null), readDate.orElse(null));
-    this.path = java.util.Objects.requireNonNull(path);
-  }
-
-  ]]>
-          </code>
-        </codeSegment>
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-   IBResourceModel(
-      // Path
-      java.nio.file.Path path
-      // Checksum
-      , org.infrastructurebuilder.util.core.Checksum checksum) {
-    this(path, checksum, org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM);
-  }
-
-  ]]>
-          </code>
-        </codeSegment>
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-  /**
-   * Override the default {@code IBResource#get()} to set the time when a time is available to set
-   */
-  @Override
-  public java.io.InputStream get() {
-    setMostRecentReadTime(new java.util.Date());
-    return org.infrastructurebuilder.util.readdetect.IBResource.super.get();
-  }
-
-
-  ]]>
-          </code>
-        </codeSegment>
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-  /**
-   * Override the default {@code IBResource#get()} to set the time when a time is available to set
-   */
-  @Override
-  public java.util.Optional<java.util.Date> getMostRecentReadTime() {
-    return java.util.Optional.ofNullable(this.mostRecentReadTime);
-  }
-
-
-  ]]>
-          </code>
-        </codeSegment>
-      </codeSegments>
     </class>
     <class locationTracker="locations" java.clone="shallow">
       <name>IBCPTInputLocation</name>
@@ -320,61 +75,12 @@
       <fields>
         <!-- line, column and source fields are auto-generated by Modello -->
       </fields>
-      <codeSegments>
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-
-  @Override
-  public String toString()
-  {
-      return getLineNumber() + " : " + getColumnNumber() + ", " + getSource();
-  }
-            ]]>
-          </code>
-        </codeSegment>
-      </codeSegments>
     </class>
     <class sourceTracker="source" java.clone="shallow">
       <name>IBCPTInputSource</name>
       <version>1.0.0+</version>
       <fields>
-        <field>
-          <name>modelId</name>
-          <version>1.0.0+</version>
-          <type>String</type>
-          <description>
-            <![CDATA[
-            The identifier of the deployment model in the format {@code <groupId>:<artifactId>:<version>}.
-            ]]>
-          </description>
-        </field>
-        <field>
-          <name>location</name>
-          <version>1.0.0+</version>
-          <type>String</type>
-          <description>
-            <![CDATA[
-            The path/URL of the deployment model or {@code null} if unknown.
-            ]]>
-          </description>
-        </field>
       </fields>
-      <codeSegments>
-        <codeSegment>
-          <version>1.0.0+</version>
-          <code>
-            <![CDATA[
-  @Override
-  public String toString()
-  {
-      return getModelId() + " " + getLocation();
-  }
-            ]]>
-          </code>
-        </codeSegment>
-      </codeSegments>
     </class>
   </classes>
 </model>

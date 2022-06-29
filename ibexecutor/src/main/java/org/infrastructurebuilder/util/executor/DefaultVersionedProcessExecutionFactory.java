@@ -22,7 +22,7 @@ import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.executor.execution.model.v1_0_0.ProcessExectionFactoryv1_0_0;
+import org.infrastructurebuilder.util.executor.execution.model.ProcessExectionFactoryv1_0_0;
 
 public class DefaultVersionedProcessExecutionFactory implements VersionedProcessExecutionFactory {
 

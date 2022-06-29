@@ -26,7 +26,6 @@ import java.util.List;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.infrastructurebuilder.util.maven.artifacts.ResolveOutcome;
-import org.infrastructurebuilder.util.maven.artifacts.impl.DefaultResolveOutcome;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

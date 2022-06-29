@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><wrongRoot extender="/foo/bar" modelVersion="4.0.0">
+<!--
+
+    Copyright © 2019 admin (admin@infrastructurebuilder.org)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+  <name>Maven</name>
+  <component>
+    <name>component1</name>
+  </component>
+  <component comment="comment2">
+    <name>component2</name>
+    <component comment="subcomment">
+      <name>sub</name>
+    </component>
+  </component>
+  <component>
+    <name>component3</name>
+    <custom>
+      <foo>bar</foo>
+      <bar att1="value">baz</bar>
+      <el1>
+        <el2>te&amp;xt</el2>
+      </el1>
+    </custom>
+  </component>
+  <component>
+    <name>component4</name>
+    <properties>
+      <property>
+        <key>key</key>
+        <value>theValue</value>
+      </property>
+    </properties>
+    <flatProperties>
+      <name>value</name>
+    </flatProperties>
+  </component>
+  <repositories>
+    <repo>
+      <id>foo</id>
+    </repo>
+    <repo>
+      <id>bar</id>
+    </repo>
+  </repositories>
+  <mailingLists>
+    <mailingList>
+      <name>Mailing list</name>
+      <subscribe>Super Subscribe</subscribe>
+      <unsubscribe>Duper Unsubscribe</unsubscribe>
+      <archive>?ber Archive</archive>
+    </mailingList>
+  </mailingLists>
+  <scm>
+    <connection>connection</connection>
+    <developerConnection>developerConnection</developerConnection>
+    <url>url</url>
+  </scm>
+  <builder>
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
+    <sourceModifications>
+      <sourceModification>
+        <className>excludeEclipsePlugin</className>
+        <directory>foo</directory>
+        <excludes>
+          <exclude>de/abstrakt/tools/codegeneration/eclipse/*.java</exclude>
+        </excludes>
+      </sourceModification>
+    </sourceModifications>
+    <unitTest />
+  </builder>
+</wrongRoot>

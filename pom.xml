@@ -20,10 +20,10 @@
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibparent</artifactId>
-    <version>56</version>
+    <version>66-SNAPSHOT</version>
   </parent>
   <artifactId>ibcore-root</artifactId>
-  <version>0.17.4-SNAPSHOT</version>
+  <version>0.20.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>${project.artifactId}</name>
   <description>InfrastructureBuilder Common</description>
@@ -41,8 +41,8 @@
     </site>
   </distributionManagement>
   <properties>
-    <iblog.version>0.13.1</iblog.version>
-    <ib.exceptions.version>53</ib.exceptions.version>
+    <iblog.version>0.13.2-SNAPSHOT</iblog.version>
+    <ib.exceptions.version>66-SNAPSHOT</ib.exceptions.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -182,6 +182,9 @@
     <module>ibcore-config</module>
     <module>ibcore-artifacts</module>
     <module>ibcore-dag</module>
+    <!--
+    <module>modello-plugin-xpp3-reflect</module>
+    -->
     <module>ibexecutor</module>
     <module>ibplexus-defaults</module>
     <module>ibmaven-support</module>

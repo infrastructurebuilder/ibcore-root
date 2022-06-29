@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibcore-root</artifactId>
-    <version>0.17.4-SNAPSHOT</version>
+    <version>0.20.0-SNAPSHOT</version>
   </parent>
   <artifactId>ibcore-read-detect</artifactId>
   <packaging>jar</packaging>
@@ -28,7 +28,7 @@
   <description>Component that reads files and detects their types</description>
   <!-- I see no way to increase this at the moment -->
   <properties>
-    <test.coverage.percentage.required>97</test.coverage.percentage.required>
+    <test.coverage.percentage.required>93</test.coverage.percentage.required>
     <jacoco.max.missed.classes>0</jacoco.max.missed.classes>
   </properties>
   <!-- URL for site gen -->
@@ -119,7 +119,7 @@
         <artifactId>modello-maven-plugin</artifactId>
         <configuration>
           <version>1.0.0</version>
-          <useJava5>true</useJava5>
+          <javaSource>5</javaSource>
           <models>
             <model>target/classes/${project.artifactId}.mdo</model>
           </models>
@@ -132,6 +132,7 @@
               <goal>java</goal>
               <goal>xpp3-reader</goal>
               <goal>xpp3-extended-reader</goal>
+              <goal>xpp3-extended-writer</goal>
             </goals>
           </execution>
           <execution>
@@ -149,27 +150,6 @@
             <phase>pre-site</phase>
             <goals>
               <goal>xdoc</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.infrastructurebuilder.modello</groupId>
-        <artifactId>modello-maven-plugin-usurped</artifactId>
-        <version>1.11.0.2</version>
-        <configuration>
-          <version>1.0.0</version>
-          <useJava5>true</useJava5>
-          <models>
-            <model>target/classes/${project.artifactId}.mdo</model>
-          </models>
-        </configuration>
-        <executions>
-          <execution>
-            <id>make-java-sources</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>xpp3-writer-reflect</goal>
             </goals>
           </execution>
         </executions>

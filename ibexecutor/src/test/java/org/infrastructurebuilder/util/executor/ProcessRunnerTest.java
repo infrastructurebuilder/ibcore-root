@@ -15,7 +15,9 @@
  */
 package org.infrastructurebuilder.util.executor;
 
-import static java.lang.System.Logger.Level.*;
+import static java.lang.System.Logger.Level.DEBUG;
+import static java.lang.System.Logger.Level.ERROR;
+import static java.lang.System.Logger.Level.INFO;
 import static java.time.Duration.ofMinutes;
 import static java.time.Duration.ofSeconds;
 import static java.util.Optional.empty;
