@@ -219,4 +219,11 @@ public class GAVTest {
     assertFalse(gavNoV.isSnapshot());
     assertTrue(gavs.isSnapshot());
   }
+
+//  @Test
+//  public void testAsDom() {
+//    var d = gav.asDom();
+//    String d2 = d.toString();
+//    assertEquals("X", d2);
+//  }
 }
