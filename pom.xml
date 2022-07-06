@@ -179,6 +179,7 @@
   </build>
   <modules>
     <module>ibcore</module>
+    <module>lbcore-vertx-json</module>
     <module>ibcore-config</module>
     <module>ibcore-artifacts</module>
     <module>ibcore-dag</module>

@@ -15,6 +15,10 @@
  */
 package org.infrastructurebuilder.util.core;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -46,6 +50,15 @@ public class JSONBuilderTest {
     target = Paths.get(Optional.ofNullable(System.getProperty("target")).orElse("./target")).toRealPath()
         .toAbsolutePath();
 
+  }
+
+  @Test
+  public void testInstantParser() {
+    Instant i = Instant.now();
+
+    final JSONObject k = JSONBuilder.newInstance().addInstant("X", i).asJSON();
+    assertTrue(JSONBuilder.instantFromJSON.apply(null).isEmpty());
+    assertEquals(JSONBuilder.instantFromJSON.apply(k.getString("X")).get(),i);
   }
 
   @Test
@@ -249,8 +262,15 @@ public class JSONBuilderTest {
   @Test
   public void testAddThrowableStringThrowable() {
     final JSONObject j = new JSONObject().put("X",
-        new JSONObject().put("message", "@").put("class", RuntimeException.class.getCanonicalName()));
+        new JSONObject()
+
+        .put(JSONBuilder.MESSAGE, "@")
+
+        .put(JSONBuilder.CLASS, RuntimeException.class.getCanonicalName()));
+
     final JSONObject k = jb.addThrowable("X", Optional.of(new RuntimeException("@"))).asJSON();
+    var st = k.getJSONObject("X").remove(JSONBuilder.STACK_TRACE);
+    assertNotNull(st);
     JSONAssert.assertEquals(j, k, true);
   }
 

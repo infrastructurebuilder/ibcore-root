@@ -18,7 +18,6 @@ module org.infrastructurebuilder.util.files {
 
   requires org.infrastructurebuilder.util.core;
   requires org.infrastructurebuilder.util.config;
-  requires javax.inject;
-  requires org.eclipse.sisu.inject;
   requires ant;
+  requires javax.inject;
 }

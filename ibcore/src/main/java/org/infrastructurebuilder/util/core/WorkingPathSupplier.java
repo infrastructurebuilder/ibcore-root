@@ -34,7 +34,6 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.eclipse.sisu.Nullable;
 
 @Named(WorkingPathSupplier.WORKING)
 public class WorkingPathSupplier implements PathSupplier {
@@ -51,11 +50,11 @@ public class WorkingPathSupplier implements PathSupplier {
     this(new HashMap<>(), new DefaultIdentifierSupplier(), true);
   }
 
-  public WorkingPathSupplier(final Map<String, String> params, @Nullable final IdentifierSupplier id) {
+  public WorkingPathSupplier(final Map<String, String> params, /*@Nullable*/ final IdentifierSupplier id) {
     this(params, id, false);
   }
 
-  public WorkingPathSupplier(final Map<String, String> params, @Nullable final IdentifierSupplier id,
+  public WorkingPathSupplier(final Map<String, String> params, /*@Nullable*/ final IdentifierSupplier id,
       final boolean cleanup) {
     this(() -> cet.withReturningTranslation(() -> Paths
         .get(ofNullable(params.get(WORKING_PATH_KEY))
@@ -68,7 +67,7 @@ public class WorkingPathSupplier implements PathSupplier {
     this.id = ofNullable(id).orElse(new DefaultIdentifierSupplier());
     this.root = requireNonNull(root).get();
   }
-  
+
   public WorkingPathSupplier(final PathSupplier newRoot, final WorkingPathSupplier overridden) {
     this.id = requireNonNull(overridden).id;
     this.cleanup = overridden.cleanup;
@@ -105,6 +104,6 @@ public class WorkingPathSupplier implements PathSupplier {
   public Path getRoot() {
     return root;
   }
-  
+
 
 }

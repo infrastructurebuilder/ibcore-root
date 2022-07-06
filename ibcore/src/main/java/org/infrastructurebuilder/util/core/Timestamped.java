@@ -19,6 +19,7 @@ import java.time.Instant;
 
 
 public interface Timestamped  {
+  public final static String TIMESTAMP = "timestamp";
 
   public static java.util.Comparator<Timestamped> timestamped = new java.util.Comparator<Timestamped>() {
     @Override

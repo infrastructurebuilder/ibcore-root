@@ -13,24 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.core;
+module org.infrastructurebuilder.util.vertx {
+  exports org.infrastructurebuilder.util.vertx;
 
-import java.util.Comparator;
-import java.util.Objects;
-import java.util.UUID;
-
-public interface UUIdentified  {
-  public final static String ID = "id";
-  UUID getId();
-
-  public static Comparator<UUIdentified> uuidcomparator = new Comparator<>() {
-    @Override
-    public int compare(UUIdentified o1, UUIdentified o2) {
-      if (o1 == null) return -1;
-      if (o2 == null) return 1;
-      return o1.getId().compareTo(o2.getId());
-    }
-
-  };
-
+  requires transitive org.infrastructurebuilder.util.core;
+  requires transitive io.vertx.core;
+  requires javax.inject;
+  requires org.eclipse.sisu.inject;
+  requires org.json;
 }

@@ -15,30 +15,23 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
-abstract public class AbstractUUIdentifiedAndTimestamped extends AbstractUUIdentified
-    implements UUIdentifiedAndTimestamped {
-  private final Instant timestamp;
+public class AbstractUUIdentified implements UUIdentified {
+  private UUID id;
 
-  protected AbstractUUIdentifiedAndTimestamped(UUID id, Instant timestamp) {
-    super(id);
-    this.timestamp = Optional.ofNullable(timestamp).orElse(Instant.now());
-  }
-
-  public AbstractUUIdentifiedAndTimestamped() {
+  public AbstractUUIdentified() {
     this(null);
   }
 
-  protected AbstractUUIdentifiedAndTimestamped(Instant timestamp) {
-    this(null, timestamp);
+  public AbstractUUIdentified(UUID id2) {
+    this.id = Optional.ofNullable(id2).orElse(UUID.randomUUID());
   }
 
   @Override
-  public Instant getTimestamp() {
-    return this.timestamp;
+  public UUID getId() {
+    return this.id;
   }
 
 }

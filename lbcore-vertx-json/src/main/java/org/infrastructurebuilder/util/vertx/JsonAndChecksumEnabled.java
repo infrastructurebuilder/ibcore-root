@@ -13,24 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.core;
+package org.infrastructurebuilder.util.vertx;
 
-import java.util.Comparator;
-import java.util.Objects;
-import java.util.UUID;
+import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.util.core.ChecksumEnabled;
+import org.infrastructurebuilder.util.core.JSONOutputEnabled;
 
-public interface UUIdentified  {
-  public final static String ID = "id";
-  UUID getId();
-
-  public static Comparator<UUIdentified> uuidcomparator = new Comparator<>() {
-    @Override
-    public int compare(UUIdentified o1, UUIdentified o2) {
-      if (o1 == null) return -1;
-      if (o2 == null) return 1;
-      return o1.getId().compareTo(o2.getId());
-    }
-
-  };
-
+public interface JsonAndChecksumEnabled extends JsonOutputEnabled, ChecksumEnabled {
+  /**
+   * Warning!  This only works if the checksum of an object is not included as part of the asJSON output
+   */
+  default Checksum asChecksum() {
+    return new Checksum(asJSON(), getRelativeRoot());
+  }
 }

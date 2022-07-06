@@ -35,7 +35,7 @@
   <url>${github.url.base}/${project.artifactId}</url>
   <dependencies>
     <dependency>
-      <groupId>javax.inject</groupId>
+      <groupId>io.avaje</groupId>
       <artifactId>javax.inject</artifactId>
     </dependency>
     <dependency>

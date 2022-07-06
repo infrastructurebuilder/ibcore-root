@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 import javax.inject.Named;
 
 import org.apache.tools.ant.DirectoryScanner;
-import org.eclipse.sisu.Description;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.IBDirScanner;
 import org.infrastructurebuilder.util.core.IBDirScannerSupplier;
@@ -42,7 +41,6 @@ import org.infrastructurebuilder.util.core.PathSupplier;
 import org.infrastructurebuilder.util.core.StringListSupplier;
 
 @Named
-@Description("Default instance of IBDirScannerSupplier.  Wraps ant scanner.")
 public class DefaultIBDirScannerSupplier implements IBDirScannerSupplier {
 
   private final Path root;

@@ -13,24 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.core;
+package org.infrastructurebuilder.util.vertx;
 
-import java.util.Comparator;
-import java.util.Objects;
-import java.util.UUID;
+import java.nio.file.Path;
+import java.util.Optional;
 
-public interface UUIdentified  {
-  public final static String ID = "id";
-  UUID getId();
+import org.json.JSONObject;
 
-  public static Comparator<UUIdentified> uuidcomparator = new Comparator<>() {
-    @Override
-    public int compare(UUIdentified o1, UUIdentified o2) {
-      if (o1 == null) return -1;
-      if (o2 == null) return 1;
-      return o1.getId().compareTo(o2.getId());
-    }
+import io.vertx.core.json.JsonObject;
 
-  };
+public interface JsonOutputEnabled {
+  JsonObject asJson();
 
+  default Optional<Path> getRelativeRoot() {
+    return Optional.empty();
+  }
+
+  default JSONObject asJSON() {
+    return new JSONObject(asJson().toString());
+  }
 }
