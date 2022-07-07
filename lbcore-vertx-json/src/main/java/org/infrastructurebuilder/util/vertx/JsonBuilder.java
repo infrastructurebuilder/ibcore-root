@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -52,7 +53,7 @@ import io.vertx.core.json.JsonObject;
  */
 public final class JsonBuilder implements JSONOutputEnabled, JsonOutputEnabled {
 
-  public final static Function<List<JsonOutputEnabled>, JsonArray> jsonOutputToJsonArray = oe -> {
+  public final static Function<Collection<? extends JsonOutputEnabled>, JsonArray> jsonOutputToJsonArray = oe -> {
     return new JsonArray(requireNonNull(oe).stream().map(JsonOutputEnabled::asJSON).collect(toList()));
   };
 
@@ -256,7 +257,7 @@ public final class JsonBuilder implements JSONOutputEnabled, JsonOutputEnabled {
     return this.addJsonArray(key, JSONOutputToJsonArray.apply(value));
   }
 
-  public JsonBuilder addListJsonOutputEnabled(final String key, final List<JsonOutputEnabled> value) {
+  public JsonBuilder addListJsonOutputEnabled(final String key, final Collection<? extends JsonOutputEnabled> value) {
     return this.addJsonArray(key, jsonOutputToJsonArray.apply(value));
   }
 
