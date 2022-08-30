@@ -38,7 +38,6 @@ import java.util.function.Function;
 import org.apache.tika.Tika;
 import org.apache.tika.metadata.TikaCoreProperties;
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
@@ -107,13 +106,13 @@ public class DefaultIBResource implements IBResource {
     String localType = toType.apply(requireNonNull(source));
     Checksum cSum = new Checksum(source);
     Path newTarget = targetDir.resolve(cSum.asUUID().get().toString());
-    cet.withReturningTranslation(() -> copy(source, newTarget));
+    cet.returns(() -> copy(source, newTarget));
     return new DefaultIBResource(newTarget, cSum, Optional.of(localType));
   }
 
   public final static IBResource copyToDeletedOnExitTempChecksumAndPath(Path targetDir, String prefix, String suffix,
       final InputStream source) {
-    return cet.withReturningTranslation(() -> {
+    return cet.returns(() -> {
       Path target = createTempFile(requireNonNull(targetDir), prefix, suffix);
       try (OutputStream outs = Files.newOutputStream(target)) {
         copy(source, outs);
@@ -148,8 +147,8 @@ public class DefaultIBResource implements IBResource {
   public DefaultIBResource(Path path, Checksum checksum, Optional<String> type) {
 
     this.m = new IBResourceModel();
-    m.setFilePath(path.toAbsolutePath().toString());
-    m.setFileChecksum(checksum.toString());
+    m.setFilePath(requireNonNull(path).toAbsolutePath().toString());
+    m.setFileChecksum(requireNonNull(checksum).toString());
     requireNonNull(type).ifPresent(t -> m.setType(t));
   }
 
@@ -214,7 +213,7 @@ public class DefaultIBResource implements IBResource {
       this.p = java.nio.file.Paths.get(m.getFilePath());
     }
     if (this.p == null && getSourceURL().isPresent()) {
-      this.p = Paths.get(cet.withReturningTranslation(() -> getSourceURL().get().toURI()));
+      this.p = Paths.get(cet.returns(() -> getSourceURL().get().toURI()));
     }
     return ofNullable(this.p).orElseThrow(() -> new IBException("No available path"));
   }

@@ -16,12 +16,14 @@
 package org.infrastructurebuilder.util.vertx;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
+import java.net.URL;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -30,14 +32,16 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.ChecksumEnabled;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.JSONBuilder;
 import org.infrastructurebuilder.util.core.JSONOutputEnabled;
+import org.infrastructurebuilder.util.core.RelativeRoot;
+import org.infrastructurebuilder.util.core.UUIdentified;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -51,8 +55,7 @@ import io.vertx.core.json.JsonObject;
  * @author mykel
  *
  */
-public final class JsonBuilder implements JSONOutputEnabled, JsonOutputEnabled {
-
+public final class JsonBuilder implements JsonOutputEnabled {
   public final static Function<Collection<? extends JsonOutputEnabled>, JsonArray> jsonOutputToJsonArray = oe -> {
     return new JsonArray(requireNonNull(oe).stream().map(JsonOutputEnabled::asJSON).collect(toList()));
   };
@@ -69,11 +72,11 @@ public final class JsonBuilder implements JSONOutputEnabled, JsonOutputEnabled {
     return new JsonArray(IBUtils.asStringStream(ja).map(s -> new JsonObject(s)).collect(toList()));
   };
 
-  public static JsonBuilder addOn(final JSONObject j, final Optional<Path> relativeRoot) {
+  public static JsonBuilder addOn(final JSONObject j, final Optional<RelativeRoot> relativeRoot) {
     return new JsonBuilder(new JsonObject(j.toString()), relativeRoot);
   }
 
-  public static JsonBuilder addOn(final JsonObject j, final Optional<Path> relativeRoot) {
+  public static JsonBuilder addOn(final JsonObject j, final Optional<RelativeRoot> relativeRoot) {
     return new JsonBuilder(j, relativeRoot);
   }
 
@@ -81,25 +84,29 @@ public final class JsonBuilder implements JSONOutputEnabled, JsonOutputEnabled {
     return JsonBuilder.newInstance(Optional.empty());
   }
 
-  public static JsonBuilder newInstance(final Optional<Path> relativeRoot) {
+  public static JsonBuilder newInstance(final Optional<RelativeRoot> relativeRoot) {
     return new JsonBuilder(relativeRoot);
+  }
+
+  public static JsonBuilder newInstance(final JsonObject j, final Optional<RelativeRoot> relativeRoot) {
+    return new JsonBuilder(j, relativeRoot);
   }
 
   private final JsonObject json;
 
-  private final Optional<Path> relativeRoot;
+  private final Optional<RelativeRoot> relativeRoot;
 
   @Override
-  public Optional<Path> getRelativeRoot() {
+  public Optional<RelativeRoot> getRelativeRoot() {
     return this.relativeRoot;
   }
 
-  public JsonBuilder(final JsonObject j, final Optional<Path> relativeRoot) {
+  public JsonBuilder(final JsonObject j, final Optional<RelativeRoot> relativeRoot) {
     json = requireNonNull(j);
     this.relativeRoot = requireNonNull(relativeRoot);
   }
 
-  public JsonBuilder(final Optional<Path> root) {
+  public JsonBuilder(final Optional<RelativeRoot> root) {
     json = new JsonObject();
     relativeRoot = requireNonNull(root);
   }
@@ -230,17 +237,22 @@ public final class JsonBuilder implements JSONOutputEnabled, JsonOutputEnabled {
     return this.addJsonObject(key, orgToVertxObject.apply(j));
   }
 
+  public JsonBuilder addJsonObject(final String key, final Optional<JsonObject> j) {
+    requireNonNull(j).ifPresent(json -> this.addJsonObject(key, json));
+    return this;
+  }
+
   public JsonBuilder addJsonObject(final String key, final JsonObject j) {
     json.put(requireNonNull(key), j);
     return this;
   }
 
   public JsonBuilder addJSONOutputEnabled(final String key, final JSONOutputEnabled j) {
-    return addJSONObject(key, j.asJSON());
+    return addJsonObject(key, orgToVertxObject.apply(j.asJSON()));
   }
 
   public JsonBuilder addJsonOutputEnabled(final String key, final JsonOutputEnabled j) {
-    return addJsonObject(key, j.asJson());
+    return addJsonObject(key, j.toJson());
   }
 
   public JsonBuilder addJSONOutputEnabled(final String key, final Optional<? extends JSONOutputEnabled> j) {
@@ -283,21 +295,21 @@ public final class JsonBuilder implements JSONOutputEnabled, JsonOutputEnabled {
   }
 
   public JsonBuilder addMapStringJSONOutputEnabled(final String key, final Map<String, JSONOutputEnabled> map) {
-    return addJSONObject(key, new JSONObject(requireNonNull(map).entrySet().stream()
-        .collect(Collectors.toMap(k -> k.getKey(), v -> v.getValue().asJSON()))));
+    return addJsonObject(key, new JsonObject(requireNonNull(map).entrySet().stream()
+        .collect(toMap(k -> k.getKey(), v -> orgToVertxObject.apply(v.getValue().asJSON())))));
   }
 
   public JsonBuilder addMapStringJsonOutputEnabled(final String key, final Map<String, JsonOutputEnabled> map) {
-    return addJsonObject(key, new JsonObject(requireNonNull(map).entrySet().stream()
-        .collect(Collectors.toMap(k -> k.getKey(), v -> v.getValue().asJson()))));
+    return addJsonObject(key, new JsonObject(
+        requireNonNull(map).entrySet().stream().collect(toMap(k -> k.getKey(), v -> v.getValue().toJson()))));
   }
 
   public JsonBuilder addMapStringListJSONOutputEnabled(final String key,
       final Map<String, List<JSONOutputEnabled>> map) {
-    return addJSONObject(key,
+    return addJsonObject(key,
 
-        new JSONObject(requireNonNull(map).entrySet().stream()
-            .collect(Collectors.toMap(k -> k.getKey(), v -> JSONBuilder.jsonOutputToJSONArray.apply(v.getValue())))));
+        new JsonObject(requireNonNull(map).entrySet().stream().collect(toMap(k -> k.getKey(),
+            v -> orgToVertxArray.apply(JSONBuilder.jsonOutputToJSONArray.apply(v.getValue()))))));
   }
 
   public JsonBuilder addMapStringListJsonOutputEnabled(final String key,
@@ -305,7 +317,7 @@ public final class JsonBuilder implements JSONOutputEnabled, JsonOutputEnabled {
     return addJsonObject(key,
 
         new JsonObject(requireNonNull(map).entrySet().stream()
-            .collect(Collectors.toMap(k -> k.getKey(), v -> jsonOutputToJsonArray.apply(v.getValue())))));
+            .collect(toMap(k -> k.getKey(), v -> jsonOutputToJsonArray.apply(v.getValue())))));
   }
 
   public JsonBuilder addMapStringMapStringListJSONOutputEnabled(final String key,
@@ -314,7 +326,7 @@ public final class JsonBuilder implements JSONOutputEnabled, JsonOutputEnabled {
     for (final Entry<String, Map<String, List<JSONOutputEnabled>>> builders : requireNonNull(map).entrySet()) {
       j1.addMapStringListJSONOutputEnabled(builders.getKey(), builders.getValue());
     }
-    return addJSONObject(key, j1.asJSON());
+    return addJsonObject(key, j1.toJson());
   }
 
   public JsonBuilder addMapStringMapStringListJsonOutputEnabled(final String key,
@@ -323,12 +335,12 @@ public final class JsonBuilder implements JSONOutputEnabled, JsonOutputEnabled {
     for (final Entry<String, Map<String, List<JsonOutputEnabled>>> builders : requireNonNull(map).entrySet()) {
       j1.addMapStringListJsonOutputEnabled(builders.getKey(), builders.getValue());
     }
-    return addJsonObject(key, j1.asJson());
+    return addJsonObject(key, j1.toJson());
   }
 
   public JsonBuilder addMapStringString(final String key, final Map<String, String> map) {
-    addJSONObject(key, new JSONObject(requireNonNull(map)));
-    return this;
+    return addJsonObject(key,
+        new JsonObject(requireNonNull(map).entrySet().stream().collect(toMap(k -> k.getKey(), identity()))));
   }
 
   public JsonBuilder addMapStringString(final String key, final Optional<Map<String, String>> map) {
@@ -337,8 +349,7 @@ public final class JsonBuilder implements JSONOutputEnabled, JsonOutputEnabled {
   }
 
   public JsonBuilder addProperties(final String key, final Properties properties) {
-    addJSONObject(key, new JSONObject(requireNonNull(properties)));
-    return this;
+    return addMapStringString(key, IBUtils.propertiesToMapSS.apply(requireNonNull(properties)));
   }
 
   public JsonBuilder addProperties(final String key, final Optional<Properties> properties) {
@@ -351,10 +362,30 @@ public final class JsonBuilder implements JSONOutputEnabled, JsonOutputEnabled {
   }
 
   public JsonBuilder addPath(final String key, final Path s) {
+    requireNonNull(s);
     json.put(key,
-        ((!s.isAbsolute()) ? s : relativeRoot.map(rr -> rr.relativize(requireNonNull(s).toAbsolutePath())).orElse(s))
-            .toString());
+        ((!s.isAbsolute()) ? s : relativeRoot.map(rr -> rr.relativize(requireNonNull(s))).orElse(s)).toString());
     return this;
+  }
+
+  public JsonBuilder addURLString(final String key, final Optional<String> s) {
+    requireNonNull(s).ifPresent(s1 -> this.addURLString(key, s1));
+    return this;
+  }
+
+  public JsonBuilder addURLString(final String key, final String s) {
+    requireNonNull(s);
+    json.put(key, relativeRoot.map(rr -> rr.relativize(requireNonNull(s))));
+    return this;
+  }
+
+  public JsonBuilder addURL(final String key, final Optional<URL> s) {
+    requireNonNull(s).ifPresent(s1 -> this.addURL(key, s1));
+    return this;
+  }
+
+  public JsonBuilder addURL(final String key, final URL s) {
+    return addURLString(key, requireNonNull(s).toExternalForm());
   }
 
   public JsonBuilder addSetString(final String key, final Optional<Set<String>> s) {
@@ -372,6 +403,44 @@ public final class JsonBuilder implements JSONOutputEnabled, JsonOutputEnabled {
     return this;
   }
 
+  public JsonBuilder addUUID(final String key, final UUID s) {
+    json.put(requireNonNull(key), s.toString());
+    return this;
+  }
+
+  public JsonBuilder addUUID(final String key, final Optional<UUID> s) {
+    requireNonNull(s).ifPresent(s1 -> this.addUUID(key, s1));
+    return this;
+  }
+
+  public JsonBuilder addCollectionUUID(final String key, final Collection<UUID> s) {
+    return this.addListString(key, s.stream().map(UUID::toString).collect(toList()));
+  }
+
+  public JsonBuilder addCollectionUUID(final String key, final Optional<Collection<UUID>> s) {
+    requireNonNull(s).ifPresent(s1 -> this.addCollectionUUID(key, s1)); // Careful. Breaks fluent
+    return this;
+  }
+
+  public JsonBuilder addUUIDIdentified(final String key, final UUIdentified s) {
+    json.put(requireNonNull(key), s.getId().toString());
+    return this;
+  }
+
+  public JsonBuilder addUUIDIdentified(final String key, final Optional<UUIdentified> s) {
+    requireNonNull(s).ifPresent(s1 -> this.addString(key, s1.getId().toString()));
+    return this;
+  }
+
+  public JsonBuilder addCollectionUUIdentified(final String key, final Collection<? extends UUIdentified> s) {
+    return this.addListString(key, s.stream().map(s1 -> s1.getId().toString()).collect(toList()));
+  }
+
+  public JsonBuilder addCollectionUUIdentified(final String key, final Optional<Collection<? extends UUIdentified>> s) {
+    requireNonNull(s).ifPresent(s1 -> this.addCollectionUUIdentified(key, s1)); // Careful. Breaks fluent
+    return this;
+  }
+
   public JsonBuilder addString(final String key, final String s) {
     json.put(requireNonNull(key), s);
     return this;
@@ -384,7 +453,7 @@ public final class JsonBuilder implements JSONOutputEnabled, JsonOutputEnabled {
   }
 
   public JsonBuilder addThrowable(final String key, final Throwable t) {
-    return this.addJSONObject(key, JSONBuilder.getThrowableJson(t));
+    return this.addJsonOutputEnabled(key, new ThrowableJsonObject(t));
   }
 
   @Override
@@ -393,7 +462,7 @@ public final class JsonBuilder implements JSONOutputEnabled, JsonOutputEnabled {
   }
 
   @Override
-  public JsonObject asJson() {
+  public JsonObject toJson() {
     return new JsonObject(json.toString());// , json.fieldNames()); // TODO
   }
 

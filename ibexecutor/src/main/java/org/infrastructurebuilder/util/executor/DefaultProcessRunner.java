@@ -82,7 +82,7 @@ public class DefaultProcessRunner implements ProcessRunner {
     this.scratchDir = requireNonNull(scratchDir);
     if (exists(this.scratchDir))
       throw new ProcessException("Scratch directory must not exist -> " + this.scratchDir);
-    pet.withTranslation(() -> {
+    pet.translate(() -> {
       createDirectories(scratchDir);
     });
     this.addl = requireNonNull(addl);
@@ -191,7 +191,7 @@ public class DefaultProcessRunner implements ProcessRunner {
         if (!fin.isZero()) {
           Duration dur = between(now(), endLock);
           while (bag.stillRunning() && dur.toNanos() > 0) {
-            pet.withTranslation(() -> Thread.sleep(100L));
+            pet.translate(() -> Thread.sleep(100L));
             dur = between(now(), endLock);
           }
           if (bag.stillRunning())

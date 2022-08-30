@@ -17,8 +17,9 @@ package org.infrastructurebuilder.util.core;
 
 import static java.util.Objects.requireNonNull;
 
-import java.time.Instant;
 import java.util.UUID;
+
+import org.json.JSONObject;
 
 public class AbstractUUIdentifiedAndWeighted extends AbstractUUIdentified implements UUIdentifiedAndWeighted {
   private int weight = 0;
@@ -39,6 +40,13 @@ public class AbstractUUIdentifiedAndWeighted extends AbstractUUIdentified implem
 
   public Integer getWeight() {
     return weight;
+  }
+
+  public JSONObject getLocalJSON() {
+    return JSONBuilder.newInstance()
+        .addString(ID, getId().toString())
+        .addInteger(WEIGHT, getWeight())
+        .asJSON();
   }
 
 }

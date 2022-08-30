@@ -86,7 +86,7 @@ public interface IBResource extends Supplier<InputStream> {
     }
     OpenOption[] readOptions = o.toArray(new java.nio.file.OpenOption[o.size()]);
 
-    return cet.withReturningTranslation(() -> newInputStream(getPath(), readOptions));
+    return cet.returns(() -> newInputStream(getPath(), readOptions));
   }
 
   Optional<URL> getSourceURL();
@@ -104,14 +104,14 @@ public interface IBResource extends Supplier<InputStream> {
     if (obj == null) {
       return false;
     }
-    if (!(obj instanceof IBResource))
-      return false;
-    IBResource other = (IBResource) obj;
+    if ((obj instanceof IBResource other)) {
     return Objects.equals(getChecksum(), other.getChecksum()) // checksum
         && Objects.equals(getPath(), other.getPath()) // path
         && Objects.equals(getSourceName(), other.getSourceName()) // source
         && Objects.equals(getSourceURL(), other.getSourceURL()) // sourceURL
         && Objects.equals(getType(), other.getType()); // Type
+    }
+    return false;
   }
 
   default String defaultToString() {
@@ -125,7 +125,7 @@ public interface IBResource extends Supplier<InputStream> {
   }
 
   default Long size() {
-    return cet.withReturningTranslation(() -> Files.size(getPath()));
+    return cet.returns(() -> Files.size(getPath()));
 
   }
 

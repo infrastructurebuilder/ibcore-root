@@ -15,8 +15,11 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import java.util.Optional;
+import static java.util.Optional.ofNullable;
+
 import java.util.UUID;
+
+import org.json.JSONObject;
 
 public class AbstractUUIdentified implements UUIdentified {
   private UUID id;
@@ -26,12 +29,18 @@ public class AbstractUUIdentified implements UUIdentified {
   }
 
   public AbstractUUIdentified(UUID id2) {
-    this.id = Optional.ofNullable(id2).orElse(UUID.randomUUID());
+    this.id = ofNullable(id2).orElse(UUID.randomUUID());
   }
 
   @Override
   public UUID getId() {
     return this.id;
+  }
+
+  public JSONObject getLocalJSON() {
+    return JSONBuilder.newInstance()
+        .addString(ID, getId().toString())
+        .asJSON();
   }
 
 }

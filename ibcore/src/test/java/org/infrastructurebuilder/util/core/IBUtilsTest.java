@@ -350,10 +350,10 @@ public class IBUtilsTest {
     final Path a = wps.get();
     final Path b = a.resolve(randomUUID().toString());
     final Path c = a.resolve(randomUUID().toString());
-    cet.withTranslation(() -> writeString(b, ABC));
+    cet.translate(() -> writeString(b, ABC));
     b.toFile().setReadable(false);
     if (IBUtils.isWindows()) {
-      cet.withTranslation(() -> Files.delete(b));
+      cet.translate(() -> Files.delete(b));
     }
     assertThrows(IOException.class, () -> copy(b, c));
   }
@@ -363,7 +363,7 @@ public class IBUtilsTest {
     final Path a = wps.get();
     final Path b = a.resolve(randomUUID().toString());
     final Path c = a.resolve(randomUUID().toString());
-    cet.withTranslation(() -> {
+    cet.translate(() -> {
       Files.createDirectories(a);
       writeString(b, ABC);
       copy(b, c);
@@ -394,7 +394,7 @@ public class IBUtilsTest {
     final Path a = wps.get();
     final Path b = a.resolve(randomUUID().toString());
     final Path c = a.resolve(randomUUID().toString());
-    cet.withTranslation(() -> Files.createDirectories(a));
+    cet.translate(() -> Files.createDirectories(a));
     assertThrows(IOException.class, () -> copy(c, null));
   }
 
@@ -482,7 +482,7 @@ public class IBUtilsTest {
   @Test
   public void testFailUnzip() {
     final Path p = testClasses.resolve(FAKEFILE);
-    Path       t = cet.withReturningTranslation(() -> {
+    Path       t = cet.returns(() -> {
                    return Files.createTempDirectory("X");
                  });
     t.toFile().deleteOnExit();

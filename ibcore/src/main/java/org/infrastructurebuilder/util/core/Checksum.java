@@ -17,6 +17,7 @@ package org.infrastructurebuilder.util.core;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.newInputStream;
+import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
@@ -36,7 +37,6 @@ import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -45,13 +45,30 @@ import org.infrastructurebuilder.util.constants.IBConstants;
 import org.json.JSONObject;
 
 public class Checksum implements Comparable<Checksum>, Supplier<Optional<UUID>> {
+
+  public final static Checksum extend(Checksum c, byte[] bytes) {
+    var ba = new byte[c.b.length + bytes.length];
+    int i, j;
+    for (i = 0; i < c.b.length; ++i) {
+      ba[i] = c.b[i];
+    }
+    for (j = i; j < ba.length; ++j) {
+      ba[j] = bytes[i - j];
+    }
+    return new Checksum(ba);
+  }
+
   public final static Checksum fromUTF8StringBytes(String s) {
     return new Checksum(new ByteArrayInputStream(s.getBytes(UTF_8)));
   }
 
   public final static Checksum getMapStringStringChecksum(final Map<String, String> tags) {
-    return cet.withReturningTranslation(() -> {
-      final MessageDigest md = MessageDigest.getInstance(IBConstants.DIGEST_TYPE);
+    return getMapStringStringChecksum(tags, IBConstants.DIGEST_TYPE);
+  }
+
+  public final static Checksum getMapStringStringChecksum(final Map<String, String> tags, String digestType) {
+    return cet.returns(() -> {
+      final MessageDigest md = MessageDigest.getInstance(digestType);
       tags.keySet().stream().sorted().forEach(key -> {
         md.update(new StringBuffer().append(key).append("=").append(tags.get(key)).toString().getBytes(UTF_8));
       });
@@ -61,53 +78,35 @@ public class Checksum implements Comparable<Checksum>, Supplier<Optional<UUID>> 
 
   private final byte[] b;
 
-  private final Optional<Path> relativeRoot;
+//  private final Optional<Path> relativeRoot;
 
   public Checksum() {
     this((byte[]) null);
   }
 
   public Checksum(final byte[] b) {
-    this(b, empty());
-  }
-
-  public Checksum(final byte[] b, final Optional<Path> relativeRoot) {
     this.b = b;
-    this.relativeRoot = requireNonNull(relativeRoot);
   }
 
   public Checksum(final InputStream ins) {
-    this(ins, empty());
-  }
-
-  public Checksum(final InputStream ins, final Optional<Path> relativeRoot) {
     try {
-      b = ins == null ? null : cet.withReturningTranslation(() -> digestInputStream(ins));
+      b = ins == null ? null : cet.returns(() -> digestInputStream(ins));
     } finally {
       if (ins != null)
-        cet.withTranslation(() -> ins.close());
+        cet.translate(() -> ins.close());
     }
-    this.relativeRoot = requireNonNull(relativeRoot);
-  }
-
-  public Checksum(final JSONObject j, final Optional<Path> relativeRoot) {
-    this(new StringReader(j.toString()), relativeRoot);
   }
 
   public Checksum(final JSONObject j) {
-    this(new StringReader(j.toString()), empty());
+    this(new StringReader(j.toString()));
   }
 
   public Checksum(final Reader ins) {
-    this(ins, empty());
-  }
-
-  public Checksum(final Reader ins, final Optional<Path> relativeRoot) {
-    this(readerToInputStream(ins), relativeRoot);
+    this(readerToInputStream(ins));
   }
 
   public Checksum(final Path file) {
-    this(cet.withReturningTranslation(() -> newInputStream(requireNonNull(file))));
+    this(cet.returns(() -> newInputStream(requireNonNull(file))));
   }
 
   /**
@@ -117,33 +116,21 @@ public class Checksum implements Comparable<Checksum>, Supplier<Optional<UUID>> 
    * @param relativeRoot
    * @param list
    */
-  public Checksum(final Optional<Path> relativeRoot, final List<Checksum> list) {
+  public Checksum(final List<Checksum> list) {
     this(requireNonNull(list).stream()
         // Collects all checksums as a string into a long string and then gets the
         // checksum of the UTF-8 bytes.
         .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString().getBytes(UTF_8)
     // RelRoot
-        , relativeRoot);
+    );
   }
 
   public Checksum(final String hexString) {
-    this(hexString, empty());
-  }
-
-  public Checksum(final String hexString, final Optional<Path> relativeRoot) {
-    this(hexStringToByteArray(hexString), relativeRoot);
+    this(hexStringToByteArray(hexString));
   }
 
   public Checksum(final Supplier<InputStream> insS) {
-    this(insS, empty());
-  }
-
-  public Checksum(final Supplier<InputStream> insS, final Optional<Path> relativeRoot) {
-    this(insS.get(), relativeRoot);
-  }
-
-  public Checksum(final List<Checksum> checksums) {
-    this(empty(), checksums);
+    this(insS.get());
   }
 
   public Optional<UUID> asUUID() {
@@ -185,13 +172,9 @@ public class Checksum implements Comparable<Checksum>, Supplier<Optional<UUID>> 
     return ofNullable(b).map(c -> Arrays.copyOf(c, c.length)).orElse(new byte[0]);
   }
 
-  public Optional<Path> getRelativeRoot() {
-    return relativeRoot;
-  }
-
   @Override
   public int hashCode() {
-    return Objects.hash(toString());
+    return hash(toString());
   }
 
   @Override

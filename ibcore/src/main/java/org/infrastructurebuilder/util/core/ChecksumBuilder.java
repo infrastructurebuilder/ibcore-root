@@ -42,13 +42,13 @@ import org.json.JSONObject;
 public final class ChecksumBuilder implements ChecksumEnabled {
 
   public static ChecksumBuilder newAlternateInstance(final String t) {
-    return IBException.cet.withReturningTranslation(() -> {
+    return IBException.cet.returns(() -> {
       return new ChecksumBuilder(t, MessageDigest.getInstance(requireNonNull(t)), empty());
     });
   }
 
   public static ChecksumBuilder newAlternateInstance(final String t, final Optional<Path> relativeRoot) {
-    return IBException.cet.withReturningTranslation(() -> {
+    return IBException.cet.returns(() -> {
       return new ChecksumBuilder(t, MessageDigest.getInstance(requireNonNull(t)), relativeRoot);
     });
   }
@@ -314,7 +314,7 @@ public final class ChecksumBuilder implements ChecksumEnabled {
   @Override
   public synchronized Checksum asChecksum() {
     synchronized (checksum) {
-      checksum.compareAndSet(null, new Checksum(md.digest(), relativeRoot));
+      checksum.compareAndSet(null, new Checksum(md.digest()));
       return checksum.get();
     }
   }
@@ -324,20 +324,20 @@ public final class ChecksumBuilder implements ChecksumEnabled {
   }
 
   private ChecksumBuilder addJObjectToBuilder(final ChecksumBuilder b, final Object o) {
-    if (o instanceof JSONObject) {
-      b.addJSONObject((JSONObject) o);
-    } else if (o instanceof JSONArray) {
-      b.addJSONArray((JSONArray) o);
-    } else if (o instanceof Integer) {
-      b.addInteger((Integer) o);
-    } else if (o instanceof Long) {
-      b.addLong((Long) o);
-    } else if (o instanceof Double) {
-      b.addDouble((Double) o);
-    } else if (o instanceof Float) {
-      b.addFloat((Float) o);
-    } else if (o instanceof Boolean) {
-      b.addBoolean((Boolean) o);
+    if (o instanceof JSONObject j) {
+      b.addJSONObject(j);
+    } else if (o instanceof JSONArray ja) {
+      b.addJSONArray(ja);
+    } else if (o instanceof Integer i) {
+      b.addInteger(i);
+    } else if (o instanceof Long  l ) {
+      b.addLong(l);
+    } else if (o instanceof Double d) {
+      b.addDouble(d);
+    } else if (o instanceof Float f) {
+      b.addFloat(f);
+    } else if (o instanceof Boolean b2) {
+      b.addBoolean(b2);
     } else {
       b.addString(o.toString());
     }

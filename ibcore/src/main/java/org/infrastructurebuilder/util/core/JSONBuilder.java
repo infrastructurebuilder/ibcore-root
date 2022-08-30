@@ -20,7 +20,6 @@ import static java.util.Objects.requireNonNull;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -36,15 +35,6 @@ import org.json.JSONObject;
 
 public final class JSONBuilder implements JSONOutputEnabled {
 
-  public static final String UNKNOWN_THROWABLE_CLASS = "unknown.throwable.class";
-
-  public static final String MESSAGE = "message";
-
-  public static final String CLASS = "class";
-
-  public static final String CAUSE = "cause";
-
-  public static final String STACK_TRACE = "stackTrace";
 
   public final static Function<List<JSONOutputEnabled>, JSONArray> jsonOutputToJSONArray = oe -> {
     return new JSONArray(requireNonNull(oe).stream().map(JSONOutputEnabled::asJSON).collect(Collectors.toList()));
@@ -64,31 +54,6 @@ public final class JSONBuilder implements JSONOutputEnabled {
 
   public static Function<String, Optional<Instant>> instantFromJSON = s -> {
     return Optional.ofNullable(s).map(Instant::parse); // mebbe?
-  };
-
-  // Cant recurse static Function, so this is a method
-  public static JSONObject getThrowableJson(Throwable t) {
-    final JSONObject j2 = new JSONObject();
-    if (t != null) {
-      j2.put(JSONBuilder.CLASS, t.getClass().getCanonicalName());
-      Optional.ofNullable(t.getCause()).ifPresent(cause -> {
-        j2.put(JSONBuilder.CAUSE, getThrowableJson(cause)); // Recurses
-      });
-      Optional.ofNullable(t.getMessage()).ifPresent(message -> {
-        j2.put(JSONBuilder.MESSAGE, message);
-      });
-      var st = t.getStackTrace();
-      if (st.length > 0) {
-        var l = new JSONArray();
-        for (StackTraceElement ste : st) {
-          l.put(ste.toString());
-        }
-        j2.put(JSONBuilder.STACK_TRACE, l);
-      }
-    } else {
-      j2.put(JSONBuilder.CLASS, JSONBuilder.UNKNOWN_THROWABLE_CLASS);
-    }
-    return j2;
   };
 
 
@@ -340,7 +305,7 @@ public final class JSONBuilder implements JSONOutputEnabled {
 
   // FIXME See JsonBuilder#addThrowable in ibcore-vertx-json
   public JSONBuilder addThrowable(final String key, final Throwable t) {
-    return addJSONObject(key, getThrowableJson(t));
+    return addJSONOutputEnabled(key, new ThrowableJSONObject(t));
   }
 
   @Override

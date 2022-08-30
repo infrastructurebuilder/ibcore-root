@@ -118,8 +118,8 @@ public class IBResourceTest {
   public void testFromPath() {
     IBResource cset = DefaultIBResource.fromPath(testFile);
     long d = new Date().toInstant().toEpochMilli();
-    InputStream g = cet.withReturningTranslation(() -> cset.get());
-    cet.withTranslation(() -> g.close());
+    InputStream g = cet.returns(() -> cset.get());
+    cet.translate(() -> g.close());
     assertTrue(cset.getMostRecentReadTime().get().toInstant().toEpochMilli()-d < 3);
 
     assertEquals(183, cset.getPath().toFile().length());

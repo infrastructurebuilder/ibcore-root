@@ -59,7 +59,7 @@ public class DefaultProcessRunnerSupplier implements ProcessRunnerSupplier {
     final Path p = Paths.get(Objects.requireNonNull(cfgMap.getString(PROCESS_TARGET))).toAbsolutePath().normalize();
     if (!Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS))
       throw new ProcessException("Directory " + cfgMap.getString(PROCESS_TARGET) + " is not a valid location");
-    buildDir = ProcessException.pet.withReturningTranslation(() -> Files.createDirectories(p));
+    buildDir = ProcessException.pet.returns(() -> Files.createDirectories(p));
     scratchDir = buildDir.resolve("process-runner-" + UUID.randomUUID());
     relativeRoot = Optional.ofNullable(cfgMap.getString(PROCESS_EXECUTOR_RELATIVE_ROOT)).map(Paths::get);
     interimSleep = Optional.ofNullable(cfgMap.getString(PROCESS_EXECUTOR_INTERIM_SLEEP)).map(Long::valueOf);

@@ -17,13 +17,13 @@ package org.infrastructurebuilder.util.vertx;
 
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.ChecksumEnabled;
-import org.infrastructurebuilder.util.core.JSONOutputEnabled;
 
 public interface JsonAndChecksumEnabled extends JsonOutputEnabled, ChecksumEnabled {
   /**
-   * Warning!  This only works if the checksum of an object is not included as part of the asJSON output
+   * Warning! This only works if the checksum of an object is not included as part
+   * of the asJSON output
    */
   default Checksum asChecksum() {
-    return new Checksum(asJSON(), getRelativeRoot());
+    return new Checksum(asJSON());
   }
 }

@@ -163,5 +163,12 @@ public interface IBConstants {
   public static final String DTD_RESOURCE = "dbUnitDTD";
   public static final String FAIL_ON_ERROR = "failOnError";
 
+  // For ThrowableJSONObject
+  public static final String MESSAGE = "message";
+  public static final String CLASS = "class";
+  public static final String CAUSE = "cause";
+  public static final String STACK_TRACE = "stackTrace";
+  public static final String UNKNOWN_THROWABLE_CLASS = "unknown.throwable.class";
+
 
 }

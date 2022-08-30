@@ -52,7 +52,7 @@ public interface ArtifactServices extends Weighted {
   static final String NORMALIZE_SNAPSHOTS = "normalizeSnapshots";
   static final String REMOTE_REPO_URL = "remoteRepoUrl";
   final static String SOURCE_CLASSIFIER = "sources";
-  final static URL CENTRAL_REPO_URL = IBException.cet.withReturningTranslation(() -> new URL(CENTRAL_REPO_STRING_URL));
+  final static URL CENTRAL_REPO_URL = IBException.cet.returns(() -> new URL(CENTRAL_REPO_STRING_URL));
 
   GAV getArtifact(GAV coords, String scope);
 

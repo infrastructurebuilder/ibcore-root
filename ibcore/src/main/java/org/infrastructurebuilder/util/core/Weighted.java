@@ -30,6 +30,7 @@ import static java.util.Objects.requireNonNull;
  */
 public interface Weighted {
 
+  public final static String WEIGHT = "weight";
   public static java.util.Comparator<Weighted> weighted = new java.util.Comparator<Weighted>() {
     @Override
     public int compare(Weighted o1, Weighted o2) {

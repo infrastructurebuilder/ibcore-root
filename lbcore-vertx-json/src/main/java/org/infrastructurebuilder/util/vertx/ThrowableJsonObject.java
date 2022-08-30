@@ -15,43 +15,23 @@
  */
 package org.infrastructurebuilder.util.vertx;
 
-import java.nio.file.Path;
+import java.util.Objects;
 import java.util.Optional;
 
-import javax.inject.Provider;
-
-import org.infrastructurebuilder.util.core.RelativeRoot;
-import org.json.JSONObject;
+import org.infrastructurebuilder.util.core.ThrowableJSONObject;
 
 import io.vertx.core.json.JsonObject;
 
-public interface JsonOutputEnabled extends Provider<JsonObject> {
-  /**
-   * Deprecating in favor of toJson (for DataObject use)
-   *
-   * @return
-   */
-  @Deprecated
-  default JsonObject asJson() {
-    return toJson();
+public class ThrowableJsonObject implements JsonOutputEnabled {
+  private final Throwable t;
+
+  public ThrowableJsonObject(Throwable t) {
+    this.t = Objects.requireNonNull(t);
   }
 
-  /**
-   * DataObject convenience method.
-   *
-   * @return
-   */
-  JsonObject toJson();
-
-  default Optional<RelativeRoot> getRelativeRoot() {
-    return Optional.empty();
+  @Override
+  public JsonObject toJson() {
+    return JsonBuilder.orgToVertxObject.apply(ThrowableJSONObject.getThrowableJson(t));
   }
 
-  default JSONObject asJSON() {
-    return new JSONObject(toJson().toString());  // Ouch!
-  }
-
-  default JsonObject get() {
-    return toJson();
-  }
 }

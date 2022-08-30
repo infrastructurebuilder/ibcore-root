@@ -16,6 +16,7 @@
 package org.infrastructurebuilder.util.filescanner;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -29,7 +30,6 @@ import java.util.TreeSet;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import javax.inject.Named;
 
@@ -154,7 +154,7 @@ public class DefaultIBDirScannerSupplier implements IBDirScannerSupplier {
           // Resolve as rooted by sourceDirectory
           .map(f -> srcDir.resolve(f))
           // Make it a URL
-//          .map((p) -> cet.withReturningTranslation(() -> p.toUri().toURL().toExternalForm()))
+//          .map((p) -> cet.returns(() -> p.toUri().toURL().toExternalForm()))
           // Make it absolute
           .map(Path::toAbsolutePath)
           // Collect set
@@ -164,7 +164,7 @@ public class DefaultIBDirScannerSupplier implements IBDirScannerSupplier {
 //          //
 //          .map(Paths::get)
           //
-          .collect(Collectors.toList());
+          .collect(toList());
 
     };
 
@@ -175,15 +175,15 @@ public class DefaultIBDirScannerSupplier implements IBDirScannerSupplier {
     public final static BiFunction<List<Path>, Boolean, List<Path>> filterHidden = (paths, exclHidden) -> {
       return requireNonNull(paths).stream()
           // If we're not filtering then pass OR if we're not hidden then pass
-          .filter(path -> (!exclHidden) || (!IBException.cet.withReturningTranslation(() -> Files.isHidden(path))))
-          .collect(Collectors.toList());
+          .filter(path -> (!exclHidden) || (!IBException.cet.returns(() -> Files.isHidden(path))))
+          .collect(toList());
     };
     public final static BiFunction<List<Path>, Boolean, List<Path>> filterDotfiles = (paths, exclHidden) -> {
       return requireNonNull(paths).stream()
           // If we're not filtering then pass OR if we're not hidden then pass
           .filter(path -> (!exclHidden) || (!path.getFileName().startsWith(".")))
           // Filter dotfiles if necessary
-          .collect(Collectors.toList());
+          .collect(toList());
     };
   }
 }

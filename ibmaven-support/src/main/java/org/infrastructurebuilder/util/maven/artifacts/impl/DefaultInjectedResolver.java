@@ -84,8 +84,8 @@ public class DefaultInjectedResolver implements InjectedResolver {
   public ResolveOutcome resolutionOutcomeFor(final Artifact artifact) {
     final ArtifactResolutionResult res = resolve(artifact);
     final List<URL> urls = res.getArtifacts().stream()
-        .map(a -> cet.withReturningTranslation(() -> a.getFile().toURI().toURL())).collect(Collectors.toList());
-    final URL origi = cet.withReturningTranslation(() -> res.getOriginatingArtifact().getFile().toURI().toURL());
+        .map(a -> cet.returns(() -> a.getFile().toURI().toURL())).collect(Collectors.toList());
+    final URL origi = cet.returns(() -> res.getOriginatingArtifact().getFile().toURI().toURL());
     return new DefaultResolveOutcome(urls, res.getOriginatingArtifact(), origi);
   }
 

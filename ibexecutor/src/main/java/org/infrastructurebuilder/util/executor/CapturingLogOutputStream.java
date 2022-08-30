@@ -40,15 +40,15 @@ public abstract class CapturingLogOutputStream extends LogOutputStream {
 
   public CapturingLogOutputStream(final Optional<Path> p, boolean flushEveryLine) {
     path = requireNonNull(p).map(Path::toAbsolutePath);
-    path.ifPresent(path -> cet.withTranslation(() -> createDirectories(path.getParent())));
-    os = cet.withReturningTranslation(() -> ofNullable(p.isPresent() ? newBufferedWriter(p.get()) : null));
+    path.ifPresent(path -> cet.translate(() -> createDirectories(path.getParent())));
+    os = cet.returns(() -> ofNullable(p.isPresent() ? newBufferedWriter(p.get()) : null));
     this.flushEveryLine = flushEveryLine;
   }
 
   @Override
   public void close() throws IOException {
     super.close();
-    os.ifPresent(p -> cet.withTranslation(() -> p.close()));
+    os.ifPresent(p -> cet.translate(() -> p.close()));
   }
 
   public Optional<Path> getPath() {
@@ -59,7 +59,7 @@ public abstract class CapturingLogOutputStream extends LogOutputStream {
 
   @Override
   protected void processLine(final String line) {
-    os.ifPresent(g -> cet.withTranslation(() -> {
+    os.ifPresent(g -> cet.translate(() -> {
       g.write(line);
       if (this.flushEveryLine)
         g.flush();

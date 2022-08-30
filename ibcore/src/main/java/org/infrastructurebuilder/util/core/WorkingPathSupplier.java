@@ -56,7 +56,7 @@ public class WorkingPathSupplier implements PathSupplier {
 
   public WorkingPathSupplier(final Map<String, String> params, /*@Nullable*/ final IdentifierSupplier id,
       final boolean cleanup) {
-    this(() -> cet.withReturningTranslation(() -> Paths
+    this(() -> cet.returns(() -> Paths
         .get(ofNullable(params.get(WORKING_PATH_KEY))
             .orElse(ofNullable(System.getProperty(TARGET_DIR_PROPERTY)).orElse(MAVEN_TARGET_PATH)))
         .toRealPath().toAbsolutePath()), id, cleanup);
@@ -98,7 +98,7 @@ public class WorkingPathSupplier implements PathSupplier {
     }
     final Path k = p;
     paths.add(k);
-    return cet.withReturningTranslation(() -> createDirectories(k));
+    return cet.returns(() -> createDirectories(k));
   }
 
   public Path getRoot() {

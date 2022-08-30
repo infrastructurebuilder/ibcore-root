@@ -187,7 +187,6 @@ public class SettingsProxy implements CredentialsSupplier {
 
   /**
    * @return a Map of profiles field with <code>Profile#getId()</code> as key
-   * @see org.apache.maven.settings.Profile#getId()
    */
   public Map<String, ProfileProxy> getProfilesAsMap() {
     return getProfiles().stream().collect(toMap(ProfileProxy::getId, identity()));

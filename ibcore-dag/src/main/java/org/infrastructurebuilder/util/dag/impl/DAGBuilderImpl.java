@@ -890,7 +890,7 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
 
   @Override
   public DAG<T> build() {
-    return IBException.cet.withReturningTranslation(() -> {
+    return IBException.cet.returns(() -> {
       return new MutableDAGImpl.DAGImpl<>(dag);
     });
   }

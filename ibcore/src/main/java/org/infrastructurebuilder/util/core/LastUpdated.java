@@ -15,20 +15,24 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import java.util.Comparator;
-import java.util.UUID;
+import java.time.Instant;
 
-public interface UUIdentified  {
-  public final static String ID = "id";
-  UUID getId();
 
-  public static Comparator<UUIdentified> uuidcomparator = new Comparator<>() {
+public interface LastUpdated  {
+  public final static String LAST_UPDATED = "lastUpdated";
+
+  public static java.util.Comparator<LastUpdated> lastupdatedComparator = new java.util.Comparator<LastUpdated>() {
     @Override
-    public int compare(UUIdentified o1, UUIdentified o2) {
-      if (o1 == null) return -1;
-      if (o2 == null) return 1;
-      return o1.getId().compareTo(o2.getId());
+    public int compare(LastUpdated o1, LastUpdated o2) {
+      if (o1 == null)
+        return -1;
+      if (o2 == null)
+        return 1;
+      // Sort highest weights last
+      return o1.getLastUpdated().compareTo(o2.getLastUpdated());
     }
   };
+
+  Instant getLastUpdated();
 
 }

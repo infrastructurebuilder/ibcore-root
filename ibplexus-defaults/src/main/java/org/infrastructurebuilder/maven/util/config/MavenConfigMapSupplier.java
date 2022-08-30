@@ -73,7 +73,7 @@ public class MavenConfigMapSupplier extends DefaultConfigMapSupplier {
     });
 
     final Path workingDir = Paths.get(build.getDirectory()).resolve(UUID.randomUUID().toString());
-    IBException.cet.withTranslation(() -> Files.createDirectories(workingDir));
+    IBException.cet.translate(() -> Files.createDirectories(workingDir));
     super.overrideValue(IB_DATA_WORKING_DIR, workingDir.toString());
     Map<String, Object> i = requireNonNull(System.getenv()).entrySet().stream()
         .collect(toMap(k -> k.getKey(), v -> v.getValue()));

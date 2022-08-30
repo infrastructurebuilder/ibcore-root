@@ -19,6 +19,8 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.json.JSONObject;
+
 abstract public class AbstractUUIdentifiedAndTimestamped extends AbstractUUIdentified
     implements UUIdentifiedAndTimestamped {
   private final Instant timestamp;
@@ -39,6 +41,13 @@ abstract public class AbstractUUIdentifiedAndTimestamped extends AbstractUUIdent
   @Override
   public Instant getTimestamp() {
     return this.timestamp;
+  }
+
+  public JSONObject getLocalJSON() {
+    return JSONBuilder.newInstance()
+        .addString(ID, getId().toString())
+        .addInstant(TIMESTAMP, getTimestamp())
+        .asJSON();
   }
 
 }

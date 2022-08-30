@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.infrastructurebuilder.util.constants.IBConstants;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -264,12 +265,12 @@ public class JSONBuilderTest {
     final JSONObject j = new JSONObject().put("X",
         new JSONObject()
 
-        .put(JSONBuilder.MESSAGE, "@")
+        .put(IBConstants.MESSAGE, "@")
 
-        .put(JSONBuilder.CLASS, RuntimeException.class.getCanonicalName()));
+        .put(IBConstants.CLASS, RuntimeException.class.getCanonicalName()));
 
     final JSONObject k = jb.addThrowable("X", Optional.of(new RuntimeException("@"))).asJSON();
-    var st = k.getJSONObject("X").remove(JSONBuilder.STACK_TRACE);
+    var st = k.getJSONObject("X").remove(IBConstants.STACK_TRACE);
     assertNotNull(st);
     JSONAssert.assertEquals(j, k, true);
   }
