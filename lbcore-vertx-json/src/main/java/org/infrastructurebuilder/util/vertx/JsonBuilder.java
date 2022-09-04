@@ -57,7 +57,7 @@ import io.vertx.core.json.JsonObject;
  */
 public final class JsonBuilder implements JsonOutputEnabled {
   public final static Function<Collection<? extends JsonOutputEnabled>, JsonArray> jsonOutputToJsonArray = oe -> {
-    return new JsonArray(requireNonNull(oe).stream().map(JsonOutputEnabled::asJSON).collect(toList()));
+    return new JsonArray(requireNonNull(oe).stream().map(JsonOutputEnabled::toJson).collect(toList()));
   };
 
   public final static Function<List<JSONOutputEnabled>, JsonArray> JSONOutputToJsonArray = oe -> {
