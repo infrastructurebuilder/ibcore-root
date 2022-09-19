@@ -28,7 +28,7 @@
   <description>Component that reads files and detects their types</description>
   <!-- I see no way to increase this at the moment -->
   <properties>
-    <test.coverage.percentage.required>93</test.coverage.percentage.required>
+    <test.coverage.percentage.required>59</test.coverage.percentage.required>
     <jacoco.max.missed.classes>0</jacoco.max.missed.classes>
   </properties>
   <!-- URL for site gen -->
@@ -50,11 +50,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.sisu</groupId>
-      <artifactId>org.eclipse.sisu.plexus</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.infrastructurebuilder.util.logging</groupId>
       <artifactId>iblog-JDKSL-component</artifactId>
     </dependency>
@@ -65,114 +60,20 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.jooq</groupId>
-      <artifactId>joor</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.apache.tika</groupId>
       <artifactId>tika-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>ibcore-read-detect-model</artifactId>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
     </dependency>
+
   </dependencies>
   <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <forkCount>1</forkCount>
-          <reuseForks>false</reuseForks>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.eclipse.sisu</groupId>
-        <artifactId>sisu-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-resources</id>
-            <!-- here the phase you need -->
-            <phase>validate</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>src/main/mdo/</directory>
-                  <filtering>true</filtering>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.modello</groupId>
-        <artifactId>modello-maven-plugin</artifactId>
-        <configuration>
-          <version>1.0.0</version>
-          <javaSource>5</javaSource>
-          <models>
-            <model>target/classes/${project.artifactId}.mdo</model>
-          </models>
-        </configuration>
-        <executions>
-          <execution>
-            <id>make-java-sources</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>java</goal>
-              <goal>xpp3-reader</goal>
-              <goal>xpp3-extended-reader</goal>
-              <goal>xpp3-extended-writer</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>make-site-xsd</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>xsd</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>target/generated-site/resources/xsd</outputDirectory>
-            </configuration>
-          </execution>
-          <execution>
-            <id>make-site-doc</id>
-            <phase>pre-site</phase>
-            <goals>
-              <goal>xdoc</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>org/infrastructurebuilder/data/model/**/*</exclude>
-          </excludes>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>org/infrastructurebuilder/util/readdetect/model/**/*</exclude>
-          </excludes>
-        </configuration>
-      </plugin>
-    </plugins>
   </build>
 
 </project>

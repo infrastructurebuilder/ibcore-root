@@ -26,7 +26,7 @@
   <packaging>jar</packaging>
   <name>${project.artifactId}</name>
   <description>JsonObject management tools for Vert.x</description>
-	<!-- URL for site gen -->
+  <!-- URL for site gen -->
   <url>${github.url.base}/${project.artifactId}</url>
   <properties>
     <test.coverage.percentage.required>0</test.coverage.percentage.required>
@@ -61,11 +61,11 @@
       </exclusions>
     </dependency>
     <dependency>
-<!--       <groupId>com.vdurmont</groupId> -->
+      <!--       <groupId>com.vdurmont</groupId> -->
       <groupId>org.infrastructurebuilder.usurped</groupId>
       <artifactId>semver4j</artifactId>
     </dependency>
-<!--
+    <!--
     <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
@@ -79,10 +79,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.json</groupId>
-      <artifactId>json</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
@@ -94,7 +90,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-<!--       <groupId>org.skyscreamer</groupId> -->
+      <!--       <groupId>org.skyscreamer</groupId> -->
       <groupId>org.infrastructurebuilder.usurped</groupId>
       <artifactId>jsonassert</artifactId>
       <scope>test</scope>
@@ -103,9 +99,13 @@
       <groupId>io.vertx</groupId>
       <artifactId>vertx-core</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore-read-detect</artifactId>
+    </dependency>
   </dependencies>
   <build>
-  <!--
+    <!--
     <plugins>
       <plugin>
         <groupId>de.sormuras.junit</groupId>

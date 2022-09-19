@@ -26,149 +26,156 @@ import org.json.JSONArray;
 
 public interface IBConstants {
 
-  public final static String DEFAULT = "default";
-  public final static String IBDATA_PREFIX = "IBDataTemp_";
-  public final static String IBDATA_SUFFIX = ".ibdata";
+  String DEFAULT = "default";
+  String IBDATA_PREFIX = "IBDataTemp_";
+  String IBDATA_SUFFIX = ".ibdata";
 
-  public static final String IBR_MANIFEST = "application/vnd.ibr.manifest.xml";
-  public static final String APPLICATION_ACCESS = "application/msaccess";
-  public static final String APPLICATION_LIQUIBASE_CHANGELOG = "application/liquibase-changelog+xml";
-  public static final String APPLICATION_MSWORD = "application/msword";
-  public static final String APPLICATION_MSWORDX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-  public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
-  public static final String APPLICATION_PDF = "application/pdf";
-  public static final String APPLICATION_PPTX = "application/vnd.ms-powerpoint";
-  public static final String APPLICATION_VND_OASIS_SPREADSHEET = "application/vnd.oasis.opendocument.spreadsheet";
-  public static final String APPLICATION_XLS = "application/msexcel";
-  public static final String APPLICATION_XLSX = "application//vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-  public static final String APPLICATION_XML = "application/xml";
-  public static final String APPLICATION_X_TIKA_MSOFFICE = "application/x-tika-msoffice";
-  public static final String APPLICATION_ZIP = "application/zip";
-  public static final String AVRO_BINARY = "avro/binary";
-  public static final String AVRO_SCHEMA = "application/avro+json"; // AVSC
-  public static final String DBUNIT_DTD = "application/dbunit-DTD";
-  public static final String DBUNIT_FLATXML = "application/dbunit-export+xml";
-  public static final String IBDATA_SCHEMA = "application/vnd.ibdata-schema+xml";
-  public static final String JSON_TYPE = "application/json";
-  public static final String JSON_TYPE_SEQ = JSON_TYPE + "-seq";     // See https://tools.ietf.org/html/rfc7464
+  String IBR_MANIFEST = "application/vnd.ibr.manifest.xml";
+  String APPLICATION_ACCESS = "application/msaccess";
+  String APPLICATION_LIQUIBASE_CHANGELOG = "application/liquibase-changelog+xml";
+  String APPLICATION_MSWORD = "application/msword";
+  String APPLICATION_MSWORDX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+  String APPLICATION_OCTET_STREAM = "application/octet-stream";
+  String APPLICATION_PDF = "application/pdf";
+  String APPLICATION_PPTX = "application/vnd.ms-powerpoint";
+  String APPLICATION_VND_OASIS_SPREADSHEET = "application/vnd.oasis.opendocument.spreadsheet";
+  String APPLICATION_XLS = "application/msexcel";
+  String APPLICATION_XLSX = "application//vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+  String APPLICATION_XML = "application/xml";
+  String APPLICATION_X_TIKA_MSOFFICE = "application/x-tika-msoffice";
+  String APPLICATION_ZIP = "application/zip";
+  String AVRO_BINARY = "avro/binary";
+  String AVRO_SCHEMA = "application/avro+json"; // AVSC
+  String DBUNIT_DTD = "application/dbunit-DTD";
+  String DBUNIT_FLATXML = "application/dbunit-export+xml";
+  String IBDATA_SCHEMA = "application/vnd.ibdata-schema+xml";
+  String JSON_TYPE = "application/json";
+  String JSON_TYPE_SEQ = JSON_TYPE + "-seq"; // See https://tools.ietf.org/html/rfc7464
   // This is a specific type that keeps cropping up
-  public static final String NLD_JSON_TYPE = JSON_TYPE + ";newline-delimited-records"; // ALMOST a json-seq :)
-  public static final String PROTOBUF0 = "application/vnd.google.protobuf";
-  public static final String PROTOBUF1 = "application/x-protobuf";
-  public static final String PROTOBUF2 = "application/x-google-protobuf";
+  String NLD_JSON_TYPE = JSON_TYPE + ";newline-delimited-records"; // ALMOST a json-seq :)
+  String PROTOBUF0 = "application/vnd.google.protobuf";
+  String PROTOBUF1 = "application/x-protobuf";
+  String PROTOBUF2 = "application/x-google-protobuf";
   // IBData's preferred content type for protobug is PROTOBUF3
-  public static final String PROTOBUF3 = "application/protobuf";
-  public static final String TEXT_CSV = "text/csv";
-  public static final String TEXT_CSV_WITH_HEADER = "text/csv;header";
-  public static final String TEXT_HTML = "text/html";
-  public static final String TEXT_PLAIN = "text/plain";
-  public static final String TEXT_PSV = "text/pipe-separated-values";
-  public static final String TEXT_PSV_WITH_HEADER = "text/pipe-separated-values;header";
-  public static final String TEXT_TSV = "text/tab-separated-values";
-  public static final String TEXT_TSV_WITH_HEADER = "text/tab-separated-values;header";
-  public static final String VIDEO_AVI_1 = "video/avi";
-//  public static final String LIQUIBASE_SCHEMA = "application/liquibase-schema+xml";
+  String PROTOBUF3 = "application/protobuf";
+  String TEXT_CSV = "text/csv";
+  String TEXT_CSV_WITH_HEADER = "text/csv;header";
+  String TEXT_HTML = "text/html";
+  String TEXT_PLAIN = "text/plain";
+  String TEXT_PSV = "text/pipe-separated-values";
+  String TEXT_PSV_WITH_HEADER = "text/pipe-separated-values;header";
+  String TEXT_TSV = "text/tab-separated-values";
+  String TEXT_TSV_WITH_HEADER = "text/tab-separated-values;header";
+  String VIDEO_AVI_1 = "video/avi";
+//   String LIQUIBASE_SCHEMA = "application/liquibase-schema+xml";
 
-  public static final String JAVA_LANG_STRING = "java.lang.String";
-  public static final String JSONSTRUCT= "org.json.JSONObject";
-  public static final String ORG_W3C_DOM_NODE = "org.w3c.dom.Node";
-  public static final String ORG_APACHE_AVRO_GENERIC_INDEXED_RECORD = "org.apache.avro.generic.IndexedRecord";
+  String JAVA_LANG_STRING = "java.lang.String";
+  String JSONSTRUCT = "org.json.JSONObject";
+  String ORG_W3C_DOM_NODE = "org.w3c.dom.Node";
+  String ORG_APACHE_AVRO_GENERIC_INDEXED_RECORD = "org.apache.avro.generic.IndexedRecord";
 
-  public static final String DEFAULT_EXTENSION = ".bin";
-  public static final String AVI = ".avi";
-  public static final String AVRO = ".avro";
-  public static final String AVSC = ".avsc";
-  public static final String CBOR = ".cbor";
-  public static final String PDF = ".pdf";
-  public static final String PSV = ".psv";
-  public static final String DOCX = ".docx";
-  public static final String DOC = ".doc";
-  public static final String MDB = ".mdb";
-  public static final String XLSX = ".xlsx";
-  public static final String XLS = ".xls";
-  public static final String TSV = ".tsv";
-  public static final String CSV = ".csv";
-  public static final String ZIP = ".zip";
-  public static final String TXT = ".txt";
-  public static final String XML = ".xml";
-  public static final String ODS = ".ods";
-  public static final String PPT = ".ppt";
-  public static final String PROTO = ".proto";
-  public static final String THRIFT = ".thrift";
-  public static final String DTD = ".dtd";
-  public static final String JSON_EXT = ".json";
-  public static final String NLD_JSON_EXT = ".nldjson";
+  String DEFAULT_EXTENSION = ".bin";
+  String AVI = ".avi";
+  String AVRO = ".avro";
+  String AVSC = ".avsc";
+  String CBOR = ".cbor";
+  String PDF = ".pdf";
+  String PSV = ".psv";
+  String DOCX = ".docx";
+  String DOC = ".doc";
+  String MDB = ".mdb";
+  String XLSX = ".xlsx";
+  String XLS = ".xls";
+  String TSV = ".tsv";
+  String CSV = ".csv";
+  String ZIP = ".zip";
+  String TXT = ".txt";
+  String XML = ".xml";
+  String ODS = ".ods";
+  String PPT = ".ppt";
+  String PROTO = ".proto";
+  String THRIFT = ".thrift";
+  String DTD = ".dtd";
+  String JSON_EXT = ".json";
+  String NLD_JSON_EXT = ".nldjson";
 
+  String _SHA512 = "sha512";
+  String ASC_EXT = ".asc";
 
-  public static final String _SHA512 = "sha512";
-  public static final String ASC_EXT = ".asc";
+  JSONArray CHECKSUM_TYPES_DEFAULT = new JSONArray(Arrays.asList(_SHA512));
 
-  public static final JSONArray CHECKSUM_TYPES_DEFAULT = new JSONArray(Arrays.asList(_SHA512));
+  Optional<String> CHECKSUM_TYPES_SHA512 = Optional.of(_SHA512);
 
-  public static final Optional<String> CHECKSUM_TYPES_SHA512 = Optional.of(_SHA512);
+  DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss-SSS").withLocale(Locale.US)
+      .withZone(ZoneId.of("Z"));
 
-  public static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss-SSS")
-      .withLocale(Locale.US).withZone(ZoneId.of("Z"));
+  String DIGEST_TYPE = "SHA-512";
+  String DIRECTORY_PERMISSIONS = "directoryPermissions";
+  String EXPORTED = "ExportedInsecureTestKeyrings";
+  String FACTORY_NAME = "org.infrastructurebuilder.core.config.CoreCryptoProviderFactory";
+  String FILE_PERMISSIONS = "filePermissions";
+  String FILESYSTEM_CRYPTO_CONFIGURATION = "Filesystem-Crypto-Configuration";
+  String GITHUB = "github";
+  String AZUREDEVOPS = "azuredevops";
+  String HEX_IDENTIFIER = "HEXID:";
+  String ID = "id";
+  String KEYSERVER_DEFAULT_HOST = "pgp.mit.edu";
+  String KEYSERVER_HOST_ENV = "SPECIFIC_KEYSERVER_HOST";
+  String MAVEN = "maven";
+  String MAVEN_MIRRORS = "MAVEN_MIRRORS";
+  String NAME = "name";
+  String NO_OP = "no-op";
+  String NULL_PASSPHRASE = "*NULL*";
+  String OF = "of";
+  String PASSPHRASE = "passphrase";
+  String PASSPHRASE_ENV = "SPECIFIC_PASSPHRASE";
+  String PASSWORD = "password";
+  String PASSWORD_TYPE = "PASSWORD";
+  String PRIVATE_KEY = "privateKey";
+  String RANDOM = "*RANDOM*";
 
-  public static final String DIGEST_TYPE = "SHA-512";
-  public static final String DIRECTORY_PERMISSIONS = "directoryPermissions";
-  public static final String EXPORTED = "ExportedInsecureTestKeyrings";
-  public static final String FACTORY_NAME = "org.infrastructurebuilder.core.config.CoreCryptoProviderFactory";
-  public static final String FILE_PERMISSIONS = "filePermissions";
-  public static final String FILESYSTEM_CRYPTO_CONFIGURATION = "Filesystem-Crypto-Configuration";
-  public static final String GITHUB = "github";
-  public static final String AZUREDEVOPS = "azuredevops";
-  public static final String HEX_IDENTIFIER = "HEXID:";
-  public static final String ID = "id";
-  public static final String KEYSERVER_DEFAULT_HOST = "pgp.mit.edu";
-  public static final String KEYSERVER_HOST_ENV = "SPECIFIC_KEYSERVER_HOST";
-  public static final String MAVEN = "maven";
-  public static final String MAVEN_MIRRORS = "MAVEN_MIRRORS";
-  public static final String NAME = "name";
-  public static final String NO_OP = "no-op";
-  public static final String NULL_PASSPHRASE = "*NULL*";
-  public static final String OF = "of";
-  public static final String PASSPHRASE = "passphrase";
-  public static final String PASSPHRASE_ENV = "SPECIFIC_PASSPHRASE";
-  public static final String PASSWORD = "password";
-  public static final String PASSWORD_TYPE = "PASSWORD";
-  public static final String PRIVATE_KEY = "privateKey";
-  public static final String RANDOM = "*RANDOM*";
+  String ROOTPATH = "org/infrastructurebuilder/test/keys";
+  String SHA512 = _SHA512;
+  String SOURCE_LEVEL = "sourceLevel";
+  String SYMMETRIC_PREFIX = "*#*";
+  String TXT_EXT = ".txt";
+  String UNENCRYPTED = "_unencrypted_";
+  String URL = "url";
+  String USERNAME = "username";
 
-  public static final String ROOTPATH = "org/infrastructurebuilder/test/keys";
-  public static final String SHA512 = _SHA512;
-  public static final String SOURCE_LEVEL = "sourceLevel";
-  public static final String SYMMETRIC_PREFIX = "*#*";
-  public static final String TXT_EXT = ".txt";
-  public static final String UNENCRYPTED = "_unencrypted_";
-  public static final String URL = "url";
-  public static final String USERNAME = "username";
+  Charset UTF8 = Charset.forName("UTF-8");
+  String VERSION = "version";
 
-  public static final Charset UTF8 = Charset.forName("UTF-8");
-  public static final String VERSION = "version";
+  String HTTP_PREFIX = "http://";
+  String HTTPS_PREFIX = "https://";
+  String FILE_PREFIX = "file:";
+  String ZIP_PREFIX = "zip:";
+  String JAR_PREFIX = "jar:";
 
-  public final static String HTTP_PREFIX = "http://";
-  public final static String HTTPS_PREFIX = "https://";
-  public final static String FILE_PREFIX = "file:";
-  public final static String ZIP_PREFIX = "zip:";
-  public final static String JAR_PREFIX = "jar:";
+  String TARGET_DIR_PROPERTY = "target_dir";
+  String MAVEN_TARGET_PATH = "./target";
+  String TEMPORARYID = "temporaryId";
+  String DESCRIPTION = "description";
+  String CREDENTIALS = "credentials";
 
-  public static final String TARGET_DIR_PROPERTY = "target_dir";
-  public static final String MAVEN_TARGET_PATH = "./target";
-  public static final String TEMPORARYID = "temporaryId";
-  public static final String DESCRIPTION = "description";
-  public static final String CREDENTIALS = "credentials";
-
-
-  public static final String DTD_RESOURCE = "dbUnitDTD";
-  public static final String FAIL_ON_ERROR = "failOnError";
+  String DTD_RESOURCE = "dbUnitDTD";
+  String FAIL_ON_ERROR = "failOnError";
 
   // For ThrowableJSONObject
-  public static final String MESSAGE = "message";
-  public static final String CLASS = "class";
-  public static final String CAUSE = "cause";
-  public static final String STACK_TRACE = "stackTrace";
-  public static final String UNKNOWN_THROWABLE_CLASS = "unknown.throwable.class";
+  String MESSAGE = "message";
+  String CLASS = "class";
+  String CAUSE = "cause";
+  String STACK_TRACE = "stackTrace";
+  String UNKNOWN_THROWABLE_CLASS = "unknown.throwable.class";
 
+  String CREATE_DATE = "created";
+  String UPDATE_DATE = "updated";
+  String INSTANT = "instant";
+  String MOST_RECENT_READ_TIME = "mostRecentRead";
+  String PATH = "path";
+  String SIZE = "size";
+  String SOURCE_NAME = "sourceName";
+  String SOURCE_URL = "sourceURL";
+  String MIME_TYPE = "mimeType";
 
 }

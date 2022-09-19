@@ -15,21 +15,7 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import static java.util.Optional.empty;
+@Deprecated
+public interface Named extends NameDescribed {
 
-import java.util.Optional;
-
-public interface Named {
-  public final static String NAME = "name";
-  public final static String DISPLAYNAME = "displayName";
-
-  /**
-   * It is possible for a Named to have a null name.  This should be the exception, however.
-   * @return
-   */
-  public String getName();
-
-  default Optional<String> getDisplayName() {
-    return empty();
-  }
 }

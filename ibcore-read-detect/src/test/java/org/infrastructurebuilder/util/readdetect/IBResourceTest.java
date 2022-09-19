@@ -19,8 +19,6 @@ import static org.infrastructurebuilder.exceptions.IBException.cet;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_ZIP;
 import static org.infrastructurebuilder.util.constants.IBConstants.TEXT_PLAIN;
-import static org.infrastructurebuilder.util.readdetect.DefaultIBResource.copyToDeletedOnExitTempChecksumAndPath;
-import static org.infrastructurebuilder.util.readdetect.DefaultIBResource.copyToTempChecksumAndPath;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -39,6 +37,7 @@ import java.util.UUID;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
+import org.infrastructurebuilder.util.readdetect.impl.DefaultIBResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -76,7 +75,7 @@ public class IBResourceTest {
     URL l = uri.toURL();
     String ef = l.toExternalForm();
 
-    IBResource cset = copyToTempChecksumAndPath(this.wps.get(), testFile, Optional.of("zip:" + ef), TESTFILE_TEST);
+    IBResource cset = IBResourceFactory.copyToTempChecksumAndPath(this.wps.get(), testFile, Optional.of("zip:" + ef), TESTFILE_TEST);
     assertEquals(183, cset.getPath().toFile().length());
     assertEquals(CHECKSUMVAL, cset.getChecksum().toString());
     assertEquals(APPLICATION_ZIP, cset.getType());
@@ -88,7 +87,7 @@ public class IBResourceTest {
   @Test
   public void testCopyToDeletedOnExitTempChecksumAndPathWithTarget() throws IOException {
     Path t = this.wps.getTestClasses().resolve(TESTFILE_TEST);
-    IBResource cset = copyToTempChecksumAndPath(this.wps.get(), t);
+    IBResource cset = IBResourceFactory.copyToTempChecksumAndPath(this.wps.get(), t);
     assertEquals(7, cset.getPath().toFile().length());
     assertEquals(EXPECTED, cset.getChecksum().toString());
     assertEquals(TEXT_PLAIN, cset.getType());
@@ -99,7 +98,7 @@ public class IBResourceTest {
   @Test
   public void testCopyToDeletedOnExitTempChecksumAndPathWithoutTarget() throws IOException {
     try (InputStream ins = Files.newInputStream(this.wps.getTestClasses().resolve(TESTFILE_TEST))) {
-      IBResource cset = copyToDeletedOnExitTempChecksumAndPath(wps.get(), "A", "B", ins);
+      IBResource cset = IBResourceFactory.copyToDeletedOnExitTempChecksumAndPath(wps.get(), "A", "B", ins);
       assertEquals(7, cset.getPath().toFile().length());
       assertEquals(EXPECTED, cset.getChecksum().toString());
       assertEquals(TEXT_PLAIN, cset.getType());
@@ -120,7 +119,7 @@ public class IBResourceTest {
     long d = new Date().toInstant().toEpochMilli();
     InputStream g = cet.returns(() -> cset.get());
     cet.translate(() -> g.close());
-    assertTrue(cset.getMostRecentReadTime().get().toInstant().toEpochMilli()-d < 3);
+    assertTrue(cset.getMostRecentReadTime().get().toEpochMilli()-d < 3);
 
     assertEquals(183, cset.getPath().toFile().length());
     assertEquals(CHECKSUMVAL, cset.getChecksum().toString());

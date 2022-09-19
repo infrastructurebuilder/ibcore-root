@@ -15,7 +15,6 @@
  */
 package org.infrastructurebuilder.util.vertx;
 
-import java.nio.file.Path;
 import java.util.Optional;
 
 import javax.inject.Provider;
@@ -45,10 +44,6 @@ public interface JsonOutputEnabled extends Provider<JsonObject> {
 
   default Optional<RelativeRoot> getRelativeRoot() {
     return Optional.empty();
-  }
-
-  default JSONObject asJSON() {
-    return new JSONObject(toJson().toString());  // Ouch!
   }
 
   default JsonObject get() {

@@ -13,13 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.readdetect;
+package org.infrastructurebuilder.util.readdetect.impl;
 
 import static java.nio.file.Files.createTempFile;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
+import static org.infrastructurebuilder.util.constants.IBConstants.CREATE_DATE;
+import static org.infrastructurebuilder.util.constants.IBConstants.DESCRIPTION;
+import static org.infrastructurebuilder.util.constants.IBConstants.MIME_TYPE;
+import static org.infrastructurebuilder.util.constants.IBConstants.MOST_RECENT_READ_TIME;
+import static org.infrastructurebuilder.util.constants.IBConstants.NAME;
+import static org.infrastructurebuilder.util.constants.IBConstants.PATH;
+import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_URL;
+import static org.infrastructurebuilder.util.constants.IBConstants.UPDATE_DATE;
+import static org.infrastructurebuilder.util.core.ChecksumEnabled.CHECKSUM;
 import static org.infrastructurebuilder.util.core.IBUtils.copy;
 
 import java.io.IOException;
@@ -27,30 +36,34 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Date;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.function.Function;
 
 import org.apache.tika.Tika;
 import org.apache.tika.metadata.TikaCoreProperties;
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.IBUtils;
+import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
+import org.json.JSONObject;
 
 public class DefaultIBResource implements IBResource {
-  private final static Logger log = System.getLogger(DefaultIBResource.class.getName());
   private static final long serialVersionUID = 5978749189830232137L;
+  private final static Logger log = System.getLogger(DefaultIBResource.class.getName());
   private final static Tika tika = new Tika();
   private final IBResourceModel m;
 
   private Path p;
 
-  DefaultIBResource() {
+  public DefaultIBResource() {
     this.m = new IBResourceModel();
   }
 
@@ -88,6 +101,38 @@ public class DefaultIBResource implements IBResource {
     this.m = requireNonNull(m);
   }
 
+  /**
+   * Magic deserializer :)
+   *
+   * @param j JSONObject produced by IBResource#asJSON
+   */
+  public DefaultIBResource(JSONObject j) {
+
+    // FIXME Some of these not being present should produce a runtime failure
+    m = new IBResourceModel();
+    m.setCreated(j.optString(CREATE_DATE, null));
+    m.setFileChecksum(j.optString(CHECKSUM, null));
+    m.setFilePath(j.optString(PATH, null));
+    m.setLastUpdate(j.optString(UPDATE_DATE, null));
+    m.setModelEncoding("UTF-8");
+    m.setMostRecentReadTime(j.optString(MOST_RECENT_READ_TIME, null));
+    m.setName(j.optString(NAME, null));
+    m.setSource(j.optString(SOURCE_URL, null));
+    m.setType(j.optString(MIME_TYPE, null));
+    m.setDescription(j.optString(DESCRIPTION, null));
+
+    String x = ofNullable(requireNonNull(j).optString(IBConstants.PATH, null))
+        .orElseThrow(() -> new RuntimeException("No path supplied"));
+    try {
+      Path p = Paths.get(cet.returns(() -> cet.returns(() -> new URL(x).toURI())));
+      this.p = p;
+    } catch (Throwable t) {
+      log.log(Level.ERROR, "Error converting to path", t);
+      throw t;
+    }
+
+  }
+
   public final static IBResource copyToTempChecksumAndPath(Path targetDir, final Path source,
       final Optional<String> oSource, final String pString) throws IOException {
     DefaultIBResource d = (DefaultIBResource) copyToTempChecksumAndPath(targetDir, source);
@@ -97,7 +142,7 @@ public class DefaultIBResource implements IBResource {
     return d;
   }
 
-  void setSource(String source) {
+  public void setSource(String source) {
     this.m.setSource(requireNonNull(source));
   }
 
@@ -145,10 +190,15 @@ public class DefaultIBResource implements IBResource {
   }
 
   public DefaultIBResource(Path path, Checksum checksum, Optional<String> type) {
-
     this.m = new IBResourceModel();
     m.setFilePath(requireNonNull(path).toAbsolutePath().toString());
     m.setFileChecksum(requireNonNull(checksum).toString());
+    IBResource.getAttributes.apply(path).ifPresent(bfa -> {
+      this.m.setCreated(bfa.creationTime().toInstant().toString());
+      this.m.setLastUpdate(bfa.lastModifiedTime().toInstant().toString());
+      this.m.setMostRecentReadTime(bfa.lastAccessTime().toInstant().toString());
+    });
+
     requireNonNull(type).ifPresent(t -> m.setType(t));
   }
 
@@ -183,7 +233,7 @@ public class DefaultIBResource implements IBResource {
 
   @Override
   public java.io.InputStream get() {
-    m.setMostRecentReadTime(new java.util.Date());
+    m.setMostRecentReadTime(Instant.now().toString());
     return org.infrastructurebuilder.util.readdetect.IBResource.super.get();
   }
 
@@ -224,8 +274,27 @@ public class DefaultIBResource implements IBResource {
   }
 
   @Override
-  public Optional<Date> getMostRecentReadTime() {
-    return ofNullable(this.m.getMostRecentReadTime());
+  public Optional<Instant> getMostRecentReadTime() {
+    return ofNullable(this.m.getMostRecentReadTime()).map(Instant::parse);
   }
 
+  @Override
+  public Optional<Instant> getCreateDate() {
+    return ofNullable(this.m.getCreated()).map(Instant::parse);
+  }
+
+  @Override
+  public Optional<Instant> getLateUpdateDate() {
+    return ofNullable(this.m.getLastUpdate()).map(Instant::parse);
+  }
+
+  @Override
+  public Optional<String> getName() {
+    return ofNullable(this.m.getName());
+  }
+
+  @Override
+  public Optional<String> getDescription() {
+    return ofNullable(this.m.getDescription());
+  }
 }

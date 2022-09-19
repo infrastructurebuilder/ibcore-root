@@ -98,6 +98,11 @@
       </dependency>
       <dependency>
         <groupId>org.infrastructurebuilder</groupId>
+        <artifactId>ibcore-read-detect-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder</groupId>
         <artifactId>ibmaven-support</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -190,6 +195,7 @@
     <module>ibplexus-defaults</module>
     <module>ibmaven-support</module>
     <module>ibcore-files</module>
+    <module>ibcore-read-detect-model</module>
     <module>ibcore-read-detect</module>
     <module>ibcore-default-extension-type-mapper</module>
   </modules>

@@ -15,13 +15,17 @@
  */
 package org.infrastructurebuilder.util.vertx;
 
+import static java.time.Instant.ofEpochSecond;
+import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
+import static org.infrastructurebuilder.util.constants.IBConstants.INSTANT;
 
-import java.nio.file.Path;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.infrastructurebuilder.util.core.Checksum;
@@ -30,11 +34,13 @@ import org.infrastructurebuilder.util.core.Timestamped;
 import org.infrastructurebuilder.util.core.UUIdentified;
 import org.infrastructurebuilder.util.core.UUIdentifiedAndTimestamped;
 import org.infrastructurebuilder.util.core.UUIdentifiedAndWeighted;
+import org.json.JSONObject;
 
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 public class IBVertxUtils {
+
   @SuppressWarnings("unchecked")
   public static <T> Iterator<T> asIterator(final JsonArray array) {
     final List<T> l = new ArrayList<>();
@@ -43,6 +49,10 @@ public class IBVertxUtils {
     }
     return l.iterator();
   }
+
+  public final Function<JSONObject, JsonObject> toJson = (j) -> {
+    return new JsonObject(requireNonNull(j).toString());
+  };
 
   /**
    * This is here because UUIdentified has no JsonObject from Vert.x, only
@@ -54,6 +64,7 @@ public class IBVertxUtils {
   public static JsonBuilder uuidentifiedJsonBuilder(UUIdentified u) {
     return JsonBuilder.newInstance().addString(UUIdentified.ID, u.getId().toString());
   }
+
   /**
    * This is here because UUIdentified has no JsonObject from Vert.x, only
    * JSONObject from org.json
@@ -103,9 +114,10 @@ public class IBVertxUtils {
   }
 
   /**
-   * Returns a string representation that is consistent over time using sorted keys
-   * THIS IS EXPENSIVE and RECURSIVE and DUMB but required to obtain checksums
-   * for json
+   * Returns a string representation that is consistent over time using sorted
+   * keys THIS IS EXPENSIVE and RECURSIVE and DUMB but required to obtain
+   * checksums for json
+   *
    * @param json
    * @return A determinsitically acquired string based on recursive json mapping
    */
@@ -141,6 +153,14 @@ public class IBVertxUtils {
     List<String> l = new ArrayList<>();
     asIterator(j).forEachRemaining(o -> l.add(mapVal(o)));
     return l;
+  }
+
+  public final static Instant deserializeInstant(JsonObject j) {
+    return ofEpochSecond(j.getLong(INSTANT));
+  }
+
+  public final static JsonObject serializeInstant(Instant i) {
+    return new JsonObject().put(INSTANT, requireNonNull(i).getEpochSecond());
   }
 
 }

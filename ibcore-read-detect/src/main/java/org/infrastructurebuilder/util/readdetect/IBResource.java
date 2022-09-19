@@ -16,10 +16,24 @@
 package org.infrastructurebuilder.util.readdetect;
 
 import static java.nio.file.Files.newInputStream;
+import static java.nio.file.Files.readAttributes;
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static java.nio.file.StandardOpenOption.READ;
 import static java.util.Objects.hash;
+import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
+import static org.infrastructurebuilder.util.constants.IBConstants.CREATE_DATE;
+import static org.infrastructurebuilder.util.constants.IBConstants.DESCRIPTION;
+import static org.infrastructurebuilder.util.constants.IBConstants.MIME_TYPE;
+import static org.infrastructurebuilder.util.constants.IBConstants.MOST_RECENT_READ_TIME;
+import static org.infrastructurebuilder.util.constants.IBConstants.PATH;
+import static org.infrastructurebuilder.util.constants.IBConstants.SIZE;
+import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_NAME;
+import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_URL;
+import static org.infrastructurebuilder.util.constants.IBConstants.UPDATE_DATE;
+import static org.infrastructurebuilder.util.core.ChecksumEnabled.CHECKSUM;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,18 +41,50 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.util.core.JSONBuilder;
+import org.infrastructurebuilder.util.core.JSONOutputEnabled;
+import org.json.JSONObject;
 
-public interface IBResource extends Supplier<InputStream> {
+public interface IBResource extends Supplier<InputStream>, JSONOutputEnabled {
+  public final static Function<Path, Optional<BasicFileAttributes>> getAttributes = (i) -> {
+    Optional<BasicFileAttributes> retVal = empty();
+    try {
+      retVal = of(readAttributes(requireNonNull(i), BasicFileAttributes.class));
+    } catch (IOException e) {
+      // Do nothing
+    }
+    return retVal;
+  };
+
+  public final static BiFunction<Path, Path, Optional<IBResource>> toIBResource = (targetDir, source) -> {
+    try {
+      return Optional.of(IBResourceFactory.copyToTempChecksumAndPath(targetDir, source));
+    } catch (IOException e) {
+      // TODO ??
+    }
+    return empty();
+  };
+
+  public final static BiFunction<Path, Optional<String>, String> nameMapper = (p, on) -> {
+    var str = requireNonNull(p).toString();
+    return requireNonNull(on).orElse(str.substring(0, str.lastIndexOf('.')));
+  };
+
+
 
   /**
    * @return Non-null Path to this result
@@ -74,7 +120,9 @@ public interface IBResource extends Supplier<InputStream> {
    *
    * @return
    */
-  Optional<Date> getMostRecentReadTime();
+  Optional<Instant> getMostRecentReadTime();
+  Optional<Instant> getCreateDate();
+  Optional<Instant> getLateUpdateDate();
 
   default InputStream get() {
     List<OpenOption> o = new ArrayList<>();
@@ -128,5 +176,30 @@ public interface IBResource extends Supplier<InputStream> {
     return cet.returns(() -> Files.size(getPath()));
 
   }
+
+  default Optional<String> getName() {
+    return empty();
+  }
+
+  default Optional<String> getDescription() {
+    return empty();
+  }
+
+  @Override
+  default JSONObject asJSON() {
+    return new JSONBuilder(empty())
+        .addChecksum(CHECKSUM, getChecksum())
+        .addInstant(CREATE_DATE, getCreateDate())
+        .addInstant(UPDATE_DATE, getLateUpdateDate())
+        .addInstant(MOST_RECENT_READ_TIME, getMostRecentReadTime())
+        .addString(SOURCE_NAME, getSourceName())
+        .addString(SOURCE_URL, getSourceURL().map(java.net.URL::toExternalForm))
+        .addString(MIME_TYPE, getType())
+        .addPath(PATH, getPath())
+        .addLong(SIZE,size())
+        .addString(DESCRIPTION, getDescription())
+        .asJSON();
+  }
+
 
 }

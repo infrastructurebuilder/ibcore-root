@@ -17,6 +17,7 @@ package org.infrastructurebuilder.util.vertx;
 
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.ChecksumEnabled;
+import org.json.JSONObject;
 
 public interface JsonAndChecksumEnabled extends JsonOutputEnabled, ChecksumEnabled {
   /**
@@ -24,6 +25,6 @@ public interface JsonAndChecksumEnabled extends JsonOutputEnabled, ChecksumEnabl
    * of the asJSON output
    */
   default Checksum asChecksum() {
-    return new Checksum(asJSON());
+    return new Checksum(new JSONObject(toJson().toString()));
   }
 }

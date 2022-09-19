@@ -15,9 +15,11 @@
  */
 package org.infrastructurebuilder.util.vertx;
 
+import static java.lang.System.getProperty;
+import static java.util.Optional.ofNullable;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 
@@ -29,7 +31,7 @@ public class JsonBuilderTest {
   @BeforeEach
   public void setUp() throws Exception {
     jb = JsonBuilder.newInstance();
-    target = Paths.get(Optional.ofNullable(System.getProperty("target")).orElse("./target")).toRealPath()
+    target = Paths.get(ofNullable(getProperty("target")).orElse("./target")).toRealPath()
         .toAbsolutePath();
 
   }

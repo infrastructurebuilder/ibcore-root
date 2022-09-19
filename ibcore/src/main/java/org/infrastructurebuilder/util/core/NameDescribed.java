@@ -13,24 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.vertx;
+package org.infrastructurebuilder.util.core;
 
-import java.util.Objects;
+import static java.util.Optional.empty;
 
-import org.infrastructurebuilder.util.core.ThrowableJSONObject;
+import java.util.Optional;
 
-import io.vertx.core.json.JsonObject;
+public interface NameDescribed {
+  public final static String NAME = "name";
+  public final static String DISPLAYNAME = "displayName";
 
-public class ThrowableJsonObject implements JsonOutputEnabled {
-  private final Throwable t;
+  /**
+   * It is possible for a NameDescribed to have a null name.  This should be the exception, however.
+   * @return
+   */
+  public String getName();
 
-  public ThrowableJsonObject(Throwable t) {
-    this.t = Objects.requireNonNull(t);
+  default Optional<String> getDisplayName() {
+    return empty();
   }
-
-  @Override
-  public JsonObject toJson() {
-    return JsonBuilder.orgToVertxObject.apply(ThrowableJSONObject.getThrowableJson(t));
-  }
-
 }

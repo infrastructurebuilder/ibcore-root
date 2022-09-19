@@ -457,11 +457,6 @@ public final class JsonBuilder implements JsonOutputEnabled {
   }
 
   @Override
-  public JSONObject asJSON() {
-    return new JSONObject(json.toString());
-  }
-
-  @Override
   public JsonObject toJson() {
     return new JsonObject(json.toString());// , json.fieldNames()); // TODO
   }

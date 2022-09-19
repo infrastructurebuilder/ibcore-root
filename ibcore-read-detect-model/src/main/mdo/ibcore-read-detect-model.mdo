@@ -64,8 +64,29 @@
           <name>mostRecentReadTime</name>
           <version>1.0.0+</version>
           <required>false</required>
-          <description>Time "get()" was most recently called</description>
-          <type>Date</type>
+          <description>Instant that "get()" was most recently called</description>
+          <type>String</type>
+        </field>
+        <field >
+          <name>lastUpdate</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Instant that file was updated, if possible</description>
+          <type>String</type>
+        </field>
+        <field >
+          <name>created</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Instant that file was created, if possible</description>
+          <type>String</type>
+        </field>
+        <field >
+          <name>description</name>
+          <version>1.0.0+</version>
+          <required>false</required>
+          <description>Instant that file was created, if possible</description>
+          <type>String</type>
         </field>
       </fields>
     </class>

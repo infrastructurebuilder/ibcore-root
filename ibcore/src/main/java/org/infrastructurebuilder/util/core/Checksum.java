@@ -20,6 +20,7 @@ import static java.nio.file.Files.newInputStream;
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.UUID.nameUUIDFromBytes;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
@@ -29,16 +30,21 @@ import static org.infrastructurebuilder.util.core.IBUtils.hexStringToByteArray;
 import static org.infrastructurebuilder.util.core.IBUtils.readerToInputStream;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.util.constants.IBConstants;
@@ -57,6 +63,14 @@ public class Checksum implements Comparable<Checksum>, Supplier<Optional<UUID>> 
     }
     return new Checksum(ba);
   }
+
+  public final static Function<Path, Optional<Checksum>> ofPath = (p) -> {
+    try (InputStream is = Files.newInputStream(p, StandardOpenOption.READ)) {
+      return of(new Checksum(IBUtils.digestInputStream(is)));
+    } catch (IOException e) {
+      return empty();
+    }
+  };
 
   public final static Checksum fromUTF8StringBytes(String s) {
     return new Checksum(new ByteArrayInputStream(s.getBytes(UTF_8)));

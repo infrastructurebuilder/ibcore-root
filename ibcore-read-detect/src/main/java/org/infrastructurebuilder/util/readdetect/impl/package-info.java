@@ -13,12 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-module org.infrastructurebuilder.util.vertx {
-  exports org.infrastructurebuilder.util.vertx;
-
-  requires transitive org.infrastructurebuilder.util.core;
-  requires transitive io.vertx.core;
-  requires javax.inject;
-  requires org.eclipse.sisu.inject;
-  requires org.json;
-}
+package org.infrastructurebuilder.util.readdetect.impl;
