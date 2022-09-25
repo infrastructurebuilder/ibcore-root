@@ -177,7 +177,9 @@ public interface IBConstants {
   String SOURCE_NAME = "sourceName";
   String SOURCE_URL = "sourceURL";
   String MIME_TYPE = "mimeType";
+  String ORIGINAL_PATH = "originalPath";
   public String INVENTORY_BLOBSTORE_ROOT = "INVENTORY_BLOBSTORE_ROOT";
   public String METADATA_DIR_NAME = "METADATA";
+  public String NO_PATH_SUPPLIED = "no.path.supplied";
 
 }

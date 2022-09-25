@@ -38,6 +38,7 @@ import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
 import org.infrastructurebuilder.util.readdetect.impl.DefaultIBResource;
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -65,6 +66,10 @@ public class IBResourceTest {
   @Test
   public void testNonExistentFile() {
     assertThrows(IBException.class,() ->  DefaultIBResource.toType.apply(Paths.get(".").resolve(UUID.randomUUID().toString())));
+  }
+  @Test
+  public void testFailOnNonFile() {
+    assertThrows(IBException.class,() ->  DefaultIBResource.toType.apply(Paths.get(".")));
   }
 //https://file-examples.com/wp-content/uploads/2017/02/zip_2MB.zip
 
@@ -126,6 +131,15 @@ public class IBResourceTest {
     assertEquals(APPLICATION_ZIP, cset.getType());
     assertEquals(CHECKSUMVAL, new Checksum(cset.get()).toString());
 
+
+  }
+  @Test
+  public void testJSONFromPath() {
+    IBResource cset = DefaultIBResource.fromPath(testFile);
+
+    JSONObject j = cset.asJSON();
+    DefaultIBResource r = new DefaultIBResource(j);
+    assertEquals(cset, r);
 
   }
 }

@@ -28,6 +28,7 @@ import static org.infrastructurebuilder.util.constants.IBConstants.CREATE_DATE;
 import static org.infrastructurebuilder.util.constants.IBConstants.DESCRIPTION;
 import static org.infrastructurebuilder.util.constants.IBConstants.MIME_TYPE;
 import static org.infrastructurebuilder.util.constants.IBConstants.MOST_RECENT_READ_TIME;
+import static org.infrastructurebuilder.util.constants.IBConstants.ORIGINAL_PATH;
 import static org.infrastructurebuilder.util.constants.IBConstants.PATH;
 import static org.infrastructurebuilder.util.constants.IBConstants.SIZE;
 import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_NAME;
@@ -198,7 +199,14 @@ public interface IBResource extends Supplier<InputStream>, JSONOutputEnabled {
         .addPath(PATH, getPath())
         .addLong(SIZE,size())
         .addString(DESCRIPTION, getDescription())
+        .addString(ORIGINAL_PATH, getOriginalPath().toString())
         .asJSON();
+  }
+
+  Path getOriginalPath();
+
+  default Optional<BasicFileAttributes> getBasicFileAttributes() {
+    return getAttributes.apply(getPath());
   }
 
 

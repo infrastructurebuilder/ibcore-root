@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.readdetect.impl;
+package org.infrastructurebuilder.util.vertx;
 
-import static java.nio.file.Files.createTempFile;
+import static io.vertx.core.Future.succeededFuture;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
@@ -30,20 +30,15 @@ import static org.infrastructurebuilder.util.constants.IBConstants.PATH;
 import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_URL;
 import static org.infrastructurebuilder.util.constants.IBConstants.UPDATE_DATE;
 import static org.infrastructurebuilder.util.core.ChecksumEnabled.CHECKSUM;
-import static org.infrastructurebuilder.util.core.IBUtils.copy;
+import static org.infrastructurebuilder.util.vertx.VertxChecksumFactory.checksumFrom;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Reader;
-import java.lang.System.Logger;
-import java.lang.System.Logger.Level;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -54,20 +49,58 @@ import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.readdetect.IBResource;
+import org.infrastructurebuilder.util.readdetect.impl.DefaultIBResource;
 import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
-import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class DefaultIBResource implements IBResource {
-  private static final long serialVersionUID = 5978749189830232137L;
-  private final static Logger log = System.getLogger(DefaultIBResource.class.getName());
+import io.vertx.core.CompositeFuture;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
+import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.json.JsonObject;
+
+public class DefaultIBResourceVertx implements IBResourceVertx {
+
+  private final static Logger log = LoggerFactory.getLogger(DefaultIBResourceVertx.class);
+
   private final static Tika tika = new Tika();
   private final IBResourceModel m;
+
+  private final Vertx vertx;
 
   private Path p;
   private Path originalPath;
 
-  public DefaultIBResource() {
-    this.m = new IBResourceModel();
+  private final static Function<Path, Handler<Promise<String>>> ss = (path) -> {
+    return new Handler<Promise<String>>() {
+      @Override
+      public void handle(Promise<String> event) {
+        synchronized (tika) {
+          log.debug("Detecting path " + path);
+          org.apache.tika.metadata.Metadata md = new org.apache.tika.metadata.Metadata();
+          md.set(TikaCoreProperties.RESOURCE_NAME_KEY, path.toAbsolutePath().toString());
+          try (Reader p = tika.parse(path, md)) {
+            log.debug(" Metadata is {}", md);
+            event.complete(tika.detect(path));
+          } catch (IOException e) {
+            log.error("Failed during attempt to get tika type", e);
+            event.complete(IBConstants.APPLICATION_OCTET_STREAM);
+          }
+        }
+      }
+
+    };
+  };
+
+  public final static Function<Path, Future<String>> toType = (path) -> {
+    return Vertx.vertx().executeBlocking(ss.apply(path));
+  };
+
+  public DefaultIBResourceVertx() {
+    this(new IBResourceModel());
   }
 
 //  public DefaultIBResource(
@@ -100,8 +133,10 @@ public class DefaultIBResource implements IBResource {
 //    m.setMostRecentReadTime(mostRecentRead);
 //  }
 //
-  public DefaultIBResource(IBResourceModel m) {
+  public DefaultIBResourceVertx(IBResourceModel m) {
     this.m = requireNonNull(m);
+    this.vertx = Vertx.vertx();
+
   }
 
   /**
@@ -109,104 +144,89 @@ public class DefaultIBResource implements IBResource {
    *
    * @param j JSONObject produced by IBResource#asJSON
    */
-  public DefaultIBResource(JSONObject j) {
+  public DefaultIBResourceVertx(JsonObject j) {
+    this.vertx = Vertx.vertx();
 
     // FIXME Some of these not being present should produce a runtime failure
     m = new IBResourceModel();
-    m.setCreated(j.optString(CREATE_DATE, null));
-    m.setFileChecksum(j.optString(CHECKSUM, null));
-    m.setFilePath(j.optString(PATH, null));
-    m.setLastUpdate(j.optString(UPDATE_DATE, null));
+    m.setCreated(j.getString(CREATE_DATE));
+    m.setFileChecksum(j.getString(CHECKSUM));
+    m.setFilePath(j.getString(PATH));
+    m.setLastUpdate(j.getString(UPDATE_DATE));
     m.setModelEncoding("UTF-8");
-    m.setMostRecentReadTime(j.optString(MOST_RECENT_READ_TIME, null));
-    m.setName(j.optString(NAME, null));
-    m.setSource(j.optString(SOURCE_URL, null));
-    m.setType(j.optString(MIME_TYPE, null));
-    m.setDescription(j.optString(DESCRIPTION, null));
+    m.setMostRecentReadTime(j.getString(MOST_RECENT_READ_TIME));
+    m.setName(j.getString(NAME));
+    m.setSource(j.getString(SOURCE_URL));
+    m.setType(j.getString(MIME_TYPE));
+    m.setDescription(j.getString(DESCRIPTION));
 
-    String x = ofNullable(requireNonNull(j).optString(IBConstants.PATH, null))
+    String x = ofNullable(requireNonNull(j).getString(IBConstants.PATH))
         .orElseThrow(() -> new RuntimeException(NO_PATH_SUPPLIED));
     try {
-      Path p1 = Paths.get(x);
-      URL u;
-      if (Files.isRegularFile(p1)) {
-        u = cet.returns(() -> p1.toUri().toURL());
-      } else {
-        u = cet.returns(() ->  new URL(x));
-      }
-      Path p = Paths.get(cet.returns(() -> cet.returns(() -> u.toURI())));
+      Path p = Paths.get(cet.returns(() -> cet.returns(() -> new URL(x).toURI())));
       this.p = p;
     } catch (Throwable t) {
-      log.log(Level.ERROR, "Error converting to path", t);
+      log.error("Error converting to path", t);
       throw t;
     }
-
   }
 
-  public final static IBResource copyToTempChecksumAndPath(Path targetDir, final Path source,
+  public final static Future<IBResourceVertx> copyToTempChecksumAndPath(Vertx vertx, Path targetDir, final Path source,
       final Optional<String> oSource, final String pString) throws IOException {
-    DefaultIBResource d = (DefaultIBResource) copyToTempChecksumAndPath(targetDir, source);
-    requireNonNull(oSource).ifPresent(o -> {
-      d.setSource(o + "!/" + pString);
+    return copyToTempChecksumAndPath(vertx, targetDir, source).compose(d -> {
+      requireNonNull(oSource).ifPresent(o -> {
+        ((DefaultIBResourceVertx) d).setSource(o + "!/" + pString);
+      });
+      return succeededFuture(d);
     });
-    return d;
   }
 
   public void setSource(String source) {
     this.m.setSource(requireNonNull(source));
   }
 
-  public final static IBResource copyToTempChecksumAndPath(Path targetDir, final Path source) throws IOException {
-
-    String localType = toType.apply(requireNonNull(source));
-    Checksum cSum = new Checksum(source);
-    Path newTarget = targetDir.resolve(cSum.asUUID().get().toString());
-    cet.returns(() -> copy(source, newTarget));
-    return new DefaultIBResource(newTarget, cSum, Optional.of(localType));
+  @Override
+  public Vertx vertx() {
+    return vertx;
   }
 
-  public final static IBResource copyToDeletedOnExitTempChecksumAndPath(Path targetDir, String prefix, String suffix,
-      final InputStream source) {
-    return cet.returns(() -> {
-      Path target = createTempFile(requireNonNull(targetDir), prefix, suffix);
-      try (OutputStream outs = Files.newOutputStream(target)) {
-        copy(source, outs);
-        source.close();
-      }
-      return copyToTempChecksumAndPath(targetDir, target);
-    });
+  public final static Future<IBResourceVertx> copyToTempChecksumAndPath(Vertx vertx, Path targetDir, final Path source)
+      throws IOException {
+    return CompositeFuture.all(toType.apply(requireNonNull(source)), checksumFrom(vertx, source))
+        // Got a type and a checksum
+        .compose(f -> {
+          String localType = f.resultAt(0);
+          Checksum cSum = f.resultAt(1);
+          Path newTarget = targetDir.resolve(cSum.asUUID().get().toString());
+          return vertx.fileSystem().copy(source.toString(), newTarget.toString()).compose(v -> {
+            return succeededFuture(new DefaultIBResourceVertx(newTarget, cSum, Optional.of(localType)));
+          });
+        });
   }
 
-  public final static Function<Path, String> toType = (path) -> {
-    if (!Files.exists(path))
-      throw new IBException("file.does.not.exist");
-    if (!Files.isRegularFile(path))
-      throw new IBException("file.not.regular.file");
+//  public final static IBResourceVertx copyToDeletedOnExitTempChecksumAndPath(Path targetDir, String prefix,
+//      String suffix, final InputStream source) {
+//    return cet.returns(() -> {
+//      Path target = createTempFile(requireNonNull(targetDir), prefix, suffix);
+//      try (OutputStream outs = Files.newOutputStream(target)) {
+//        copy(source, outs);
+//      } finally {
+//        source.close();
+//      }
+//      return copyToTempChecksumAndPath(targetDir, target);
+//    });
+//  }
 
-    synchronized (tika) {
-      log.log(Logger.Level.DEBUG, "Detecting path " + path);
-      org.apache.tika.metadata.Metadata md = new org.apache.tika.metadata.Metadata();
-      md.set(TikaCoreProperties.RESOURCE_NAME_KEY, path.toAbsolutePath().toString());
-      try (Reader p = tika.parse(path, md)) {
-        log.log(Logger.Level.DEBUG, " Metadata is " + md);
-        return tika.detect(path);
-      } catch (IOException e) {
-        log.log(Logger.Level.ERROR, "Failed during attempt to get tika type", e);
-        return IBConstants.APPLICATION_OCTET_STREAM;
-      }
-    }
-  };
-
-  public final static IBResource from(Path p, Checksum c, String type) {
+  public final static IBResourceVertx from(Path p, Checksum c, String type) {
     IBResourceModel m = new IBResourceModel();
     m.setFilePath(requireNonNull(p).toAbsolutePath().toString());
     m.setFileChecksum(c.toString());
     m.setType(type);
-    return new DefaultIBResource(p, c, Optional.of(type));
+    return new DefaultIBResourceVertx(p, c, Optional.of(type));
   }
 
-  public DefaultIBResource(Path path, Checksum checksum, Optional<String> type) {
-    this.m = new IBResourceModel();
+  public DefaultIBResourceVertx(Path path, Checksum checksum, Optional<String> type) {
+    this();
     this.originalPath = requireNonNull(path);
     m.setFilePath(this.originalPath.toAbsolutePath().toString());
     m.setFileChecksum(requireNonNull(checksum).toString());
@@ -219,7 +239,7 @@ public class DefaultIBResource implements IBResource {
     requireNonNull(type).ifPresent(t -> m.setType(t));
   }
 
-  public DefaultIBResource(Path path, Checksum checksum) {
+  public DefaultIBResourceVertx(Path path, Checksum checksum) {
     this(path, checksum, Optional.empty());
   }
 
@@ -228,35 +248,67 @@ public class DefaultIBResource implements IBResource {
   }
 
   @Override
-  public Checksum getChecksum() {
-    return new Checksum(m.getFileChecksum());
+  public Future<Checksum> getChecksum() {
+    return Optional.ofNullable(m.getFileChecksum()).map(c -> succeededFuture(new Checksum(c))).orElseGet(() -> {
+      // Read the file checksum
+      return checksumFrom(vertx, getPath()).compose(c -> {
+        m.setFileChecksum(c.toString());
+        return succeededFuture(c);
+      });
+    });
   }
 
   @Override
-  public String getType() {
-    if (m.getType() == null) {
-      m.setType(toType.apply(getPath()));
-    }
-    return m.getType();
+  public Future<String> getType() {
+    return Optional.ofNullable(m.getType()).map(Future::succeededFuture)
+        .orElse(toType.apply(getPath()).compose(type -> {
+          m.setType(type);
+          return succeededFuture(type);
+        }));
   }
 
   @Override
-  public IBResource moveTo(Path target) throws IOException {
+  public Future<IBResourceVertx> moveTo(Path target) throws IOException {
     IBUtils.moveAtomic(getPath(), target);
     IBResourceModel m2 = m.clone();
     m2.setFilePath(target.toAbsolutePath().toString());
-    return new DefaultIBResource(m2);
+    return succeededFuture(new DefaultIBResourceVertx(m2));
   }
 
   @Override
-  public java.io.InputStream get() {
+  public Future<Buffer> get() {
     m.setMostRecentReadTime(Instant.now().toString());
-    return org.infrastructurebuilder.util.readdetect.IBResource.super.get();
+    return IBResourceVertx.super.get();
+  }
+
+  private int defaultHashCode() {
+    return Objects.hash(getChecksum().result(), getPath(), getSourceName(), getSourceURL(), getType().result());
   }
 
   @Override
   public int hashCode() {
     return defaultHashCode();
+  }
+
+  private boolean defaultEquals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if ((obj instanceof IBResourceVertx other)) {
+      return CompositeFuture.all(getChecksum(), other.getChecksum(), getType(), other.getType())
+          .compose(cf -> succeededFuture(
+              // All checks
+              Objects.equals(cf.resultAt(0), cf.resultAt(1)) // checksum
+                  && Objects.equals(getPath(), other.getPath()) // path
+                  && Objects.equals(getSourceName(), other.getSourceName()) // source
+                  && Objects.equals(getSourceURL(), other.getSourceURL()) // sourceURL
+                  && Objects.equals(cf.resultAt(2), cf.resultAt(3))))
+          .result(); // Type
+    }
+    return false;
   }
 
   @Override
@@ -266,7 +318,7 @@ public class DefaultIBResource implements IBResource {
 
   @Override
   public String toString() {
-    return defaultToString();
+    return defaultToString().result();
   }
 
   @Override
@@ -318,6 +370,11 @@ public class DefaultIBResource implements IBResource {
   @Override
   public Path getOriginalPath() {
     return originalPath;
+  }
+
+  @Override
+  public JsonObject toJson() {
+    return toFutureJson().result();
   }
 
 }

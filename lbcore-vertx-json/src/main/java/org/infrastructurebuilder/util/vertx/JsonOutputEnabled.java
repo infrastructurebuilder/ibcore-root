@@ -22,9 +22,10 @@ import javax.inject.Provider;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.json.JSONObject;
 
+import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 
-public interface JsonOutputEnabled extends Provider<JsonObject> {
+public interface JsonOutputEnabled {
   /**
    * Deprecating in favor of toJson (for DataObject use)
    *
@@ -46,7 +47,8 @@ public interface JsonOutputEnabled extends Provider<JsonObject> {
     return Optional.empty();
   }
 
-  default JsonObject get() {
-    return toJson();
+  default Future<JsonObject> toFutureJson() {
+    return Future.succeededFuture(toJson());
   }
+
 }

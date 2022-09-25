@@ -19,7 +19,9 @@ import static java.time.Instant.ofEpochSecond;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.util.constants.IBConstants.INSTANT;
+import static org.infrastructurebuilder.util.core.ChecksumEnabled.CHECKSUM;
 
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -36,6 +38,8 @@ import org.infrastructurebuilder.util.core.UUIdentifiedAndTimestamped;
 import org.infrastructurebuilder.util.core.UUIdentifiedAndWeighted;
 import org.json.JSONObject;
 
+import io.vertx.core.Future;
+import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
@@ -153,6 +157,14 @@ public class IBVertxUtils {
     List<String> l = new ArrayList<>();
     asIterator(j).forEachRemaining(o -> l.add(mapVal(o)));
     return l;
+  }
+
+  public final static Checksum deserializeChecksum(JsonObject j) {
+    return new Checksum(j.getString(CHECKSUM));
+  }
+
+  public final static JsonObject serializeChecksum(Checksum c) {
+    return new JsonObject().put(CHECKSUM, c.toString());
   }
 
   public final static Instant deserializeInstant(JsonObject j) {
