@@ -85,8 +85,15 @@
           <name>description</name>
           <version>1.0.0+</version>
           <required>false</required>
-          <description>Instant that file was created, if possible</description>
+          <description>Description of file</description>
           <type>String</type>
+        </field>
+        <field >
+          <name>size</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>size of file</description>
+          <type>long</type>
         </field>
       </fields>
     </class>

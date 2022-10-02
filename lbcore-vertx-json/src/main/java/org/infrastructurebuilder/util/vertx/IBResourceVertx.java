@@ -16,6 +16,7 @@
 package org.infrastructurebuilder.util.vertx;
 
 import static org.infrastructurebuilder.util.readdetect.IBResource.*;
+import static org.infrastructurebuilder.util.readdetect.IBResourceFactory.getAttributes;
 import static io.vertx.core.Future.succeededFuture;
 import static java.nio.file.Files.readAttributes;
 import static java.util.Objects.hash;
@@ -52,7 +53,6 @@ import java.util.function.Supplier;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.readdetect.IBResource;
-import org.infrastructurebuilder.util.readdetect.IBResourceFactory;
 
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;

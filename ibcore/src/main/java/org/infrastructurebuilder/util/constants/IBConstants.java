@@ -181,5 +181,6 @@ public interface IBConstants {
   public String INVENTORY_BLOBSTORE_ROOT = "INVENTORY_BLOBSTORE_ROOT";
   public String METADATA_DIR_NAME = "METADATA";
   public String NO_PATH_SUPPLIED = "no.path.supplied";
+  public String METADATA = "metadata";
 
 }

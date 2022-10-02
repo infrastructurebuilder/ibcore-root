@@ -97,7 +97,7 @@ public final class JsonBuilder implements JsonOutputEnabled {
   private final Optional<RelativeRoot> relativeRoot;
 
   @Override
-  public Optional<RelativeRoot> getRelativeRoot() {
+  public Optional<RelativeRoot> getJsonRelativeRoot() {
     return this.relativeRoot;
   }
 

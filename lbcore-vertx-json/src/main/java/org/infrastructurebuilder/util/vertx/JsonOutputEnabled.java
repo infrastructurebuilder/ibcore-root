@@ -43,7 +43,7 @@ public interface JsonOutputEnabled {
    */
   JsonObject toJson();
 
-  default Optional<RelativeRoot> getRelativeRoot() {
+  default Optional<RelativeRoot> getJsonRelativeRoot() {
     return Optional.empty();
   }
 

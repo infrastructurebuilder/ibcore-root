@@ -13,9 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-module org.infrastructurebuilder.util.readdetect.model {
-  exports org.infrastructurebuilder.util.readdetect.model;
+package org.infrastructurebuilder.util.vertx;
 
-  requires plexus.utils;
+import org.infrastructurebuilder.util.core.GAV;
+import org.slf4j.*;
+
+public interface VertxGAV extends GAV, JsonOutputEnabled {
+
+  static Logger log = LoggerFactory.getLogger(VertxGAV.class);
 
 }

@@ -16,13 +16,11 @@
 package org.infrastructurebuilder.util.readdetect;
 
 import static java.nio.file.Files.newInputStream;
-import static java.nio.file.Files.readAttributes;
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static java.nio.file.StandardOpenOption.READ;
 import static java.util.Objects.hash;
-import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
-import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
 import static org.infrastructurebuilder.util.constants.IBConstants.CREATE_DATE;
 import static org.infrastructurebuilder.util.constants.IBConstants.DESCRIPTION;
@@ -39,7 +37,6 @@ import static org.infrastructurebuilder.util.core.ChecksumEnabled.CHECKSUM;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -50,8 +47,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.exceptions.IBException;
@@ -61,32 +56,6 @@ import org.infrastructurebuilder.util.core.JSONOutputEnabled;
 import org.json.JSONObject;
 
 public interface IBResource extends Supplier<InputStream>, JSONOutputEnabled {
-  public final static Function<Path, Optional<BasicFileAttributes>> getAttributes = (i) -> {
-    Optional<BasicFileAttributes> retVal = empty();
-    try {
-      retVal = of(readAttributes(requireNonNull(i), BasicFileAttributes.class));
-    } catch (IOException e) {
-      // Do nothing
-    }
-    return retVal;
-  };
-
-  public final static BiFunction<Path, Path, Optional<IBResource>> toIBResource = (targetDir, source) -> {
-    try {
-      return Optional.of(IBResourceFactory.copyToTempChecksumAndPath(targetDir, source));
-    } catch (IOException e) {
-      // TODO ??
-    }
-    return empty();
-  };
-
-  public final static BiFunction<Path, Optional<String>, String> nameMapper = (p, on) -> {
-    var str = requireNonNull(p).toString();
-    return requireNonNull(on).orElse(str.substring(0, str.lastIndexOf('.')));
-  };
-
-
-
   /**
    * @return Non-null Path to this result
    * @throws IBException (runtime) if not available
@@ -115,15 +84,35 @@ public interface IBResource extends Supplier<InputStream>, JSONOutputEnabled {
   IBResource moveTo(Path target) throws IOException;
 
   /**
-   * Sub-types may, at their discretion, return a {@link Date} of the most recent
+   * Sub-types may, at their discretion, return a {@link Instant} of the most recent
    * "get()" call. The generated IBResourceModel doesn't because it's really a
    * persistence mechanism and that value isn't relevant.
    *
-   * @return
+   *
+   * @return most recent read time or null
    */
-  Optional<Instant> getMostRecentReadTime();
-  Optional<Instant> getCreateDate();
-  Optional<Instant> getLateUpdateDate();
+  Instant getMostRecentReadTime();
+
+  /**
+   * Nullable (but probably not) create date
+   * @return create date or null
+   */
+  Instant getCreateDate();
+
+  /**
+   * @return last file update or null
+   */
+  Instant getLastUpdateDate();
+
+  default Optional<Instant> getOptionalCreateDate() {
+    return ofNullable(getCreateDate());
+  }
+  default Optional<Instant> getOptionalMostRecentReadTime() {
+    return ofNullable(getMostRecentReadTime());
+  }
+  default Optional<Instant> getOptionalLastUpdateDate() {
+    return ofNullable(getLastUpdateDate());
+  }
 
   default InputStream get() {
     List<OpenOption> o = new ArrayList<>();
@@ -154,11 +143,11 @@ public interface IBResource extends Supplier<InputStream>, JSONOutputEnabled {
       return false;
     }
     if ((obj instanceof IBResource other)) {
-    return Objects.equals(getChecksum(), other.getChecksum()) // checksum
-        && Objects.equals(getPath(), other.getPath()) // path
-        && Objects.equals(getSourceName(), other.getSourceName()) // source
-        && Objects.equals(getSourceURL(), other.getSourceURL()) // sourceURL
-        && Objects.equals(getType(), other.getType()); // Type
+      return Objects.equals(getChecksum(), other.getChecksum()) // checksum
+          && Objects.equals(getPath(), other.getPath()) // path
+          && Objects.equals(getSourceName(), other.getSourceName()) // source
+          && Objects.equals(getSourceURL(), other.getSourceURL()) // sourceURL
+          && Objects.equals(getType(), other.getType()); // Type
     }
     return false;
   }
@@ -173,41 +162,45 @@ public interface IBResource extends Supplier<InputStream>, JSONOutputEnabled {
     return sj.toString();
   }
 
-  default Long size() {
-    return cet.returns(() -> Files.size(getPath()));
+  long size();
 
-  }
+  Optional<String> getName();
 
-  default Optional<String> getName() {
-    return empty();
-  }
-
-  default Optional<String> getDescription() {
-    return empty();
-  }
+  Optional<String> getDescription();
 
   @Override
   default JSONObject asJSON() {
     return new JSONBuilder(empty())
+
         .addChecksum(CHECKSUM, getChecksum())
+
         .addInstant(CREATE_DATE, getCreateDate())
-        .addInstant(UPDATE_DATE, getLateUpdateDate())
+
+        .addInstant(UPDATE_DATE, getLastUpdateDate())
+
         .addInstant(MOST_RECENT_READ_TIME, getMostRecentReadTime())
+
         .addString(SOURCE_NAME, getSourceName())
+
         .addString(SOURCE_URL, getSourceURL().map(java.net.URL::toExternalForm))
+
         .addString(MIME_TYPE, getType())
+
         .addPath(PATH, getPath())
-        .addLong(SIZE,size())
-        .addString(DESCRIPTION, getDescription())
+
+        .addLong(SIZE, size())
+
         .addString(ORIGINAL_PATH, getOriginalPath().toString())
+
+        .addString(DESCRIPTION, getDescription())
+
         .asJSON();
   }
 
   Path getOriginalPath();
 
   default Optional<BasicFileAttributes> getBasicFileAttributes() {
-    return getAttributes.apply(getPath());
+    return IBResourceFactory.getAttributes.apply(getPath());
   }
-
 
 }

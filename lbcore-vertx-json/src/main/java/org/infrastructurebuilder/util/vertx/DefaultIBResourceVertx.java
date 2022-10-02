@@ -30,6 +30,7 @@ import static org.infrastructurebuilder.util.constants.IBConstants.PATH;
 import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_URL;
 import static org.infrastructurebuilder.util.constants.IBConstants.UPDATE_DATE;
 import static org.infrastructurebuilder.util.core.ChecksumEnabled.CHECKSUM;
+import static org.infrastructurebuilder.util.readdetect.IBResourceFactory.getAttributes;
 import static org.infrastructurebuilder.util.vertx.VertxChecksumFactory.checksumFrom;
 
 import java.io.IOException;
@@ -230,7 +231,7 @@ public class DefaultIBResourceVertx implements IBResourceVertx {
     this.originalPath = requireNonNull(path);
     m.setFilePath(this.originalPath.toAbsolutePath().toString());
     m.setFileChecksum(requireNonNull(checksum).toString());
-    IBResource.getAttributes.apply(path).ifPresent(bfa -> {
+    getAttributes.apply(path).ifPresent(bfa -> {
       this.m.setCreated(bfa.creationTime().toInstant().toString());
       this.m.setLastUpdate(bfa.lastModifiedTime().toInstant().toString());
       this.m.setMostRecentReadTime(bfa.lastAccessTime().toInstant().toString());

@@ -21,6 +21,7 @@ import static org.infrastructurebuilder.util.core.IBVersionException.ibt;
 import java.util.Objects;
 
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.util.core.DefaultIBVersion.DefaultIBVersionRequirement;
 
 import com.vdurmont.semver4j.Range;
 import com.vdurmont.semver4j.Requirement;

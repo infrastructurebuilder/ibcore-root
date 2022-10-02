@@ -80,7 +80,7 @@ public class IBResourceTest {
     URL l = uri.toURL();
     String ef = l.toExternalForm();
 
-    IBResource cset = IBResourceFactory.copyToTempChecksumAndPath(this.wps.get(), testFile, Optional.of("zip:" + ef), TESTFILE_TEST);
+    IBResource cset = DefaultIBResource.copyToTempChecksumAndPath(this.wps.get(), testFile, Optional.of("zip:" + ef), TESTFILE_TEST);
     assertEquals(183, cset.getPath().toFile().length());
     assertEquals(CHECKSUMVAL, cset.getChecksum().toString());
     assertEquals(APPLICATION_ZIP, cset.getType());
@@ -92,7 +92,7 @@ public class IBResourceTest {
   @Test
   public void testCopyToDeletedOnExitTempChecksumAndPathWithTarget() throws IOException {
     Path t = this.wps.getTestClasses().resolve(TESTFILE_TEST);
-    IBResource cset = IBResourceFactory.copyToTempChecksumAndPath(this.wps.get(), t);
+    IBResource cset = DefaultIBResource.copyToTempChecksumAndPath(this.wps.get(), t);
     assertEquals(7, cset.getPath().toFile().length());
     assertEquals(EXPECTED, cset.getChecksum().toString());
     assertEquals(TEXT_PLAIN, cset.getType());
@@ -103,7 +103,7 @@ public class IBResourceTest {
   @Test
   public void testCopyToDeletedOnExitTempChecksumAndPathWithoutTarget() throws IOException {
     try (InputStream ins = Files.newInputStream(this.wps.getTestClasses().resolve(TESTFILE_TEST))) {
-      IBResource cset = IBResourceFactory.copyToDeletedOnExitTempChecksumAndPath(wps.get(), "A", "B", ins);
+      IBResource cset = DefaultIBResource.copyToDeletedOnExitTempChecksumAndPath(wps.get(), "A", "B", ins);
       assertEquals(7, cset.getPath().toFile().length());
       assertEquals(EXPECTED, cset.getChecksum().toString());
       assertEquals(TEXT_PLAIN, cset.getType());
@@ -124,7 +124,7 @@ public class IBResourceTest {
     long d = new Date().toInstant().toEpochMilli();
     InputStream g = cet.returns(() -> cset.get());
     cet.translate(() -> g.close());
-    assertTrue(cset.getMostRecentReadTime().get().toEpochMilli()-d < 3);
+    assertTrue(cset.getMostRecentReadTime().toEpochMilli()-d < 3);
 
     assertEquals(183, cset.getPath().toFile().length());
     assertEquals(CHECKSUMVAL, cset.getChecksum().toString());
@@ -135,7 +135,7 @@ public class IBResourceTest {
   }
   @Test
   public void testJSONFromPath() {
-    IBResource cset = DefaultIBResource.fromPath(testFile);
+    IBResource cset = IBResourceFactory.fromPath(testFile);
 
     JSONObject j = cset.asJSON();
     DefaultIBResource r = new DefaultIBResource(j);

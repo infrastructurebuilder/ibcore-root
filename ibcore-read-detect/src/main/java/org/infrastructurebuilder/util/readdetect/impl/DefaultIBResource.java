@@ -15,9 +15,10 @@
  */
 package org.infrastructurebuilder.util.readdetect.impl;
 
-import static java.nio.file.Files.createTempFile;
+import static java.time.Instant.now;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
 import static org.infrastructurebuilder.util.constants.IBConstants.CREATE_DATE;
@@ -27,18 +28,15 @@ import static org.infrastructurebuilder.util.constants.IBConstants.MOST_RECENT_R
 import static org.infrastructurebuilder.util.constants.IBConstants.NAME;
 import static org.infrastructurebuilder.util.constants.IBConstants.NO_PATH_SUPPLIED;
 import static org.infrastructurebuilder.util.constants.IBConstants.PATH;
+import static org.infrastructurebuilder.util.constants.IBConstants.SIZE;
 import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_URL;
 import static org.infrastructurebuilder.util.constants.IBConstants.UPDATE_DATE;
 import static org.infrastructurebuilder.util.core.ChecksumEnabled.CHECKSUM;
-import static org.infrastructurebuilder.util.core.IBUtils.copy;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -47,20 +45,54 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.function.Function;
 
-import org.apache.tika.Tika;
-import org.apache.tika.metadata.TikaCoreProperties;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.readdetect.IBResource;
+import org.infrastructurebuilder.util.readdetect.IBResourceFactory;
 import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
 import org.json.JSONObject;
 
 public class DefaultIBResource implements IBResource {
   private static final long serialVersionUID = 5978749189830232137L;
   private final static Logger log = System.getLogger(DefaultIBResource.class.getName());
-  private final static Tika tika = new Tika();
+
+  // User IBResourceFactory
+  @Deprecated
+  public final static IBResource copyToTempChecksumAndPath(Path targetDir, final Path source) throws IOException {
+    return IBResourceFactory.copyToTempChecksumAndPath(targetDir, source);
+  }
+
+  // User IBResourceFactory
+  @Deprecated
+  public final static IBResource copyToDeletedOnExitTempChecksumAndPath(Path targetDir, String prefix, String suffix,
+      final InputStream source) {
+    return IBResourceFactory.copyToDeletedOnExitTempChecksumAndPath(targetDir, prefix, suffix, source);
+  }
+
+  // User IBResourceFactory
+  @Deprecated
+  public final static Function<Path, String> toType = IBResourceFactory.toType;
+
+  // User IBResourceFactory
+  @Deprecated
+  public final static IBResource from(Path p, Checksum c, String type) {
+    return IBResourceFactory.from(p, c, type);
+  }
+
+  // User IBResourceFactory
+  @Deprecated
+  public final static IBResource copyToTempChecksumAndPath(Path targetDir, final Path source,
+      final Optional<String> oSource, final String pString) throws IOException {
+    return IBResourceFactory.copyToTempChecksumAndPath(targetDir, source, oSource, pString);
+  }
+
+  @Deprecated
+  public final static IBResource fromPath(Path path) {
+    return new DefaultIBResource(path, new Checksum(path), empty());
+  }
+
   private final IBResourceModel m;
 
   private Path p;
@@ -104,6 +136,16 @@ public class DefaultIBResource implements IBResource {
     this.m = requireNonNull(m);
   }
 
+  public DefaultIBResource setCreateDate(Instant cdate) {
+    this.m.setCreated(requireNonNull(cdate).toString());
+    return this;
+  }
+
+  public DefaultIBResource setLastUpdated(Instant udate) {
+    this.m.setLastUpdate(requireNonNull(udate).toString());
+    return this;
+  }
+
   /**
    * Magic deserializer :)
    *
@@ -114,14 +156,15 @@ public class DefaultIBResource implements IBResource {
     // FIXME Some of these not being present should produce a runtime failure
     m = new IBResourceModel();
     m.setCreated(j.optString(CREATE_DATE, null));
-    m.setFileChecksum(j.optString(CHECKSUM, null));
+    m.setFileChecksum(j.getString(CHECKSUM));
+    m.setSize(j.getLong(SIZE));
+    m.setType(j.getString(MIME_TYPE));
     m.setFilePath(j.optString(PATH, null));
     m.setLastUpdate(j.optString(UPDATE_DATE, null));
     m.setModelEncoding("UTF-8");
     m.setMostRecentReadTime(j.optString(MOST_RECENT_READ_TIME, null));
     m.setName(j.optString(NAME, null));
     m.setSource(j.optString(SOURCE_URL, null));
-    m.setType(j.optString(MIME_TYPE, null));
     m.setDescription(j.optString(DESCRIPTION, null));
 
     String x = ofNullable(requireNonNull(j).optString(IBConstants.PATH, null))
@@ -132,7 +175,7 @@ public class DefaultIBResource implements IBResource {
       if (Files.isRegularFile(p1)) {
         u = cet.returns(() -> p1.toUri().toURL());
       } else {
-        u = cet.returns(() ->  new URL(x));
+        u = cet.returns(() -> new URL(x));
       }
       Path p = Paths.get(cet.returns(() -> cet.returns(() -> u.toURI())));
       this.p = p;
@@ -140,69 +183,10 @@ public class DefaultIBResource implements IBResource {
       log.log(Level.ERROR, "Error converting to path", t);
       throw t;
     }
-
-  }
-
-  public final static IBResource copyToTempChecksumAndPath(Path targetDir, final Path source,
-      final Optional<String> oSource, final String pString) throws IOException {
-    DefaultIBResource d = (DefaultIBResource) copyToTempChecksumAndPath(targetDir, source);
-    requireNonNull(oSource).ifPresent(o -> {
-      d.setSource(o + "!/" + pString);
-    });
-    return d;
   }
 
   public void setSource(String source) {
     this.m.setSource(requireNonNull(source));
-  }
-
-  public final static IBResource copyToTempChecksumAndPath(Path targetDir, final Path source) throws IOException {
-
-    String localType = toType.apply(requireNonNull(source));
-    Checksum cSum = new Checksum(source);
-    Path newTarget = targetDir.resolve(cSum.asUUID().get().toString());
-    cet.returns(() -> copy(source, newTarget));
-    return new DefaultIBResource(newTarget, cSum, Optional.of(localType));
-  }
-
-  public final static IBResource copyToDeletedOnExitTempChecksumAndPath(Path targetDir, String prefix, String suffix,
-      final InputStream source) {
-    return cet.returns(() -> {
-      Path target = createTempFile(requireNonNull(targetDir), prefix, suffix);
-      try (OutputStream outs = Files.newOutputStream(target)) {
-        copy(source, outs);
-        source.close();
-      }
-      return copyToTempChecksumAndPath(targetDir, target);
-    });
-  }
-
-  public final static Function<Path, String> toType = (path) -> {
-    if (!Files.exists(path))
-      throw new IBException("file.does.not.exist");
-    if (!Files.isRegularFile(path))
-      throw new IBException("file.not.regular.file");
-
-    synchronized (tika) {
-      log.log(Logger.Level.DEBUG, "Detecting path " + path);
-      org.apache.tika.metadata.Metadata md = new org.apache.tika.metadata.Metadata();
-      md.set(TikaCoreProperties.RESOURCE_NAME_KEY, path.toAbsolutePath().toString());
-      try (Reader p = tika.parse(path, md)) {
-        log.log(Logger.Level.DEBUG, " Metadata is " + md);
-        return tika.detect(path);
-      } catch (IOException e) {
-        log.log(Logger.Level.ERROR, "Failed during attempt to get tika type", e);
-        return IBConstants.APPLICATION_OCTET_STREAM;
-      }
-    }
-  };
-
-  public final static IBResource from(Path p, Checksum c, String type) {
-    IBResourceModel m = new IBResourceModel();
-    m.setFilePath(requireNonNull(p).toAbsolutePath().toString());
-    m.setFileChecksum(c.toString());
-    m.setType(type);
-    return new DefaultIBResource(p, c, Optional.of(type));
   }
 
   public DefaultIBResource(Path path, Checksum checksum, Optional<String> type) {
@@ -210,10 +194,11 @@ public class DefaultIBResource implements IBResource {
     this.originalPath = requireNonNull(path);
     m.setFilePath(this.originalPath.toAbsolutePath().toString());
     m.setFileChecksum(requireNonNull(checksum).toString());
-    IBResource.getAttributes.apply(path).ifPresent(bfa -> {
+    IBResourceFactory.getAttributes.apply(path).ifPresent(bfa -> {
       this.m.setCreated(bfa.creationTime().toInstant().toString());
       this.m.setLastUpdate(bfa.lastModifiedTime().toInstant().toString());
       this.m.setMostRecentReadTime(bfa.lastAccessTime().toInstant().toString());
+      this.m.setSize(bfa.size());
     });
 
     requireNonNull(type).ifPresent(t -> m.setType(t));
@@ -223,8 +208,10 @@ public class DefaultIBResource implements IBResource {
     this(path, checksum, Optional.empty());
   }
 
-  public final static IBResource fromPath(Path path) {
-    return new DefaultIBResource(path, new Checksum(path), empty());
+  public DefaultIBResource(Path p2,   Optional<String> name, Optional<String> desc, Checksum checksum) {
+    this(p2,checksum, of(IBResourceFactory.toType.apply(p2)));
+    this.m.setName(requireNonNull(name).orElse(null));
+    this.m.setDescription(requireNonNull(desc).orElse(null));
   }
 
   @Override
@@ -250,7 +237,7 @@ public class DefaultIBResource implements IBResource {
 
   @Override
   public java.io.InputStream get() {
-    m.setMostRecentReadTime(Instant.now().toString());
+    m.setMostRecentReadTime(now().toString());
     return org.infrastructurebuilder.util.readdetect.IBResource.super.get();
   }
 
@@ -277,7 +264,7 @@ public class DefaultIBResource implements IBResource {
   @Override
   public Path getPath() {
     if (this.p == null && m.getFilePath() != null) {
-      this.p = java.nio.file.Paths.get(m.getFilePath());
+      this.p = Paths.get(m.getFilePath());
     }
     if (this.p == null && getSourceURL().isPresent()) {
       this.p = Paths.get(cet.returns(() -> getSourceURL().get().toURI()));
@@ -291,18 +278,18 @@ public class DefaultIBResource implements IBResource {
   }
 
   @Override
-  public Optional<Instant> getMostRecentReadTime() {
-    return ofNullable(this.m.getMostRecentReadTime()).map(Instant::parse);
+  public Instant getMostRecentReadTime() {
+    return ofNullable(this.m.getMostRecentReadTime()).map(Instant::parse).orElse(null);
   }
 
   @Override
-  public Optional<Instant> getCreateDate() {
-    return ofNullable(this.m.getCreated()).map(Instant::parse);
+  public Instant getCreateDate() {
+    return ofNullable(this.m.getCreated()).map(Instant::parse).orElse(null);
   }
 
   @Override
-  public Optional<Instant> getLateUpdateDate() {
-    return ofNullable(this.m.getLastUpdate()).map(Instant::parse);
+  public Instant getLastUpdateDate() {
+    return ofNullable(this.m.getLastUpdate()).map(Instant::parse).orElse(null);
   }
 
   @Override
@@ -318,6 +305,11 @@ public class DefaultIBResource implements IBResource {
   @Override
   public Path getOriginalPath() {
     return originalPath;
+  }
+
+  @Override
+  public long size() {
+    return this.m.getSize();
   }
 
 }

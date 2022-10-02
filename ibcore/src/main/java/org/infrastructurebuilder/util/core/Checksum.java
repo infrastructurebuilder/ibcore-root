@@ -30,14 +30,10 @@ import static org.infrastructurebuilder.util.core.IBUtils.hexStringToByteArray;
 import static org.infrastructurebuilder.util.core.IBUtils.readerToInputStream;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
-import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.List;
@@ -65,9 +61,9 @@ public class Checksum implements Comparable<Checksum>, Supplier<Optional<UUID>> 
   }
 
   public final static Function<Path, Optional<Checksum>> ofPath = (p) -> {
-    try (InputStream is = Files.newInputStream(p, StandardOpenOption.READ)) {
-      return of(new Checksum(IBUtils.digestInputStream(is)));
-    } catch (IOException e) {
+    try  {
+      return of(new Checksum(p));
+    } catch (Throwable e) {
       return empty();
     }
   };
