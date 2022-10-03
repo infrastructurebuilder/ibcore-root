@@ -84,6 +84,8 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.Spliterators;
+import java.util.StringJoiner;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -354,14 +356,20 @@ public class IBUtils {
     return out;
   }
 
-  public static Checksum copyAndDigest(final InputStream ins, final OutputStream target)
+  public static Checksum copyAndDigest(final String type, final InputStream ins, final OutputStream target)
       throws IOException, NoSuchAlgorithmException {
-    try (DigestInputStream sink = new DigestInputStream(ins, MessageDigest.getInstance(DIGEST_TYPE))) {
+    try (DigestInputStream sink = new DigestInputStream(ins, MessageDigest.getInstance(requireNonNull(type)))) {
       copy(sink, target);
       final Checksum d = new Checksum(sink.getMessageDigest().digest());
 
       return d;
     }
+
+  }
+
+  public static Checksum copyAndDigest(final InputStream ins, final OutputStream target)
+      throws IOException, NoSuchAlgorithmException {
+    return copyAndDigest(DIGEST_TYPE, ins, target);
   }
 
   public final static Path copyToDeletedOnExitTempPath(String prefix, String suffix, final InputStream source)
@@ -413,14 +421,17 @@ public class IBUtils {
 
   }
 
-  public static byte[] digestInputStream(final InputStream ins) throws IOException {
+  public static byte[] digestInputStream(final String type, final InputStream ins) throws IOException {
     final byte[] buf = new byte[BUFFER_SIZE];
-    try (DigestInputStream sink = new DigestInputStream(ins,
-        cet.returns(() -> MessageDigest.getInstance(DIGEST_TYPE)))) {
+    try (DigestInputStream sink = new DigestInputStream(ins, cet.returns(() -> MessageDigest.getInstance(type)))) {
       while (sink.read(buf) > 0) {
       }
       return sink.getMessageDigest().digest();
     }
+  }
+
+  public static byte[] digestInputStream(final InputStream ins) throws IOException {
+    return digestInputStream(DIGEST_TYPE, ins);
   }
 
   /**
@@ -709,9 +720,9 @@ public class IBUtils {
         } else if (kGot instanceof JSONArray kGot1 && tGot instanceof String tGot1) {
           kGot = mergeJSONArray(kGot1, tGot1);
         } else if (tGot instanceof JSONArray kGot1 && kGot instanceof String tGot1) {
-          kGot = mergeJSONArray(kGot1,  tGot1);
+          kGot = mergeJSONArray(kGot1, tGot1);
         } else if (tGot instanceof String kGot1 && kGot instanceof String tGot1) {
-          kGot = new JSONArray(new HashSet<>(Arrays.asList( tGot1, kGot1)));
+          kGot = new JSONArray(new HashSet<>(Arrays.asList(tGot1, kGot1)));
         }
 
       b.put(k, kGot);
@@ -890,8 +901,8 @@ public class IBUtils {
   }
 
   public static Optional<URL> zipEntryToUrl(final Optional<URL> p, final ZipEntry e) {
-    return requireNonNull(p).map(u -> cet.returns(
-        () -> translateToWorkableArchiveURL("jar:" + u.toExternalForm() + "!/" + e.getName())));
+    return requireNonNull(p)
+        .map(u -> cet.returns(() -> translateToWorkableArchiveURL("jar:" + u.toExternalForm() + "!/" + e.getName())));
   }
 
   private static boolean _match(final JSONObject metadata, final Pattern key, final Pattern value) {
@@ -1038,5 +1049,30 @@ public class IBUtils {
       return createFile(path);
     });
   }
+
+  // non-static but possibly memory intensive methods
+
+  public final static Function<JSONObject, String> deepMapJSONtoOrderedString = j -> {
+    return new IBUtils()._deepMapJSONtoOrderedString(j);
+  };
+
+  private final String _deepMapJSONtoOrderedString(JSONObject j) {
+    StringJoiner sb = new StringJoiner(",");
+    var so = new TreeMap<String, Object>(requireNonNull(j).toMap());
+    so.forEach((k, v) -> {
+      String ov;
+      if (v == null || JSONObject.NULL.equals(v)) {
+        ov = "null";
+      } else if (v instanceof JSONObject) {
+        ov = String.format("{%s}", _deepMapJSONtoOrderedString((JSONObject) v));
+      } else if (v instanceof String) {
+        ov = String.format("\"%s\"", v);
+      } else {
+        ov = v.toString();
+      }
+      sb.add(String.format("%s:%s", k, ov));
+    });
+    return sb.toString();
+  };
 
 }

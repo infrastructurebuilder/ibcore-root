@@ -26,6 +26,7 @@ import org.json.JSONArray;
 
 public interface IBConstants {
 
+  String UTF_8 = "UTF-8";
   String DEFAULT = "default";
   String IBDATA_PREFIX = "IBDataTemp_";
   String IBDATA_SUFFIX = ".ibdata";
@@ -143,7 +144,7 @@ public interface IBConstants {
   String URL = "url";
   String USERNAME = "username";
 
-  Charset UTF8 = Charset.forName("UTF-8");
+  Charset UTF8 = Charset.forName(UTF_8);
   String VERSION = "version";
 
   String HTTP_PREFIX = "http://";

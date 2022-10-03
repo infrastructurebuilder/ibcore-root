@@ -41,8 +41,8 @@
     <hashicorp.waypoint.download.skip>false</hashicorp.waypoint.download.skip>
 
 
-    <test.coverage.percentage.required>10</test.coverage.percentage.required>
-    <jacoco.max.missed.classes>99</jacoco.max.missed.classes>
+    <test.coverage.percentage.required>89</test.coverage.percentage.required>
+    <jacoco.max.missed.classes>3</jacoco.max.missed.classes>
   </properties>
   <dependencies>
     <dependency>
