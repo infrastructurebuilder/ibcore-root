@@ -43,6 +43,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.function.Function;
 
 import org.infrastructurebuilder.exceptions.IBException;
@@ -90,7 +91,7 @@ public class DefaultIBResource implements IBResource {
 
   @Deprecated
   public final static IBResource fromPath(Path path) {
-    return new DefaultIBResource(path, new Checksum(path), empty());
+    return new DefaultIBResource(path, new Checksum(path), empty(), empty());
   }
 
   private final IBResourceModel m;
@@ -166,6 +167,11 @@ public class DefaultIBResource implements IBResource {
     m.setName(j.optString(NAME, null));
     m.setSource(j.optString(SOURCE_URL, null));
     m.setDescription(j.optString(DESCRIPTION, null));
+    Optional.ofNullable(j.optJSONObject(IBConstants.ADDITIONAL_PROPERTIES)).ifPresent(jo -> {
+      jo.toMap().forEach((k,v)  -> {
+        m.addAdditionalProperty(k, v.toString());
+      });
+    });
 
     String x = ofNullable(requireNonNull(j).optString(IBConstants.PATH, null))
         .orElseThrow(() -> new RuntimeException(NO_PATH_SUPPLIED));
@@ -189,7 +195,7 @@ public class DefaultIBResource implements IBResource {
     this.m.setSource(requireNonNull(source));
   }
 
-  public DefaultIBResource(Path path, Checksum checksum, Optional<String> type) {
+  public DefaultIBResource(Path path, Checksum checksum, Optional<String> type, Optional<Properties> addlProps) {
     this.m = new IBResourceModel();
     this.originalPath = requireNonNull(path);
     m.setFilePath(this.originalPath.toAbsolutePath().toString());
@@ -205,13 +211,17 @@ public class DefaultIBResource implements IBResource {
   }
 
   public DefaultIBResource(Path path, Checksum checksum) {
-    this(path, checksum, Optional.empty());
+    this(path, checksum, empty(), empty());
   }
 
-  public DefaultIBResource(Path p2,   Optional<String> name, Optional<String> desc, Checksum checksum) {
-    this(p2,checksum, of(IBResourceFactory.toType.apply(p2)));
+  public DefaultIBResource(Path p2,   Optional<String> name, Optional<String> desc, Checksum checksum, Optional<Properties> addlProps) {
+    this(p2,checksum, of(IBResourceFactory.toType.apply(p2)), addlProps);
     this.m.setName(requireNonNull(name).orElse(null));
     this.m.setDescription(requireNonNull(desc).orElse(null));
+  }
+  public DefaultIBResource(Path path, Checksum checksum, Optional<String> type) {
+
+    this(path, checksum, type, empty());
   }
 
   @Override
@@ -310,6 +320,12 @@ public class DefaultIBResource implements IBResource {
   @Override
   public long size() {
     return this.m.getSize();
+  }
+
+  @Override
+  public Optional<Properties> getAdditionalProperties() {
+    var p = m.getAdditionalProperties();
+    return (p.size() == 0) ? empty(): of(p);
   }
 
 }

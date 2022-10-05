@@ -22,6 +22,7 @@ import static java.util.Objects.hash;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
+import static org.infrastructurebuilder.util.constants.IBConstants.ADDITIONAL_PROPERTIES;
 import static org.infrastructurebuilder.util.constants.IBConstants.CREATE_DATE;
 import static org.infrastructurebuilder.util.constants.IBConstants.DESCRIPTION;
 import static org.infrastructurebuilder.util.constants.IBConstants.MIME_TYPE;
@@ -42,10 +43,10 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.StringJoiner;
 import java.util.function.Supplier;
 
@@ -84,9 +85,9 @@ public interface IBResource extends Supplier<InputStream>, JSONOutputEnabled {
   IBResource moveTo(Path target) throws IOException;
 
   /**
-   * Sub-types may, at their discretion, return a {@link Instant} of the most recent
-   * "get()" call. The generated IBResourceModel doesn't because it's really a
-   * persistence mechanism and that value isn't relevant.
+   * Sub-types may, at their discretion, return a {@link Instant} of the most
+   * recent "get()" call. The generated IBResourceModel doesn't because it's
+   * really a persistence mechanism and that value isn't relevant.
    *
    *
    * @return most recent read time or null
@@ -95,6 +96,7 @@ public interface IBResource extends Supplier<InputStream>, JSONOutputEnabled {
 
   /**
    * Nullable (but probably not) create date
+   *
    * @return create date or null
    */
   Instant getCreateDate();
@@ -107,9 +109,11 @@ public interface IBResource extends Supplier<InputStream>, JSONOutputEnabled {
   default Optional<Instant> getOptionalCreateDate() {
     return ofNullable(getCreateDate());
   }
+
   default Optional<Instant> getOptionalMostRecentReadTime() {
     return ofNullable(getMostRecentReadTime());
   }
+
   default Optional<Instant> getOptionalLastUpdateDate() {
     return ofNullable(getLastUpdateDate());
   }
@@ -194,10 +198,22 @@ public interface IBResource extends Supplier<InputStream>, JSONOutputEnabled {
 
         .addString(DESCRIPTION, getDescription())
 
+        .addProperties(ADDITIONAL_PROPERTIES, getAdditionalProperties())
+
         .asJSON();
   }
 
   Path getOriginalPath();
+
+  /**
+   * This method should not return an empty Properties object. If there are no
+   * additional properties then the return should be Optional.empty()
+   *
+   * @return empty or a Properties with size() > 0
+   */
+  default Optional<Properties> getAdditionalProperties() {
+    return empty();
+  }
 
   default Optional<BasicFileAttributes> getBasicFileAttributes() {
     return IBResourceFactory.getAttributes.apply(getPath());

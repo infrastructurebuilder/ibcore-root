@@ -27,11 +27,18 @@ public class MultiReturn<T, R, E extends Throwable> extends MultiType<T, E> {
     this(null, retVal, thrown);
   }
 
+  public MultiReturn(final T typed, final R retVal) {
+    this(typed, retVal, null);
+  }
+
   public MultiReturn(final T typed, final R retVal, final E thrown) {
     super(typed, thrown);
     this.r = retVal;
   }
 
+  /**
+   * @return Potentially null return value
+   */
   public R getReturnValue() {
     return r;
   }

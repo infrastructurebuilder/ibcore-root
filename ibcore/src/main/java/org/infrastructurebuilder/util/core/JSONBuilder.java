@@ -190,6 +190,11 @@ public final class JSONBuilder implements JSONOutputEnabled {
     return this;
   }
 
+  public JSONBuilder addJSONObject(final String key, final Optional<JSONObject> j) {
+    requireNonNull(j).ifPresent(json -> this.addJSONObject(key, json));
+    return this;
+  }
+
   public JSONBuilder addJSONOutputEnabled(final String key, final JSONOutputEnabled j) {
     return addJSONObject(key, j.asJSON());
   }

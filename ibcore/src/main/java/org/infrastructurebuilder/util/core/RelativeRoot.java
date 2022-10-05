@@ -98,6 +98,14 @@ public class RelativeRoot {
     return getPath().map(root -> root.relativize(p)).orElse(p);
   }
 
+  public final Optional<Path> resolve(String p) {
+    return resolve(Paths.get(p));
+  }
+
+  private Optional<Path> resolve(Path p) {
+    return getPath().map(path -> path.resolve(p));
+  }
+
   public final String relativize(URL p) {
     return relativize(requireNonNull(p).toExternalForm());
   }

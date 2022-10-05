@@ -95,6 +95,16 @@
           <description>size of file</description>
           <type>long</type>
         </field>
+        <field>
+          <name>additionalProperties</name>
+          <version>1.0.0+</version>
+          <type>Properties</type>
+          <association>
+            <type>String</type>
+            <multiplicity>*</multiplicity>
+          </association>
+        </field>
+
       </fields>
     </class>
     <class locationTracker="locations" java.clone="shallow">

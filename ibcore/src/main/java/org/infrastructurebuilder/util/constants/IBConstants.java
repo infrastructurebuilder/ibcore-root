@@ -157,6 +157,7 @@ public interface IBConstants {
   String MAVEN_TARGET_PATH = "./target";
   String TEMPORARYID = "temporaryId";
   String DESCRIPTION = "description";
+  String ADDITIONAL_PROPERTIES = "additionalProperties";
   String CREDENTIALS = "credentials";
 
   String DTD_RESOURCE = "dbUnitDTD";
@@ -171,6 +172,7 @@ public interface IBConstants {
 
   String CREATE_DATE = "created";
   String UPDATE_DATE = "updated";
+  String EXPIRE_DATE = "expires";
   String INSTANT = "instant";
   String MOST_RECENT_READ_TIME = "mostRecentRead";
   String PATH = "path";

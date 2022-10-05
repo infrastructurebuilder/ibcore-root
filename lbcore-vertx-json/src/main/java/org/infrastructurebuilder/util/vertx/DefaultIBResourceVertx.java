@@ -245,7 +245,7 @@ public class DefaultIBResourceVertx implements IBResourceVertx {
   }
 
   public final static IBResource fromPath(Path path) {
-    return new DefaultIBResource(path, new Checksum(path), empty());
+    return new DefaultIBResource(path, new Checksum(path), empty(), empty());
   }
 
   @Override

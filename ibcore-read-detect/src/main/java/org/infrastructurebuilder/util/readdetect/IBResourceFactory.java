@@ -34,6 +34,7 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -122,7 +123,7 @@ public class IBResourceFactory {
     Checksum cSum = new Checksum(source);
     Path newTarget = targetDir.resolve(cSum.asUUID().get().toString());
     cet.returns(() -> copy(source, newTarget));
-    return new DefaultIBResource(newTarget, cSum, Optional.of(localType));
+    return new DefaultIBResource(newTarget, cSum, Optional.of(localType), empty());
   }
 
   public final static IBResource copyToDeletedOnExitTempChecksumAndPath(Path targetDir, String prefix, String suffix,
@@ -139,7 +140,7 @@ public class IBResourceFactory {
 
   public final static IBResource from(Path p, Optional<String> name, Optional<String> desc) {
     return new DefaultIBResource(requireNonNull(p), name, desc,
-        Checksum.ofPath.apply(p).orElseThrow(() -> new RuntimeException("unreadable.path")));
+        Checksum.ofPath.apply(p).orElseThrow(() -> new RuntimeException("unreadable.path")), empty());
   }
 
   public final static IBResource from(Path p, Checksum c, String type) {
@@ -147,11 +148,11 @@ public class IBResourceFactory {
     m.setFilePath(requireNonNull(p).toAbsolutePath().toString());
     m.setFileChecksum(c.toString());
     m.setType(type);
-    return new DefaultIBResource(p, c, Optional.of(type));
+    return new DefaultIBResource(p, c, Optional.of(type), empty());
   }
 
   public final static IBResource fromPath(Path path) {
-    return new DefaultIBResource(path, new Checksum(path), empty());
+    return new DefaultIBResource(path, new Checksum(path), empty(), empty());
   }
 
   /**
@@ -165,8 +166,8 @@ public class IBResourceFactory {
   }
 
   public static IBResource from(Path path, Optional<String> name, Optional<String> desc, Instant createDate,
-      Instant lastUpdated) {
-    return new DefaultIBResource(path, new Checksum(path), of(toType.apply(path)))
+      Instant lastUpdated, Optional<Properties> addlProps) {
+    return new DefaultIBResource(path, new Checksum(path), of(toType.apply(path)), addlProps)
         .setCreateDate(createDate).setLastUpdated(lastUpdated);
   }
 }
