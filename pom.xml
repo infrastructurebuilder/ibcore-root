@@ -103,6 +103,16 @@
       </dependency>
       <dependency>
         <groupId>org.infrastructurebuilder</groupId>
+        <artifactId>ibcore-vertx-json</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder</groupId>
+        <artifactId>ibcore-vertx-blobstore</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder</groupId>
         <artifactId>ibmaven-support</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -148,7 +158,6 @@
         <artifactId>iblog-noop-component</artifactId>
         <version>${iblog.version}</version>
       </dependency>
-
     </dependencies>
   </dependencyManagement>
   <dependencies>
@@ -184,7 +193,8 @@
   </build>
   <modules>
     <module>ibcore</module>
-    <module>lbcore-vertx-json</module>
+    <module>ibcore-vertx-base</module>
+    <module>ibcore-vertx-blobstore</module>
     <module>ibcore-config</module>
     <module>ibcore-artifacts</module>
     <module>ibcore-dag</module>

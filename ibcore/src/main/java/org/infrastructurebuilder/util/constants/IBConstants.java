@@ -181,9 +181,11 @@ public interface IBConstants {
   String SOURCE_URL = "sourceURL";
   String MIME_TYPE = "mimeType";
   String ORIGINAL_PATH = "originalPath";
-  public String INVENTORY_BLOBSTORE_ROOT = "INVENTORY_BLOBSTORE_ROOT";
-  public String METADATA_DIR_NAME = "METADATA";
-  public String NO_PATH_SUPPLIED = "no.path.supplied";
-  public String METADATA = "metadata";
+  String METADATA_DIR_NAME = "METADATA";
+  String BLOBSTORE_ROOT = "blobstoreRoot";
+  String NO_PATH_SUPPLIED = "no.path.supplied";
+  String METADATA = "metadata";
+  String NOT_FOUND = "not.found";
+  String UNAVAILABLE_PATH = "unavailable.path";
 
 }
