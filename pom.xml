@@ -103,12 +103,17 @@
       </dependency>
       <dependency>
         <groupId>org.infrastructurebuilder</groupId>
-        <artifactId>ibcore-vertx-json</artifactId>
+        <artifactId>ibcore-vertx-base</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.infrastructurebuilder</groupId>
         <artifactId>ibcore-vertx-blobstore</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder</groupId>
+        <artifactId>ibcore-vertx-dataobjects</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -195,6 +200,7 @@
     <module>ibcore</module>
     <module>ibcore-vertx-base</module>
     <module>ibcore-vertx-blobstore</module>
+    <module>ibcore-vertx-dataobjects</module>
     <module>ibcore-config</module>
     <module>ibcore-artifacts</module>
     <module>ibcore-dag</module>
