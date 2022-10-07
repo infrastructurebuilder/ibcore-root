@@ -21,9 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.infrastructurebuilder.util.core.Typed;
+
 import io.vertx.core.Future;
 
-public interface TCache<T> {
+public interface TCache<T extends Typed> {
 
   void start();
 
@@ -33,6 +35,11 @@ public interface TCache<T> {
 
   Future<Map<String, T>> getAllAsMap();
 
+  /**
+   *
+   * @param type
+   * @return
+   */
   Future<List<T>> getAllOfType(String type);
 
   Future<Map<String, List<T>>> getAllAsTypeMap();

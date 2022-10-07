@@ -18,12 +18,14 @@ package org.infrastructurebuilder.util.vertx.dataobjects;
 import java.util.Optional;
 
 import org.infrastructurebuilder.util.core.Identified;
+import org.infrastructurebuilder.util.core.Typed;
+import org.infrastructurebuilder.util.vertx.base.Tags;
 import org.infrastructurebuilder.util.vertx.base.Versioned;
 import org.infrastructurebuilder.util.vertx.blobstore.Blobstore;
 
 import io.vertx.core.Future;
 
-public interface TFactory<T> extends Identified, Versioned  {
+public interface TFactory<T extends Typed> extends Identified, Versioned  {
 
   /**
    *
