@@ -364,7 +364,7 @@ public final class JsonBuilder implements JsonOutputEnabled {
   public JsonBuilder addPath(final String key, final Path s) {
     requireNonNull(s);
     json.put(key,
-        ((!s.isAbsolute()) ? s : relativeRoot.map(rr -> rr.relativize(requireNonNull(s))).orElse(s)).toString());
+        ((!s.isAbsolute()) ? s : relativeRoot.flatMap(rr -> rr.relativize(requireNonNull(s))).orElse(s)).toString());
     return this;
   }
 

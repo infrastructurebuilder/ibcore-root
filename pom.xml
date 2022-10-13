@@ -66,6 +66,11 @@
       </dependency>
       <dependency>
         <groupId>org.infrastructurebuilder</groupId>
+        <artifactId>ibcore-default-extension-type-mapper</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder</groupId>
         <artifactId>ibcore-config</artifactId>
         <version>${project.version}</version>
       </dependency>

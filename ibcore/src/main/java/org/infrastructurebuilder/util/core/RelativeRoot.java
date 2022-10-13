@@ -25,7 +25,21 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import org.infrastructurebuilder.exceptions.IBException;
+
 public class RelativeRoot {
+  public final static Path checkRelative(Path p) {
+    if (requireNonNull(p).isAbsolute())
+      throw new IBException("must.be.absolute");
+    return p;
+  }
+
+  public final static Path checkAbsolute(Path p) {
+    if (!requireNonNull(p).isAbsolute())
+      throw new IBException("must.be.absolute");
+    return p;
+  }
+
   public final static Path pathFrom(Optional<RelativeRoot> r1, Path path) {
     return (requireNonNull(path).isAbsolute()) ?
     // If absolute
@@ -46,35 +60,27 @@ public class RelativeRoot {
     return u;
   }
 
-  private final Path path;
-  private final URL url;
-  private final String urlE;
-
-  public RelativeRoot(Path p, String url) {
-    this.path = requireNonNull(p).toAbsolutePath();
-    this.urlE = url;
-    this.url = fromString(url);
-
+  public final static RelativeRoot from(String s) {
+    return new RelativeRoot(s);
   }
 
-  public RelativeRoot(Path p, URL u) {
-    this(requireNonNull(p), requireNonNull(u).toExternalForm());
+  public final static RelativeRoot from(URL u) {
+    return from(requireNonNull(u).toExternalForm());
   }
 
-  public RelativeRoot(Path p) {
-    this.path = requireNonNull(p).toAbsolutePath();
-    this.url = cet.returns(() -> this.path.toUri().toURL());
-    this.urlE = this.url.toExternalForm();
+  public final static RelativeRoot from(Path p) {
+    return from(cet.returns(() -> checkAbsolute(p).toUri().toURL().toExternalForm()));
   }
 
-  public RelativeRoot(String u) {
+  private final String stringRoot; // Not nullalbe
+
+  private final Path path; // Nullable for certain cases
+  private final URL url; // Nullable (for certain cases)
+
+  private RelativeRoot(String u) {
+    this.stringRoot = (!requireNonNull(u).endsWith("/")) ? u + "/" : u;
     this.url = fromString(requireNonNull(u));
-    this.path = getUrl().map(u1 -> u1.getPath().equals("file") ? Paths.get(u1.getPath()) : null).orElse(null);
-    this.urlE = requireNonNull(u);
-  }
-
-  public RelativeRoot(URL u) {
-    this(requireNonNull(u).toExternalForm());
+    this.path = (this.url.getProtocol().equals("file")) ? Paths.get(cet.returns(() -> this.url.toURI())) : null;
   }
 
   public Optional<Path> getPath() {
@@ -85,25 +91,27 @@ public class RelativeRoot {
     return ofNullable(url);
   }
 
-  public Optional<String> getURLAsString() {
-    return ofNullable(urlE);
-  }
-
   @Override
   public String toString() {
-    return getPath().map(Path::toString).orElse(this.urlE);
+    return this.stringRoot;
   }
 
-  public final Path relativize(Path p) {
-    return getPath().map(root -> root.relativize(p)).orElse(p);
+  public final Optional<Path> resolve(Path p) {
+    if (requireNonNull(p).isAbsolute())
+      return Optional.of(p);
+    else
+      return getPath().map(r -> r.resolve(p));
   }
 
   public final Optional<Path> resolve(String p) {
-    return resolve(Paths.get(p));
+    return resolve(Path.of(p));
   }
 
-  private Optional<Path> resolve(Path p) {
-    return getPath().map(path -> path.resolve(p));
+  public final Optional<Path> relativize(Path p) {
+    if (requireNonNull(p).isAbsolute())
+      return getPath().map(r -> r.relativize(p));
+    else
+      return Optional.of(p);
   }
 
   public final String relativize(URL p) {
@@ -111,7 +119,8 @@ public class RelativeRoot {
   }
 
   public final String relativize(String pext) {
-    return pext.startsWith(urlE) ? pext.substring(urlE.length()) : pext;
+    String r = pext.startsWith(stringRoot) ? pext.substring(stringRoot.length()) : pext;
+    return (r.startsWith("/")) ? r.substring(1) : r;
   }
 
 }

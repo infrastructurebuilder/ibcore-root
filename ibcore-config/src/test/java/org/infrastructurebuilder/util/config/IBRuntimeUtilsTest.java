@@ -15,6 +15,7 @@
  */
 package org.infrastructurebuilder.util.config;
 
+import static java.util.Optional.empty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.lang.System.Logger;
@@ -34,6 +35,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class IBRuntimeUtilsTest {
+  public final static Logger log = System.getLogger(IBRuntimeUtilsTest.class.toString());
 
   @BeforeAll
   public static void setUpBeforeClass() throws Exception {
@@ -51,50 +53,42 @@ public class IBRuntimeUtilsTest {
 
       @Override
       public Optional<BasicCredentials> getCredentialsFor(String query) {
-        // TODO Auto-generated method stub
-        return null;
+        return empty();
       }
 
       @Override
       public Logger getLog() {
-        // TODO Auto-generated method stub
-        return null;
+        return log;
       }
 
       @Override
       public String getExtensionForType(String type) {
-        // TODO Auto-generated method stub
         return null;
       }
 
       @Override
       public SortedSet<String> reverseMapFromExtension(String extension) {
-        // TODO Auto-generated method stub
-        return null;
+        return Collections.emptySortedSet();
       }
 
       @Override
       public Path getWorkingPath() {
-        // TODO Auto-generated method stub
         return null;
       }
 
       @Override
       public GAV getGAV() {
-        // TODO Auto-generated method stub
         return null;
       }
 
       @Override
       public Optional<String> getDescription() {
-        // TODO Auto-generated method stub
-        return Optional.empty();
+        return empty();
       }
 
       @Override
       public Optional<String> getStructuredSupplyTypeClassName(String type) {
-        // TODO Auto-generated method stub
-        return Optional.empty();
+        return empty();
       }
 
       @Override

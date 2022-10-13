@@ -17,6 +17,7 @@ package org.infrastructurebuilder.util.core;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -31,9 +32,9 @@ import org.slf4j.*;
 
 class RelativeRootTest {
 
+  private static final String URLROOT = "https://someserver.com/somepath";
   private final static Logger log = LoggerFactory.getLogger(RelativeRootTest.class);
   private static TestingPathSupplier tps;
-
 
   @BeforeAll
   static void setUpBeforeClass() throws Exception {
@@ -45,18 +46,23 @@ class RelativeRootTest {
     tps.finalize();
   }
 
-  private RelativeRoot rr;
+  private RelativeRoot prr, hrr;
   private Path tp;
-  private Path t1;
+  private Path ssPath;
   private Path r2;
-  private String s;
+  private String ss;
+  private Path aPath;
+  private URL ssURL;
 
   @BeforeEach
   void setUp() throws Exception {
     tp = tps.get();
-    rr = new RelativeRoot(tp);
-    s = UUID.randomUUID().toString();
-    t1 = Paths.get(s);
+    prr = RelativeRoot.from(tp);
+    hrr = RelativeRoot.from(new URL(URLROOT));
+    ss = UUID.randomUUID().toString();
+    ssPath = Paths.get(ss);
+    ssURL = new URL(URLROOT + "/" + ss);
+    aPath = tp.resolve(ssPath).toAbsolutePath();
   }
 
   @AfterEach
@@ -65,61 +71,28 @@ class RelativeRootTest {
 
   @Test
   void testPathFrom() {
-    r2 = RelativeRoot.pathFrom(Optional.of(rr),t1);
-    assertEquals(r2, tp.resolve(s));
+    assertTrue(prr.getPath().isPresent());
+    assertFalse(hrr.getPath().isPresent());
   }
 
   @Test
-  void testRelativeRootPathString() {
+  void testAbsolute() {
+    Optional<Path> q = hrr.relativize(aPath);
+    assertFalse(q.isPresent());
+    Optional<Path> r = prr.relativize(aPath);
+    assertTrue(r.isPresent());
+    // Relativized paths are not the same as the original
+    assertNotEquals(aPath,r.get());
+    // Resolving an absolute path returns that path
+    assertEquals(aPath, prr.resolve(aPath).get());
   }
 
   @Test
-  void testRelativeRootPathURL() {
+  void testURLStuff() {
+    String v = hrr.relativize(ssURL);
+    assertEquals(ss, v);
   }
 
-  @Test
-  void testRelativeRootPath() {
-  }
 
-  @Test
-  void testRelativeRootString() {
-  }
 
-  @Test
-  void testRelativeRootURL() {
-  }
-
-  @Test
-  void testGetPath() {
-  }
-
-  @Test
-  void testGetUrl() {
-  }
-
-  @Test
-  void testGetURLAsString() {
-    RelativeRoot rt = new RelativeRoot(".");
-    assertEquals(".", rt.getURLAsString().get());
-  }
-
-  @Test
-  void testToString() {
-  }
-
-  @Test
-  void testRelativizePath() {
-  }
-
-  @Test
-  void testResolve() {
-  }
-
-  @Test
-  void testRelativizeURL() {
-  }
-
-  @Test
-  void testRelativizeString() {
-  }
 }

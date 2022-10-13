@@ -41,7 +41,7 @@ public class IBResourceModelTest {
   private DefaultIBResource c1, c2;
   private Path path;
   private Checksum checksum;
-  private IBResource def;
+//  private IBResource def;
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -53,7 +53,6 @@ public class IBResourceModelTest {
     c2 = new DefaultIBResource(path, checksum);
     c1 = new DefaultIBResource(path, checksum, of("ABC"));
 
-    def = new DefaultIBResource();
   }
 
   @AfterEach
@@ -63,8 +62,6 @@ public class IBResourceModelTest {
 
   @Test
   public void testDef() {
-    assertFalse(def.getSourceName().isPresent());
-    assertFalse(def.getSourceURL().isPresent());
   }
 
   @Test
@@ -126,9 +123,6 @@ public class IBResourceModelTest {
 
   @Test
   public void testRootInterfaceSourceURL() {
-    DefaultIBResource q = new DefaultIBResource();
-    assertFalse(q.getSourceURL().isPresent());
-    assertFalse(q.getSourceName().isPresent());
   }
 
 }

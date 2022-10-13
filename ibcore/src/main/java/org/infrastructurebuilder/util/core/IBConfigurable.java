@@ -15,27 +15,8 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
+public interface IBConfigurable<C> extends LoggerEnabled {
 
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
+  <T> T configure(C config);
 
-public interface IBDirScanner {
-  /**
-   * Return a map of paths both included and excluded
-   *
-   * @return Map. The "true" set is the included files. The "false" set is
-   *         excluded
-   */
-  Map<Boolean, List<Path>> scan();
-
-  default List<Path> getIncludedPaths() {
-    return ofNullable(scan().get(true)).orElse(emptyList());
-  }
-
-  default List<Path> getExcludedPaths() {
-    return ofNullable(scan().get(false)).orElse(emptyList());
-  }
 }

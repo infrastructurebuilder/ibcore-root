@@ -56,7 +56,19 @@ import org.infrastructurebuilder.util.core.JSONBuilder;
 import org.infrastructurebuilder.util.core.JSONOutputEnabled;
 import org.json.JSONObject;
 
-public interface IBResource extends Supplier<InputStream>, JSONOutputEnabled {
+/**
+ * An IBResource exists as a relative path based on some RelativeRoot, supplied
+ * externally at creation time.  The general persisted values of an IBResource
+ * remain constant.  The only difference is that the root values change.
+ *
+ * Thus, if an IBResource exists pointing to a Path on the filesystem and that
+ * entire filesystem is moved elsewhere, only the root needs to be changed to
+ * point to its new location.
+ *
+ * @author mykel
+ *
+ */
+public interface IBResource extends JSONOutputEnabled {
   /**
    * @return Non-null Path to this result
    * @throws IBException (runtime) if not available
@@ -75,7 +87,7 @@ public interface IBResource extends Supplier<InputStream>, JSONOutputEnabled {
   String getType();
 
   /**
-   * Relocate underlying path to new path. The target path is meant to be a normal
+   * Relocate underlying path to new path. The target path should be a normal
    * filesystem, not a ZipFileSystem.
    *
    * @param target
@@ -119,16 +131,12 @@ public interface IBResource extends Supplier<InputStream>, JSONOutputEnabled {
   }
 
   default InputStream get() {
-    List<OpenOption> o = new ArrayList<>();
-    o.add(READ);
+    List<OpenOption> o = new ArrayList<>(List.of(READ));
     if (getPath().getClass().getCanonicalName().contains("Zip")) {
-
     } else {
       o.add(NOFOLLOW_LINKS);
     }
-    OpenOption[] readOptions = o.toArray(new java.nio.file.OpenOption[o.size()]);
-
-    return cet.returns(() -> newInputStream(getPath(), readOptions));
+    return cet.returns(() -> newInputStream(getPath(), o.toArray(new OpenOption[o.size()])));
   }
 
   Optional<URL> getSourceURL();
@@ -192,9 +200,9 @@ public interface IBResource extends Supplier<InputStream>, JSONOutputEnabled {
 
         .addPath(PATH, getPath())
 
-        .addLong(SIZE, size())
-
         .addString(ORIGINAL_PATH, getOriginalPath().toString())
+
+        .addLong(SIZE, size())
 
         .addString(DESCRIPTION, getDescription())
 

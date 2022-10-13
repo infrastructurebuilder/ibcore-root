@@ -187,5 +187,8 @@ public interface IBConstants {
   String METADATA = "metadata";
   String NOT_FOUND = "not.found";
   String UNAVAILABLE_PATH = "unavailable.path";
+  String WORKINGDIR = "working.dir";
+  String CACHEDIR = "download.cache.dir";
+  String FILEMAPPERS = "file.mappers";
 
 }

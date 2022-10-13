@@ -42,7 +42,7 @@
 
 
     <test.coverage.percentage.required>89</test.coverage.percentage.required>
-    <jacoco.max.missed.classes>3</jacoco.max.missed.classes>
+    <jacoco.max.missed.classes>4</jacoco.max.missed.classes>
   </properties>
   <dependencies>
     <dependency>

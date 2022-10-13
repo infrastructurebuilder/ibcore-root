@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.config.factory;
+package org.infrastructurebuilder.util.readdetect;
 
-public interface IBConfigurableTypedFactory<T, C, P> extends IBConfigurableFactory<T,C> {
-  /**
-   * This factory only produces elements of a given type
-   *
-   * @param type The type used to make a comparison
-   * @return true if this factory produces instances that are of that type
-   */
-  boolean respondsTo(P type);
+import java.util.function.Supplier;
+
+public interface WGetterSupplier extends Supplier<WGetter> {
+
 
 }

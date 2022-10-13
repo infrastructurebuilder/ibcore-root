@@ -39,8 +39,7 @@ public class HandCraftedEnvSupplier implements EnvSupplier {
   public HandCraftedEnvSupplier(InputStream props) throws IOException {
     this();
     Properties p = new Properties();
-
-      p.load(Objects.requireNonNull(props));
+    p.load(Objects.requireNonNull(props));
     for (String name : p.keySet().stream().map(Object::toString).collect(Collectors.toSet())) {
       this.map.put(name, p.getProperty(name));
     }
@@ -51,7 +50,7 @@ public class HandCraftedEnvSupplier implements EnvSupplier {
     return this;
   }
 
-  public synchronized HandCraftedEnvSupplier setAll(Map<String,String> env) {
+  public synchronized HandCraftedEnvSupplier setAll(Map<String, String> env) {
     this.map.putAll(Objects.requireNonNull(env));
     return this;
   }

@@ -13,29 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.infrastructurebuilder.util.core;
-
-import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
+package org.infrastructurebuilder.util.config;
 
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
 
-public interface IBDirScanner {
-  /**
-   * Return a map of paths both included and excluded
-   *
-   * @return Map. The "true" set is the included files. The "false" set is
-   *         excluded
-   */
-  Map<Boolean, List<Path>> scan();
+import org.infrastructurebuilder.util.core.PathSupplier;
 
-  default List<Path> getIncludedPaths() {
-    return ofNullable(scan().get(true)).orElse(emptyList());
+abstract public class AbstractPathSupplierHolder  implements PathSupplier {
+
+  private Path path = null;
+
+  public AbstractPathSupplierHolder() {
+    super();
   }
 
-  default List<Path> getExcludedPaths() {
-    return ofNullable(scan().get(false)).orElse(emptyList());
+  public void setPath(Path path) {
+    if (this.path == null) // Set it once
+      this.path = path;
   }
+
+  @Override
+  public Path get() {
+    return this.path;
+  }
+
 }

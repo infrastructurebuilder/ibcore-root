@@ -15,7 +15,6 @@
  */
 module org.infrastructurebuilder.util.artifacts {
   exports org.infrastructurebuilder.util.artifacts;
-  exports org.infrastructurebuilder.util.artifacts.impl;
 
   requires transitive org.infrastructurebuilder.util.core;
   requires org.infrastructurebuilder.util.config;

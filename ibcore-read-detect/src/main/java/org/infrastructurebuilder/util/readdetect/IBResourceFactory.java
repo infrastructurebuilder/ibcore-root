@@ -35,6 +35,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -43,6 +44,7 @@ import org.apache.tika.metadata.TikaCoreProperties;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.impl.DefaultIBResource;
 import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
 import org.json.JSONObject;
@@ -51,6 +53,11 @@ public class IBResourceFactory {
   private static final long serialVersionUID = 5978749189830232137L;
   private final static Logger log = System.getLogger(IBResourceFactory.class.getName());
   private final static Tika tika = new Tika();
+  private final static AtomicReference<RelativeRoot> root = new AtomicReference<>();
+
+  public final static void setRelativeRoot(RelativeRoot r) {
+    root.set(r);
+  }
 
   public final static Function<Path, String> toType = (path) -> {
     if (!Files.exists(requireNonNull(path)))
@@ -94,8 +101,6 @@ public class IBResourceFactory {
     var str = requireNonNull(p).toString();
     return requireNonNull(on).orElse(str.substring(0, str.lastIndexOf('.')));
   };
-
-  private Path p;
 
   public final static IBResource from(IBResourceModel m) {
     return new DefaultIBResource(m);
@@ -143,12 +148,17 @@ public class IBResourceFactory {
         Checksum.ofPath.apply(p).orElseThrow(() -> new RuntimeException("unreadable.path")), empty());
   }
 
-  public final static IBResource from(Path p, Checksum c, String type) {
+  public final static IBResource from(Path p, Checksum c, String type, String source) {
     IBResourceModel m = new IBResourceModel();
     m.setFilePath(requireNonNull(p).toAbsolutePath().toString());
     m.setFileChecksum(c.toString());
     m.setType(type);
+    m.setSource(source);
     return new DefaultIBResource(p, c, Optional.of(type), empty());
+
+  }
+  public final static IBResource from(Path p, Checksum c, String type) {
+    return from(p,c,type,null);
   }
 
   public final static IBResource fromPath(Path path) {
@@ -167,7 +177,7 @@ public class IBResourceFactory {
 
   public static IBResource from(Path path, Optional<String> name, Optional<String> desc, Instant createDate,
       Instant lastUpdated, Optional<Properties> addlProps) {
-    return new DefaultIBResource(path, new Checksum(path), of(toType.apply(path)), addlProps)
-        .setCreateDate(createDate).setLastUpdated(lastUpdated);
+    return new DefaultIBResource(path, new Checksum(path), of(toType.apply(path)), addlProps).setCreateDate(createDate)
+        .setLastUpdated(lastUpdated);
   }
 }

@@ -59,6 +59,23 @@ public class DefaultIBResource implements IBResource {
   private static final long serialVersionUID = 5978749189830232137L;
   private final static Logger log = System.getLogger(DefaultIBResource.class.getName());
 
+  public final static Function<String, Path> extracted = (x) -> {
+    try {
+      Path p1 = Paths.get(x);
+      URL u;
+      if (Files.isRegularFile(p1)) {
+        u = cet.returns(() -> p1.toUri().toURL());
+      } else {
+        u = cet.returns(() -> new URL(x));
+      }
+      // I know, right?
+      return Paths.get(cet.returns(() -> cet.returns(() -> u.toURI())));
+    } catch (Throwable t) {
+      log.log(Level.ERROR, "Error converting to path", t);
+      throw t;
+    }
+  };
+
   // User IBResourceFactory
   @Deprecated
   public final static IBResource copyToTempChecksumAndPath(Path targetDir, final Path source) throws IOException {
@@ -97,44 +114,24 @@ public class DefaultIBResource implements IBResource {
   private final IBResourceModel m;
 
   private Path p;
-  private Path originalPath;
+  private final Path originalPath;
 
-  public DefaultIBResource() {
-    this.m = new IBResourceModel();
-  }
-
-//  public DefaultIBResource(
-//      // Path
-//      java.nio.file.Path path
-//      // Checksum
-//      , org.infrastructurebuilder.util.core.Checksum checksum
-//      // Type
-//      , String type
-//      // Source
-//      , java.util.Optional<java.net.URL> sourceURL
-//      // Name
-//      , java.util.Optional<String> name, java.util.Optional<java.util.Date> readDate) {
-//    this.m = new IBResourceModel();
-//    m.setFilePath(requireNonNull(path).toAbsolutePath().toString());
-//    m.setFileChecksum(requireNonNull(checksum).toString());
-//    m.setType(type);
-//    m.setSource(requireNonNull(sourceURL).map(java.net.URL::toExternalForm).orElse(null));
-//    m.setName(requireNonNull(name).orElse(null));
-//    m.setMostRecentReadTime(readDate.orElse(null));
-//  }
-
-//  DefaultIBResource(String filePath, String checksum, String type, String source, String name, Date mostRecentRead) {
-//    this.m = new IBResourceModel();
-//    m.setFilePath(filePath);
-//    m.setFileChecksum(checksum);
-//    m.setType(type);
-//    m.setSource(source);
-//    m.setName(name);
-//    m.setMostRecentReadTime(mostRecentRead);
-//  }
-//
   public DefaultIBResource(IBResourceModel m) {
     this.m = requireNonNull(m);
+    String ps = m.getFilePath();
+    Path path = null;
+    try {
+      path = Paths.get(ps);
+      if (path.isAbsolute()) {
+        log.log(Level.DEBUG, "Absolute path {}", path);
+      } else {
+        log.log(Level.DEBUG, "Relative path {}", path);
+      }
+    } catch (Throwable t) {
+      log.log(Level.ERROR, "Path was unavailable from {}", ps);
+    } finally {
+    }
+    this.originalPath = path;
   }
 
   public DefaultIBResource setCreateDate(Instant cdate) {
@@ -153,10 +150,8 @@ public class DefaultIBResource implements IBResource {
    * @param j JSONObject produced by IBResource#asJSON
    */
   public DefaultIBResource(JSONObject j) {
-
-    // FIXME Some of these not being present should produce a runtime failure
     m = new IBResourceModel();
-    m.setCreated(j.optString(CREATE_DATE, null));
+    m.setCreated(requireNonNull(j).optString(CREATE_DATE, null));
     m.setFileChecksum(j.getString(CHECKSUM));
     m.setSize(j.getLong(SIZE));
     m.setType(j.getString(MIME_TYPE));
@@ -168,31 +163,14 @@ public class DefaultIBResource implements IBResource {
     m.setSource(j.optString(SOURCE_URL, null));
     m.setDescription(j.optString(DESCRIPTION, null));
     Optional.ofNullable(j.optJSONObject(IBConstants.ADDITIONAL_PROPERTIES)).ifPresent(jo -> {
-      jo.toMap().forEach((k,v)  -> {
+      jo.toMap().forEach((k, v) -> {
         m.addAdditionalProperty(k, v.toString());
       });
     });
 
-    String x = ofNullable(requireNonNull(j).optString(IBConstants.PATH, null))
-        .orElseThrow(() -> new RuntimeException(NO_PATH_SUPPLIED));
-    try {
-      Path p1 = Paths.get(x);
-      URL u;
-      if (Files.isRegularFile(p1)) {
-        u = cet.returns(() -> p1.toUri().toURL());
-      } else {
-        u = cet.returns(() -> new URL(x));
-      }
-      Path p = Paths.get(cet.returns(() -> cet.returns(() -> u.toURI())));
-      this.p = p;
-    } catch (Throwable t) {
-      log.log(Level.ERROR, "Error converting to path", t);
-      throw t;
-    }
-  }
-
-  public void setSource(String source) {
-    this.m.setSource(requireNonNull(source));
+    this.p = ofNullable(j.optString(IBConstants.PATH, null)).map(extracted)
+        .orElseThrow(() -> new IBException(NO_PATH_SUPPLIED));
+    this.originalPath = ofNullable(j.optString(IBConstants.ORIGINAL_PATH, null)).map(extracted).orElse(null);
   }
 
   public DefaultIBResource(Path path, Checksum checksum, Optional<String> type, Optional<Properties> addlProps) {
@@ -214,14 +192,19 @@ public class DefaultIBResource implements IBResource {
     this(path, checksum, empty(), empty());
   }
 
-  public DefaultIBResource(Path p2,   Optional<String> name, Optional<String> desc, Checksum checksum, Optional<Properties> addlProps) {
-    this(p2,checksum, of(IBResourceFactory.toType.apply(p2)), addlProps);
+  public DefaultIBResource(Path p2, Optional<String> name, Optional<String> desc, Checksum checksum,
+      Optional<Properties> addlProps) {
+    this(p2, checksum, of(IBResourceFactory.toType.apply(p2)), addlProps);
     this.m.setName(requireNonNull(name).orElse(null));
     this.m.setDescription(requireNonNull(desc).orElse(null));
   }
-  public DefaultIBResource(Path path, Checksum checksum, Optional<String> type) {
 
+  public DefaultIBResource(Path path, Checksum checksum, Optional<String> type) {
     this(path, checksum, type, empty());
+  }
+
+  public void setSource(String source) {
+    this.m.setSource(requireNonNull(source));
   }
 
   @Override
@@ -232,7 +215,7 @@ public class DefaultIBResource implements IBResource {
   @Override
   public String getType() {
     if (m.getType() == null) {
-      m.setType(toType.apply(getPath()));
+      m.setType(IBResourceFactory.toType.apply(getPath()));
     }
     return m.getType();
   }
@@ -325,7 +308,7 @@ public class DefaultIBResource implements IBResource {
   @Override
   public Optional<Properties> getAdditionalProperties() {
     var p = m.getAdditionalProperties();
-    return (p.size() == 0) ? empty(): of(p);
+    return (p.size() == 0) ? empty() : of(p);
   }
 
 }

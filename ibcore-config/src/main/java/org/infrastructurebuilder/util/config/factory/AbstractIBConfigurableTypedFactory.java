@@ -28,15 +28,11 @@ import org.infrastructurebuilder.util.config.IBRuntimeUtils;
  * @param <T>
  * @param <P>
  */
-abstract public class AbstractIBConfigurableTypedFactory<T, P> extends AbstractIBConfigurableFactory<T>
-    implements IBConfigurableTypedFactory<T, P> {
+abstract public class AbstractIBConfigurableTypedFactory<T, C, P> extends AbstractIBConfigurableFactory<T, C>
+    implements IBConfigurableTypedFactory<T, C, P> {
 
   public AbstractIBConfigurableTypedFactory(IBRuntimeUtils ibr) {
     super(ibr);
-  }
-
-  protected AbstractIBConfigurableTypedFactory(IBRuntimeUtils ibr, ConfigMapSupplier cms) {
-    super(ibr, cms);
   }
 
 }

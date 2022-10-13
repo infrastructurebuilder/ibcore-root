@@ -18,17 +18,14 @@ package org.infrastructurebuilder.util.config.factory;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 import org.infrastructurebuilder.util.config.IBRuntimeUtils;
 
-public class FakeIBConfigurableTypedFactory extends AbstractIBConfigurableTypedFactory<String, String> {
+public class FakeIBConfigurableTypedFactory extends AbstractIBConfigurableTypedFactory<String, String, String> {
 
   public FakeIBConfigurableTypedFactory(IBRuntimeUtils ibr) {
     super(ibr);
-  }
-
-  public FakeIBConfigurableTypedFactory(IBRuntimeUtils runtimeUtils, ConfigMapSupplier config) {
-    super(runtimeUtils, config);
   }
 
   @Override
@@ -37,13 +34,8 @@ public class FakeIBConfigurableTypedFactory extends AbstractIBConfigurableTypedF
   }
 
   @Override
-  public IBConfigurableFactory<String> configure(ConfigMapSupplier config) {
-    return new FakeIBConfigurableTypedFactory(getRuntimeUtils(), config);
-  }
-
-  @Override
-  public Optional<Supplier<String>> getInstance(Optional<ConfigMapSupplier> config) {
-    return config.map(c -> () -> "jeff");
+  public Optional<Supplier<String>> getInstance(String config) {
+    return Optional.of(() -> "jeff");
   }
 
 }

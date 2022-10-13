@@ -22,43 +22,48 @@
     <artifactId>ibcore-root</artifactId>
     <version>0.20.0-SNAPSHOT</version>
   </parent>
-  <artifactId>ibcore-default-extension-type-mapper</artifactId>
+  <artifactId>ibcore-default-extension-mapper</artifactId>
   <packaging>jar</packaging>
   <name>${project.artifactId}</name>
-  <description>Component that maps MIME types to file extensions and back</description>
-  <!-- I see no way to increase this at the moment -->
+  <description>Default extension mapper for IBData</description>
   <properties>
-    <test.coverage.percentage.required>95</test.coverage.percentage.required>
     <jacoco.max.missed.classes>0</jacoco.max.missed.classes>
+    <test.coverage.percentage.required>99</test.coverage.percentage.required>
   </properties>
-  <!-- URL for site gen -->
-  <url>${github.url.base}/${project.artifactId}</url>
+
   <dependencies>
-    <dependency>
-      <groupId>io.avaje</groupId>
-      <artifactId>javax.inject</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.infrastructurebuilder</groupId>
-      <artifactId>ibcore</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder</groupId>
       <artifactId>ibcore</artifactId>
       <type>test-jar</type>
     </dependency>
+<!--
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
+      <groupId>org.jooq</groupId>
+      <artifactId>joor</artifactId>
       <scope>test</scope>
     </dependency>
-
+-->
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <scope>test</scope>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore-read-detect</artifactId>
     </dependency>
-
+          <dependency>
+        <groupId>io.github.classgraph</groupId>
+        <artifactId>classgraph</artifactId>
+      </dependency>
+<!--
+    <dependency>
+      <groupId>net.sf.corn</groupId>
+      <artifactId>corn-cps</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>com.sun</groupId>
+          <artifactId>tools</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    -->
   </dependencies>
   <build>
     <plugins>
@@ -71,9 +76,14 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <reuseForks>false</reuseForks>
-          <!-- <forkCount>0</forkCount> <additionalClasspathElements> <additionalClasspathElement>
-            ${project.build.directory}/test-classes/test.jar </additionalClasspathElement>
-            </additionalClasspathElements> -->
+          <!--
+          <forkCount>0</forkCount>
+          <additionalClasspathElements>
+            <additionalClasspathElement>
+              ${project.build.directory}/test-classes/test.jar
+            </additionalClasspathElement>
+          </additionalClasspathElements>
+ -->
         </configuration>
       </plugin>
     </plugins>

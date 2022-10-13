@@ -50,20 +50,20 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.file.FileSystem;
 import io.vertx.core.json.JsonObject;
 
-public class InventoryFilesystemBlobstore implements Blobstore {
+public class FilesystemBlobstore implements Blobstore {
 
-  private final static Logger log = LoggerFactory.getLogger(InventoryFilesystemBlobstore.class);
+  private final static Logger log = LoggerFactory.getLogger(FilesystemBlobstore.class);
   private final static FileSystem fs = Vertx.vertx().fileSystem();
 
   private final RelativeRoot root;
   private final Path metadata;
 
-  public InventoryFilesystemBlobstore(JsonObject config) {
+  public FilesystemBlobstore(JsonObject config) {
     this(Paths.get(config.getString(BLOBSTORE_ROOT)));
   }
 
-  public InventoryFilesystemBlobstore(Path root) {
-    this.root = new RelativeRoot(requireNonNull(root));
+  public FilesystemBlobstore(Path root) {
+    this.root = RelativeRoot.from(requireNonNull(root));
     this.metadata = root.resolve(METADATA_DIR_NAME).toAbsolutePath();
     try {
       Files.createDirectories(this.metadata);
@@ -155,10 +155,16 @@ public class InventoryFilesystemBlobstore implements Blobstore {
 
   private Future<String> writeMetadata(Path blob, String name, Optional<String> description, Instant createDate,
       Instant lastUpdated, Optional<Properties> addlProps) {
-    IBResource bsm = IBResourceFactory.from(blob, of(name), description, createDate, lastUpdated, addlProps);
+    IBResource bsm = IBResourceFactory.from(root.relativize(blob).get(), of(name), description, createDate, lastUpdated,
+        addlProps);
     var id = bsm.getChecksum().asUUID().get().toString();
-    return fs.writeFile(getMetadataPath(id).toString(), new JsonObject(bsm.asJSON().toString()).toBuffer())
-        .compose(v -> succeededFuture(id));
+    var p = getMetadataPath(id).toString();
+    var mdj = new JsonObject(bsm.asJSON().toString());
+    var md = Buffer.buffer(mdj.encodePrettily());
+    return fs.writeFile(p, md).compose(v -> {
+      log.info("Wrote metadata {}", p);
+      return succeededFuture(id);
+    });
   }
 
   private Path getMetadataPath(String id) {

@@ -43,13 +43,13 @@ import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.file.FileSystem;
 
-public class InventoryInMemoryBlobstore implements Blobstore {
+public class InMemoryBlobstore implements Blobstore {
 
   private static final String ERROR_GETTING_ATTRIBUTES = "error.getting.attributes";
 
   private final static FileSystem fs = Vertx.vertx().fileSystem();
 
-  private final static Logger log = LoggerFactory.getLogger(InventoryInMemoryBlobstore.class);
+  private final static Logger log = LoggerFactory.getLogger(InMemoryBlobstore.class);
   private final Map<String, IBResource> resources = new ConcurrentHashMap<>();
   private final Map<String, byte[]> blobs = new ConcurrentHashMap<>();
 
