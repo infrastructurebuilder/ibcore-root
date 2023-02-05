@@ -41,8 +41,8 @@
     </site>
   </distributionManagement>
   <properties>
-    <iblog.version>0.13.2-SNAPSHOT</iblog.version>
-    <ib.exceptions.version>66-SNAPSHOT</ib.exceptions.version>
+    <iblog.version>0.13.2</iblog.version>
+    <ib.exceptions.version>68</ib.exceptions.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -128,7 +128,7 @@
       </dependency>
       <dependency>
         <groupId>org.infrastructurebuilder</groupId>
-        <artifactId>ibexecutor</artifactId>
+        <artifactId>ibcore-executor</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

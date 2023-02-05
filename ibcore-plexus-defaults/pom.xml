@@ -71,7 +71,7 @@
     </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder</groupId>
-      <artifactId>ibexecutor</artifactId>
+      <artifactId>ibcore-executor</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>

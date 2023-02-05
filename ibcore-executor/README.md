@@ -1,4 +1,4 @@
-# ibexecutor
+# ibcore-executor
 
 Standard interfaces (and exceptions) for executing processes and capturing the results.
 
