@@ -22,61 +22,38 @@
     <artifactId>ibcore-root</artifactId>
     <version>0.20.0-SNAPSHOT</version>
   </parent>
-  <artifactId>ibplexus-defaults</artifactId>
+  <artifactId>ibcore-maven-support</artifactId>
   <packaging>jar</packaging>
   <name>${project.artifactId}</name>
-  <description>Base representations and helpers for Plexus</description>
-  <!-- I see no way to increase this at the moment -->
-  <properties>
-    <test.coverage.percentage.required>99</test.coverage.percentage.required>
-    <jacoco.max.missed.classes>0</jacoco.max.missed.classes>
-  </properties>
-  <!-- URL for site gen -->
+  <description>Types and resolvers relevant to Maven plugins</description>
+	<!-- URL for site gen -->
   <url>${github.url.base}/${project.artifactId}</url>
+  <properties>
+    <!-- CAN'T TEST DefaultInjectedResolver   [really, it's just too hard]  -->
+    <test.coverage.percentage.required>30</test.coverage.percentage.required>
+  </properties>
   <dependencies>
-    <dependency>
-      <groupId>org.infrastructurebuilder</groupId>
-      <artifactId>ibcore-config</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.infrastructurebuilder</groupId>
-      <artifactId>ibcore-config</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-project</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-archiver</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.inject</groupId>
-      <artifactId>guice</artifactId>
-      <classifier>no_aop</classifier>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.sisu</groupId>
-      <artifactId>org.eclipse.sisu.plexus</artifactId>
-      <scope>provided</scope>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibplexus-defaults</artifactId>
     </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder</groupId>
-      <artifactId>ibexecutor</artifactId>
-      <scope>provided</scope>
+      <artifactId>ibcore</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.infrastructurebuilder.util.logging</groupId>
-      <artifactId>iblog-JDKSL-component</artifactId>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore-config</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder.util.logging</groupId>
@@ -85,42 +62,51 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.jooq</groupId>
-      <artifactId>joor</artifactId>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-util</artifactId>
+    </dependency>
+    <dependency>
+<!--       <groupId>org.skyscreamer</groupId> -->
+      <groupId>org.infrastructurebuilder.usurped</groupId>
+      <artifactId>jsonassert</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <scope>test</scope>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-api</artifactId>
+      <scope>provided</scope>
     </dependency>
-
-
     <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
+      <groupId>org.apache.maven.plugin-testing</groupId>
+      <artifactId>maven-plugin-testing-harness</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <forkCount>1</forkCount>
-          <reuseForks>false</reuseForks>
-        </configuration>
-      </plugin>
-
-      <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
       <plugin>
-        <groupId>org.eclipse.sisu</groupId>
-        <artifactId>sisu-maven-plugin</artifactId>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-metadata</artifactId>
+        <executions>
+          <execution>
+            <id>classes</id>
+            <goals>
+              <goal>generate-metadata</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>test-classes</id>
+            <goals>
+              <goal>generate-test-metadata</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
+
     </plugins>
   </build>
-
 </project>
