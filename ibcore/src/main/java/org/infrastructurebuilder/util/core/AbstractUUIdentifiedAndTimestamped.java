@@ -15,37 +15,39 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import static java.util.Objects.requireNonNull;
-import static java.util.UUID.randomUUID;
-
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
-abstract public class AbstractUUIdentifiedAndTimestamped implements UUIdentifiedAndTimestamped {
-  private final UUID id;
+import org.json.JSONObject;
+
+abstract public class AbstractUUIdentifiedAndTimestamped extends AbstractUUIdentified
+    implements UUIdentifiedAndTimestamped {
   private final Instant timestamp;
 
   protected AbstractUUIdentifiedAndTimestamped(UUID id, Instant timestamp) {
-    this.id = requireNonNull(id);
-    this.timestamp = requireNonNull(timestamp);
+    super(id);
+    this.timestamp = Optional.ofNullable(timestamp).orElse(Instant.now());
   }
 
   public AbstractUUIdentifiedAndTimestamped() {
-    this(randomUUID(), Instant.now());
+    this(null);
   }
 
   protected AbstractUUIdentifiedAndTimestamped(Instant timestamp) {
-    this(randomUUID(), timestamp);
-  }
-
-  @Override
-  public UUID getId() {
-    return this.id;
+    this(null, timestamp);
   }
 
   @Override
   public Instant getTimestamp() {
     return this.timestamp;
+  }
+
+  public JSONObject getLocalJSON() {
+    return JSONBuilder.newInstance()
+        .addString(ID, getId().toString())
+        .addInstant(TIMESTAMP, getTimestamp())
+        .asJSON();
   }
 
 }

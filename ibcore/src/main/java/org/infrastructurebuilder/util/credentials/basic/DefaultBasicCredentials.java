@@ -20,11 +20,11 @@ import java.util.Optional;
 
 public class DefaultBasicCredentials implements BasicCredentials {
   private final String key;
-  private transient final Optional<String> secret;
+  private transient final String secret;
 
   public DefaultBasicCredentials(final String principal, final Optional<String> password) {
     key = Objects.requireNonNull(principal);
-    secret = Objects.requireNonNull(password);
+    secret = Objects.requireNonNull(password).orElse(null);
   }
 
   @Override
@@ -36,9 +36,9 @@ public class DefaultBasicCredentials implements BasicCredentials {
     if (getClass() != obj.getClass())
       return false;
     final DefaultBasicCredentials other = (DefaultBasicCredentials) obj;
-    if (!secret.equals(other.secret))
+    if (!Objects.equals(secret, other.secret))
       return false;
-    if (!key.equals(other.key))
+    if (!Objects.equals(key, other.key))
       return false;
     return true;
   }
@@ -50,16 +50,12 @@ public class DefaultBasicCredentials implements BasicCredentials {
 
   @Override
   public Optional<String> getSecret() {
-    return secret;
+    return Optional.ofNullable(secret);
   }
 
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + secret.hashCode();
-    result = prime * result + key.hashCode();
-    return result;
+    return Objects.hash(secret, key);
   }
 
   @Override
@@ -68,8 +64,5 @@ public class DefaultBasicCredentials implements BasicCredentials {
     builder.append("DefaultBasicCredentials [key=").append(key).append(", secret=******]");
     return builder.toString();
   }
-
-
-
 
 }

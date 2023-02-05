@@ -17,34 +17,36 @@ package org.infrastructurebuilder.util.core;
 
 import static java.util.Objects.requireNonNull;
 
-import java.time.Instant;
 import java.util.UUID;
 
-public class AbstractUUIdentifiedAndWeighted implements UUIdentifiedAndWeighted {
-  private UUID id;
-  private Integer weight = 0;
+import org.json.JSONObject;
 
-  protected AbstractUUIdentifiedAndWeighted(UUID id, int timestamp) {
-    this.id = requireNonNull(id);
-    this.weight = requireNonNull(timestamp);
+public class AbstractUUIdentifiedAndWeighted extends AbstractUUIdentified implements UUIdentifiedAndWeighted {
+  private int weight = 0;
+
+  protected AbstractUUIdentifiedAndWeighted(UUID id, int weight) {
+    super(id);
+    this.weight = requireNonNull(weight);
   }
 
-  protected AbstractUUIdentifiedAndWeighted(int timestamp) {
-    this.id = UUID.randomUUID();
-    this.weight = requireNonNull(timestamp);
+  protected AbstractUUIdentifiedAndWeighted(int weight) {
+    this(null, weight);
   }
 
-  @Override
-  public UUID getId() {
-    if (this.id == null)
-      this.id = UUID.randomUUID();
-    return this.id;
+  public AbstractUUIdentifiedAndWeighted() {
+    this(0);
   }
+
 
   public Integer getWeight() {
-    if (this.weight == null)
-      this.weight = 0;
     return weight;
+  }
+
+  public JSONObject getLocalJSON() {
+    return JSONBuilder.newInstance()
+        .addString(ID, getId().toString())
+        .addInteger(WEIGHT, getWeight())
+        .asJSON();
   }
 
 }

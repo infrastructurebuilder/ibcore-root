@@ -32,7 +32,9 @@ import java.util.stream.Collectors;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+
 public final class JSONBuilder implements JSONOutputEnabled {
+
 
   public final static Function<List<JSONOutputEnabled>, JSONArray> jsonOutputToJSONArray = oe -> {
     return new JSONArray(requireNonNull(oe).stream().map(JSONOutputEnabled::asJSON).collect(Collectors.toList()));
@@ -49,6 +51,12 @@ public final class JSONBuilder implements JSONOutputEnabled {
   public static JSONBuilder newInstance(final Optional<Path> relativeRoot) {
     return new JSONBuilder(relativeRoot);
   }
+
+  public static Function<String, Optional<Instant>> instantFromJSON = s -> {
+    return Optional.ofNullable(s).map(Instant::parse); // mebbe?
+  };
+
+
 
   private final JSONObject json;
 
@@ -182,6 +190,11 @@ public final class JSONBuilder implements JSONOutputEnabled {
     return this;
   }
 
+  public JSONBuilder addJSONObject(final String key, final Optional<JSONObject> j) {
+    requireNonNull(j).ifPresent(json -> this.addJSONObject(key, json));
+    return this;
+  }
+
   public JSONBuilder addJSONOutputEnabled(final String key, final JSONOutputEnabled j) {
     return addJSONObject(key, j.asJSON());
   }
@@ -295,13 +308,9 @@ public final class JSONBuilder implements JSONOutputEnabled {
     return this;
   }
 
+  // FIXME See JsonBuilder#addThrowable in ibcore-vertx-json
   public JSONBuilder addThrowable(final String key, final Throwable t) {
-    JSONObject j2;
-    j2 = new JSONObject().put("class",
-        Optional.ofNullable(requireNonNull(t).getClass().getCanonicalName()).orElse("unknown throwable class"));
-    Optional.ofNullable(t.getMessage()).ifPresent(m -> j2.put("message", m));
-    json.put(requireNonNull(key), j2);
-    return this;
+    return addJSONOutputEnabled(key, new ThrowableJSONObject(t));
   }
 
   @Override

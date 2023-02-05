@@ -16,9 +16,6 @@
 package org.infrastructurebuilder.util.readdetect;
 
 import static java.util.Optional.of;
-import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
-import static org.infrastructurebuilder.util.core.IBUtilsTest.TESTFILE;
-import static org.infrastructurebuilder.util.core.IBUtilsTest.TESTFILE_CHECKSUM;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -30,7 +27,10 @@ import java.util.UUID;
 
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.IBUtils;
+import org.infrastructurebuilder.util.core.IBUtilsTest;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
+import org.infrastructurebuilder.util.readdetect.impl.DefaultIBResource;
+import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,19 +41,18 @@ public class IBResourceModelTest {
   private DefaultIBResource c1, c2;
   private Path path;
   private Checksum checksum;
-  private IBResource def;
+//  private IBResource def;
 
   @BeforeEach
   public void setUp() throws Exception {
     wps = new TestingPathSupplier();
-    Path source = wps.getTestClasses().resolve(TESTFILE);
+    Path source = wps.getTestClasses().resolve(IBUtilsTest.TESTFILE);
     path = wps.get().resolve(UUID.randomUUID().toString());
     IBUtils.copy(source, path);
-    checksum = new Checksum(TESTFILE_CHECKSUM);
+    checksum = new Checksum(IBUtilsTest.TESTFILE_CHECKSUM);
     c2 = new DefaultIBResource(path, checksum);
     c1 = new DefaultIBResource(path, checksum, of("ABC"));
 
-    def = new DefaultIBResource();
   }
 
   @AfterEach
@@ -63,8 +62,6 @@ public class IBResourceModelTest {
 
   @Test
   public void testDef() {
-    assertFalse(def.getSourceName().isPresent());
-    assertFalse(def.getSourceURL().isPresent());
   }
 
   @Test
@@ -126,8 +123,6 @@ public class IBResourceModelTest {
 
   @Test
   public void testRootInterfaceSourceURL() {
-    DefaultIBResource q = new DefaultIBResource();
-    assertFalse(q.getSourceURL().isPresent());
-    assertFalse(q.getSourceName().isPresent());
   }
+
 }

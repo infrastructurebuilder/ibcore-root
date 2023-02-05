@@ -51,7 +51,7 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.inject</groupId>
+      <groupId>io.avaje</groupId>
       <artifactId>javax.inject</artifactId>
     </dependency>
     <!--

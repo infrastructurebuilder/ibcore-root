@@ -21,6 +21,7 @@ import static org.infrastructurebuilder.util.core.IBVersionException.ibt;
 import java.util.Objects;
 
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.util.core.DefaultIBVersion.DefaultIBVersionRequirement;
 
 import com.vdurmont.semver4j.Range;
 import com.vdurmont.semver4j.Requirement;
@@ -117,57 +118,57 @@ public final class DefaultIBVersion implements IBVersion {
 
   public static class DefaultIBVersionRequirement implements IBVersionRequirement {
     public static IBVersionRequirement buildCocoapods(final String requirement) {
-      return ibt.withReturningTranslation(() -> {
+      return ibt.returns(() -> {
         return asIBVersionRequirement(com.vdurmont.semver4j.Requirement.buildCocoapods(requirement));
       });
     }
 
     public static IBVersionRequirement buildIvy(final String requirement) {
-      return ibt.withReturningTranslation(() -> {
+      return ibt.returns(() -> {
         return asIBVersionRequirement(Requirement.buildIvy(requirement));
       });
     }
 
     public static IBVersionRequirement buildLoose(final IBVersion requirement) {
-      return ibt.withReturningTranslation(() -> {
+      return ibt.returns(() -> {
         return asIBVersionRequirement(
             Requirement.buildLoose(new Semver(requirement.getValue(), SemverType.LOOSE).toString()));
       });
     }
 
     public static IBVersionRequirement buildLoose(final Semver requirement) {
-      return ibt.withReturningTranslation(() -> {
+      return ibt.returns(() -> {
         return asIBVersionRequirement(Requirement.buildLoose(requirement.toString()));
       });
     }
 
     public static IBVersionRequirement buildLoose(final String requirement) {
-      return ibt.withReturningTranslation(() -> {
+      return ibt.returns(() -> {
         return buildLoose(new DefaultIBVersion(requirement));
       });
     }
 
     public static IBVersionRequirement buildNPM(final String requirement) {
-      return ibt.withReturningTranslation(() -> {
+      return ibt.returns(() -> {
         return asIBVersionRequirement(Requirement.buildNPM(requirement));
       });
     }
 
     public static IBVersionRequirement buildStrict(final IBVersion requirement) {
-      return ibt.withReturningTranslation(() -> {
+      return ibt.returns(() -> {
         return asIBVersionRequirement(
             Requirement.buildStrict(new Semver(requirement.getValue(), SemverType.STRICT).toString()));
       });
     }
 
     public static IBVersionRequirement buildStrict(final String requirement) {
-      return ibt.withReturningTranslation(() -> {
+      return ibt.returns(() -> {
         return buildStrict(new DefaultIBVersion(requirement));
       });
     }
 
     private static IBVersionRequirement asIBVersionRequirement(final com.vdurmont.semver4j.Requirement req) {
-      return ibt.withReturningTranslation(() -> {
+      return ibt.returns(() -> {
         return new DefaultIBVersionRequirement(req);
       });
     }
@@ -185,7 +186,7 @@ public final class DefaultIBVersion implements IBVersion {
 
     @Override
     public boolean isSatisfiedBy(final String version, final IBVersionType type) {
-      return ibt.withReturningTranslation(() -> {
+      return ibt.returns(() -> {
         return getReq().isSatisfiedBy(new Semver(version, type.asSemVerType()));
       });
     }

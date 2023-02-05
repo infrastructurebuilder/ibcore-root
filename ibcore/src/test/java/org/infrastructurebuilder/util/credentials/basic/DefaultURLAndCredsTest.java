@@ -42,7 +42,7 @@ public class DefaultURLAndCredsTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    d = new DefaultURLAndCreds("url", Optional.empty());
+    d = new DefaultURLAndCreds("url");
     e = new DefaultURLAndCreds("url2", Optional.of("A"));
     cf = new CredentialsFactory() {
       @Override
@@ -66,5 +66,11 @@ public class DefaultURLAndCredsTest {
     assertFalse(d.getCredentialsQuery().isPresent());
     assertEquals("A", cf.getCredentialsFor(e.getCredentialsQuery().get()).get().getKeyId());
   }
+
+  @Test
+  public void testToString() {
+    assertEquals("DefaultURLAndCreds [url=url, query=Optional.empty]", d.toString());
+  }
+
 
 }

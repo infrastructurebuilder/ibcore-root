@@ -40,11 +40,6 @@ public class IBCredentialsException extends RuntimeException {
     super(message, cause);
   }
 
-  public IBCredentialsException(final String message, final Throwable cause, final boolean enableSuppression,
-      final boolean writableStackTrace) {
-    super(message, cause, enableSuppression, writableStackTrace);
-  }
-
   public IBCredentialsException(final Throwable cause) {
     super(cause);
   }

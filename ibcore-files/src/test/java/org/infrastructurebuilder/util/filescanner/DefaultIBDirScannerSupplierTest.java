@@ -18,6 +18,7 @@ package org.infrastructurebuilder.util.filescanner;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.lang.System.Logger;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
@@ -25,11 +26,9 @@ import java.util.Map;
 
 import org.infrastructurebuilder.util.core.StringListSupplier;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
-import org.infrastructurebuilder.util.filescanner.DefaultIBDirScannerSupplier;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.lang.System; import java.lang.System.Logger;
 
 
 public class DefaultIBDirScannerSupplierTest {

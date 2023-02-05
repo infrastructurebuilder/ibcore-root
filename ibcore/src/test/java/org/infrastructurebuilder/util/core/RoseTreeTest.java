@@ -126,9 +126,9 @@ public class RoseTreeTest {
 
   @Test
   public void testAsChecksum() {
-    final String rose1checksum = "57be5e8db73583d93774c737de925b39e67cfa1ef03c0cdea0c34ebf41669aef87fab36c33225157f7fcfd34f34a50ac91d54aa2781bf884f6aa7f4e74968ced";
+    final String rose1checksum = "7523f188787ab3a1f5cc6eb85297762dfe423423e5a97017216d49916a3bc89c09351965c6c4264b359899612f7d310dc1fea3cf3e2b618b729993d0414a1abb";
     assertEquals(rose1checksum, rose1.asChecksum().toString());
-    final String rose0Checksum = "49f9207ff5c6c339a3850ecce2172e327d6f8a8dc63f62fd2be277e8145f17d309167dabc9cf3650e1367f995ce90fe685113250a1226d089b7e42818ef1073f";
+    final String rose0Checksum = "e5409b387b7976482501188e9fa0b1ce18f359f0226d39afe546f82e5483a958cc514ef131be463d682dfdde3475e6e9f2bfc0d5af34b5d7c9c807abc53a0c51";
     assertEquals(rose0Checksum, rose0.asChecksum().toString());
   }
 

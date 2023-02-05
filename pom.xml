@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibparent</artifactId>
-    <version>66-SNAPSHOT</version>
+    <version>68</version>
   </parent>
   <artifactId>ibcore-root</artifactId>
   <version>0.20.0-SNAPSHOT</version>
@@ -66,6 +66,11 @@
       </dependency>
       <dependency>
         <groupId>org.infrastructurebuilder</groupId>
+        <artifactId>ibcore-default-extension-type-mapper</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder</groupId>
         <artifactId>ibcore-config</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -94,6 +99,26 @@
       <dependency>
         <groupId>org.infrastructurebuilder</groupId>
         <artifactId>ibcore-read-detect</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder</groupId>
+        <artifactId>ibcore-read-detect-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder</groupId>
+        <artifactId>ibcore-vertx-base</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder</groupId>
+        <artifactId>ibcore-vertx-blobstore</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infrastructurebuilder</groupId>
+        <artifactId>ibcore-vertx-dataobjects</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -143,7 +168,6 @@
         <artifactId>iblog-noop-component</artifactId>
         <version>${iblog.version}</version>
       </dependency>
-
     </dependencies>
   </dependencyManagement>
   <dependencies>
@@ -179,16 +203,20 @@
   </build>
   <modules>
     <module>ibcore</module>
+    <module>ibcore-vertx-base</module>
+    <module>ibcore-vertx-blobstore</module>
+    <module>ibcore-vertx-dataobjects</module>
     <module>ibcore-config</module>
     <module>ibcore-artifacts</module>
     <module>ibcore-dag</module>
     <!--
     <module>modello-plugin-xpp3-reflect</module>
     -->
-    <module>ibexecutor</module>
-    <module>ibplexus-defaults</module>
-    <module>ibmaven-support</module>
+    <module>ibcore-executor</module>
+    <module>ibcore-plexus-defaults</module>
+    <module>ibcore-maven-support</module>
     <module>ibcore-files</module>
+    <module>ibcore-read-detect-model</module>
     <module>ibcore-read-detect</module>
     <module>ibcore-default-extension-type-mapper</module>
   </modules>

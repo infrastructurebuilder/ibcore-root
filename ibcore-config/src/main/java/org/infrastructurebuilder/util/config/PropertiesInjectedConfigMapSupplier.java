@@ -53,23 +53,23 @@ public class PropertiesInjectedConfigMapSupplier extends DefaultConfigMapSupplie
   }
 
   private Properties loadFile(final String fileName) {
-    return loadit(cet.withReturningTranslation(() -> newInputStream(Paths.get(fileName))), fileName);
+    return loadit(cet.returns(() -> newInputStream(Paths.get(fileName))), fileName);
   }
 
   private Properties loadit(final InputStream ins, final String fileName) {
     final Properties p = new Properties();
     if (fileName.toLowerCase().endsWith(".xml")) {
-      cet.withTranslation(() -> p.loadFromXML(ins));
+      cet.translate(() -> p.loadFromXML(ins));
     } else {
-      cet.withTranslation(() -> p.load(ins));
+      cet.translate(() -> p.load(ins));
     }
 
-    cet.withTranslation(() -> ins.close());
+    cet.translate(() -> ins.close());
     return p;
   }
 
   private Properties loadResource(final String resourceId) {
-    return loadit(cet.withReturningTranslation(() -> getClass().getResourceAsStream(resourceId)), resourceId);
+    return loadit(cet.returns(() -> getClass().getResourceAsStream(resourceId)), resourceId);
 
   }
 

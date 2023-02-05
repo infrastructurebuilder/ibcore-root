@@ -96,7 +96,7 @@ public class Xpp3Verifier
 
         verifyReaderDuplicates();
 
-        verifyReaderMissingTags_DefaultMode();
+        verifyReaderMissingTags_Mode();
 
         verifyReaderMissingTags_StrictMode();
 
@@ -524,7 +524,7 @@ public class Xpp3Verifier
         }
     }
 
-    public void verifyReaderMissingTags_DefaultMode()
+    public void verifyReaderMissingTags_Mode()
         throws IOException, XmlPullParserException
     {
         MavenXpp3Reader reader = new MavenXpp3Reader();

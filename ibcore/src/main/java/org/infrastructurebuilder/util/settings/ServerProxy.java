@@ -86,7 +86,7 @@ public class ServerProxy implements Identified, JSONOutputEnabled, Supplier<Basi
   }
 
   public Optional<String> readKey() {
-    return getKeyPath().map(f -> cet.withReturningTranslation(() -> readFile(f)));
+    return getKeyPath().map(f -> cet.returns(() -> readFile(f)));
   }
 
   public Optional<String> getConfiguration() {

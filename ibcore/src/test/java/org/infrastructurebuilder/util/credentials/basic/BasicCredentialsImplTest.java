@@ -69,6 +69,12 @@ public class BasicCredentialsImplTest {
   }
 
   @Test
+  public void testCompleteEquals() {
+    assertNotEquals(x, "X");
+  }
+
+
+  @Test
   public void testAbstractCredentialsImpl() {
     assertNotNull(x);
   }
@@ -100,6 +106,11 @@ public class BasicCredentialsImplTest {
   @Test
   public void testGetPrincipal() {
     assertEquals(PRINCIPAL, x.getKeyId());
+  }
+
+  @Test
+  public void testToString() {
+    assertEquals("DefaultBasicCredentials [key=X, secret=******]", x.toString());
   }
 
 }

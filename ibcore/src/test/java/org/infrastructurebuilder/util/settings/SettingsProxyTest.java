@@ -18,6 +18,7 @@ package org.infrastructurebuilder.util.settings;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.charset.Charset;
 import java.nio.file.Path;
@@ -27,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.infrastructurebuilder.util.constants.IBConstants;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,7 +50,7 @@ public class SettingsProxyTest {
     s2 = new ServerProxy("DEF", Optional.of("DEF"), Optional.empty(), Optional.empty(), Optional.empty(),
         Optional.empty(), Optional.empty(), Optional.empty());
     servers = Arrays.asList(s1, s1, s2);
-    sp = new SettingsProxy(false, Paths.get("."), Charset.defaultCharset(), servers, Collections.emptyList(),
+    sp = new SettingsProxy(false, Paths.get("."), IBConstants.UTF8, servers, Collections.emptyList(),
         Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
   }
 
@@ -105,6 +107,13 @@ public class SettingsProxyTest {
   @Test
   public void testIsInteractive() {
     assertFalse(sp.isInteractiveMode());
+  }
+
+  @Test
+  public void testBasics() {
+    assertEquals(IBConstants.UTF_8, sp.getModelEncoding().name());
+    assertEquals(0,sp.getPluginGroups().size());
+    assertTrue(sp.getCredentialsFor(ABC).isPresent());
   }
 
 }

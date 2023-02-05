@@ -25,6 +25,8 @@ import org.junit.jupiter.api.Test;
 
 public class MultiReturnTest {
 
+  private static final String X = "X";
+
   private static class COT extends MultiReturn<String, Integer, IBException> {
 
     public COT(final IBException thrown) {
@@ -39,19 +41,25 @@ public class MultiReturnTest {
       super(typed, retVal, thrown);
     }
 
+    public COT(String typed, Integer retVal) {
+      super(typed, retVal);
+    }
+
   }
 
   private COT a;
   private COT b;
   private COT c;
   private IBException e;
+  private COT d;
 
   @BeforeEach
   public void setUp() throws Exception {
     e = new IBException();
-    a = new COT("X", 1, null);
+    a = new COT(X, 1, null);
     b = new COT(2, e);
     c = new COT(e);
+    d = new COT(X,2);
   }
 
   @Test
@@ -65,7 +73,7 @@ public class MultiReturnTest {
     assertFalse(c.getT().isPresent());
     assertEquals(e, c.getException().get());
     assertFalse(b.getT().isPresent());
-    assertEquals("X", a.getT().get());
+    assertEquals(X, a.getT().get());
   }
 
   @Test
@@ -78,6 +86,8 @@ public class MultiReturnTest {
   public void testMultiReturn() {
     assertNotNull(a);
     assertNotNull(b);
+    assertEquals(X, d.getT().get());
+    assertEquals(2, d.getReturnValue());
   }
 
 }

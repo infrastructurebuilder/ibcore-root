@@ -84,6 +84,8 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.Spliterators;
+import java.util.StringJoiner;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -144,14 +146,14 @@ public class IBUtils {
   private final static TransformerFactory tf = TransformerFactory.newInstance();
 
   private final static Supplier<Transformer> tfSupplier = () -> {
-    return cet.withReturningTranslation(() -> tf.newTransformer());
+    return cet.returns(() -> tf.newTransformer());
   };
 
   private final static DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
   public final static String stringFromDocument(Document document) {
     StringWriter writer = new StringWriter();
-    cet.withTranslation(() -> tfSupplier.get().transform(new DOMSource((Document) document), new StreamResult(writer)));
+    cet.translate(() -> tfSupplier.get().transform(new DOMSource((Document) document), new StreamResult(writer)));
     return writer.toString();
   }
 
@@ -173,20 +175,19 @@ public class IBUtils {
     return isZip;
   }
 
-  public final static java.util.Comparator<String>         nullSafeCaseInsensitiveStringComparator = nullsFirst(
+  public final static java.util.Comparator<String> nullSafeCaseInsensitiveStringComparator = nullsFirst(
       String::compareToIgnoreCase);
-  public final static java.util.Comparator<String>         nullSafeStringComparator                = nullsFirst(
-      String::compareTo);
-  public final static java.util.Comparator<java.util.UUID> nullSafeUUIDComparator                  = nullsFirst(
+  public final static java.util.Comparator<String> nullSafeStringComparator = nullsFirst(String::compareTo);
+  public final static java.util.Comparator<java.util.UUID> nullSafeUUIDComparator = nullsFirst(
       java.util.UUID::compareTo);
-  public final static java.util.Comparator<java.util.Date> nullSafeDateComparator                  = nullsFirst(
+  public final static java.util.Comparator<java.util.Date> nullSafeDateComparator = nullsFirst(
       java.util.Date::compareTo);
 
   public final static java.util.Comparator<java.time.Instant> nullSafeInstantComparator = nullsFirst(
       java.time.Instant::compareTo);
 
   public final static Function<String, Optional<URL>> nullSafeURLMapper = (s) -> {
-    return ofNullable(s).map(u -> cet.withReturningTranslation(() -> translateToWorkableArchiveURL(u)));
+    return ofNullable(s).map(u -> cet.returns(() -> translateToWorkableArchiveURL(u)));
   };
 
   public final static Function<Object, Optional<String>> nullSafeObjectToString = (o) -> {
@@ -203,7 +204,7 @@ public class IBUtils {
   };
 
   public final static URL reURL(String url) {
-    return ofNullable(url).map(u -> cet.withReturningTranslation(() -> translateToWorkableArchiveURL(u))).orElse(null);
+    return ofNullable(url).map(u -> cet.returns(() -> translateToWorkableArchiveURL(u))).orElse(null);
   }
 
   public final static Function<JSONObject, JSONObject> cheapCopy = j -> {
@@ -238,7 +239,7 @@ public class IBUtils {
   private static final Logger iolog = System.getLogger(IBUtils.class.getName());
 
   public static Stream<String> readInputStreamAsStringStream(InputStream ins) {
-    return cet.withReturningTranslation(() -> new BufferedReader(new InputStreamReader(ins)).lines());
+    return cet.returns(() -> new BufferedReader(new InputStreamReader(ins)).lines());
   }
 
   public final static boolean isWindows() {
@@ -295,6 +296,14 @@ public class IBUtils {
     return stream(iterable.spliterator(), false);
   }
 
+  public static <T> Iterable<T> getIterable(Iterator<T> iterator) {
+    return new Iterable<T>() {
+      public Iterator<T> iterator() {
+        return iterator;
+      }
+    };
+  }
+
   public static Optional<Map<String, Object>> asOptFilesystemMap(final Object o) {
     final Map<String, Object> m = new HashMap<>();
     m.put(IBConstants.FILESYSTEM_CRYPTO_CONFIGURATION, o);
@@ -347,14 +356,20 @@ public class IBUtils {
     return out;
   }
 
-  public static Checksum copyAndDigest(final InputStream ins, final OutputStream target)
+  public static Checksum copyAndDigest(final String type, final InputStream ins, final OutputStream target)
       throws IOException, NoSuchAlgorithmException {
-    try (DigestInputStream sink = new DigestInputStream(ins, MessageDigest.getInstance(DIGEST_TYPE))) {
+    try (DigestInputStream sink = new DigestInputStream(ins, MessageDigest.getInstance(requireNonNull(type)))) {
       copy(sink, target);
       final Checksum d = new Checksum(sink.getMessageDigest().digest());
 
       return d;
     }
+
+  }
+
+  public static Checksum copyAndDigest(final InputStream ins, final OutputStream target)
+      throws IOException, NoSuchAlgorithmException {
+    return copyAndDigest(DIGEST_TYPE, ins, target);
   }
 
   public final static Path copyToDeletedOnExitTempPath(String prefix, String suffix, final InputStream source)
@@ -370,7 +385,7 @@ public class IBUtils {
 
   public final static SortedSet<Path> allFilesInTree(final Path root) {
     SortedSet<Path> l = new TreeSet<>();
-    cet.withTranslation(() -> walkFileTree(root, new SimpleFileVisitor<Path>() {
+    cet.translate(() -> walkFileTree(root, new SimpleFileVisitor<Path>() {
       @Override
       public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
         l.add(file.toAbsolutePath());
@@ -401,19 +416,22 @@ public class IBUtils {
       if (Files.exists(root))
         Files.delete(root);
     } catch (final IOException e) {
-      iolog.log(Logger.Level.DEBUG,"Fail to delete path", e);
+      iolog.log(Logger.Level.DEBUG, "Fail to delete path", e);
     }
 
   }
 
-  public static byte[] digestInputStream(final InputStream ins) throws IOException {
+  public static byte[] digestInputStream(final String type, final InputStream ins) throws IOException {
     final byte[] buf = new byte[BUFFER_SIZE];
-    try (DigestInputStream sink = new DigestInputStream(ins,
-        cet.withReturningTranslation(() -> MessageDigest.getInstance(DIGEST_TYPE)))) {
+    try (DigestInputStream sink = new DigestInputStream(ins, cet.returns(() -> MessageDigest.getInstance(type)))) {
       while (sink.read(buf) > 0) {
       }
       return sink.getMessageDigest().digest();
     }
+  }
+
+  public static byte[] digestInputStream(final InputStream ins) throws IOException {
+    return digestInputStream(DIGEST_TYPE, ins);
   }
 
   /**
@@ -423,7 +441,7 @@ public class IBUtils {
    * @return
    */
   public static InputStream readerToInputStream(Reader ins) {
-    return IBException.cet.withReturningTranslation(() -> {
+    return IBException.cet.returns(() -> {
       char[] b = new char[1024];
       StringBuilder string = new StringBuilder();
       int i;
@@ -467,7 +485,7 @@ public class IBUtils {
   public static Path forceDirectoryPath(final Path path) {
     final Path p = path.toAbsolutePath();
     if (!Files.exists(p)) {
-      cet.withTranslation(() -> Files.createDirectories(p));
+      cet.translate(() -> Files.createDirectories(p));
     }
     if (!Files.isDirectory(p))
       throw new IBException("Path " + p + " is not a directory");
@@ -695,16 +713,16 @@ public class IBUtils {
       final Object tGot = tbm.get(k);
 
       if (!tGot.equals(kGot))
-        if (kGot instanceof JSONObject && tGot instanceof JSONObject) {
-          kGot = mergeJsonObjects((JSONObject) kGot, (JSONObject) tGot);
-        } else if (kGot instanceof JSONArray && tGot instanceof JSONArray) {
-          kGot = mergeJSONArray((JSONArray) kGot, (JSONArray) tGot);
-        } else if (kGot instanceof JSONArray && tGot instanceof String) {
-          kGot = mergeJSONArray((JSONArray) kGot, (String) tGot);
-        } else if (tGot instanceof JSONArray && kGot instanceof String) {
-          kGot = mergeJSONArray((JSONArray) tGot, (String) kGot);
-        } else if (tGot instanceof String && kGot instanceof String) {
-          kGot = new JSONArray(new HashSet<>(Arrays.asList((String) tGot, (String) kGot)));
+        if (kGot instanceof JSONObject kGot1 && tGot instanceof JSONObject tGot1) {
+          kGot = mergeJsonObjects(kGot1, tGot1);
+        } else if (kGot instanceof JSONArray kGot1 && tGot instanceof JSONArray tGot1) {
+          kGot = mergeJSONArray(kGot1, tGot1);
+        } else if (kGot instanceof JSONArray kGot1 && tGot instanceof String tGot1) {
+          kGot = mergeJSONArray(kGot1, tGot1);
+        } else if (tGot instanceof JSONArray kGot1 && kGot instanceof String tGot1) {
+          kGot = mergeJSONArray(kGot1, tGot1);
+        } else if (tGot instanceof String kGot1 && kGot instanceof String tGot1) {
+          kGot = new JSONArray(new HashSet<>(Arrays.asList(tGot1, kGot1)));
         }
 
       b.put(k, kGot);
@@ -795,7 +813,7 @@ public class IBUtils {
 
       });
     } catch (final IOException e) {
-      iolog.log(Logger.Level.WARNING,"Fail to move entirely", e);
+      iolog.log(Logger.Level.WARNING, "Fail to move entirely", e);
     }
     return target;
 
@@ -883,8 +901,8 @@ public class IBUtils {
   }
 
   public static Optional<URL> zipEntryToUrl(final Optional<URL> p, final ZipEntry e) {
-    return requireNonNull(p).map(u -> cet.withReturningTranslation(
-        () -> translateToWorkableArchiveURL("jar:" + u.toExternalForm() + "!/" + e.getName())));
+    return requireNonNull(p)
+        .map(u -> cet.returns(() -> translateToWorkableArchiveURL("jar:" + u.toExternalForm() + "!/" + e.getName())));
   }
 
   private static boolean _match(final JSONObject metadata, final Pattern key, final Pattern value) {
@@ -970,7 +988,7 @@ public class IBUtils {
   // }
   //
   // public static boolean inRange(final GAV art, final String versionRange) {
-  // return IBException.cet.withReturningTranslation(() -> {
+  // return IBException.cet.returns(() -> {
   // return getVersionScheme().parseVersionRange(versionRange)
   // .containsVersion(getVersionScheme().parseVersion(art.getVersion().orElse(null)));
   // });
@@ -993,7 +1011,7 @@ public class IBUtils {
     if (url.startsWith("zip:") && !isZip)
       retVal = "jar:" + url.substring(4);
     final String f = retVal;
-    return cet.withReturningTranslation(() -> new URL(f));
+    return cet.returns(() -> new URL(f));
 
   }
 
@@ -1008,10 +1026,10 @@ public class IBUtils {
 
   public final static String stringFromDOM(Document d) {
     Transformer transformer;
-    transformer = cet.withReturningTranslation(() -> tf.newTransformer());
+    transformer = cet.returns(() -> tf.newTransformer());
     transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
     StringWriter outStream = new StringWriter();
-    cet.withTranslation(() -> transformer.transform(new DOMSource(d), new StreamResult(outStream)));
+    cet.translate(() -> transformer.transform(new DOMSource(d), new StreamResult(outStream)));
     return outStream.toString();
   }
 
@@ -1020,7 +1038,7 @@ public class IBUtils {
   }
 
   public final static Path touchFile(final Path path) {
-    return IBException.cet.withReturningTranslation(() -> {
+    return IBException.cet.returns(() -> {
       if (exists(path)) {
         if (!isRegularFile(path) || !isWritable(path))
           throw new IBException("File " + path.toAbsolutePath() + " is not available to write");
@@ -1031,5 +1049,30 @@ public class IBUtils {
       return createFile(path);
     });
   }
+
+  // non-static but possibly memory intensive methods
+
+  public final static Function<JSONObject, String> deepMapJSONtoOrderedString = j -> {
+    return new IBUtils()._deepMapJSONtoOrderedString(j);
+  };
+
+  private final String _deepMapJSONtoOrderedString(JSONObject j) {
+    StringJoiner sb = new StringJoiner(",");
+    var so = new TreeMap<String, Object>(requireNonNull(j).toMap());
+    so.forEach((k, v) -> {
+      String ov;
+      if (v == null || JSONObject.NULL.equals(v)) {
+        ov = "null";
+      } else if (v instanceof JSONObject) {
+        ov = String.format("{%s}", _deepMapJSONtoOrderedString((JSONObject) v));
+      } else if (v instanceof String) {
+        ov = String.format("\"%s\"", v);
+      } else {
+        ov = v.toString();
+      }
+      sb.add(String.format("%s:%s", k, ov));
+    });
+    return sb.toString();
+  };
 
 }

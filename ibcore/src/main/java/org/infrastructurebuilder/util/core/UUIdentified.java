@@ -16,10 +16,10 @@
 package org.infrastructurebuilder.util.core;
 
 import java.util.Comparator;
-import java.util.Objects;
 import java.util.UUID;
 
 public interface UUIdentified  {
+  public final static String ID = "id";
   UUID getId();
 
   public static Comparator<UUIdentified> uuidcomparator = new Comparator<>() {
@@ -29,7 +29,6 @@ public interface UUIdentified  {
       if (o2 == null) return 1;
       return o1.getId().compareTo(o2.getId());
     }
-
   };
 
 }

@@ -23,6 +23,7 @@ import java.lang.System.Logger;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.DefaultConfigMapSupplier;
 import org.infrastructurebuilder.util.config.IBRuntimeUtils;
 import org.infrastructurebuilder.util.config.IBRuntimeUtilsTesting;
@@ -33,7 +34,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class AbstractIBConfigurableTypedFactoryTest {
-  public final static Logger         log = System.getLogger(AbstractIBConfigurableTypedFactoryTest.class.getName());
+  public final static Logger log = System.getLogger(AbstractIBConfigurableTypedFactoryTest.class.getName());
   public final static IBRuntimeUtils ibr = new IBRuntimeUtilsTesting(log);
 
   @BeforeAll
@@ -45,7 +46,7 @@ public class AbstractIBConfigurableTypedFactoryTest {
   }
 
   private FakeIBConfigurableTypedFactory s;
-  private DefaultConfigMapSupplier       cms;
+  private DefaultConfigMapSupplier cms;
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -65,28 +66,12 @@ public class AbstractIBConfigurableTypedFactoryTest {
 
   @Test
   public void testGetInstance() {
-    s.getLog().log(Logger.Level.INFO,"Testing getInstance (and getLog())");
-    assertFalse(s.getConfig().isPresent());
-    IBConfigurableFactory<String> s1 = s.configure(cms);
-    assertFalse(s.getConfig().isPresent());
-    assertTrue(s1.getConfig().isPresent());
-    Optional<Supplier<String>> p = s1.getInstance(Optional.of(cms));
+    s.getLog().log(Logger.Level.INFO, "Testing getInstance (and getLog())");
+    IBConfigurableFactory<String, String> s1 = s.configure("hi!");
+    Optional<Supplier<String>> p = s1.getInstance("there!");
     assertTrue(p.isPresent());
     String k = p.get().get();
     assertEquals("jeff", k);
-  }
-
-  @Test
-  public void testGetInstance2() {
-    s.getLog().log(Logger.Level.INFO,"Testing getInstance (and getLog())");
-    assertFalse(s.getConfig().isPresent());
-    IBConfigurableFactory<String> s1 = s.configure(cms);
-    assertFalse(s.getConfig().isPresent());
-    assertTrue(s1.getConfig().isPresent());
-    assertFalse(s.isConfigured());
-    assertTrue(s1.isConfigured());
-    Optional<Supplier<String>> p = s1.getInstance();
-    assertFalse(p.isPresent());
   }
 
 }

@@ -15,7 +15,7 @@
  */
 package org.infrastructurebuilder.util.config.factory;
 
-public interface IBConfigurableTypedFactory<T, P> extends IBConfigurableFactory<T> {
+public interface IBConfigurableTypedFactory<T, C, P> extends IBConfigurableFactory<T,C> {
   /**
    * This factory only produces elements of a given type
    *

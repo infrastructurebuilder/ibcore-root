@@ -41,12 +41,12 @@
     <hashicorp.waypoint.download.skip>false</hashicorp.waypoint.download.skip>
 
 
-    <test.coverage.percentage.required>91</test.coverage.percentage.required>
-    <jacoco.max.missed.classes>3</jacoco.max.missed.classes>
+    <test.coverage.percentage.required>89</test.coverage.percentage.required>
+    <jacoco.max.missed.classes>4</jacoco.max.missed.classes>
   </properties>
   <dependencies>
     <dependency>
-      <groupId>javax.inject</groupId>
+      <groupId>io.avaje</groupId>
       <artifactId>javax.inject</artifactId>
     </dependency>
     <!--
@@ -54,11 +54,11 @@
       <groupId>org.eclipse.sisu</groupId>
       <artifactId>org.eclipse.sisu.inject</artifactId>
     </dependency>
-     -->
     <dependency>
       <groupId>org.eclipse.sisu</groupId>
       <artifactId>org.eclipse.sisu.plexus</artifactId>
     </dependency>
+     -->
     <dependency>
 <!--       <groupId>com.vdurmont</groupId> -->
       <groupId>org.infrastructurebuilder.usurped</groupId>

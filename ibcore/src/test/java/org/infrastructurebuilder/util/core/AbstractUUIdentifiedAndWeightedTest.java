@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.time.Instant;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -50,14 +49,14 @@ public class AbstractUUIdentifiedAndWeightedTest {
 
   @Test
   public void testCompare() {
-    var c = w1.comparator;
+    var c = UUIdentifiedAndWeighted.comparator;
     assertEquals(0, c.compare(w1, w1));
     assertTrue(c.compare(w2, w1) > 0);
     assertEquals(0,c.compare(s1, s2));
   }
   @Test
   public void testCompareSameTime() {
-    var c = w1.comparator;
+    var c = UUIdentifiedAndWeighted.comparator;
     assertFalse(c.compare(s2, s3) == 0);
   }
 
