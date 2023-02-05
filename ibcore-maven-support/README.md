@@ -1,1 +1,1 @@
-# ibmaven-support
+# ibcore-maven-support

@@ -1,4 +1,4 @@
-# ibplexus-defaults
+# ibcore-plexus-defaults
 
 Supplier of Maven data via configuration and some additional Plexus components.
 

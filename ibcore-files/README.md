@@ -1,3 +1,3 @@
-# ibplexus-defaults
+# ibcore-plexus-defaults
 
 Plexus defaults

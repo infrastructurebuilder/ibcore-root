@@ -133,7 +133,7 @@
       </dependency>
       <dependency>
         <groupId>org.infrastructurebuilder</groupId>
-        <artifactId>ibmaven-property</artifactId>
+        <artifactId>ibcore-maven-property</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

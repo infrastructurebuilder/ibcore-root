@@ -28,7 +28,7 @@
       java.clone="deep"
     >
       <name>GeneratedProcessExecution</name>
-      <description>Persistence for ibexecutor ProcessExecution instances</description>
+      <description>Persistence for ibcore-executor ProcessExecution instances</description>
       <version>1.0.0+</version>
       <fields>
         <field>
