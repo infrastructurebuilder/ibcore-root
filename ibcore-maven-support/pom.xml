@@ -40,7 +40,7 @@
     </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder</groupId>
-      <artifactId>ibplexus-defaults</artifactId>
+      <artifactId>ibcore-plexus-defaults</artifactId>
     </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder</groupId>

@@ -123,7 +123,7 @@
       </dependency>
       <dependency>
         <groupId>org.infrastructurebuilder</groupId>
-        <artifactId>ibmaven-support</artifactId>
+        <artifactId>ibcore-maven-support</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -138,7 +138,7 @@
       </dependency>
       <dependency>
         <groupId>org.infrastructurebuilder</groupId>
-        <artifactId>ibplexus-defaults</artifactId>
+        <artifactId>ibcore-plexus-defaults</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
