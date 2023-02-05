@@ -15,6 +15,8 @@
  */
 package org.infrastructurebuilder.util.core;
 
+import static java.util.Optional.ofNullable;
+
 import java.util.Optional;
 
 public class MultiType<T, E extends Throwable> {
@@ -26,9 +28,13 @@ public class MultiType<T, E extends Throwable> {
     this(null, thrown);
   }
 
+  public MultiType(final T typed) {
+    this(typed,null);
+  }
+
   public MultiType(final T typed, final E thrown) {
-    this.t = Optional.ofNullable(typed);
-    this.e = Optional.ofNullable(thrown);
+    this.t = ofNullable(typed);
+    this.e = ofNullable(thrown);
   }
 
   public Optional<E> getException() {

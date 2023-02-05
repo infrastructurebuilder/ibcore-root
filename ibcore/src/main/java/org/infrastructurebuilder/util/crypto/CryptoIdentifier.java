@@ -35,7 +35,14 @@ public interface CryptoIdentifier extends JSONAndChecksumEnabled {
   Optional<String> getValidationIdentifier();
 
   default boolean matches(final CryptoIdentifier i) {
-    return i == null ? false
-        : i.getType().equals(getType()) && getIdentifiers().containsAll(i.getIdentifiers());
+    return i != null ?
+
+        i.getType().equals(getType())
+
+            && getIdentifiers().containsAll(i.getIdentifiers())
+
+        :
+
+        false;
   }
 }

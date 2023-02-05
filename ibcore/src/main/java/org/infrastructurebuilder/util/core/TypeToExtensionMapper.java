@@ -15,6 +15,8 @@
  */
 package org.infrastructurebuilder.util.core;
 
+import static java.util.Optional.empty;
+
 import java.util.Optional;
 import java.util.SortedSet;
 
@@ -42,6 +44,8 @@ public interface TypeToExtensionMapper {
    * @param type
    * @return
    */
-  Optional<String> getStructuredSupplyTypeClassName(String type);
+  default Optional<String> getStructuredSupplyTypeClassName(String type) {
+    return empty();
+  }
 
 }

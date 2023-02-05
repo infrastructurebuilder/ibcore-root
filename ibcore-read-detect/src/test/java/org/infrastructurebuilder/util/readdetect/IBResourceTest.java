@@ -15,11 +15,10 @@
  */
 package org.infrastructurebuilder.util.readdetect;
 
+import static org.infrastructurebuilder.exceptions.IBException.cet;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_ZIP;
 import static org.infrastructurebuilder.util.constants.IBConstants.TEXT_PLAIN;
-import static org.infrastructurebuilder.util.readdetect.DefaultIBResource.copyToDeletedOnExitTempChecksumAndPath;
-import static org.infrastructurebuilder.util.readdetect.DefaultIBResource.copyToTempChecksumAndPath;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -31,12 +30,15 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
+import org.infrastructurebuilder.util.readdetect.impl.DefaultIBResource;
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -65,6 +67,10 @@ public class IBResourceTest {
   public void testNonExistentFile() {
     assertThrows(IBException.class,() ->  DefaultIBResource.toType.apply(Paths.get(".").resolve(UUID.randomUUID().toString())));
   }
+  @Test
+  public void testFailOnNonFile() {
+    assertThrows(IBException.class,() ->  DefaultIBResource.toType.apply(Paths.get(".")));
+  }
 //https://file-examples.com/wp-content/uploads/2017/02/zip_2MB.zip
 
 
@@ -74,7 +80,7 @@ public class IBResourceTest {
     URL l = uri.toURL();
     String ef = l.toExternalForm();
 
-    IBResource cset = copyToTempChecksumAndPath(this.wps.get(), testFile, Optional.of("zip:" + ef), TESTFILE_TEST);
+    IBResource cset = DefaultIBResource.copyToTempChecksumAndPath(this.wps.get(), testFile, Optional.of("zip:" + ef), TESTFILE_TEST);
     assertEquals(183, cset.getPath().toFile().length());
     assertEquals(CHECKSUMVAL, cset.getChecksum().toString());
     assertEquals(APPLICATION_ZIP, cset.getType());
@@ -86,7 +92,7 @@ public class IBResourceTest {
   @Test
   public void testCopyToDeletedOnExitTempChecksumAndPathWithTarget() throws IOException {
     Path t = this.wps.getTestClasses().resolve(TESTFILE_TEST);
-    IBResource cset = copyToTempChecksumAndPath(this.wps.get(), t);
+    IBResource cset = DefaultIBResource.copyToTempChecksumAndPath(this.wps.get(), t);
     assertEquals(7, cset.getPath().toFile().length());
     assertEquals(EXPECTED, cset.getChecksum().toString());
     assertEquals(TEXT_PLAIN, cset.getType());
@@ -97,7 +103,7 @@ public class IBResourceTest {
   @Test
   public void testCopyToDeletedOnExitTempChecksumAndPathWithoutTarget() throws IOException {
     try (InputStream ins = Files.newInputStream(this.wps.getTestClasses().resolve(TESTFILE_TEST))) {
-      IBResource cset = copyToDeletedOnExitTempChecksumAndPath(wps.get(), "A", "B", ins);
+      IBResource cset = DefaultIBResource.copyToDeletedOnExitTempChecksumAndPath(wps.get(), "A", "B", ins);
       assertEquals(7, cset.getPath().toFile().length());
       assertEquals(EXPECTED, cset.getChecksum().toString());
       assertEquals(TEXT_PLAIN, cset.getType());
@@ -115,11 +121,25 @@ public class IBResourceTest {
   @Test
   public void testFromPath() {
     IBResource cset = DefaultIBResource.fromPath(testFile);
+    long d = new Date().toInstant().toEpochMilli();
+    InputStream g = cet.returns(() -> cset.get());
+    cet.translate(() -> g.close());
+    assertTrue(cset.getMostRecentReadTime().toEpochMilli()-d < 3);
+
     assertEquals(183, cset.getPath().toFile().length());
     assertEquals(CHECKSUMVAL, cset.getChecksum().toString());
     assertEquals(APPLICATION_ZIP, cset.getType());
     assertEquals(CHECKSUMVAL, new Checksum(cset.get()).toString());
 
+
+  }
+  @Test
+  public void testJSONFromPath() {
+    IBResource cset = IBResourceFactory.fromPath(testFile);
+
+    JSONObject j = cset.asJSON();
+    DefaultIBResource r = new DefaultIBResource(j);
+    assertEquals(cset, r);
 
   }
 }

@@ -20,10 +20,8 @@ import java.util.Properties;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.eclipse.sisu.Typed;
 
 @Named("default")
-@Typed(PropertiesSupplier.class)
 public class DefaultPropertiesSupplier implements PropertiesSupplier {
   private Properties p;
   @Inject

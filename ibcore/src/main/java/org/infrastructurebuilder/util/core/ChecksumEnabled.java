@@ -23,11 +23,12 @@ import java.util.UUID;
 import java.util.function.Function;
 
 public interface ChecksumEnabled {
+  String CHECKSUM = "checksum";
   /**
    * This seems weird here but it's super-useful
    */
   public final static Function<String, Optional<UUID>> safeMapUUID = (s) -> cet
-      .withReturningTranslation(() -> ofNullable(s).map(UUID::fromString));
+      .returns(() -> ofNullable(s).map(UUID::fromString));
   /**
    * Also seems weird to be here, but again super useful
    */

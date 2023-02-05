@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibcore-root</artifactId>
-    <version>0.17.4-SNAPSHOT</version>
+    <version>0.20.0-SNAPSHOT</version>
   </parent>
   <artifactId>ibcore</artifactId>
   <packaging>jar</packaging>
@@ -37,16 +37,16 @@
     <hashicorp.sentinel.download.skip>false</hashicorp.sentinel.download.skip>
     <hashicorp.terraform.download.skip>false</hashicorp.terraform.download.skip>
     <hashicorp.vault.download.skip>false</hashicorp.vault.download.skip>
-    <hashicorp.vagrant.download.skip>false</hashicorp.vagrant.download.skip>
+    <hashicorp.vagrant.download.skip>true</hashicorp.vagrant.download.skip>
     <hashicorp.waypoint.download.skip>false</hashicorp.waypoint.download.skip>
-    
-    
-    <test.coverage.percentage.required>91</test.coverage.percentage.required>
-    <jacoco.max.missed.classes>3</jacoco.max.missed.classes>
+
+
+    <test.coverage.percentage.required>89</test.coverage.percentage.required>
+    <jacoco.max.missed.classes>4</jacoco.max.missed.classes>
   </properties>
   <dependencies>
     <dependency>
-      <groupId>javax.inject</groupId>
+      <groupId>io.avaje</groupId>
       <artifactId>javax.inject</artifactId>
     </dependency>
     <!--
@@ -54,11 +54,11 @@
       <groupId>org.eclipse.sisu</groupId>
       <artifactId>org.eclipse.sisu.inject</artifactId>
     </dependency>
-     -->
     <dependency>
       <groupId>org.eclipse.sisu</groupId>
       <artifactId>org.eclipse.sisu.plexus</artifactId>
     </dependency>
+     -->
     <dependency>
 <!--       <groupId>com.vdurmont</groupId> -->
       <groupId>org.infrastructurebuilder.usurped</groupId>

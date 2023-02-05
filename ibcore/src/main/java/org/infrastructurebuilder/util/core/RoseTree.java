@@ -24,7 +24,7 @@ public interface RoseTree<A extends JSONAndChecksumEnabled> extends JSONAndCheck
 
   @Override
   default Checksum asChecksum() {
-    return IBException.cet.withReturningTranslation(() -> {
+    return IBException.cet.returns(() -> {
       final ChecksumBuilder b = ChecksumBuilder.newInstance().addChecksumEnabled(getValue());
       getChildren().stream()
 

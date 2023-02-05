@@ -83,7 +83,7 @@ public class CryptoIdentifierTest {
 
   @Test
   public void testAsChecksum() {
-    assertEquals("7519cfbbe3db7a29dd4e47cd92eaaa90546a64be836479a4faec72c6ee2c4a0d891eb95e5fb9819fc7b35ee545881f82c220725790e21f1a8a3907e4e71027e3", j.asChecksum().toString());
+    assertEquals("b1840f72d652e2006e85a1467c08ffac536bc424ce4f4e99bf71adef25d64bbae002014673111496c9b50cfb2d1e58189dcd83761d6cef904d90ba07c16070d0", j.asChecksum().toString());
   }
 
   @Test
@@ -93,6 +93,17 @@ public class CryptoIdentifierTest {
   @Test
   public void testGetValidationIdentifier() {
     assertFalse(i.getValidationIdentifier().isPresent());
+  }
+
+  @Test
+  public void testAgainstNull() {
+    assertFalse(i.matches(null));
+    assertFalse(i.absolutelyMatch(null));
+  }
+  @Test
+  public void testAgainstSelf() {
+    assertTrue(i.matches(i));
+    assertTrue(i.absolutelyMatch(i));
   }
 
 

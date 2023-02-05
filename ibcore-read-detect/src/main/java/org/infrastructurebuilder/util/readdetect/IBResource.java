@@ -20,25 +20,55 @@ import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static java.nio.file.StandardOpenOption.READ;
 import static java.util.Objects.hash;
 import static java.util.Optional.empty;
+import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
+import static org.infrastructurebuilder.util.constants.IBConstants.ADDITIONAL_PROPERTIES;
+import static org.infrastructurebuilder.util.constants.IBConstants.CREATE_DATE;
+import static org.infrastructurebuilder.util.constants.IBConstants.DESCRIPTION;
+import static org.infrastructurebuilder.util.constants.IBConstants.MIME_TYPE;
+import static org.infrastructurebuilder.util.constants.IBConstants.MOST_RECENT_READ_TIME;
+import static org.infrastructurebuilder.util.constants.IBConstants.ORIGINAL_PATH;
+import static org.infrastructurebuilder.util.constants.IBConstants.PATH;
+import static org.infrastructurebuilder.util.constants.IBConstants.SIZE;
+import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_NAME;
+import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_URL;
+import static org.infrastructurebuilder.util.constants.IBConstants.UPDATE_DATE;
+import static org.infrastructurebuilder.util.core.ChecksumEnabled.CHECKSUM;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
-import java.util.Date;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.StringJoiner;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.util.core.JSONBuilder;
+import org.infrastructurebuilder.util.core.JSONOutputEnabled;
+import org.json.JSONObject;
 
-public interface IBResource extends Supplier<InputStream> {
-
+/**
+ * An IBResource exists as a relative path based on some RelativeRoot, supplied
+ * externally at creation time.  The general persisted values of an IBResource
+ * remain constant.  The only difference is that the root values change.
+ *
+ * Thus, if an IBResource exists pointing to a Path on the filesystem and that
+ * entire filesystem is moved elsewhere, only the root needs to be changed to
+ * point to its new location.
+ *
+ * @author mykel
+ *
+ */
+public interface IBResource extends JSONOutputEnabled {
   /**
    * @return Non-null Path to this result
    * @throws IBException (runtime) if not available
@@ -57,7 +87,7 @@ public interface IBResource extends Supplier<InputStream> {
   String getType();
 
   /**
-   * Relocate underlying path to new path. The target path is meant to be a normal
+   * Relocate underlying path to new path. The target path should be a normal
    * filesystem, not a ZipFileSystem.
    *
    * @param target
@@ -67,35 +97,51 @@ public interface IBResource extends Supplier<InputStream> {
   IBResource moveTo(Path target) throws IOException;
 
   /**
-   * Sub-types may, at their discretion, return a {@link Date} of the most
-   * recent "get()" call.  The generated IBResourceModel doesn't because it's
+   * Sub-types may, at their discretion, return a {@link Instant} of the most
+   * recent "get()" call. The generated IBResourceModel doesn't because it's
    * really a persistence mechanism and that value isn't relevant.
-   * @return
+   *
+   *
+   * @return most recent read time or null
    */
-  default Optional<Date> getMostRecentReadTime() {
-    return empty();
+  Instant getMostRecentReadTime();
+
+  /**
+   * Nullable (but probably not) create date
+   *
+   * @return create date or null
+   */
+  Instant getCreateDate();
+
+  /**
+   * @return last file update or null
+   */
+  Instant getLastUpdateDate();
+
+  default Optional<Instant> getOptionalCreateDate() {
+    return ofNullable(getCreateDate());
+  }
+
+  default Optional<Instant> getOptionalMostRecentReadTime() {
+    return ofNullable(getMostRecentReadTime());
+  }
+
+  default Optional<Instant> getOptionalLastUpdateDate() {
+    return ofNullable(getLastUpdateDate());
   }
 
   default InputStream get() {
-    java.util.List<java.nio.file.OpenOption> o = new java.util.ArrayList<>();
-    o.add(READ);
+    List<OpenOption> o = new ArrayList<>(List.of(READ));
     if (getPath().getClass().getCanonicalName().contains("Zip")) {
-
     } else {
       o.add(NOFOLLOW_LINKS);
     }
-    OpenOption[] readOptions = o.toArray(new java.nio.file.OpenOption[o.size()]);
-
-    return cet.withReturningTranslation(() -> newInputStream(getPath(), readOptions));
+    return cet.returns(() -> newInputStream(getPath(), o.toArray(new OpenOption[o.size()])));
   }
 
-  default Optional<URL> getSourceURL() {
-    return empty();
-  }
+  Optional<URL> getSourceURL();
 
-  default Optional<String> getSourceName() {
-    return empty();
-  }
+  Optional<String> getSourceName();
 
   default int defaultHashCode() {
     return hash(getChecksum(), getPath(), getSourceName(), getSourceURL(), getType());
@@ -108,14 +154,14 @@ public interface IBResource extends Supplier<InputStream> {
     if (obj == null) {
       return false;
     }
-    if (!(obj instanceof IBResource))
-      return false;
-    IBResource other = (IBResource) obj;
-    return Objects.equals(getChecksum(), other.getChecksum()) // checksum
-        && Objects.equals(getPath(), other.getPath()) // path
-        && Objects.equals(getSourceName(), other.getSourceName()) // source
-        && Objects.equals(getSourceURL(), other.getSourceURL()) // sourceURL
-        && Objects.equals(getType(), other.getType()); // Type
+    if ((obj instanceof IBResource other)) {
+      return Objects.equals(getChecksum(), other.getChecksum()) // checksum
+          && Objects.equals(getPath(), other.getPath()) // path
+          && Objects.equals(getSourceName(), other.getSourceName()) // source
+          && Objects.equals(getSourceURL(), other.getSourceURL()) // sourceURL
+          && Objects.equals(getType(), other.getType()); // Type
+    }
+    return false;
   }
 
   default String defaultToString() {
@@ -128,9 +174,57 @@ public interface IBResource extends Supplier<InputStream> {
     return sj.toString();
   }
 
-  default Long size() {
-    return cet.withReturningTranslation(() -> Files.size(getPath()));
+  long size();
 
+  Optional<String> getName();
+
+  Optional<String> getDescription();
+
+  @Override
+  default JSONObject asJSON() {
+    return new JSONBuilder(empty())
+
+        .addChecksum(CHECKSUM, getChecksum())
+
+        .addInstant(CREATE_DATE, getCreateDate())
+
+        .addInstant(UPDATE_DATE, getLastUpdateDate())
+
+        .addInstant(MOST_RECENT_READ_TIME, getMostRecentReadTime())
+
+        .addString(SOURCE_NAME, getSourceName())
+
+        .addString(SOURCE_URL, getSourceURL().map(java.net.URL::toExternalForm))
+
+        .addString(MIME_TYPE, getType())
+
+        .addPath(PATH, getPath())
+
+        .addString(ORIGINAL_PATH, getOriginalPath().toString())
+
+        .addLong(SIZE, size())
+
+        .addString(DESCRIPTION, getDescription())
+
+        .addProperties(ADDITIONAL_PROPERTIES, getAdditionalProperties())
+
+        .asJSON();
+  }
+
+  Path getOriginalPath();
+
+  /**
+   * This method should not return an empty Properties object. If there are no
+   * additional properties then the return should be Optional.empty()
+   *
+   * @return empty or a Properties with size() > 0
+   */
+  default Optional<Properties> getAdditionalProperties() {
+    return empty();
+  }
+
+  default Optional<BasicFileAttributes> getBasicFileAttributes() {
+    return IBResourceFactory.getAttributes.apply(getPath());
   }
 
 }

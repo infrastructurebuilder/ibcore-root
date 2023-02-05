@@ -61,7 +61,7 @@ public interface GAV extends JSONAndChecksumEnabled, Comparable<GAV> {
 
   default Document asDom() {
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    DocumentBuilder builder = IBException.cet.withReturningTranslation(() -> dbf.newDocumentBuilder());
+    DocumentBuilder builder = IBException.cet.returns(() -> dbf.newDocumentBuilder());
     Document doc = builder.newDocument();
     Element root = doc.createElement("gav");
     root.setAttribute(GAV_GROUPID, getGroupId());
@@ -194,7 +194,7 @@ public interface GAV extends JSONAndChecksumEnabled, Comparable<GAV> {
     if (cmp == 0) {
       cmp = getArtifactId().compareTo(o.getArtifactId());
       if (cmp == 0) {
-        cmp = cet.withReturningTranslation(() -> {
+        cmp = cet.returns(() -> {
           return compareVersion(o);
         });
         if (cmp == 0) {

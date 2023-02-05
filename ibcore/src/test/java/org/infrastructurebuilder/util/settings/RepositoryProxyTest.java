@@ -16,6 +16,7 @@
 package org.infrastructurebuilder.util.settings;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URL;
 import java.util.Optional;
@@ -35,6 +36,14 @@ public class RepositoryProxyTest {
   public void setUp() throws Exception {
     rpp = new RepositoryPolicyProxy(true, ChecksumPolicy.IGNORE, UpdatePolicy.NEVER, 1);
     rp = new RepositoryProxy("ABC", Layout.DEFAULT, Optional.of(NAME), new URL(HTTP_WWW_GOOGLE_COM), Optional.of(rpp), Optional.of(rpp));
+  }
+
+  @Test
+  public void testRPP() {
+    assertEquals(ChecksumPolicy.IGNORE, rpp.getChecksumPolicy());
+    assertTrue(rpp.isEnabled());
+    assertEquals(UpdatePolicy.NEVER, rpp.getUpdatePolicy());
+    assertEquals(1, rpp.getIntervalMinutes());
   }
 
   @Test

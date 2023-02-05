@@ -15,42 +15,25 @@
  */
 package org.infrastructurebuilder.util.config.factory;
 
-import static java.util.Optional.ofNullable;
-
-import java.lang.System.Logger;
 import java.util.Objects;
-import java.util.Optional;
 
-import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 import org.infrastructurebuilder.util.config.IBRuntimeUtils;
 
-abstract public class AbstractIBConfigurableFactory<T> implements IBConfigurableFactory<T> {
+abstract public class AbstractIBConfigurableFactory<T,C> implements IBConfigurableFactory<T,C> {
 
   private final IBRuntimeUtils    ibr;
-  private final ConfigMapSupplier cms;
 
-  public AbstractIBConfigurableFactory(IBRuntimeUtils ibr) {
-    this(ibr, null);
-  }
-
-  protected AbstractIBConfigurableFactory(IBRuntimeUtils ibr, ConfigMapSupplier cms) {
+  protected AbstractIBConfigurableFactory(IBRuntimeUtils ibr) {
     this.ibr = Objects.requireNonNull(ibr);
-    this.cms = cms;
   }
 
   @Override
-  public IBRuntimeUtils getRuntimeUtils() {
+  public IBRuntimeUtils getRuntime() {
     return ibr;
   }
 
   @Override
-  public Logger getLog() {
-    return getRuntimeUtils().getLog();
+  public <T> T configure(C config) {
+    return (T) this;
   }
-
-  @Override
-  public Optional<ConfigMapSupplier> getConfig() {
-    return ofNullable(cms);
-  }
-
 }

@@ -15,40 +15,30 @@
  */
 package org.infrastructurebuilder.util.config.factory;
 
-import static java.util.Optional.empty;
-
+import java.lang.System.Logger;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.util.config.ConfigMapSupplier;
+import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.IBRuntimeUtils;
-import org.infrastructurebuilder.util.core.LoggerEnabled;
+import org.infrastructurebuilder.util.core.IBConfigurable;
 import org.infrastructurebuilder.util.core.Weighted;
 
 /**
- * All IBConfigurableFactory instances have a weighted order, an available logger,
- * and an IBRuntimeUtils available.
+ * All IBConfigurableFactory instances have a weighted order, an available
+ * logger, and an IBRuntimeUtils available.
  *
  * @author mykel.alvis
  *
  * @param <T>
  */
-public interface IBConfigurableFactory<T> extends Weighted, LoggerEnabled {
+public interface IBConfigurableFactory<T, C> extends Weighted, IBConfigurable<C> {
+  Optional<Supplier<T>> getInstance(C config);
 
-  IBConfigurableFactory<T> configure(ConfigMapSupplier config);
+  IBRuntimeUtils getRuntime();
 
-  Optional<Supplier<T>> getInstance(Optional<ConfigMapSupplier> config);
-
-  default Optional<Supplier<T>> getInstance() {
-    return this.getInstance(empty());
+  @Override
+  default Logger getLog() {
+    return getRuntime().getLog();
   }
-
-  default boolean isConfigured() {
-    return getConfig().isPresent();
-  }
-
-  Optional<ConfigMapSupplier> getConfig();
-
-  IBRuntimeUtils getRuntimeUtils();
-
 }
