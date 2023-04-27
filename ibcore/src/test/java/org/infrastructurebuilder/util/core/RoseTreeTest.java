@@ -39,6 +39,7 @@ public class RoseTreeTest {
   public static class RoseTest extends AbstractRoseTree<X> {
 
     public static final String TREE_CHILDREN = "children";
+    private final ChecksumBuilder builder = ChecksumBuilder.newInstance();
 
     public RoseTest(final X value, final List<RoseTree<X>> children) {
       super(value, ofNullable(children).map(Collections::unmodifiableList)
@@ -57,11 +58,22 @@ public class RoseTreeTest {
       return new RoseTest(getValue(), newChildren);
     }
 
+    @Override
+    public ChecksumBuilder getChecksumBuilder() {
+      return builder;
+    }
+
   }
 
   public static class X implements JSONAndChecksumEnabled {
     private final JSONObject a;
     private final JSONObject json;
+    private final ChecksumBuilder builder = ChecksumBuilder.newInstance();
+
+    @Override
+    public ChecksumBuilder getChecksumBuilder() {
+      return builder;
+    }
 
     public X(final JSONObject a) {
       this.a = a;
@@ -97,19 +109,19 @@ public class RoseTreeTest {
 
     @Override
     public int hashCode() {
-      final int prime  = 31;
-      int       result = 1;
+      final int prime = 31;
+      int result = 1;
       result = prime * result + (a == null ? 0 : asChecksum().hashCode());
       return result;
     }
 
   }
 
-  private RoseTest   rose0, rose1, rose2;
+  private RoseTest rose0, rose1, rose2;
 
   private JSONObject testJson0, testJson1, testJson2;
 
-  private X          testObject0, testObject1, testObject2;
+  private X testObject0, testObject1, testObject2;
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -185,8 +197,8 @@ public class RoseTreeTest {
 
   @Test
   public void testWithChildren() {
-    final RoseTest    rose3 = new RoseTest(new X(testJson0), emptyList());
-    final RoseTree<X> b     = rose1.withChildren(asList(rose2, rose3));
+    final RoseTest rose3 = new RoseTest(new X(testJson0), emptyList());
+    final RoseTree<X> b = rose1.withChildren(asList(rose2, rose3));
     assertEquals(2, b.getChildren().size());
   }
 

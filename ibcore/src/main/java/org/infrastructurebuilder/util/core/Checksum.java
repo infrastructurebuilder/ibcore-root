@@ -48,8 +48,8 @@ public class Checksum extends AbstractChecksum {
     for (i = 0; i < c.b.length; ++i) {
       ba[i] = c.b[i];
     }
-    for (j = i; j < ba.length; ++j) {
-      ba[j] = bytes[i - j];
+    for (j = 0; j < ba.length; ++j) {
+      ba[j+i] = bytes[j];
     }
     return new Checksum(ba, UNKNOWN);
   }

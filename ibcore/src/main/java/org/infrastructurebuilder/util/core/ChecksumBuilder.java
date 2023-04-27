@@ -351,4 +351,9 @@ public final class ChecksumBuilder implements ChecksumEnabled {
         throw new IBException("Attempted to set a locked checksum.  This is a BAD THING");
     }
   }
+
+  @Override
+  public ChecksumBuilder getChecksumBuilder() {
+    return this;
+  }
 }

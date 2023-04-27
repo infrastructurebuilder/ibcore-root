@@ -36,6 +36,9 @@ public interface ChecksumEnabled {
     return safeMapUUID.apply(uuid).orElse(null);
   };
 
+  default Checksum asChecksum() {
+    return getChecksumBuilder().asChecksum();
+  }
 
-  Checksum asChecksum();
+  ChecksumBuilder getChecksumBuilder();
 }

@@ -22,6 +22,7 @@ import static java.util.Optional.ofNullable;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.infrastructurebuilder.util.versions.IBVersionsSupplier;
@@ -46,6 +47,8 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
 
   private final Optional<Path> path;
 
+  private final ChecksumBuilder builder;
+
   public DefaultGAV(final JSONObject json) {
     setGroupId(requireNonNull(json).getString(GAV_GROUPID));
     setArtifactId(json.getString(GAV_ARTIFACTID));
@@ -53,7 +56,8 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
     setClassifier(json.optString(GAV_CLASSIFIER, null));
     setExtension(json.optString(GAV_EXTENSION, json.optString(GAV_TYPE, json.optString(GAV_PACKAGING, null))));
     path = ofNullable(json.optString(GAV_PATH, null)).map(Paths::get);
-  }
+    this.builder = ChecksumBuilder.newInstance(this.path);
+}
 
   public DefaultGAV(final JSONObject json, final String classifier) {
     this(json);
@@ -114,6 +118,7 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
   private DefaultGAV() {
     super();
     path = empty();
+    this.builder = ChecksumBuilder.newInstance(this.path);
   }
 
   private DefaultGAV(final GAV gav, final Path path) {
@@ -123,6 +128,7 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
     setClassifier(gav.getClassifier().orElse(null));
     setExtension(gav.getExtension());
     this.path = ofNullable(path);
+    this.builder = ChecksumBuilder.newInstance(this.path);
   }
 
   @Override
@@ -131,16 +137,35 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
   }
 
 
+//  @Override
+//  public boolean equals(final Object obj) {
+//    if (this == obj)
+//      return true;
+//    if (obj == null)
+//      return false;
+//    if (getClass() != obj.getClass())
+//      return false;
+//    final DefaultGAV other = (DefaultGAV) obj;
+//    return equalsIgnoreClassifier(other, false);
+//  }
+
   @Override
-  public boolean equals(final Object obj) {
+  public int hashCode() {
+    return Objects.hash(artifactId, extension, groupId, stringVersion, classifier);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
     if (this == obj)
       return true;
     if (obj == null)
       return false;
     if (getClass() != obj.getClass())
       return false;
-    final DefaultGAV other = (DefaultGAV) obj;
-    return equalsIgnoreClassifier(other, false);
+    DefaultGAV other = (DefaultGAV) obj;
+    return Objects.equals(artifactId, other.artifactId) && Objects.equals(extension, other.extension)
+        && Objects.equals(groupId, other.groupId) && Objects.equals(stringVersion, other.stringVersion)
+        && Objects.equals(classifier, other.classifier);
   }
 
   @Override
@@ -172,17 +197,18 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
     return ofNullable(stringVersion);
   }
 
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + artifactId.hashCode();
-    result = prime * result + classifier.hashCode();
-    result = prime * result + groupId.hashCode();
-    result = prime * result + extension.hashCode();
-    result = prime * result + getVersion().map(x -> x.hashCode()).orElse(0);
-    return result;
-  }
+
+//  @Override
+//  public int hashCode() {
+//    final int prime = 31;
+//    int result = 1;
+//    result = prime * result + artifactId.hashCode();
+//    result = prime * result + classifier.hashCode();
+//    result = prime * result + groupId.hashCode();
+//    result = prime * result + extension.hashCode();
+//    result = prime * result + getVersion().map(x -> x.hashCode()).orElse(0);
+//    return result;
+//  }
 
   public DefaultGAV setArtifactId(final String artifactId) {
     this.artifactId = requireNonNull(artifactId);
@@ -226,5 +252,10 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
   @Override
   public GAV withFile(final Path file) {
     return new DefaultGAV(this, file);
+  }
+
+  @Override
+  public ChecksumBuilder getChecksumBuilder() {
+    return this.builder;
   }
 }

@@ -210,7 +210,7 @@ public class GAVTest {
 
   @Test
   public void testHash() {
-    assertEquals(193274601, gav.hashCode());
+    assertEquals(419946305, gav.hashCode());
   }
 
   @Test

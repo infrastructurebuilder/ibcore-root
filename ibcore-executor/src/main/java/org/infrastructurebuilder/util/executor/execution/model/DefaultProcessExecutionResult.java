@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.infrastructurebuilder.util.core.ChecksumBuilder;
 import org.infrastructurebuilder.util.executor.ProcessExecution;
 import org.infrastructurebuilder.util.executor.ProcessExecutionResult;
 import org.infrastructurebuilder.util.executor.execution.model.v2_0_0.GeneratedProcessExecutionResult;
@@ -29,6 +30,8 @@ import org.infrastructurebuilder.util.executor.execution.model.v2_0_0.GeneratedP
 public class DefaultProcessExecutionResult implements ProcessExecutionResult {
 
   private final GeneratedProcessExecutionResult gper;
+
+  private final ChecksumBuilder builder = ChecksumBuilder.newInstance();
 
   public DefaultProcessExecutionResult(GeneratedProcessExecutionResult gper) {
     this.gper = Objects.requireNonNull(gper);
@@ -43,8 +46,9 @@ public class DefaultProcessExecutionResult implements ProcessExecutionResult {
   public boolean equals(Object obj) {
     if (obj == null || !(obj instanceof DefaultProcessExecutionResult))
       return false;
-    return ((DefaultProcessExecutionResult)obj).getId().equals(getId());
+    return ((DefaultProcessExecutionResult) obj).getId().equals(getId());
   }
+
   @Override
   public String getId() {
     return this.gper.getId();
@@ -88,6 +92,10 @@ public class DefaultProcessExecutionResult implements ProcessExecutionResult {
   @Override
   public List<String> getStdOut() {
     return this.gper.getStdOut();
+  }
+
+  public ChecksumBuilder getChecksumBuilder() {
+    return this.builder;
   }
 
 }

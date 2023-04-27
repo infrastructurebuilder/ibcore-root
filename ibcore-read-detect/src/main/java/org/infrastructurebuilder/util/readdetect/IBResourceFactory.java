@@ -50,6 +50,12 @@ import org.infrastructurebuilder.util.readdetect.impl.DefaultIBResource;
 import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
 import org.json.JSONObject;
 
+/**
+ * The IBResourceFactory produces various forms of IBResource, usually by copying and internally
+ * checksumming them to some local space.
+ * @author mykelalvis
+ *
+ */
 public class IBResourceFactory {
   private static final long serialVersionUID = 5978749189830232137L;
   private final static Logger log = LoggerFactory.getLogger(IBResourceFactory.class.getName());
@@ -114,6 +120,17 @@ public class IBResourceFactory {
   IBResourceFactory() {
   }
 
+  /**
+   * Produces an IBResource by making a copy of some named source into a target directly.  The
+   * resulting source is indicated to be "contained" within an archive using the !/ syntax of
+   * path managenment if the original values are presented .
+   * @param targetDir
+   * @param source
+   * @param oSource
+   * @param pString
+   * @return
+   * @throws IOException
+   */
   public final static IBResource copyToTempChecksumAndPath(Path targetDir, final Path source,
       final Optional<String> oSource, final String pString) throws IOException {
     DefaultIBResource d = (DefaultIBResource) copyToTempChecksumAndPath(targetDir, source);

@@ -84,7 +84,14 @@ public class ChecksumBuilderTest {
     sha512 = ChecksumBuilder.newInstance(relativeRoot);
     map = new HashMap<>();
     m = new HashMap<>();
-    t = () -> new Checksum("ABCD");
+    t = new ChecksumEnabled() {
+      private ChecksumBuilder thisBuilder = ChecksumBuilder.newInstance(relativeRoot);
+      @Override
+      public ChecksumBuilder getChecksumBuilder() {
+        return thisBuilder ;
+      }
+
+    };
     theSet = new TreeSet<>();
     theSet.add(new LS(longChek));
 
@@ -111,7 +118,7 @@ public class ChecksumBuilderTest {
   @Test
   public void testAddChecksumEnabledOptionalOfChecksumEnabled() {
     assertEquals(
-        "9b3a86c5dddf6c13acb969db8f54ebb9fa50dc4f902eff843380cebfc9cc53ffc2cc4a5f4dda0fac9e3315578faebc999ee61609434e10a6c75e3d984ee2a426",
+        "826df068457df5dd195b437ab7e7739ff75d2672183f02bb8e1089fabcf97bd9dc80110cf42dbc7cff41c78ecb68d8ba78abe6b5178dea3984df8c55541bf949",
         sha512.addChecksumEnabled(Optional.of(t)).asChecksum().toString());
   }
 
@@ -185,7 +192,7 @@ public class ChecksumBuilderTest {
     abc.put("ABC", t);
     abc.put("easyas", t);
     assertEquals(
-        "95fdc8ddbff3e2085ff7cf6cd16c3d2a74aff8d22c76df4ea24abf7d18cb495a3cfd3415bfa10c9ec3e6b194c499e3238052711bc3eca593f03bb3ebeeb7e08c",
+        "65605507a9460acfc86f6896907414b6cd7dbb8cc0fd2499769b36fea5c615be8b664c256f608ba2af8f4509ec89e40258b5ba714325f20d05ab9f02c5f16994",
         sha512.addMapStringChecksumEnabled(abc).asChecksum().toString());
   }
 
@@ -216,7 +223,7 @@ public class ChecksumBuilderTest {
     m.put("ABV", Arrays.asList(t));
     map.put("m", m);
     assertEquals(
-        "467132947f3facab6f03fe850c28a58488bd25c4209e024fbff35ce5f26988a20e6e337bb82a6afc98fcda4ff0bcfb39de8d39996f5bd5e1e2accfdb05fa8eb9",
+        "fb5aacb2f9f4b6344129d9e6f0bca74a8d5d0cca5c33db1d6e3492f48c86fd52c8cb0df04b866c94bd787de31f2d718dac3049934077a516ca0c72732c925c1e",
         sha512.addMapStringMapStringListChecksumEnabled(map).asChecksum().toString());
   }
 
@@ -276,8 +283,9 @@ public class ChecksumBuilderTest {
     private Checksum c;
 
     public LS(Checksum c) {
-      this.c  = c;
+      this.c = c;
     }
+
     @Override
     public Checksum asChecksum() {
       return c;
@@ -288,5 +296,9 @@ public class ChecksumBuilderTest {
       return c.compareTo(o.c);
     }
 
+    @Override
+    public ChecksumBuilder getChecksumBuilder() {
+      return ChecksumBuilder.newInstance();
+    }
   }
 }

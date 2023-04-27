@@ -43,6 +43,7 @@ public class ChecksumTest {
   private Checksum                   cRick;
   private Checksum                   cString;
   private final String               theString = "NEVER_GONNA_GIVE_YOU_UP";
+  private Checksum cnull2;
 
   @BeforeAll
   public static void setupB4Class() {
@@ -52,10 +53,17 @@ public class ChecksumTest {
   @BeforeEach
   public void setUp() throws Exception {
     cnull = new Checksum();
+    byte[] b = new byte[0];
+    cnull2 = new Checksum(b);
     cRick = new Checksum(wps.getTestClasses().resolve("rick.jpg"));
     cString = new Checksum(theString.getBytes(UTF_8));
   }
 
+  @Test
+  public void testExtend() {
+    Checksum cnewString = Checksum.extend(cnull2, theString.getBytes(UTF_8));
+    assertEquals(cnewString,cString);
+  }
   @Test
   public void testAsUUID() {
     final String uuid = "747a8830-5c25-3d28-ab17-81ed541f236e";

@@ -17,7 +17,8 @@ package org.infrastructurebuilder.util.core;
 
 import java.time.Instant;
 
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FakeLastUpdated implements LastUpdated {
 

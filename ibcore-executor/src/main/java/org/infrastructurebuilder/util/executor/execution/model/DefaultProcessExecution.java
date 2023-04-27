@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.infrastructurebuilder.util.core.ChecksumBuilder;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream;
 import org.infrastructurebuilder.util.executor.ProcessException;
@@ -42,6 +43,7 @@ public class DefaultProcessExecution implements ProcessExecution {
   private  ProcessExecutor executor;
   private ListCapturingLogOutputStream stdErr;
   private ListCapturingLogOutputStream stdOut;
+  private final ChecksumBuilder builder = ChecksumBuilder.newInstance();
 
   public DefaultProcessExecution() {
     this.addl = null;
@@ -194,6 +196,9 @@ public class DefaultProcessExecution implements ProcessExecution {
   @Override
   protected DefaultProcessExecution clone() throws CloneNotSupportedException {
     return new DefaultProcessExecution(this);
+  }
+  public ChecksumBuilder getChecksumBuilder() {
+    return this.builder;
   }
 
 }

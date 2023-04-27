@@ -18,11 +18,10 @@ package org.infrastructurebuilder.util.core;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LocalLogSupplierTest {
   public final static Logger log = LoggerFactory.getLogger(LocalLogSupplierTest.class.getName());
