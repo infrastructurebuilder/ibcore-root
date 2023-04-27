@@ -15,7 +15,8 @@
  */
 package org.infrastructurebuilder.util.core;
 
+import org.slf4j.Logger;
 
 public interface LoggerEnabled {
-  System.Logger getLog();
+  Logger getLog();
 }

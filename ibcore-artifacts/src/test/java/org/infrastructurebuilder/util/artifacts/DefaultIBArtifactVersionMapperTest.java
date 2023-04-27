@@ -28,12 +28,13 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.lang.System; import java.lang.System.Logger;
+import java.lang.System; import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class DefaultIBArtifactVersionMapperTest {
 
-  public final static Logger log = System.getLogger(DefaultIBArtifactVersionMapperTest.class.getName());
+  public final static Logger log = LoggerFactory.getLogger(DefaultIBArtifactVersionMapperTest.class.getName());
 
   @BeforeAll
   public static void setUpBeforeClass() throws Exception {

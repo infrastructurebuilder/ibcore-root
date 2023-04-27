@@ -29,6 +29,7 @@ import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
 import org.infrastructurebuilder.util.credentials.basic.CredentialsFactory;
 import org.infrastructurebuilder.util.versions.IBVersionsSupplier;
+import org.slf4j.Logger;
 
 abstract public class AbstractIBRuntimeUtils implements IBRuntimeUtils {
 
@@ -74,7 +75,7 @@ abstract public class AbstractIBRuntimeUtils implements IBRuntimeUtils {
   }
 
   @Override
-  public System.Logger getLog() {
+  public Logger getLog() {
     return ls.get();
   }
 

@@ -48,7 +48,8 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.lang.System.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -236,7 +237,7 @@ public class IBUtils {
 
   static final int BUFFER_SIZE = 10240;
 
-  private static final Logger iolog = System.getLogger(IBUtils.class.getName());
+  private static final Logger iolog = LoggerFactory.getLogger(IBUtils.class.getName());
 
   public static Stream<String> readInputStreamAsStringStream(InputStream ins) {
     return cet.returns(() -> new BufferedReader(new InputStreamReader(ins)).lines());
@@ -416,7 +417,7 @@ public class IBUtils {
       if (Files.exists(root))
         Files.delete(root);
     } catch (final IOException e) {
-      iolog.log(Logger.Level.DEBUG, "Fail to delete path", e);
+      iolog.debug( "Fail to delete path", e);
     }
 
   }
@@ -813,7 +814,7 @@ public class IBUtils {
 
       });
     } catch (final IOException e) {
-      iolog.log(Logger.Level.WARNING, "Fail to move entirely", e);
+      iolog.warn( "Fail to move entirely", e);
     }
     return target;
 

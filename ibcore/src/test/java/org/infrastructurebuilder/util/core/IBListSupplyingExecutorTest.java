@@ -18,7 +18,6 @@ package org.infrastructurebuilder.util.core;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import java.lang.System.Logger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,10 +31,12 @@ import org.infrastructurebuilder.exceptions.IBException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class IBListSupplyingExecutorTest {
 
-  private final static java.lang.System.Logger log = System.getLogger(IBListSupplyingExecutorTest.class.getName());
+  private final static Logger log = LoggerFactory.getLogger(IBListSupplyingExecutorTest.class);
   private final static TestingPathSupplier wps = new TestingPathSupplier();
 
   @AfterAll
@@ -97,7 +98,7 @@ public class IBListSupplyingExecutorTest {
     public List<List<String>> get() {
       if (!config.get().keySet().containsAll(getRequiredConfigItems()))
         throw new IBException();
-      getLog().log(Logger.Level.INFO,"The config value for 'A' is " + config.get().get("A"));
+      getLog().info("The config value for 'A' is " + config.get().get("A"));
       return Arrays.asList(new ArrayList<String>(config.get().keySet().stream().sorted().collect(Collectors.toList())));
     }
 

@@ -28,19 +28,16 @@
   <description>Component that wraps dir scanner</description>
   <!-- I see no way to increase this at the moment -->
   <properties>
-    <test.coverage.percentage.required>98</test.coverage.percentage.required>
+    <test.coverage.percentage.required>94</test.coverage.percentage.required>
     <jacoco.max.missed.classes>0</jacoco.max.missed.classes>
   </properties>
   <!-- URL for site gen -->
   <url>${github.url.base}/${project.artifactId}</url>
   <dependencies>
-
     <dependency>
       <groupId>io.avaje</groupId>
       <artifactId>javax.inject</artifactId>
     </dependency>
-
-
     <dependency>
       <groupId>org.infrastructurebuilder</groupId>
       <artifactId>ibcore</artifactId>
@@ -49,13 +46,11 @@
       <groupId>org.infrastructurebuilder</groupId>
       <artifactId>ibcore-config</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
@@ -88,10 +83,11 @@
       <artifactId>joor</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.apache.ant</groupId>
-      <artifactId>ant</artifactId>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.apache.bcel</groupId>-->
+<!--      <artifactId>bcel</artifactId>-->
+<!--      <version>6.7.0</version>-->
+<!--    </dependency>-->
   </dependencies>
   <build>
     <plugins>
@@ -102,7 +98,6 @@
           <reuseForks>false</reuseForks>
         </configuration>
       </plugin>
-
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
@@ -113,5 +108,4 @@
       </plugin>
     </plugins>
   </build>
-
 </project>

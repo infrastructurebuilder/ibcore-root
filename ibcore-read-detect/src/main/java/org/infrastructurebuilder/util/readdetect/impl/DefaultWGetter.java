@@ -22,7 +22,8 @@ import static org.infrastructurebuilder.util.constants.IBConstants.IBDATA_PREFIX
 import static org.infrastructurebuilder.util.readdetect.IBResourceFactory.copyToTempChecksumAndPath;
 
 import java.io.File;
-import java.lang.System.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.net.ProxySelector;
 import java.net.URI;
 import java.net.URL;

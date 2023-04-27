@@ -18,21 +18,21 @@ package org.infrastructurebuilder.util.filescanner;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.lang.System.Logger;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
+import org.infrastructurebuilder.util.core.IBDirScan;
 import org.infrastructurebuilder.util.core.StringListSupplier;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DefaultIBDirScannerSupplierTest {
-  public final static Logger log = System.getLogger(DefaultIBDirScannerSupplierTest.class.getName());
+  public final static Logger log = LoggerFactory.getLogger(DefaultIBDirScannerSupplierTest.class.getName());
 
   private final static TestingPathSupplier wps = new TestingPathSupplier();
   private static Path testClasses;
@@ -48,16 +48,20 @@ public class DefaultIBDirScannerSupplierTest {
   @BeforeEach
   public void setUp() throws Exception {
     StringListSupplier include1 = () -> Arrays.asList("**/*");
-    StringListSupplier exclude1 = () -> Arrays.asList("b");
+    StringListSupplier exclude1 = () -> Arrays.asList("**/b");
     ibdss = new DefaultIBDirScannerSupplier(() -> test1, include1, exclude1,
         // Exclude dires
         () -> true,
-        //
+        // exclude files
         () -> false,
-        //
+        // exclude hidden
         () -> false,
-        //
-        () -> false);
+        // exclude dotfiles
+        () -> false,
+        // exclude symlinks
+        () -> false,
+        // add excluded defaults
+        () -> true);
   }
 
   @Test
@@ -66,36 +70,35 @@ public class DefaultIBDirScannerSupplierTest {
   }
 
   @Test
-  public void testConfigAndGet() {
-    Map<Boolean, List<Path>> v = ibdss.get().scan();
-    assertEquals(v.size(), 2);
-    assertEquals(2, v.size());
-    List<Path> incl = v.get(true);
-    assertEquals(incl.size(), 2);
-    List<Path> excl = v.get(false);
-    assertEquals(0, excl.size());
+  public void testConfigAndGet() throws IOException {
+    var res = ibdss.get().scan();
+    assertNotNull(res.getIncludedPaths());
+    assertNotNull(res.getExcludedPaths());
+    assertNotNull(res.getErroredPaths());
+    assertEquals(1,res.getIncludedPaths().size());
+    assertEquals(3, res.getExcludedPaths().size());
   }
 
   @Test
-  public void testConfigAndGetWithTrue() {
+  public void testConfigAndGetWithTrue() throws IOException {
     StringListSupplier include1 = () -> Arrays.asList("**/*");
-    StringListSupplier exclude1 = () -> Arrays.asList("b");
+    StringListSupplier exclude1 = () -> Arrays.asList("**/b");
     ibdss = new DefaultIBDirScannerSupplier(() -> test1, include1, exclude1,
         // Exclude dires
         () -> false,
-        //
+        // exclude files
         () -> true,
-        //
-        () -> true,
-        //
+        // exclude hidden
+        () -> false,
+        // exclude dotfiles
+        () -> false,
+        // exclude symlinks
+        () -> false,
+        // add excluded defaults
         () -> true);
-    Map<Boolean, List<Path>> v = ibdss.get().scan();
-    assertEquals(v.size(), 2);
-    assertEquals(2, v.size());
-    List<Path> incl = v.get(true);
-    assertEquals(3, incl.size());
-    List<Path> excl = v.get(false);
-    assertEquals(0, excl.size());
+    IBDirScan v = ibdss.get().scan();
+    assertEquals(2, v.getIncludedPaths().size());
+    assertEquals(2, v.getExcludedPaths().size());
   }
 
 }

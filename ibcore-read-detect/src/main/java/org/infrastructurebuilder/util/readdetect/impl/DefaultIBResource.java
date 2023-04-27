@@ -35,8 +35,6 @@ import static org.infrastructurebuilder.util.core.ChecksumEnabled.CHECKSUM;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.System.Logger;
-import java.lang.System.Logger.Level;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -54,10 +52,12 @@ import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceFactory;
 import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DefaultIBResource implements IBResource {
   private static final long serialVersionUID = 5978749189830232137L;
-  private final static Logger log = System.getLogger(DefaultIBResource.class.getName());
+  private final static Logger log = LoggerFactory.getLogger(DefaultIBResource.class.getName());
 
   public final static Function<String, Path> extracted = (x) -> {
     try {
@@ -71,7 +71,7 @@ public class DefaultIBResource implements IBResource {
       // I know, right?
       return Paths.get(cet.returns(() -> cet.returns(() -> u.toURI())));
     } catch (Throwable t) {
-      log.log(Level.ERROR, "Error converting to path", t);
+      log.error( "Error converting to path", t);
       throw t;
     }
   };
@@ -123,12 +123,12 @@ public class DefaultIBResource implements IBResource {
     try {
       path = Paths.get(ps);
       if (path.isAbsolute()) {
-        log.log(Level.DEBUG, "Absolute path {}", path);
+        log.debug( "Absolute path {}", path);
       } else {
-        log.log(Level.DEBUG, "Relative path {}", path);
+        log.debug( "Relative path {}", path);
       }
     } catch (Throwable t) {
-      log.log(Level.ERROR, "Path was unavailable from {}", ps);
+      log.error( "Path was unavailable from {}", ps);
     } finally {
     }
     this.originalPath = path;

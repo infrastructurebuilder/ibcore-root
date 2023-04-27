@@ -19,7 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.lang.System.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -34,7 +35,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class AbstractIBConfigurableTypedFactoryTest {
-  public final static Logger log = System.getLogger(AbstractIBConfigurableTypedFactoryTest.class.getName());
+  public final static Logger log = LoggerFactory.getLogger(AbstractIBConfigurableTypedFactoryTest.class.getName());
   public final static IBRuntimeUtils ibr = new IBRuntimeUtilsTesting(log);
 
   @BeforeAll
@@ -66,7 +67,7 @@ public class AbstractIBConfigurableTypedFactoryTest {
 
   @Test
   public void testGetInstance() {
-    s.getLog().log(Logger.Level.INFO, "Testing getInstance (and getLog())");
+    s.getLog().info( "Testing getInstance (and getLog())");
     IBConfigurableFactory<String, String> s1 = s.configure("hi!");
     Optional<Supplier<String>> p = s1.getInstance("there!");
     assertTrue(p.isPresent());

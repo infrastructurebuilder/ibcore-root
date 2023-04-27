@@ -17,6 +17,8 @@ package org.infrastructurebuilder.util.core;
 
 import java.util.function.Supplier;
 
-public interface LoggerSupplier extends Supplier<System.Logger> {
+import org.slf4j.Logger;
+
+public interface LoggerSupplier extends Supplier<Logger> {
 
 }

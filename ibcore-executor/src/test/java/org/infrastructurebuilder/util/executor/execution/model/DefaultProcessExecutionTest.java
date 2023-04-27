@@ -24,7 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.lang.System.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Arrays;
@@ -47,7 +48,7 @@ import org.junit.jupiter.api.Test;
 
 
 public class DefaultProcessExecutionTest {
-  public final static Logger              log = System.getLogger(DefaultProcessExecutionTest.class.getName());
+  public final static Logger              log = LoggerFactory.getLogger(DefaultProcessExecutionTest.class.getName());
   public final static TestingPathSupplier wps = new TestingPathSupplier();
 
   @BeforeAll

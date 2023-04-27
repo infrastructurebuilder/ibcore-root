@@ -24,4 +24,5 @@ module org.infrastructurebuilder.util.config {
   requires transitive org.json;
   requires java.xml;
   requires javax.inject;
+  requires org.slf4j;
 }

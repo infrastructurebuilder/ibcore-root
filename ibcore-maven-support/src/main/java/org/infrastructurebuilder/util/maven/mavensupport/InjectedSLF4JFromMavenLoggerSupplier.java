@@ -15,14 +15,13 @@
  */
 package org.infrastructurebuilder.util.maven.mavensupport;
 
-import java.lang.System.Logger;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.maven.plugin.logging.Log;
 import org.infrastructurebuilder.util.core.LoggerSupplier;
-import org.infrastructurebuilder.util.logging.JDKSLFromMavenLogger;
+import org.infrastructurebuilder.util.logging.SLF4JFromMavenLogger;
+import org.slf4j.Logger;
 
 @Named(InjectedSLF4JFromMavenLoggerSupplier.LOG)
 public class InjectedSLF4JFromMavenLoggerSupplier implements LoggerSupplier {
@@ -36,6 +35,6 @@ public class InjectedSLF4JFromMavenLoggerSupplier implements LoggerSupplier {
 
   @Override
   public Logger get() {
-    return new JDKSLFromMavenLogger(this.mavenLog);
+    return new SLF4JFromMavenLogger(this.mavenLog);
   }
 }

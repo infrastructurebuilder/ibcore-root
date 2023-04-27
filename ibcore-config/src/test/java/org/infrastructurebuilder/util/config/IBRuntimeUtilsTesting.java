@@ -15,7 +15,6 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import java.lang.System.Logger;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,6 +27,8 @@ import org.infrastructurebuilder.util.core.TestingPathSupplier;
 import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.credentials.basic.CredentialsFactory;
 import org.infrastructurebuilder.util.versions.IBVersionsSupplier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class IBRuntimeUtilsTesting extends AbstractIBRuntimeUtils {
   public final static IBArtifactVersionMapper ibavm = new IBArtifactVersionMapper() {
@@ -42,10 +43,10 @@ public class IBRuntimeUtilsTesting extends AbstractIBRuntimeUtils {
   }
 
   public final static IBRuntimeUtilsTesting from(String s, TypeToExtensionMapper t2e) {
-    return new IBRuntimeUtilsTesting(System.getLogger(s), t2e);
+    return new IBRuntimeUtilsTesting(LoggerFactory.getLogger(s), t2e);
   }
 
-  private final static Logger log = System.getLogger(IBRuntimeUtilsTesting.class.getName());
+  private final static Logger log = LoggerFactory.getLogger(IBRuntimeUtilsTesting.class);
 
   public IBRuntimeUtilsTesting(PathSupplier wps, Logger ls, GAV gs, CredentialsFactory cf,
       IBArtifactVersionMapper avm) {

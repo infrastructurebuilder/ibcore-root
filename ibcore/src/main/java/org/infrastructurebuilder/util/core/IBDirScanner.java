@@ -15,27 +15,20 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
-
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
 
 public interface IBDirScanner {
+
+  String INCLUDED = "included";
+  String EXCLUDED = "excluded";
+  String ERRORED = "errored";
+
   /**
-   * Return a map of paths both included and excluded
+   * Return a map of paths both included and excluded Instances of IBDirScanner
+   * may or may not cache scan results, so subsequent calls to scan() or defaults
+   * that call scan() may or may not result in another tree walk.
    *
-   * @return Map. The "true" set is the included files. The "false" set is
-   *         excluded
+   * @return IBDirScan will entire result set
    */
-  Map<Boolean, List<Path>> scan();
-
-  default List<Path> getIncludedPaths() {
-    return ofNullable(scan().get(true)).orElse(emptyList());
-  }
-
-  default List<Path> getExcludedPaths() {
-    return ofNullable(scan().get(false)).orElse(emptyList());
-  }
+  IBDirScan scan() throws IOException;
 }

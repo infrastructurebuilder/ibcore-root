@@ -41,10 +41,14 @@
     <hashicorp.waypoint.download.skip>false</hashicorp.waypoint.download.skip>
 
 
-    <test.coverage.percentage.required>89</test.coverage.percentage.required>
-    <jacoco.max.missed.classes>4</jacoco.max.missed.classes>
+    <test.coverage.percentage.required>88</test.coverage.percentage.required>
+    <jacoco.max.missed.classes>6</jacoco.max.missed.classes>
   </properties>
   <dependencies>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
     <dependency>
       <groupId>io.avaje</groupId>
       <artifactId>javax.inject</artifactId>

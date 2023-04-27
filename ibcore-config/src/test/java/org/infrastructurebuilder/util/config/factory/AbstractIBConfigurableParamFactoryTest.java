@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.lang.System.Logger;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -32,9 +31,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AbstractIBConfigurableParamFactoryTest {
-  public final static Logger         log = System.getLogger(AbstractIBConfigurableParamFactoryTest.class.getName());
+  public final static Logger         log = LoggerFactory.getLogger(AbstractIBConfigurableParamFactoryTest.class.getName());
   public final static IBRuntimeUtils ibr = new IBRuntimeUtilsTesting(log);
 
   @BeforeAll

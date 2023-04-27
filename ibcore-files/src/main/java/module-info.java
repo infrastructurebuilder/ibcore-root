@@ -16,8 +16,7 @@
 module org.infrastructurebuilder.util.files {
   exports org.infrastructurebuilder.util.filescanner;
 
-  requires org.infrastructurebuilder.util.core;
+  requires transitive org.infrastructurebuilder.util.core;
   requires org.infrastructurebuilder.util.config;
-  requires ant;
   requires javax.inject;
 }

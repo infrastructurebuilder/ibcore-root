@@ -44,8 +44,6 @@ import org.infrastructurebuilder.util.core.TestingPathSupplier;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
 
 abstract public class AbstractPlexusDefaultsConfigTest {
 

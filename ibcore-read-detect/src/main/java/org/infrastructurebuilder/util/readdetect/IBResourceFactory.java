@@ -28,7 +28,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
-import java.lang.System.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -51,7 +52,7 @@ import org.json.JSONObject;
 
 public class IBResourceFactory {
   private static final long serialVersionUID = 5978749189830232137L;
-  private final static Logger log = System.getLogger(IBResourceFactory.class.getName());
+  private final static Logger log = LoggerFactory.getLogger(IBResourceFactory.class.getName());
   private final static Tika tika = new Tika();
   private final static AtomicReference<RelativeRoot> root = new AtomicReference<>();
 
@@ -66,14 +67,14 @@ public class IBResourceFactory {
       throw new IBException("file.not.regular.file");
 
     synchronized (tika) {
-      log.log(Logger.Level.DEBUG, "Detecting path " + path);
+      log.debug( "Detecting path " + path);
       org.apache.tika.metadata.Metadata md = new org.apache.tika.metadata.Metadata();
       md.set(TikaCoreProperties.RESOURCE_NAME_KEY, path.toAbsolutePath().toString());
       try (Reader p = tika.parse(path, md)) {
-        log.log(Logger.Level.DEBUG, " Metadata is " + md);
+        log.debug( " Metadata is " + md);
         return tika.detect(path);
       } catch (IOException e) {
-        log.log(Logger.Level.ERROR, "Failed during attempt to get tika type", e);
+        log.error( "Failed during attempt to get tika type", e);
         return IBConstants.APPLICATION_OCTET_STREAM;
       }
     }

@@ -34,9 +34,11 @@ import org.infrastructurebuilder.util.versions.IBVersionsSupplier;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AbstractIBRuntimeUtilsTest {
-  public final static java.lang.System.Logger              log = System.getLogger(AbstractIBRuntimeUtilsTest.class.getName());
+  public final static Logger              log = LoggerFactory.getLogger(AbstractIBRuntimeUtilsTest.class);
   public final static TestingPathSupplier wps = new TestingPathSupplier();
   public final static GAV                 gav = new DefaultGAV("G:A:1.0.0:jar");
 

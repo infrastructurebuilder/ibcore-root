@@ -15,7 +15,8 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import java.lang.System.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @javax.inject.Named(LocalLogSupplier.NAME)
 @javax.inject.Singleton

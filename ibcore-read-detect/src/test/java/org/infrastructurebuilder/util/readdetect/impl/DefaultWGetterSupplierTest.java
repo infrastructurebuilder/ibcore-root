@@ -24,7 +24,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.lang.System.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -63,7 +64,7 @@ public class DefaultWGetterSupplierTest {
       "f545eeb9c46e29f5d8e29639840457de5d1bdbc34e16cbe5c1ca4b7efcbf294da0a3df41485c041cee1a25d8f0afec246cd02be1298dee9ab770a7cfed73dc71"));
   private static final Optional<Checksum> CHECKSUM = Optional.of(new Checksum(
       "d06b93c883f8126a04589937a884032df031b05518eed9d433efb6447834df2596aebd500d69b8283e5702d988ed49655ae654c1683c7a4ae58bfa6b92f2b73a"));
-  private final static Logger log = System.getLogger(DefaultWGetterSupplierTest.class.toString());
+  private final static Logger log = LoggerFactory.getLogger(DefaultWGetterSupplierTest.class.toString());
   private final static LoggerSupplier ls = new LoggerSupplier() {
     @Override
     public Logger get() {

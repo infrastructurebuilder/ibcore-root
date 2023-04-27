@@ -15,9 +15,6 @@
  */
 package org.infrastructurebuilder.util.executor;
 
-import static java.lang.System.Logger.Level.DEBUG;
-import static java.lang.System.Logger.Level.ERROR;
-import static java.lang.System.Logger.Level.INFO;
 import static java.time.Duration.ofMinutes;
 import static java.time.Duration.ofSeconds;
 import static java.util.Optional.empty;
@@ -31,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.PrintStream;
-import java.lang.System.Logger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -46,9 +42,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ProcessRunnerTest {
-  private final static Logger              logger                = System.getLogger(ProcessRunnerTest.class.getName());
+  private final static Logger              logger                = LoggerFactory.getLogger(ProcessRunnerTest.class.getName());
   private final static TestingPathSupplier wps                   = new TestingPathSupplier();
   private final static String[]            PACKER_VERSION_PARAMS = { "version", "-machine-readable", "-color=false" };
 
@@ -87,7 +85,7 @@ public class ProcessRunnerTest {
     IBUtils.deletePath(scratchDir);
     Optional<PrintStream> addl = empty();
     assertNotNull(new DefaultProcessRunner(scratchDir, addl));
-    logger.log(INFO, "I totally ran!");
+    logger.info( "I totally ran!");
   }
 
   @Test
@@ -95,7 +93,7 @@ public class ProcessRunnerTest {
     IBUtils.deletePath(scratchDir);
     Optional<PrintStream> addl = empty();
     assertNotNull(new DefaultProcessRunner(scratchDir, addl, of(logger)));
-    logger.log(INFO, "I totally ran!");
+    logger.info( "I totally ran!");
   }
 
   @Test
@@ -175,9 +173,9 @@ public class ProcessRunnerTest {
       assertTrue(newrunner.hasErrorResult(p.getResults()));
       final ProcessExecutionResult a = p.getExecutions().get(id);
       assertEquals(2, a.getResultCode().get().longValue());
-      logger.log(DEBUG, a.getId() + " " + a.getException().toString() + a.getResultCode());
+      logger.debug( a.getId() + " " + a.getException().toString() + a.getResultCode());
     } catch (final Exception e) {
-      logger.log(ERROR, "Unexpected exception occurred", e);
+      logger.error( "Unexpected exception occurred", e);
       fail(e.getClass().getCanonicalName() + " " + e.getMessage());
     }
     assertFalse(Files.exists(scratchDir));
@@ -209,7 +207,7 @@ public class ProcessRunnerTest {
   @Test
   public void testGetLogger() {
     assertNotNull(runner.getLogger());
-    runner.getLogger().log(INFO, "Test get the logger");
+    runner.getLogger().info( "Test get the logger");
   }
 
   @Test

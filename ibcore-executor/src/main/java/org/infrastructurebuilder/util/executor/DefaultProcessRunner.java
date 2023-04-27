@@ -28,7 +28,10 @@ import static org.infrastructurebuilder.util.executor.ProcessException.pet;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.System.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.helpers.NOPLogger;
+
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
@@ -131,11 +134,11 @@ public class DefaultProcessRunner implements ProcessRunner {
     for (final ProcessExecutionResult res : resultMap.values()) {
       final Optional<Integer> resultCode = res.getResultCode();
       if (!res.getStdErr().toString().isEmpty()) {
-        getLogger().log(Logger.Level.ERROR,res.getStdErr().toString());
+        getLogger().error(res.getStdErr().toString());
       }
-      getLogger().log(Logger.Level.INFO,res.getStdOut().toString());
+      getLogger().info(res.getStdOut().toString());
       if (!resultCode.isPresent() || resultCode.get() != 0) {
-        getLogger().log(Logger.Level.ERROR,String.format("Result code %s differed from expected result 0", resultCode.toString()));
+        getLogger().error(String.format("Result code %s differed from expected result 0", resultCode.toString()));
         return true;
       }
     }
@@ -196,7 +199,7 @@ public class DefaultProcessRunner implements ProcessRunner {
           }
           if (bag.stillRunning())
             if (bag.destroyRemainingSleepers(sleepAfterDestroy)) {
-              logger.log(Logger.Level.WARNING,"Failed to destroy some sleeping processes.  YMMV.");
+              logger.warn("Failed to destroy some sleeping processes.  YMMV.");
             }
         }
 

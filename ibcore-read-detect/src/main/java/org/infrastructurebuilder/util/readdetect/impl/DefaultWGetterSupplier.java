@@ -24,7 +24,8 @@ import static org.infrastructurebuilder.util.constants.IBConstants.FILEMAPPERS;
 import static org.infrastructurebuilder.util.constants.IBConstants.WORKINGDIR;
 import static org.infrastructurebuilder.util.core.IBUtils.getJSONArrayAsListString;
 
-import java.lang.System.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;

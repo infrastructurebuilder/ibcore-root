@@ -15,30 +15,20 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Optional;
+import java.util.SortedSet;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public interface IBDirScan {
+  SortedSet<Path> getIncludedPaths();
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+  SortedSet<Path> getExcludedPaths();
 
-public class LocalLogSupplierTest {
-  public final static Logger log = LoggerFactory.getLogger(LocalLogSupplierTest.class.getName());
+  SortedSet<Path> getErroredPaths();
 
-  private LocalLogSupplier l;
+  Optional<BasicFileAttributes> getAttributesForPath(Path p);
 
-  @BeforeEach
-  public void setUp() throws Exception {
-    l = new LocalLogSupplier();
-  }
-
-  @Test
-  public void testGet() {
-    assertNull(l.get());
-    l.setT(log);
-    assertEquals(log, l.get());
-  }
+  Optional<Throwable> getExceptionForPath(Path p);
 
 }

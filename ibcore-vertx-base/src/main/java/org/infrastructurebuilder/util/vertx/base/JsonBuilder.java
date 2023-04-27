@@ -44,6 +44,8 @@ import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.core.UUIdentified;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
@@ -56,6 +58,7 @@ import io.vertx.core.json.JsonObject;
  *
  */
 public final class JsonBuilder implements JsonOutputEnabled {
+  private final static Logger log = LoggerFactory.getLogger(JsonBuilder.class);
   public final static Function<Collection<? extends JsonOutputEnabled>, JsonArray> jsonOutputToJsonArray = oe -> {
     return new JsonArray(requireNonNull(oe).stream().map(JsonOutputEnabled::toJson).collect(toList()));
   };
@@ -71,6 +74,7 @@ public final class JsonBuilder implements JsonOutputEnabled {
   public final static Function<JSONArray, JsonArray> orgToVertxArray = ja -> {
     return new JsonArray(IBUtils.asStringStream(ja).map(s -> new JsonObject(s)).collect(toList()));
   };
+  private static final String RELATIVE_ROOT = "__relative##_root";
 
   public static JsonBuilder addOn(final JSONObject j, final Optional<RelativeRoot> relativeRoot) {
     return new JsonBuilder(new JsonObject(j.toString()), relativeRoot);
@@ -102,13 +106,18 @@ public final class JsonBuilder implements JsonOutputEnabled {
   }
 
   public JsonBuilder(final JsonObject j, final Optional<RelativeRoot> relativeRoot) {
-    json = requireNonNull(j);
-    this.relativeRoot = requireNonNull(relativeRoot);
+    json = new JsonObject(requireNonNull(j).encode());
+    RelativeRoot rr = null;
+    if (j.containsKey(RELATIVE_ROOT)) {
+      json.remove(RELATIVE_ROOT);
+      rr = RelativeRoot.from(j.getString(RELATIVE_ROOT));
+    }
+    rr = requireNonNull(relativeRoot).orElse(rr);  // Overrides existing RR if supplied
+    this.relativeRoot = Optional.ofNullable(rr);
   }
 
   public JsonBuilder(final Optional<RelativeRoot> root) {
-    json = new JsonObject();
-    relativeRoot = requireNonNull(root);
+    this(new JsonObject(), root);
   }
 
   public JsonBuilder addAbsolutePath(final String key, final Optional<Path> s) {
@@ -458,6 +467,9 @@ public final class JsonBuilder implements JsonOutputEnabled {
 
   @Override
   public JsonObject toJson() {
+    if (json.containsKey(RELATIVE_ROOT))
+      log.warn("Already contains a {} key",RELATIVE_ROOT);
+    this.relativeRoot.ifPresent(rr -> json.put(RELATIVE_ROOT, rr.toString())); // FIXME Maybe not?
     return new JsonObject(json.toString());// , json.fieldNames()); // TODO
   }
 

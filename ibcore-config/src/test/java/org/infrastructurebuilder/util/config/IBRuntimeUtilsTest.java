@@ -18,7 +18,8 @@ package org.infrastructurebuilder.util.config;
 import static java.util.Optional.empty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.lang.System.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
@@ -35,7 +36,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class IBRuntimeUtilsTest {
-  public final static Logger log = System.getLogger(IBRuntimeUtilsTest.class.toString());
+  public final static Logger log = LoggerFactory.getLogger(IBRuntimeUtilsTest.class.toString());
 
   @BeforeAll
   public static void setUpBeforeClass() throws Exception {
