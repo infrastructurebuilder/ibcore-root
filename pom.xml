@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Copyright © 2019 admin (admin@infrastructurebuilder.org)
@@ -15,19 +16,43 @@
     limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibparent</artifactId>
-    <version>70</version>
+    <version>74</version>
   </parent>
+
   <artifactId>ibcore-root</artifactId>
   <version>0.20.1-SNAPSHOT</version>
   <packaging>pom</packaging>
+
   <name>${project.artifactId}</name>
   <description>InfrastructureBuilder Common</description>
   <url>${github.url.base}/${project.artifactId}</url>
+
+  <modules>
+    <module>ibcore</module>
+    <module>ibcore-vertx-base</module>
+    <module>ibcore-vertx-blobstore</module>
+    <module>ibcore-vertx-dataobjects</module>
+    <module>ibcore-config</module>
+    <module>ibcore-artifacts</module>
+    <module>ibcore-dag</module>
+    <!--
+    <module>modello-plugin-xpp3-reflect</module>
+    -->
+    <module>ibcore-executor</module>
+    <module>ibcore-plexus-defaults</module>
+    <module>ibcore-maven-support</module>
+    <module>ibcore-files</module>
+    <module>ibcore-read-detect-model</module>
+    <module>ibcore-read-detect</module>
+    <module>ibcore-default-extension-type-mapper</module>
+  </modules>
+
   <scm>
     <connection>scm:git:${git.url}</connection>
     <url>scm:git:${git.url}</url>
@@ -40,18 +65,20 @@
       <url>${site.target.url}/</url>
     </site>
   </distributionManagement>
+
   <properties>
     <iblog.version>0.14.0</iblog.version>
-    <ib.exceptions.version>70</ib.exceptions.version>
+    <ib.exceptions.version>74</ib.exceptions.version>
   </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.infrastructurebuilder</groupId>
         <artifactId>maven-import-bom</artifactId>
+        <version>${maven.bom.version}</version>
         <type>pom</type>
         <scope>import</scope>
-        <version>${maven.bom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.infrastructurebuilder</groupId>
@@ -61,8 +88,8 @@
       <dependency>
         <groupId>org.infrastructurebuilder</groupId>
         <artifactId>ibcore</artifactId>
+        <version>${project.version}</version>
         <type>test-jar</type>
-        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.infrastructurebuilder</groupId>
@@ -77,8 +104,8 @@
       <dependency>
         <groupId>org.infrastructurebuilder</groupId>
         <artifactId>ibcore-config</artifactId>
-        <type>test-jar</type>
         <version>${project.version}</version>
+        <type>test-jar</type>
       </dependency>
       <dependency>
         <groupId>org.infrastructurebuilder</groupId>
@@ -88,8 +115,8 @@
       <dependency>
         <groupId>org.infrastructurebuilder</groupId>
         <artifactId>ibcore-artifacts</artifactId>
-        <type>test-jar</type>
         <version>${project.version}</version>
+        <type>test-jar</type>
       </dependency>
       <dependency>
         <groupId>org.infrastructurebuilder</groupId>
@@ -180,6 +207,7 @@
       <artifactId>ibexceptions</artifactId>
     </dependency>
   </dependencies>
+
   <build>
     <pluginManagement>
       <plugins>
@@ -201,23 +229,4 @@
       </plugin>
     </plugins>
   </build>
-  <modules>
-    <module>ibcore</module>
-    <module>ibcore-vertx-base</module>
-    <module>ibcore-vertx-blobstore</module>
-    <module>ibcore-vertx-dataobjects</module>
-    <module>ibcore-config</module>
-    <module>ibcore-artifacts</module>
-    <module>ibcore-dag</module>
-    <!--
-    <module>modello-plugin-xpp3-reflect</module>
-    -->
-    <module>ibcore-executor</module>
-    <module>ibcore-plexus-defaults</module>
-    <module>ibcore-maven-support</module>
-    <module>ibcore-files</module>
-    <module>ibcore-read-detect-model</module>
-    <module>ibcore-read-detect</module>
-    <module>ibcore-default-extension-type-mapper</module>
-  </modules>
 </project>
