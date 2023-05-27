@@ -30,9 +30,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.lang.System; import org.slf4j.Logger;
+import java.lang.System;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 public class DefaultIBArtifactVersionMapperTest {
 
@@ -81,13 +81,12 @@ public class DefaultIBArtifactVersionMapperTest {
     };
     ibvs = new HashMap<>();
     ibvs.put("ABC", vs);
-    v = new DefaultIBArtifactVersionMapper( ibvs);
+    v = new DefaultIBArtifactVersionMapper(ibvs);
   }
 
   @AfterEach
   public void tearDown() throws Exception {
   }
-
 
   @Test
   public void testGetMatchingArtifacts() {

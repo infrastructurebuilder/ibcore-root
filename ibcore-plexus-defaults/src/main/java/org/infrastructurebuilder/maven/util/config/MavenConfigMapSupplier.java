@@ -44,10 +44,10 @@ import org.infrastructurebuilder.util.config.DefaultConfigMapSupplier;
 @Named(ConfigMapSupplier.MAVEN)
 public class MavenConfigMapSupplier extends DefaultConfigMapSupplier {
 
-
   @Inject
   public MavenConfigMapSupplier(final MavenProject mavenProject, @Nullable MavenSession session,
-      @Nullable MojoExecution execution) {
+      @Nullable MojoExecution execution)
+  {
 
     final Build build = mavenProject.getBuild();
     super.overrideValueDefaultBlank("project.build.directory", build.getDirectory());

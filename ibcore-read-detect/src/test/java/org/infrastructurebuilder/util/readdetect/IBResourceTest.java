@@ -67,14 +67,15 @@ public class IBResourceTest {
 
   @Test
   public void testNonExistentFile() {
-    assertThrows(IBException.class,() ->  DefaultIBResource.toType.apply(Paths.get(".").resolve(UUID.randomUUID().toString())));
+    assertThrows(IBException.class,
+        () -> DefaultIBResource.toType.apply(Paths.get(".").resolve(UUID.randomUUID().toString())));
   }
+
   @Test
   public void testFailOnNonFile() {
-    assertThrows(IBException.class,() ->  DefaultIBResource.toType.apply(Paths.get(".")));
+    assertThrows(IBException.class, () -> DefaultIBResource.toType.apply(Paths.get(".")));
   }
 //https://file-examples.com/wp-content/uploads/2017/02/zip_2MB.zip
-
 
   @Test
   public void testOtherCopyToDeletedOnExitTempChecksumAndPathWithTarget() throws IOException {
@@ -82,7 +83,8 @@ public class IBResourceTest {
     URL l = uri.toURL();
     String ef = l.toExternalForm();
 
-    IBResource cset = DefaultIBResource.copyToTempChecksumAndPath(this.wps.get(), testFile, Optional.of("zip:" + ef), TESTFILE_TEST);
+    IBResource cset = DefaultIBResource.copyToTempChecksumAndPath(this.wps.get(), testFile, Optional.of("zip:" + ef),
+        TESTFILE_TEST);
     assertEquals(183, cset.getPath().toFile().length());
     assertEquals(CHECKSUMVAL, cset.getChecksum().toString());
     assertEquals(APPLICATION_ZIP, cset.getType());
@@ -126,15 +128,15 @@ public class IBResourceTest {
     long d = new Date().toInstant().toEpochMilli();
     InputStream g = cet.returns(() -> cset.get());
     cet.translate(() -> g.close());
-    assertTrue(cset.getMostRecentReadTime().toEpochMilli()-d < 3);
+    assertTrue(cset.getMostRecentReadTime().toEpochMilli() - d < 3);
 
     assertEquals(183, cset.getPath().toFile().length());
     assertEquals(CHECKSUMVAL, cset.getChecksum().toString());
     assertEquals(APPLICATION_ZIP, cset.getType());
     assertEquals(CHECKSUMVAL, new Checksum(cset.get()).toString());
 
-
   }
+
   @Test
   public void testJSONFromPath() {
     IBResource cset = IBResourceFactory.fromPath(testFile);

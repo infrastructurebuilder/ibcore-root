@@ -59,13 +59,11 @@ import org.infrastructurebuilder.util.core.JSONOutputEnabled;
 import org.json.JSONObject;
 
 /**
- * An IBResource exists as a relative path based on some RelativeRoot, supplied
- * externally at creation time.  The general persisted values of an IBResource
- * remain constant.  The only difference is that the root values change.
+ * An IBResource exists as a relative path based on some RelativeRoot, supplied externally at creation time. The general
+ * persisted values of an IBResource remain constant. The only difference is that the root values change.
  *
- * Thus, if an IBResource exists pointing to a Path on the filesystem and that
- * entire filesystem is moved elsewhere, only the root needs to be changed to
- * point to its new location.
+ * Thus, if an IBResource exists pointing to a Path on the filesystem and that entire filesystem is moved elsewhere,
+ * only the root needs to be changed to point to its new location.
  *
  * @author mykel
  *
@@ -78,8 +76,7 @@ public interface IBResource extends JSONOutputEnabled {
   Path getPath();
 
   /**
-   * @return Equivalent to calculated Checksum of the contents of the file at
-   *         getPath()
+   * @return Equivalent to calculated Checksum of the contents of the file at getPath()
    */
   Checksum getChecksum();
 
@@ -89,8 +86,7 @@ public interface IBResource extends JSONOutputEnabled {
   String getType();
 
   /**
-   * Relocate underlying path to new path. The target path should be a normal
-   * filesystem, not a ZipFileSystem.
+   * Relocate underlying path to new path. The target path should be a normal filesystem, not a ZipFileSystem.
    *
    * @param target
    * @return
@@ -99,9 +95,8 @@ public interface IBResource extends JSONOutputEnabled {
   IBResource moveTo(Path target) throws IOException;
 
   /**
-   * Sub-types may, at their discretion, return a {@link Instant} of the most
-   * recent "get()" call. The generated IBResourceModel doesn't because it's
-   * really a persistence mechanism and that value isn't relevant.
+   * Sub-types may, at their discretion, return a {@link Instant} of the most recent "get()" call. The generated
+   * IBResourceModel doesn't because it's really a persistence mechanism and that value isn't relevant.
    *
    *
    * @return most recent read time or null
@@ -216,8 +211,8 @@ public interface IBResource extends JSONOutputEnabled {
   Path getOriginalPath();
 
   /**
-   * This method should not return an empty Properties object. If there are no
-   * additional properties then the return should be Optional.empty()
+   * This method should not return an empty Properties object. If there are no additional properties then the return
+   * should be Optional.empty()
    *
    * @return empty or a Properties with size() > 0
    */

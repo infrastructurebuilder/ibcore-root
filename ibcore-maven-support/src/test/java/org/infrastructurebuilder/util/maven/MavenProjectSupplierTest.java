@@ -15,7 +15,6 @@
  */
 package org.infrastructurebuilder.util.maven;
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;

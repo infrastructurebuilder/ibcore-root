@@ -41,10 +41,10 @@ import org.junit.jupiter.api.Test;
 public class ChecksumTest {
 
   private static TestingPathSupplier wps;
-  private Checksum                   cnull;
-  private Checksum                   cRick;
-  private Checksum                   cString;
-  private final String               theString = "NEVER_GONNA_GIVE_YOU_UP";
+  private Checksum cnull;
+  private Checksum cRick;
+  private Checksum cString;
+  private final String theString = "NEVER_GONNA_GIVE_YOU_UP";
   private Checksum cnull2;
 
   @BeforeAll
@@ -64,8 +64,9 @@ public class ChecksumTest {
   @Test
   public void testExtend() {
     Checksum cnewString = Checksum.extend(cnull2, theString.getBytes(UTF_8));
-    assertEquals(cnewString,cString);
+    assertEquals(cnewString, cString);
   }
+
   @Test
   public void testAsUUID() {
     final String uuid = "747a8830-5c25-3d28-ab17-81ed541f236e";
@@ -89,7 +90,9 @@ public class ChecksumTest {
 
   @Test
   public void testChecksumByteArray() {
-    final byte[]   x = { 78, 69, 86, 69, 82, 95, 71, 79, 78, 78, 65, 95, 71, 73, 86, 69, 95, 89, 79, 85, 95, 85, 80 };
+    final byte[] x = {
+        78, 69, 86, 69, 82, 95, 71, 79, 78, 78, 65, 95, 71, 73, 86, 69, 95, 89, 79, 85, 95, 85, 80
+    };
     final Checksum c = new Checksum(x);
     assertEquals(cString, c);
   }
@@ -131,7 +134,9 @@ public class ChecksumTest {
 
   @Test
   public void testGetDigest() {
-    final byte[] x = { 78, 69, 86, 69, 82, 95, 71, 79, 78, 78, 65, 95, 71, 73, 86, 69, 95, 89, 79, 85, 95, 85, 80 };
+    final byte[] x = {
+        78, 69, 86, 69, 82, 95, 71, 79, 78, 78, 65, 95, 71, 73, 86, 69, 95, 89, 79, 85, 95, 85, 80
+    };
 
     assertTrue(Arrays.equals(x, cString.getDigest()));
   }

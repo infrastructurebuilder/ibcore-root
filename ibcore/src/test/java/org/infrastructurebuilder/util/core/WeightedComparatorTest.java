@@ -39,7 +39,6 @@ public class WeightedComparatorTest {
     };
   }
 
-
   @Test
   public void testCompare() {
     WeightedComparator c = new WeightedComparator();

@@ -50,7 +50,7 @@ public class HandCraftedEnvSupplierTest {
       h = new HandCraftedEnvSupplier(k);
     }
     Map<String, String> m = h.get();
-    assertEquals(2,m.size());
+    assertEquals(2, m.size());
     assertEquals("b", m.get("a"));
     assertEquals("e", m.get("d"));
 

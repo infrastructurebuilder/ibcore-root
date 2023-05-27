@@ -152,7 +152,9 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
           return retval;
         }
 
-        @SuppressWarnings({ "rawtypes", "unchecked" })
+        @SuppressWarnings({
+            "rawtypes", "unchecked"
+        })
         @Override
         public boolean equals(final Object obj) {
           if (this == obj)
@@ -257,7 +259,9 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
         }
       }
 
-      @SuppressWarnings({ "unchecked" })
+      @SuppressWarnings({
+          "unchecked"
+      })
       @Override
       public boolean equals(final Object obj) {
         if (this == obj)
@@ -504,7 +508,9 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
         return retval;
       }
 
-      @SuppressWarnings({ "rawtypes", "unchecked" })
+      @SuppressWarnings({
+          "rawtypes", "unchecked"
+      })
       @Override
       public boolean equals(final Object obj) {
         if (this == obj)
@@ -671,7 +677,9 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
       return retValue;
     }
 
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({
+        "unchecked"
+    })
     @Override
     public boolean equals(final Object obj) {
       if (this == obj)

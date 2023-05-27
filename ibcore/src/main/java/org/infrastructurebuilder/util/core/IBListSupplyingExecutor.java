@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-
 public interface IBListSupplyingExecutor<T, C> extends Supplier<List<T>>, LoggerEnabled {
 
   default List<String> getRequiredConfigItems() {

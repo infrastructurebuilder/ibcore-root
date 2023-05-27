@@ -169,7 +169,9 @@ public class IBUtilsTest {
   @BeforeAll
   public static void setUpBeforeClass() throws Exception {
     wps = new TestingPathSupplier();
-    objects = new JSONObject[] { new JSONObject("{ x : 1}"), new JSONObject("{x:2}"), new JSONObject("{x:3}") };
+    objects = new JSONObject[] {
+        new JSONObject("{ x : 1}"), new JSONObject("{x:2}"), new JSONObject("{x:3}")
+    };
 
     jj = new JSONObject(
         "{ \"version\" : \"1.0.0\", \"extension\" : \"zip\", \"groupId\" : \"a.b.c\", \"artifactId\":\"abc\", \"classifier\":\"class\"}");
@@ -236,10 +238,10 @@ public class IBUtilsTest {
     String v = q.toString();
     Enumeration<Object> e = new StringTokenizer(v);
     ArrayList<String> b = new ArrayList<>();
-    IBUtils.enumerationAsStream(e,true).forEach(o -> {
+    IBUtils.enumerationAsStream(e, true).forEach(o -> {
       b.add(o.toString());
     });
-    assertEquals(a,b);
+    assertEquals(a, b);
   }
 
   @Test
@@ -304,7 +306,9 @@ public class IBUtilsTest {
 
   @Test
   public void testAsStringStream() {
-    final String[] s = new String[] { "A", "B", "C" };
+    final String[] s = new String[] {
+        "A", "B", "C"
+    };
     final List<String> l = asList(s);
     final JSONArray j = new JSONArray(l);
     final Stream<String> y = asStringStream(j);
@@ -575,7 +579,9 @@ public class IBUtilsTest {
 
   @Test
   public void testGetHex() {
-    final byte[] b = { 0x00, 0x01, 0x03, 0x0f };
+    final byte[] b = {
+        0x00, 0x01, 0x03, 0x0f
+    };
     final String s = getHex(b);
     assertEquals("0001030f", s);
     assertTrue(Arrays.equals(b, hexStringToByteArray(s)));
@@ -583,7 +589,9 @@ public class IBUtilsTest {
 
   @Test
   public void testGetHexCharset() {
-    final byte[] b = { 0x00, 0x01, 0x03, 0x0f };
+    final byte[] b = {
+        0x00, 0x01, 0x03, 0x0f
+    };
     final String s = getHex(b, IBConstants.UTF8);
     assertEquals("0001030f", s);
     assertTrue(Arrays.equals(b, hexStringToByteArray(s)));
@@ -596,7 +604,9 @@ public class IBUtilsTest {
 
   @Test
   public void testGetHexStringFromInputStream() throws IOException {
-    final byte[] b = { 0x00, 0x01, 0x03, 0x0f };
+    final byte[] b = {
+        0x00, 0x01, 0x03, 0x0f
+    };
     final ByteArrayInputStream ins = new ByteArrayInputStream(b);
     final String s = getHexStringFromInputStream(ins);
     assertEquals("0001030f", s);
@@ -1374,6 +1384,5 @@ public class IBUtilsTest {
   public void testInstantiate() {
     assertNotNull(new IBUtils());
   }
-
 
 }

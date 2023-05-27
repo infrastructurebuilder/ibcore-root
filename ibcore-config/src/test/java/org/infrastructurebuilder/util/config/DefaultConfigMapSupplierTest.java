@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 public class DefaultConfigMapSupplierTest {
 
   private ConfigMapSupplier supplier;
-  private ConfigMap         val;
+  private ConfigMap val;
 
   @BeforeEach
   public void setUp() throws Exception {

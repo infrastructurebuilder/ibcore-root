@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 
-
 public interface ProcessRunner extends Supplier<Optional<ProcessExecutionResultBag>>, AutoCloseable {
   public final static Pattern ws = Pattern.compile("\\s");
 

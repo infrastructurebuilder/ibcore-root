@@ -28,14 +28,14 @@ public interface WGetter {
 
   Optional<List<IBResource>> collectCacheAndCopyToChecksumNamedFile(boolean deleteExistingCacheIfPresent,
       Optional<BasicCredentials> creds, Path outputPath, String sourceString, Optional<Checksum> checksum,
-      Optional<String> type,  int retries, int readTimeOut, boolean skipCache, boolean expandArchives);
+      Optional<String> type, int retries, int readTimeOut, boolean skipCache, boolean expandArchives);
 
   /**
-   * Convenience method for use outside of this class. Allows us to use the same sort of collector for lists
-   * of expanded archives in multiple occasions.  Maybe we move this to it's own component next
+   * Convenience method for use outside of this class. Allows us to use the same sort of collector for lists of expanded
+   * archives in multiple occasions. Maybe we move this to it's own component next
    *
    * @param tempPath path to write temp files
-   * @param source Path of the archive we're expanding
+   * @param source   Path of the archive we're expanding
    * @param Original source URL as a string if available
    * @return List of expanded read, typed, and renamed files, not including the original.
    */

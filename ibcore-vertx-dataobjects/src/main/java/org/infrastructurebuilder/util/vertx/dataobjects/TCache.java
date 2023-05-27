@@ -52,7 +52,6 @@ public interface TCache<T extends Typed> {
     return getAllAsMap().compose(m -> succeededFuture(new ArrayList<>(m.values())));
   }
 
-
   /**
    * Add an T. Will not add an T with a duplicate ID!
    *

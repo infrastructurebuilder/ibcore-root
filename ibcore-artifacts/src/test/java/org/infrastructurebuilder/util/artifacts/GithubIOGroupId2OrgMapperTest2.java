@@ -16,6 +16,7 @@
  * @formatter:on
  */
 package org.infrastructurebuilder.util.artifacts;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Optional;
@@ -27,7 +28,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class GithubIOGroupId2OrgMapperTest2 {
-
 
   private GithubIOGroupId2OrgMapper gh;
 

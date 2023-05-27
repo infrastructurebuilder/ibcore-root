@@ -32,8 +32,7 @@ public class ActivationFileProxy {
   }
 
   /**
-   * Get the name of the file that should exist to activate a
-   * profile.
+   * Get the name of the file that should exist to activate a profile.
    *
    * @return String
    */
@@ -42,9 +41,7 @@ public class ActivationFileProxy {
   }
 
   /**
-   * Get the name of the file that should be missing to activate
-   * a
-   *             profile.
+   * Get the name of the file that should be missing to activate a profile.
    *
    * @return String
    */

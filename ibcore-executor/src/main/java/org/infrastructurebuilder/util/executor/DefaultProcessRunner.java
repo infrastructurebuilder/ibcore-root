@@ -59,15 +59,15 @@ import org.zeroturnaround.exec.StartedProcess;
 
 public class DefaultProcessRunner implements ProcessRunner {
 
-  private final Optional<PrintStream>                                addl;
-  private boolean                                                    keepScratchDir = false;
-  private final Logger                                               logger;
+  private final Optional<PrintStream> addl;
+  private boolean keepScratchDir = false;
+  private final Logger logger;
 
-  private final AtomicReference<Set<Future<ProcessExecutionResult>>> locked         = new AtomicReference<>(null);
-  private final AtomicReference<ProcessExecutionResultBag>           result         = new AtomicReference<>(null);
+  private final AtomicReference<Set<Future<ProcessExecutionResult>>> locked = new AtomicReference<>(null);
+  private final AtomicReference<ProcessExecutionResultBag> result = new AtomicReference<>(null);
 
-  private final Path                                                 scratchDir;
-  private final Vector<ProcessExecution>                             serialList     = new Vector<>();
+  private final Path scratchDir;
+  private final Vector<ProcessExecution> serialList = new Vector<>();
 
   public DefaultProcessRunner(final Path scratchDir, final Optional<PrintStream> addl) {
     this(scratchDir, addl, empty(), empty());
@@ -78,12 +78,14 @@ public class DefaultProcessRunner implements ProcessRunner {
   }
 
   public DefaultProcessRunner(final Path scratchDir, final Optional<PrintStream> addl, final Optional<Logger> logger,
-      final Optional<Path> relativeRoot) {
+      final Optional<Path> relativeRoot)
+  {
     this(scratchDir, addl, logger, relativeRoot, Optional.of(Long.valueOf(100L)));
   }
 
   public DefaultProcessRunner(final Path scratchDir, final Optional<PrintStream> addl, final Optional<Logger> logger,
-      final Optional<Path> relativeRoot, final Optional<Long> iterimSleepValue) {
+      final Optional<Path> relativeRoot, final Optional<Long> iterimSleepValue)
+  {
     this.scratchDir = requireNonNull(scratchDir);
     if (exists(this.scratchDir))
       throw new ProcessException("Scratch directory must not exist -> " + this.scratchDir);
@@ -166,7 +168,7 @@ public class DefaultProcessRunner implements ProcessRunner {
         if (requireNonNull(fin).isNegative())
           throw new ProcessException("Final duration cannot be negative " + fin);
         final Instant startedLock = now();
-        final Instant endLock     = startedLock.plus(fin.equals(ZERO) ? ProcessExecution.VERY_LONG : fin);
+        final Instant endLock = startedLock.plus(fin.equals(ZERO) ? ProcessExecution.VERY_LONG : fin);
         locked.compareAndSet(null, new HashSet<Future<ProcessExecutionResult>>());
 
         final MutableProcessExecutionResultBag bag = new MutableProcessExecutionResultBag();
@@ -176,7 +178,7 @@ public class DefaultProcessRunner implements ProcessRunner {
           bag.addExecution(pe, pExecutor);
 
           try {
-            final StartedProcess        s      = pExecutor.start();
+            final StartedProcess s = pExecutor.start();
             final Future<ProcessResult> future = s.getFuture();
             bag.addProcess(pe, s.getProcess());
             if (pe.isBackground()) {

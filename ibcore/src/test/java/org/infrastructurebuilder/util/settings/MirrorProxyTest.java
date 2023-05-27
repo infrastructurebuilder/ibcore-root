@@ -34,17 +34,17 @@ import org.junit.jupiter.api.Test;
 
 public class MirrorProxyTest {
 
-  private static final String NAME            = "name";
-  private static final String B               = "B";
-  private static final String A               = "A";
-  private static final String ID              = "id";
-  private MirrorProxy         m;
-  String                      id              = ID;
-  Layout                      layout          = DEFAULT;
-  List<String>                mirrorOf        = Arrays.asList(A, B);
-  List<Layout>                mirrorOfLayouts = Arrays.asList(DEFAULT, LEGACY);
-  Optional<String>            name            = Optional.of(NAME);
-  String                      url             = "http://www.example.com/somemirror";
+  private static final String NAME = "name";
+  private static final String B = "B";
+  private static final String A = "A";
+  private static final String ID = "id";
+  private MirrorProxy m;
+  String id = ID;
+  Layout layout = DEFAULT;
+  List<String> mirrorOf = Arrays.asList(A, B);
+  List<Layout> mirrorOfLayouts = Arrays.asList(DEFAULT, LEGACY);
+  Optional<String> name = Optional.of(NAME);
+  String url = "http://www.example.com/somemirror";
 
   @BeforeEach
   public void setUp() throws Exception {

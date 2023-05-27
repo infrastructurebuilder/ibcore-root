@@ -22,8 +22,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Allows us to know the relative weight of a given component within a set.
  *
- * The contract is HIGHER weight has more precedence, so the comparator reverses
- * natural ordering
+ * The contract is HIGHER weight has more precedence, so the comparator reverses natural ordering
  *
  * Default value is expected to be 0, and most impls should PROBABLY use 0
  *

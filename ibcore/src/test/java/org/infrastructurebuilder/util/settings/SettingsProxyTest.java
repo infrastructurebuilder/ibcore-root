@@ -88,18 +88,22 @@ public class SettingsProxyTest {
   public void testGetMirror() {
     assertFalse(sp.getMirror("ABC").isPresent());
   }
+
   @Test
   public void testGetMirrorOf() {
     assertFalse(sp.getMirrorOf("ABC").isPresent());
   }
+
   @Test
   public void tstOffile() {
     assertFalse(sp.isOffline());
   }
+
   @Test
   public void testActiveProxy() {
     assertFalse(sp.getActiveProxy().isPresent());
   }
+
   @Test
   public void testPluginReg() {
     assertFalse(sp.isUsePluginRegistry());
@@ -113,7 +117,7 @@ public class SettingsProxyTest {
   @Test
   public void testBasics() {
     assertEquals(IBConstants.UTF_8, sp.getModelEncoding().name());
-    assertEquals(0,sp.getPluginGroups().size());
+    assertEquals(0, sp.getPluginGroups().size());
     assertTrue(sp.getCredentialsFor(ABC).isPresent());
   }
 

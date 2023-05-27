@@ -36,14 +36,14 @@ public interface ProcessExecutionResult extends JSONAndChecksumEnabled {
 
   };
 
-  String  EXCEPTION   = "exception";
-  String  EXECUTION   = "execution";
-  String  RESULT_CODE = "result-code";
-  String  START       = "start";
-  String  RUNTIME     = "runtime";
-  String  STD_ERR     = "std-err";
-  String  STD_OUT     = "std-out";
-  Integer FAIL        = -1;
+  String EXCEPTION = "exception";
+  String EXECUTION = "execution";
+  String RESULT_CODE = "result-code";
+  String START = "start";
+  String RUNTIME = "runtime";
+  String STD_ERR = "std-err";
+  String STD_OUT = "std-out";
+  Integer FAIL = -1;
 
   String getId();
 

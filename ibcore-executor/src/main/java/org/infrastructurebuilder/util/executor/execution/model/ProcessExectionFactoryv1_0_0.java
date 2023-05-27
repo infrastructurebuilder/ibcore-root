@@ -44,21 +44,22 @@ import org.infrastructurebuilder.util.executor.VersionedProcessExecutionFactory;
 public class ProcessExectionFactoryv1_0_0 implements ProcessExecutionFactory {
 
   private final VersionedProcessExecutionFactory parent;
-  private final String                           id;
-  private final String                           executable;
-  private final Path                             workDirectory;
-  private boolean                                background;
-  private List<Integer>                          exitCodes    = null;
-  private Path                                   relativeRoot = null;
-  private Map<String, String>                    env          = null;
-  private boolean                                optional;
-  private Checksum                               execChecksum = null;
-  private Path                                   stdIn        = null;
-  private Duration                               timeout      = null;
-  private List<String>                           args         = null;
+  private final String id;
+  private final String executable;
+  private final Path workDirectory;
+  private boolean background;
+  private List<Integer> exitCodes = null;
+  private Path relativeRoot = null;
+  private Map<String, String> env = null;
+  private boolean optional;
+  private Checksum execChecksum = null;
+  private Path stdIn = null;
+  private Duration timeout = null;
+  private List<String> args = null;
 
   public ProcessExectionFactoryv1_0_0(VersionedProcessExecutionFactory parent, String id, String executable,
-      Path workDirectory) {
+      Path workDirectory)
+  {
     this.parent = requireNonNull(parent);
     this.id = requireNonNull(id);
     this.executable = requireNonNull(executable);
@@ -92,9 +93,9 @@ public class ProcessExectionFactoryv1_0_0 implements ProcessExecutionFactory {
       if (!csum.equals(c))
         throw new ProcessException("Checksum of executable " + c + " does not match supplied " + csum);
     });
-    return new DefaultProcessExecution(this.id, this.executable,
-        ofNullable(args).orElse(new ArrayList<>()), ofNullable(timeout), ofNullable(stdIn), this.workDirectory,
-        optional, ofNullable(env), ofNullable(relativeRoot), ofNullable(exitCodes), parent.getAddl(), background);
+    return new DefaultProcessExecution(this.id, this.executable, ofNullable(args).orElse(new ArrayList<>()),
+        ofNullable(timeout), ofNullable(stdIn), this.workDirectory, optional, ofNullable(env), ofNullable(relativeRoot),
+        ofNullable(exitCodes), parent.getAddl(), background);
   }
 
   @Override

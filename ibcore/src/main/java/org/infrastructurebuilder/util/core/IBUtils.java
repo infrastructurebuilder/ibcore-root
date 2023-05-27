@@ -259,8 +259,7 @@ public class IBUtils {
   }
 
   /**
-   * Modified from
-   * https://stackoverflow.com/questions/33242577/how-do-i-turn-a-java-enumeration-into-a-stream
+   * Modified from https://stackoverflow.com/questions/33242577/how-do-i-turn-a-java-enumeration-into-a-stream
    *
    * @param <T>
    * @param e1
@@ -419,7 +418,7 @@ public class IBUtils {
       if (Files.exists(root))
         Files.delete(root);
     } catch (final IOException e) {
-      iolog.debug( "Fail to delete path", e);
+      iolog.debug("Fail to delete path", e);
     }
 
   }
@@ -427,8 +426,7 @@ public class IBUtils {
   public static byte[] digestInputStream(final String type, final InputStream ins) throws IOException {
     final byte[] buf = new byte[BUFFER_SIZE];
     try (DigestInputStream sink = new DigestInputStream(ins, cet.returns(() -> MessageDigest.getInstance(type)))) {
-      while (sink.read(buf) > 0) {
-      }
+      while (sink.read(buf) > 0) {}
       return sink.getMessageDigest().digest();
     }
   }
@@ -743,8 +741,7 @@ public class IBUtils {
   /**
    * Try to atomically move a source path to a target path.
    *
-   * IF THAT FAILS TO WORK, then copy source to target and then TRY to delete
-   * source but accept if it doesn't work
+   * IF THAT FAILS TO WORK, then copy source to target and then TRY to delete source but accept if it doesn't work
    *
    * @param source
    * @param target
@@ -816,7 +813,7 @@ public class IBUtils {
 
       });
     } catch (final IOException e) {
-      iolog.warn( "Fail to move entirely", e);
+      iolog.warn("Fail to move entirely", e);
     }
     return target;
 

@@ -22,15 +22,16 @@ import java.util.Properties;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-
 @Named("default")
 public class DefaultPropertiesSupplier implements PropertiesSupplier {
   private Properties p;
+
   @Inject
   public DefaultPropertiesSupplier() {
     this.p = new Properties();
     this.p.putAll(System.getProperties());
   }
+
   @Override
   public Properties get() {
     Properties g = new Properties();

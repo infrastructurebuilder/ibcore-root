@@ -44,7 +44,7 @@ public class ChecksumEnabledTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    t= UUID.randomUUID();
+    t = UUID.randomUUID();
   }
 
   @AfterEach

@@ -75,8 +75,7 @@ public interface IBResourceVertx extends Supplier<Future<Buffer>>, JsonOutputEna
   Path getPath();
 
   /**
-   * @return Equivalent to calculated Checksum of the contents of the file at
-   *         getPath()
+   * @return Equivalent to calculated Checksum of the contents of the file at getPath()
    */
   Future<Checksum> getChecksum();
 
@@ -86,8 +85,7 @@ public interface IBResourceVertx extends Supplier<Future<Buffer>>, JsonOutputEna
   Future<String> getType();
 
   /**
-   * Relocate underlying path to new path. The target path is meant to be a normal
-   * filesystem, not a ZipFileSystem.
+   * Relocate underlying path to new path. The target path is meant to be a normal filesystem, not a ZipFileSystem.
    *
    * @param target
    * @return
@@ -96,9 +94,8 @@ public interface IBResourceVertx extends Supplier<Future<Buffer>>, JsonOutputEna
   Future<IBResourceVertx> moveTo(Path target) throws IOException;
 
   /**
-   * Sub-types may, at their discretion, return a {@link Date} of the most recent
-   * "get()" call. The generated IBResourceModel doesn't because it's really a
-   * persistence mechanism and that value isn't relevant.
+   * Sub-types may, at their discretion, return a {@link Date} of the most recent "get()" call. The generated
+   * IBResourceModel doesn't because it's really a persistence mechanism and that value isn't relevant.
    *
    * @return
    */

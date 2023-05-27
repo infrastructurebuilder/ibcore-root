@@ -31,7 +31,8 @@ public class RepositoryProxy {
   private final Optional<RepositoryPolicyProxy> releases, snapshots;
 
   public RepositoryProxy(String id, Layout layout, Optional<String> name, URL url,
-      Optional<RepositoryPolicyProxy> releases, Optional<RepositoryPolicyProxy> snapshots) {
+      Optional<RepositoryPolicyProxy> releases, Optional<RepositoryPolicyProxy> snapshots)
+  {
     this.id = requireNonNull(id);
     this.layout = requireNonNull(layout);
     this.name = requireNonNull(name);
@@ -50,9 +51,7 @@ public class RepositoryProxy {
   }
 
   /**
-   * Get the type of layout this repository uses for locating and
-   *             storing artifacts - can be "legacy" or
-   * "default".
+   * Get the type of layout this repository uses for locating and storing artifacts - can be "legacy" or "default".
    *
    * @return String
    */
@@ -79,8 +78,7 @@ public class RepositoryProxy {
   }
 
   /**
-   * Get how to handle downloading of releases from this
-   * repository.
+   * Get how to handle downloading of releases from this repository.
    *
    * @return RepositoryPolicy
    */
@@ -89,8 +87,7 @@ public class RepositoryProxy {
   }
 
   /**
-   * Get how to handle downloading of snapshots from this
-   * repository.
+   * Get how to handle downloading of snapshots from this repository.
    *
    * @return RepositoryPolicy
    */

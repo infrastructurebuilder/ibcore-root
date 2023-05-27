@@ -33,10 +33,10 @@ import org.junit.jupiter.api.Test;
 
 public class ConfigMapTest {
 
-  private static final Object     ABC = "ABC";
+  private static final Object ABC = "ABC";
   private HashMap<String, Object> m;
-  private Object                  o   = UUID.randomUUID();
-  private ConfigMap               m3;
+  private Object o = UUID.randomUUID();
+  private ConfigMap m3;
 
   @BeforeEach
   public void setUp() throws Exception {

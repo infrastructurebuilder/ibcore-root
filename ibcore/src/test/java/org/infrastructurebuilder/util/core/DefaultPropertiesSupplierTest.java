@@ -37,7 +37,7 @@ public class DefaultPropertiesSupplierTest {
   @Test
   public void testGet() {
     assertNotNull(ps);
-     Map<String, String> p = ps.get();
+    Map<String, String> p = ps.get();
     assertNotNull(p);
     assertTrue(p.containsKey("PATH"));
   }

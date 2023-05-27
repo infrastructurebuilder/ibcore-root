@@ -35,7 +35,7 @@ public class CryptoExceptionTest {
   public void testIBCryptoExceptionString() {
     final IBCryptoException x = new IBCryptoException(STRING);
     assertNotNull(x);
-    assertEquals( STRING, x.getMessage());
+    assertEquals(STRING, x.getMessage());
   }
 
   @Test

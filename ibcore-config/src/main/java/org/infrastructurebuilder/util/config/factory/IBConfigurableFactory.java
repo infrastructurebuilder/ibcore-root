@@ -28,8 +28,7 @@ import org.infrastructurebuilder.util.core.IBConfigurable;
 import org.infrastructurebuilder.util.core.Weighted;
 
 /**
- * All IBConfigurableFactory instances have a weighted order, an available
- * logger, and an IBRuntimeUtils available.
+ * All IBConfigurableFactory instances have a weighted order, an available logger, and an IBRuntimeUtils available.
  *
  * @author mykel.alvis
  *

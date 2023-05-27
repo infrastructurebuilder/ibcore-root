@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 
 public class DefaultStringListSupplierTest {
 
-private final static TestingPathSupplier wps = new TestingPathSupplier();
+  private final static TestingPathSupplier wps = new TestingPathSupplier();
   private static Path target;
   private static Path testClasses;
 

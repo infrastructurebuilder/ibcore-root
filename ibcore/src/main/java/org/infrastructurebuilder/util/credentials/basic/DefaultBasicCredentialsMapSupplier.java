@@ -28,7 +28,7 @@ import javax.inject.Named;
 @Named
 public class DefaultBasicCredentialsMapSupplier implements BasicCredentialsMapSupplier {
 
-  private Map<String, BasicCredentials>       _map;
+  private Map<String, BasicCredentials> _map;
   private final Map<String, BasicCredentials> interimMap = new ConcurrentHashMap<>();
 
   @Inject

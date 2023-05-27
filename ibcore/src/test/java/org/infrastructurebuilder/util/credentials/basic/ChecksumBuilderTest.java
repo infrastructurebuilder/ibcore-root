@@ -88,9 +88,10 @@ public class ChecksumBuilderTest {
     m = new HashMap<>();
     t = new ChecksumEnabled() {
       private ChecksumBuilder thisBuilder = ChecksumBuilder.newInstance(relativeRoot);
+
       @Override
       public ChecksumBuilder getChecksumBuilder() {
-        return thisBuilder ;
+        return thisBuilder;
       }
 
     };

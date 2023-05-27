@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 public class DefaultGAVMatcherTest {
 
   private GAVMatcher m, n;
-  private GAV gav,gav2,gav3;
+  private GAV gav, gav2, gav3;
   private IBVersion i;
 
   @BeforeEach
@@ -44,10 +44,11 @@ public class DefaultGAVMatcherTest {
 //    n = new DefaultGAVMatcher(Optional.of(Pattern.compile("x")), Optional.of(Pattern.compile("y")),
 //        Optional.of(i.forRange(RangeOperator.GTE)), Optional.empty(), Optional.of(Pattern.compile("z")),
 //        Optional.of(Pattern.compile("jar")));
-    n = DefaultGAVMatcher.from(Optional.of("x"), Optional.of("y"), Optional.of(i.forRange(RangeOperator.GTE)), Optional.empty() , Optional.of("z"), Optional.of("jar"));
+    n = DefaultGAVMatcher.from(Optional.of("x"), Optional.of("y"), Optional.of(i.forRange(RangeOperator.GTE)),
+        Optional.empty(), Optional.of("z"), Optional.of("jar"));
     gav = new DefaultGAV("x:y:1.0.0:jar:z");
     gav2 = new DefaultGAV("x:y:2.0.0:jar:z");
-    gav3 = new DefaultGAV("x","y","z",null,"jar");
+    gav3 = new DefaultGAV("x", "y", "z", null, "jar");
   }
 
   @Test

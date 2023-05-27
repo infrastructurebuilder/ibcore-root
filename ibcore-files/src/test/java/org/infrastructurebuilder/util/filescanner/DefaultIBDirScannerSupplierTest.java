@@ -75,7 +75,7 @@ public class DefaultIBDirScannerSupplierTest {
     assertNotNull(res.getIncludedPaths());
     assertNotNull(res.getExcludedPaths());
     assertNotNull(res.getErroredPaths());
-    assertEquals(1,res.getIncludedPaths().size());
+    assertEquals(1, res.getIncludedPaths().size());
     assertEquals(3, res.getExcludedPaths().size());
   }
 

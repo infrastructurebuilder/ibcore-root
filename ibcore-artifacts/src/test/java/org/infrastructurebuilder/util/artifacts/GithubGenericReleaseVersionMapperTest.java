@@ -47,10 +47,10 @@ public class GithubGenericReleaseVersionMapperTest extends TestWeightedAndIdenti
   @Test
   public void testApply() {
     List<String> ret = this.vm.apply(this.gav1);
-    assertEquals(3,ret.size());
+    assertEquals(3, ret.size());
     assertTrue(ret.contains("v" + x1_0_0));
     assertTrue(ret.contains(x1_0_0));
-    assertTrue(ret.contains("b-"+ x1_0_0));
+    assertTrue(ret.contains("b-" + x1_0_0));
   }
 
 }

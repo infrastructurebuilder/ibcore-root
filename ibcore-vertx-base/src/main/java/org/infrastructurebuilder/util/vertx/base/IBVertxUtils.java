@@ -58,8 +58,7 @@ public class IBVertxUtils {
   };
 
   /**
-   * This is here because UUIdentified has no JsonObject from Vert.x, only
-   * JSONObject from org.json
+   * This is here because UUIdentified has no JsonObject from Vert.x, only JSONObject from org.json
    *
    * @param u
    * @return
@@ -69,8 +68,7 @@ public class IBVertxUtils {
   }
 
   /**
-   * This is here because UUIdentified has no JsonObject from Vert.x, only
-   * JSONObject from org.json
+   * This is here because UUIdentified has no JsonObject from Vert.x, only JSONObject from org.json
    *
    * @param u
    * @return
@@ -80,8 +78,7 @@ public class IBVertxUtils {
   }
 
   /**
-   * This is here because UUIdentifiedAndTimestamped has no JsonObject from
-   * Vert.x, only JSONObject from org.json
+   * This is here because UUIdentifiedAndTimestamped has no JsonObject from Vert.x, only JSONObject from org.json
    *
    * @param u
    * @return
@@ -91,8 +88,7 @@ public class IBVertxUtils {
   }
 
   /**
-   * This is here because UUIdentifiedAndTimestamped has no JsonObject from
-   * Vert.x, only JSONObject from org.json
+   * This is here because UUIdentifiedAndTimestamped has no JsonObject from Vert.x, only JSONObject from org.json
    *
    * @param u
    * @return
@@ -102,9 +98,8 @@ public class IBVertxUtils {
   }
 
   /**
-   * This is a VERY SLOOW computing a checksum off of a VERY SIMPLE json object.
-   * Specifically, it handles the various types of json (recursively and slowly)
-   * as sorted maps or ordered lists of values.
+   * This is a VERY SLOOW computing a checksum off of a VERY SIMPLE json object. Specifically, it handles the various
+   * types of json (recursively and slowly) as sorted maps or ordered lists of values.
    *
    * @param json
    * @return
@@ -117,9 +112,8 @@ public class IBVertxUtils {
   }
 
   /**
-   * Returns a string representation that is consistent over time using sorted
-   * keys THIS IS EXPENSIVE and RECURSIVE and DUMB but required to obtain
-   * checksums for json
+   * Returns a string representation that is consistent over time using sorted keys THIS IS EXPENSIVE and RECURSIVE and
+   * DUMB but required to obtain checksums for json
    *
    * @param json
    * @return A determinsitically acquired string based on recursive json mapping
@@ -175,7 +169,7 @@ public class IBVertxUtils {
   }
 
   public static VertxGAV readGAVFromServiceFile(Class<?> class1) {
-    return new DefaultVertxGAV((String)null);
+    return new DefaultVertxGAV((String) null);
   }
 
 }

@@ -37,7 +37,8 @@ import org.infrastructurebuilder.util.config.ConfigMapSupplier;
 public class MavenConfigWithServersMapSupplier extends MavenConfigMapSupplier {
   @Inject
   public MavenConfigWithServersMapSupplier(final MavenProject mavenProject, final Settings settings,
-      @Nullable MavenSession session, @Nullable MojoExecution execution) {
+      @Nullable MavenSession session, @Nullable MojoExecution execution)
+  {
     super(mavenProject, session, execution);
     final StringJoiner sb = new StringJoiner(",");
     final List<Server> servers = Objects.requireNonNull(settings).getServers();

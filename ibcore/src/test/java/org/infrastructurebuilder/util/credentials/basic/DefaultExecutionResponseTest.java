@@ -36,12 +36,12 @@ public class DefaultExecutionResponseTest {
   public void setUp() throws Exception {
     errors = Arrays.asList("A", "B");
     i = -1;
-    k = new DefaultExecutionResponse<>( Integer.valueOf(i), errors);
+    k = new DefaultExecutionResponse<>(Integer.valueOf(i), errors);
   }
 
   @Test
   public void testGetErrors() {
-    assertEquals(Arrays.asList("A","B"), k.getErrors());
+    assertEquals(Arrays.asList("A", "B"), k.getErrors());
   }
 
   @Test

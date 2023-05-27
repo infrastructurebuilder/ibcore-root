@@ -108,7 +108,7 @@ public class IBRuntimeUtilsTest {
 
   @Test
   public void testGetDependencies() {
-    assertEquals(0,t.getDependencies().size());
+    assertEquals(0, t.getDependencies().size());
   }
 
 }

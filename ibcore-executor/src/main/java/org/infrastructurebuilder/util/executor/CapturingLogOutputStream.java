@@ -33,8 +33,8 @@ import org.zeroturnaround.exec.stream.LogOutputStream;
 public abstract class CapturingLogOutputStream extends LogOutputStream {
 
   private final Optional<BufferedWriter> os;
-  private final Optional<Path>           path;
-  private final boolean                  flushEveryLine;
+  private final Optional<Path> path;
+  private final boolean flushEveryLine;
 
   public CapturingLogOutputStream(final Optional<Path> p) {
     this(p, true);

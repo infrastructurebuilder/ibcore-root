@@ -32,17 +32,15 @@ import com.vdurmont.semver4j.Semver.SemverType;
 
 public final class DefaultIBVersion implements IBVersion {
 
-
   @Override
   public IBVersionRange forRange(RangeOperator op) {
-    return new DefaultIBVersionRange((IBVersion)this, (RangeOperator)op);
+    return new DefaultIBVersionRange((IBVersion) this, (RangeOperator) op);
   }
 
   public static class DefaultIBVersionRange implements IBVersionRange {
     private final Range range;
     private final IBVersion version;
     private final RangeOperator op;
-
 
     public DefaultIBVersionRange(final IBVersion version, final RangeOperator op) {
       this.version = Objects.requireNonNull(version);
@@ -60,14 +58,15 @@ public final class DefaultIBVersion implements IBVersion {
     public boolean isSatisfiedBy(final String version) {
       return range.isSatisfiedBy(new Semver(version, SemverType.LOOSE));
     }
+
     @Override
     public String toString() {
-        return range.toString();
+      return range.toString();
     }
 
     @Override
     public IBVersionRange apiVersion() {
-      return new DefaultIBVersionRange(this.version.apiVersion(),this.op);
+      return new DefaultIBVersionRange(this.version.apiVersion(), this.op);
     }
 
   }
@@ -76,7 +75,7 @@ public final class DefaultIBVersion implements IBVersion {
 
     private final IBVersionRange lower, upper;
 
-    public final static IBVersionBoundedRange versionBoundedRangeFrom (String lower, String upper) {
+    public final static IBVersionBoundedRange versionBoundedRangeFrom(String lower, String upper) {
       return versionBoundedRangeFrom(new DefaultIBVersion(lower), new DefaultIBVersion(upper));
     }
 
@@ -84,7 +83,7 @@ public final class DefaultIBVersion implements IBVersion {
       RangeOperator secnd = RangeOperator.LT;
       if (lower.equals(upper))
         secnd = RangeOperator.EQ;
-      if (upper.isLowerThan(lower) )
+      if (upper.isLowerThan(lower))
         throw new IBException("Upper " + upper + " must be greater than " + lower);
 
       return new DefaultIBVersionBoundedRange(new DefaultIBVersionRange(lower, RangeOperator.GTE),
@@ -108,7 +107,7 @@ public final class DefaultIBVersion implements IBVersion {
 
     @Override
     public String toString() {
-      return this.lower.toString() + ","+ this.upper.toString();
+      return this.lower.toString() + "," + this.upper.toString();
     }
 
     @Override
@@ -197,7 +196,6 @@ public final class DefaultIBVersion implements IBVersion {
       return req;
     }
   }
-
 
   private static com.vdurmont.semver4j.Semver.SemverType asSemverType(final IBVersionType type) {
     return com.vdurmont.semver4j.Semver.SemverType.valueOf(type.name());

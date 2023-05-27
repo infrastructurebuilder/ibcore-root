@@ -34,14 +34,8 @@ public class RepositoryPolicyProxy {
   }
 
   /**
-   * Get what to do when verification of an artifact checksum
-   * fails. Valid values are
-   *             <code>ignore</code>
-   *             ,
-   *             <code>fail</code>
-   *             or
-   *             <code>warn</code>
-   *             (the default).
+   * Get what to do when verification of an artifact checksum fails. Valid values are <code>ignore</code> ,
+   * <code>fail</code> or <code>warn</code> (the default).
    *
    * @return String
    */
@@ -50,14 +44,8 @@ public class RepositoryPolicyProxy {
   }
 
   /**
-   * Get the frequency for downloading updates - can be
-   *             <code>always,</code>
-   *             <code>daily</code>
-   *             (default),
-   *             <code>interval:XXX</code>
-   *             (in minutes) or
-   *             <code>never</code>
-   *             (only if it doesn't exist locally).
+   * Get the frequency for downloading updates - can be <code>always,</code> <code>daily</code> (default),
+   * <code>interval:XXX</code> (in minutes) or <code>never</code> (only if it doesn't exist locally).
    *
    * @return String
    */

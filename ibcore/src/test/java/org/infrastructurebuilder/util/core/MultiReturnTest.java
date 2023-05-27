@@ -61,7 +61,7 @@ public class MultiReturnTest {
     a = new COT(X, 1, null);
     b = new COT(2, e);
     c = new COT(e);
-    d = new COT(X,2);
+    d = new COT(X, 2);
   }
 
   @Test

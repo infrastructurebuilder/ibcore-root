@@ -15,7 +15,6 @@
  */
 package org.infrastructurebuilder.util.maven.artifacts.impl;
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
@@ -47,7 +46,7 @@ public class DefaultServerProxyListSupplierTest {
   @Test
   public void testGet() {
     List<ServerProxy> k = spl.get();
-    assertEquals(2,k.size());
+    assertEquals(2, k.size());
   }
 
 }

@@ -31,7 +31,7 @@ public class MultiType<T, E extends Throwable> {
   }
 
   public MultiType(final T typed) {
-    this(typed,null);
+    this(typed, null);
   }
 
   public MultiType(final T typed, final E thrown) {
@@ -45,6 +45,7 @@ public class MultiType<T, E extends Throwable> {
 
   /**
    * Use getT() instead
+   *
    * @return
    */
   @Deprecated

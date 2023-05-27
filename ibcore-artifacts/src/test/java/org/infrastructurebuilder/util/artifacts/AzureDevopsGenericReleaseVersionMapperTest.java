@@ -28,8 +28,6 @@ import org.infrastructurebuilder.util.core.GAV;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
-
 public class AzureDevopsGenericReleaseVersionMapperTest {
 
   private static final String VER = "1.0.0";

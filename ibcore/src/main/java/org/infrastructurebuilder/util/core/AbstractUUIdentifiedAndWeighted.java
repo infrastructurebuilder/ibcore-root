@@ -39,16 +39,12 @@ public class AbstractUUIdentifiedAndWeighted extends AbstractUUIdentified implem
     this(0);
   }
 
-
   public Integer getWeight() {
     return weight;
   }
 
   public JSONObject getLocalJSON() {
-    return JSONBuilder.newInstance()
-        .addString(ID, getId().toString())
-        .addInteger(WEIGHT, getWeight())
-        .asJSON();
+    return JSONBuilder.newInstance().addString(ID, getId().toString()).addInteger(WEIGHT, getWeight()).asJSON();
   }
 
 }

@@ -48,21 +48,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ProcessRunnerTest {
-  private final static Logger              logger                = LoggerFactory.getLogger(ProcessRunnerTest.class.getName());
-  private final static TestingPathSupplier wps                   = new TestingPathSupplier();
-  private final static String[]            PACKER_VERSION_PARAMS = { "version", "-machine-readable", "-color=false" };
+  private final static Logger logger = LoggerFactory.getLogger(ProcessRunnerTest.class.getName());
+  private final static TestingPathSupplier wps = new TestingPathSupplier();
+  private final static String[] PACKER_VERSION_PARAMS = {
+      "version", "-machine-readable", "-color=false"
+  };
 
   @BeforeAll
   public static void setUpBeforeClass() throws Exception {
   }
 
-  private DefaultProcessRunner             runner;
-  private Checksum                         packerCsum;
-  private Path                             packerExecutable;
-  private Path                             scratchDir;
-  private String                           ttClass;
-  private Path                             ttest1;
-  private Path                             target;
+  private DefaultProcessRunner runner;
+  private Checksum packerCsum;
+  private Path packerExecutable;
+  private Path scratchDir;
+  private String ttClass;
+  private Path ttest1;
+  private Path target;
   private VersionedProcessExecutionFactory vpef;
 
   @BeforeEach
@@ -87,7 +89,7 @@ public class ProcessRunnerTest {
     IBUtils.deletePath(scratchDir);
     Optional<PrintStream> addl = empty();
     assertNotNull(new DefaultProcessRunner(scratchDir, addl));
-    logger.info( "I totally ran!");
+    logger.info("I totally ran!");
   }
 
   @Test
@@ -95,13 +97,13 @@ public class ProcessRunnerTest {
     IBUtils.deletePath(scratchDir);
     Optional<PrintStream> addl = empty();
     assertNotNull(new DefaultProcessRunner(scratchDir, addl, of(logger)));
-    logger.info( "I totally ran!");
+    logger.info("I totally ran!");
   }
 
   @Test
   public void testAddLocked() {
-    final String            id = UUID.randomUUID().toString();
-    ProcessExecutionFactory e  = vpef.getFactoryForVersion("1.0.0", scratchDir, id, packerExecutable.toString()).get()
+    final String id = UUID.randomUUID().toString();
+    ProcessExecutionFactory e = vpef.getFactoryForVersion("1.0.0", scratchDir, id, packerExecutable.toString()).get()
 
         .withArguments(PACKER_VERSION_PARAMS)
 
@@ -115,8 +117,8 @@ public class ProcessRunnerTest {
   @Disabled
   @Test
   public void testDaemon() {
-    final String            id = UUID.randomUUID().toString();
-    final Path              in = ttest1.resolve("ThreadTest1S.class");
+    final String id = UUID.randomUUID().toString();
+    final Path in = ttest1.resolve("ThreadTest1S.class");
     ProcessExecutionFactory e2 = vpef.getDefaultFactory(ttest1, id, "java")
 
         .withArguments(ttClass, "1")
@@ -143,7 +145,7 @@ public class ProcessRunnerTest {
       assertFalse(newrunner.hasErrorResult(p.getResults()));
 
       final ProcessExecutionResult a = p.getExecutions().get(id);
-      final String                 x = String.join("\n", a.getStdOut());
+      final String x = String.join("\n", a.getStdOut());
       assertTrue(x.contains("SUCCESS"));
     } catch (final Exception e) {
       fail(e.getClass().getCanonicalName() + " " + e.getMessage());
@@ -154,8 +156,8 @@ public class ProcessRunnerTest {
   @Disabled
   @Test
   public void testErrorResult() {
-    final String            id = UUID.randomUUID().toString();
-    final Path              in = ttest1.resolve("ThreadTest1S.class");
+    final String id = UUID.randomUUID().toString();
+    final Path in = ttest1.resolve("ThreadTest1S.class");
 
     ProcessExecutionFactory e2 = vpef.getFactoryForVersion("1.0.0", ttest1, id, "javac").get()
 
@@ -175,9 +177,9 @@ public class ProcessRunnerTest {
       assertTrue(newrunner.hasErrorResult(p.getResults()));
       final ProcessExecutionResult a = p.getExecutions().get(id);
       assertEquals(2, a.getResultCode().get().longValue());
-      logger.debug( a.getId() + " " + a.getException().toString() + a.getResultCode());
+      logger.debug(a.getId() + " " + a.getException().toString() + a.getResultCode());
     } catch (final Exception e) {
-      logger.error( "Unexpected exception occurred", e);
+      logger.error("Unexpected exception occurred", e);
       fail(e.getClass().getCanonicalName() + " " + e.getMessage());
     }
     assertFalse(Files.exists(scratchDir));
@@ -185,7 +187,7 @@ public class ProcessRunnerTest {
 
   @Test
   public void testGetExecution() throws Exception {
-    final String            id = "default";
+    final String id = "default";
 
     ProcessExecutionFactory e3 = vpef.getFactoryForVersion("1.0.0", scratchDir, id, "java").get();
 
@@ -209,7 +211,7 @@ public class ProcessRunnerTest {
   @Test
   public void testGetLogger() {
     assertNotNull(runner.getLogger());
-    runner.getLogger().info( "Test get the logger");
+    runner.getLogger().info("Test get the logger");
   }
 
   @Test
@@ -220,8 +222,8 @@ public class ProcessRunnerTest {
   @Disabled
   @Test
   public void testLongRunningDaemon() {
-    final String            id = UUID.randomUUID().toString();
-    final Path              in = ttest1.resolve("ThreadTest1S.class");
+    final String id = UUID.randomUUID().toString();
+    final Path in = ttest1.resolve("ThreadTest1S.class");
     ProcessExecutionFactory e2 = vpef.getFactoryForVersion("1.0.0", ttest1, id, "java").get()
 
         .withArguments(ttClass, "60")
@@ -246,7 +248,7 @@ public class ProcessRunnerTest {
     assertNotNull(p.getResults());
 
     final ProcessExecutionResult a = p.getExecutions().get(id);
-    final String                 x = String.join("\n", a.getStdOut());
+    final String x = String.join("\n", a.getStdOut());
     assertFalse(x.contains("FAILURE"));
   }
 
@@ -289,7 +291,7 @@ public class ProcessRunnerTest {
 
   @Test
   public void testwithChecksum() {
-    final String            id = UUID.randomUUID().toString();
+    final String id = UUID.randomUUID().toString();
     ProcessExecutionFactory e2 = vpef.getFactoryForVersion("1.0.0", scratchDir, id, packerExecutable.toString()).get()
         // packer checksum
         .withChecksum(packerCsum)
@@ -312,13 +314,13 @@ public class ProcessRunnerTest {
     assertNotNull(p.getResults());
 
     final ProcessExecutionResult a = p.getExecutions().get(id);
-    final String                 x = String.join("\n", a.getStdOut());
+    final String x = String.join("\n", a.getStdOut());
     assertTrue(x.contains("version-prelease"));
   }
 
   @Test
   public void testwithChecksum2() {
-    final String            id = UUID.randomUUID().toString();
+    final String id = UUID.randomUUID().toString();
 
     ProcessExecutionFactory e2 = vpef.getFactoryForVersion("1.0.0", scratchDir, id, packerExecutable.toString()).get()
 
@@ -343,13 +345,13 @@ public class ProcessRunnerTest {
     assertNotNull(p.getResults());
 
     final ProcessExecutionResult a = p.getExecution(id).get();
-    final String                 x = String.join("\n", a.getStdOut());
+    final String x = String.join("\n", a.getStdOut());
     assertTrue(x.contains("version-prelease"));
   }
 
   @Test
   public void testwithFakeChecksum() {
-    final String            id = UUID.randomUUID().toString();
+    final String id = UUID.randomUUID().toString();
     ProcessExecutionFactory e2 = vpef.getFactoryForVersion("1.0.0", scratchDir, id, packerExecutable.toString()).get()
 
         .withArguments(PACKER_VERSION_PARAMS)

@@ -26,9 +26,10 @@ import javax.inject.Singleton;
 import org.infrastructurebuilder.util.constants.IBConstants;
 
 /**
- * As a [useful] example, this mapper extracts the org from the github.io username groupId mapping
- * that is common with Maven-generated resources from Github ('io.github.username').
- * Override matchIt or override and call it from within a subclass using another regex.
+ * As a [useful] example, this mapper extracts the org from the github.io username groupId mapping that is common with
+ * Maven-generated resources from Github ('io.github.username'). Override matchIt or override and call it from within a
+ * subclass using another regex.
+ *
  * @author mykel.alvis
  *
  */

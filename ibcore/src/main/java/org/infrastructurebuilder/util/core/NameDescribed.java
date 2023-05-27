@@ -26,7 +26,8 @@ public interface NameDescribed {
   public final static String DISPLAYNAME = "displayName";
 
   /**
-   * It is possible for a NameDescribed to have a null name.  This should be the exception, however.
+   * It is possible for a NameDescribed to have a null name. This should be the exception, however.
+   *
    * @return
    */
   public String getName();

@@ -64,7 +64,7 @@ public class ProxyProxyTest {
 
   @Test
   public void testGetPort() {
-    assertEquals(8081,pp.getPort());
+    assertEquals(8081, pp.getPort());
   }
 
   @Test
@@ -74,7 +74,7 @@ public class ProxyProxyTest {
 
   @Test
   public void testGetUsername() {
-    assertEquals(USERNAME,pp.getUsername().get());
+    assertEquals(USERNAME, pp.getUsername().get());
   }
 
   @Test

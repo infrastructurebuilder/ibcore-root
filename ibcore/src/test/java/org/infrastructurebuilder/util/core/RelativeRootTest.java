@@ -88,7 +88,7 @@ class RelativeRootTest {
     Optional<Path> r = prr.relativize(aPath);
     assertTrue(r.isPresent());
     // Relativized paths are not the same as the original
-    assertNotEquals(aPath,r.get());
+    assertNotEquals(aPath, r.get());
     // Resolving an absolute path returns that path
     assertEquals(aPath, prr.resolve(aPath).get());
   }
@@ -98,7 +98,5 @@ class RelativeRootTest {
     String v = hrr.relativize(ssURL);
     assertEquals(ss, v);
   }
-
-
 
 }

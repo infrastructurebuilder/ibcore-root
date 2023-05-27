@@ -20,6 +20,6 @@ package org.infrastructurebuilder.util.core;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public interface EnvSupplier extends Supplier<Map<String,String>> {
+public interface EnvSupplier extends Supplier<Map<String, String>> {
 
 }

@@ -45,6 +45,7 @@ class LastUpdatedTest {
 
   private LastUpdated lu1, lu2;
   private Instant now, then;
+
   @BeforeEach
   void setUp() throws Exception {
     now = Instant.now();
@@ -61,9 +62,9 @@ class LastUpdatedTest {
   @Test
   void testGetLastUpdated() {
     assertEquals(now, lu1.getLastUpdated());
-    assertEquals(LastUpdated.lastupdatedComparator.compare(lu1, lu1),0 );
+    assertEquals(LastUpdated.lastupdatedComparator.compare(lu1, lu1), 0);
     assertTrue(LastUpdated.lastupdatedComparator.compare(lu2, lu1) > 0);
     assertTrue(LastUpdated.lastupdatedComparator.compare(lu2, null) > 0);
-    assertFalse(LastUpdated.lastupdatedComparator.compare(null,lu1) >= 0);
+    assertFalse(LastUpdated.lastupdatedComparator.compare(null, lu1) >= 0);
   }
 }

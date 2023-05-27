@@ -39,10 +39,10 @@ import org.json.JSONObject;
 import org.zeroturnaround.exec.ProcessResult;
 
 public interface ProcessExecutionResultBag extends JSONOutputEnabled {
-  public static final String EXECUTION_IDS         = "executed-ids";
+  public static final String EXECUTION_IDS = "executed-ids";
   @Deprecated
   public static final String INCOMPLETE_FUTURE_IDS = "incomplete-futures-ids";
-  public static final String RESULTS               = "results";
+  public static final String RESULTS = "results";
 
   List<String> getExecutedIds();
 
@@ -50,6 +50,7 @@ public interface ProcessExecutionResultBag extends JSONOutputEnabled {
 
   /**
    * This will be removed before 1.0.0
+   *
    * @return
    */
   @Deprecated

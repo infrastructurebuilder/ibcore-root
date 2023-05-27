@@ -26,7 +26,6 @@ import org.junit.jupiter.api.Test;
 
 public class DefaultTargetPlatformTest {
 
-
   private DefaultTargetPlatform tp, t2;
 
   @BeforeEach
@@ -52,7 +51,7 @@ public class DefaultTargetPlatformTest {
   }
 
   @Test
-  public   void testToString() {
+  public void testToString() {
     assertEquals("DefaultTargetPlatform [platformIdentifier=x, os=y", tp.toString());
   }
 

@@ -30,9 +30,11 @@ public class FakeLastUpdated implements LastUpdated {
   public FakeLastUpdated() {
     this(Instant.now());
   }
+
   public FakeLastUpdated(Instant n) {
     this.lu = n;
   }
+
   @Override
   public Instant getLastUpdated() {
     // TODO Auto-generated method stub

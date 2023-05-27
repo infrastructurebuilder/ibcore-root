@@ -17,6 +17,6 @@
  */
 package org.infrastructurebuilder.util.config;
 
-public interface Configurable<T,C> {
+public interface Configurable<T, C> {
   T configure(C config);
 }

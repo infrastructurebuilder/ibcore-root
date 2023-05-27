@@ -32,7 +32,6 @@ import org.json.JSONObject;
 
 public class DefaultGAV implements GAV, Comparable<GAV> {
 
-
   public static DefaultGAV copyFromSpec(final GAV hs) {
     return (DefaultGAV) new DefaultGAV(hs.getGroupId(), hs.getArtifactId(), hs.getClassifier().orElse(null),
         hs.getVersion().orElse(null), hs.getExtension()).withFile(hs.getFile().orElse(null));
@@ -59,7 +58,7 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
     setExtension(json.optString(GAV_EXTENSION, json.optString(GAV_TYPE, json.optString(GAV_PACKAGING, null))));
     path = ofNullable(json.optString(GAV_PATH, null)).map(Paths::get);
     this.builder = ChecksumBuilder.newInstance(this.path);
-}
+  }
 
   public DefaultGAV(final JSONObject json, final String classifier) {
     this(json);
@@ -108,7 +107,8 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
   }
 
   public DefaultGAV(final String groupId, final String artifactId, final String classifier, final String version,
-      final String extension) {
+      final String extension)
+  {
     this();
     setGroupId(groupId);
     setArtifactId(artifactId);
@@ -137,7 +137,6 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
   public GAV copy() {
     return new DefaultGAV(asJSON());
   }
-
 
 //  @Override
 //  public boolean equals(final Object obj) {
@@ -198,7 +197,6 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
   public Optional<String> getVersion() {
     return ofNullable(stringVersion);
   }
-
 
 //  @Override
 //  public int hashCode() {

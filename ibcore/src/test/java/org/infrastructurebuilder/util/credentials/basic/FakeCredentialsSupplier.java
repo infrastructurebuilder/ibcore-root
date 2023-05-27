@@ -24,7 +24,7 @@ import java.util.Optional;
 public class FakeCredentialsSupplier implements CredentialsSupplier {
 
   private BasicCredentials b;
-  private int              weight;
+  private int weight;
 
   public FakeCredentialsSupplier() {
     this(null);

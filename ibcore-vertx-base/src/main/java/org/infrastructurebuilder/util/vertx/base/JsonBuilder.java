@@ -53,8 +53,7 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 /**
- * Like JSONBuilder, this is verbose, tedious, slow, and readable. Not fun. Just
- * readable.
+ * Like JSONBuilder, this is verbose, tedious, slow, and readable. Not fun. Just readable.
  *
  * @author mykel
  *
@@ -114,7 +113,7 @@ public final class JsonBuilder implements JsonOutputEnabled {
       json.remove(RELATIVE_ROOT);
       rr = RelativeRoot.from(j.getString(RELATIVE_ROOT));
     }
-    rr = requireNonNull(relativeRoot).orElse(rr);  // Overrides existing RR if supplied
+    rr = requireNonNull(relativeRoot).orElse(rr); // Overrides existing RR if supplied
     this.relativeRoot = Optional.ofNullable(rr);
   }
 
@@ -470,7 +469,7 @@ public final class JsonBuilder implements JsonOutputEnabled {
   @Override
   public JsonObject toJson() {
     if (json.containsKey(RELATIVE_ROOT))
-      log.warn("Already contains a {} key",RELATIVE_ROOT);
+      log.warn("Already contains a {} key", RELATIVE_ROOT);
     this.relativeRoot.ifPresent(rr -> json.put(RELATIVE_ROOT, rr.toString())); // FIXME Maybe not?
     return new JsonObject(json.toString());// , json.fieldNames()); // TODO
   }

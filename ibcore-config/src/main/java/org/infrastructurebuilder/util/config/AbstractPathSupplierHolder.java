@@ -21,7 +21,7 @@ import java.nio.file.Path;
 
 import org.infrastructurebuilder.util.core.PathSupplier;
 
-abstract public class AbstractPathSupplierHolder  implements PathSupplier {
+abstract public class AbstractPathSupplierHolder implements PathSupplier {
 
   private Path path = null;
 

@@ -42,8 +42,8 @@ public class ServerProxyTest {
   public void setUp() throws Exception {
     final Path testClasses = new TestingPathSupplier().getTestClasses();
     path = testClasses.resolve("X.txt").toAbsolutePath();
-    p = new ServerProxy("id", of(USERNAME), of(PASSWORD), of(PASSPHRASE),
-        of(path), of("0666"), of("0777"), of(TESTCONFIGSTRING));
+    p = new ServerProxy("id", of(USERNAME), of(PASSWORD), of(PASSPHRASE), of(path), of("0666"), of("0777"),
+        of(TESTCONFIGSTRING));
   }
 
   @Test
@@ -57,6 +57,7 @@ public class ServerProxyTest {
     assertEquals(USERNAME, b.getKeyId());
     assertEquals(of(PASSWORD), b.getSecret());
   }
+
   @Test
   public void testGetKeyPath() {
     assertEquals(path, p.getKeyPath().get());
@@ -98,6 +99,5 @@ public class ServerProxyTest {
   public void testConfiguration() {
     assertEquals(TESTCONFIGSTRING, p.getConfiguration().get());
   }
-
 
 }

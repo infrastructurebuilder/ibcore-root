@@ -27,10 +27,11 @@ import java.util.Properties;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
 /**
- * The PropertiesInjectedConfigMapSupplier takes a list of ExtendedListSuppliers.  These can be files or a resource.
- * The target is expected to be loadable as a Properties objects, which is then added or overridden
- * based on the type of the ExtendedListSupplier.
+ * The PropertiesInjectedConfigMapSupplier takes a list of ExtendedListSuppliers. These can be files or a resource. The
+ * target is expected to be loadable as a Properties objects, which is then added or overridden based on the type of the
+ * ExtendedListSupplier.
  *
  * Any number of ExtendedListSupplier items can be supplied, and they are applied in-order
  *

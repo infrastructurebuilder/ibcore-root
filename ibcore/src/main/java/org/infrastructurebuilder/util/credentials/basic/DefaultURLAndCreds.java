@@ -39,6 +39,7 @@ public class DefaultURLAndCreds implements URLAndCreds {
   public DefaultURLAndCreds(String url) {
     this(url, empty());
   }
+
   public DefaultURLAndCreds(String url, Optional<String> creds) {
     this.url = requireNonNull(url, "Source URL");
     this.query = requireNonNull(creds);
@@ -60,6 +61,5 @@ public class DefaultURLAndCreds implements URLAndCreds {
     builder.append("DefaultURLAndCreds [url=").append(url).append(", query=").append(query).append("]");
     return builder.toString();
   }
-
 
 }

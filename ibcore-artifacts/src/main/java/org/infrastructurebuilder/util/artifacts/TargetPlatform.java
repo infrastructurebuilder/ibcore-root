@@ -22,8 +22,7 @@ import static java.util.Optional.empty;
 import java.util.Optional;
 
 /**
- * A TargetPlatform is a (unique) string identifier that can be tied to a GAV to
- * produce a targeted output
+ * A TargetPlatform is a (unique) string identifier that can be tied to a GAV to produce a targeted output
  *
  * @author mykel.alvis
  *

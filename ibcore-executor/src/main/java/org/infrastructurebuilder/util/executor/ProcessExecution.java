@@ -38,16 +38,16 @@ import org.zeroturnaround.exec.ProcessExecutor;
 
 public interface ProcessExecution extends JSONAndChecksumEnabled, AutoCloseable {
 
-  public static final String        ARGUMENTS    = "arguments";
+  public static final String ARGUMENTS = "arguments";
   public static final List<Integer> DEFAULT_EXIT = Arrays.asList(0);
-  public static final String        ENVIRONMENT  = "environment";
-  public static final String        EXECUTABLE   = "executable";
-  public static final String        ID           = "id";
-  public static final String        OPTIONAL     = "optional";
-  public static final String        TIMEOUT      = "duration";
-  public static final String        STD_ERR      = "stderr";
-  public static final String        STD_OUT      = "stdout";
-  public final static Duration      VERY_LONG    = ofHours(2 * 24 * 365 + 12);
+  public static final String ENVIRONMENT = "environment";
+  public static final String EXECUTABLE = "executable";
+  public static final String ID = "id";
+  public static final String OPTIONAL = "optional";
+  public static final String TIMEOUT = "duration";
+  public static final String STD_ERR = "stderr";
+  public static final String STD_OUT = "stdout";
+  public final static Duration VERY_LONG = ofHours(2 * 24 * 365 + 12);
 
   List<String> getArguments();
 
@@ -100,6 +100,7 @@ public interface ProcessExecution extends JSONAndChecksumEnabled, AutoCloseable 
 
   /**
    * One should override this and cache the value, if possible, so as to return the same executor
+   *
    * @return
    */
   default ProcessExecutor getProcessExecutor() {
@@ -118,7 +119,8 @@ public interface ProcessExecution extends JSONAndChecksumEnabled, AutoCloseable 
 
         .redirectOutput(getStdOut())
 
-        .redirectInput(getStdIn().map(si -> ProcessException.pet.returns(() -> Files.newInputStream(si))).orElse(System.in))
+        .redirectInput(
+            getStdIn().map(si -> ProcessException.pet.returns(() -> Files.newInputStream(si))).orElse(System.in))
 
         .exitValues(exitValues)
 
@@ -133,6 +135,5 @@ public interface ProcessExecution extends JSONAndChecksumEnabled, AutoCloseable 
     } else
       return pe;
   }
-
 
 }

@@ -35,7 +35,8 @@ public class IncrementingDatedWorkingPathSupplier extends WorkingPathSupplier {
 
   @Inject
   public IncrementingDatedWorkingPathSupplier(
-      @Named(INCREMENTING_DATED_STRING_SUPPLIER) IdentifierSupplier idSupplier) {
+      @Named(INCREMENTING_DATED_STRING_SUPPLIER) IdentifierSupplier idSupplier)
+  {
     super(new HashMap<>(), idSupplier, false);
   }
 }

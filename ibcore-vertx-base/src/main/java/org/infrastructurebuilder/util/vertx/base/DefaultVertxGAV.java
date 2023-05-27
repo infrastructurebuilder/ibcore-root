@@ -60,5 +60,4 @@ public class DefaultVertxGAV extends DefaultGAV implements VertxGAV {
     return new JsonObject(asJSON().toString());
   }
 
-
 }

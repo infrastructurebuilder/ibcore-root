@@ -26,9 +26,8 @@ public interface IBDirScanner {
   String ERRORED = "errored";
 
   /**
-   * Return a map of paths both included and excluded Instances of IBDirScanner
-   * may or may not cache scan results, so subsequent calls to scan() or defaults
-   * that call scan() may or may not result in another tree walk.
+   * Return a map of paths both included and excluded Instances of IBDirScanner may or may not cache scan results, so
+   * subsequent calls to scan() or defaults that call scan() may or may not result in another tree walk.
    *
    * @return IBDirScan will entire result set
    */

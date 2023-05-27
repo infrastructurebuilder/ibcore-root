@@ -23,8 +23,6 @@ public class ActivationPropertyProxy {
   private final String name;
   private final Optional<String> value;
 
-
-
   public ActivationPropertyProxy(String name, Optional<String> value) {
     this.name = name;
     this.value = value;

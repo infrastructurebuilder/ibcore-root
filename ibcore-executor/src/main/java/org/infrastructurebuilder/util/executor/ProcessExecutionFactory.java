@@ -26,9 +26,8 @@ import java.util.function.Supplier;
 import org.infrastructurebuilder.util.core.Checksum;
 
 /**
- * A {@code ProcessExecutionFactory} must, by contract, supply the work directory as a
- * {@link Path}, a runner-unique id as a {@code String}, and a path to an
- * executable as a {@code String}, generally as constructor arguments
+ * A {@code ProcessExecutionFactory} must, by contract, supply the work directory as a {@link Path}, a runner-unique id
+ * as a {@code String}, and a path to an executable as a {@code String}, generally as constructor arguments
  *
  * @author mykel.alvis
  *

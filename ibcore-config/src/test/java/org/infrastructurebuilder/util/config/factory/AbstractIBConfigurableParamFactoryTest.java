@@ -37,7 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class AbstractIBConfigurableParamFactoryTest {
-  public final static Logger         log = LoggerFactory.getLogger(AbstractIBConfigurableParamFactoryTest.class.getName());
+  public final static Logger log = LoggerFactory.getLogger(AbstractIBConfigurableParamFactoryTest.class.getName());
   public final static IBRuntimeUtils ibr = new IBRuntimeUtilsTesting(log);
 
   @BeforeAll
@@ -49,13 +49,13 @@ public class AbstractIBConfigurableParamFactoryTest {
   }
 
   private FakeIBConfigurableParamFactory k;
-  private ConfigMapSupplier              cms;
+  private ConfigMapSupplier cms;
 
   @BeforeEach
   public void setUp() throws Exception {
     cms = new DefaultConfigMapSupplier();
     k = new FakeIBConfigurableParamFactory(ibr);
-    IBRuntimeUtilsTesting l = new IBRuntimeUtilsTesting((IBRuntimeUtilsTesting)ibr);
+    IBRuntimeUtilsTesting l = new IBRuntimeUtilsTesting((IBRuntimeUtilsTesting) ibr);
   }
 
   @AfterEach

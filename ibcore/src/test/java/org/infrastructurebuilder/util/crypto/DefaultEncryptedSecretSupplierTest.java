@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 
 public class DefaultEncryptedSecretSupplierTest {
 
-  private static final String            RANDOMPASSWORD99 = "RANDOMPASSWORD99";
+  private static final String RANDOMPASSWORD99 = "RANDOMPASSWORD99";
   private DefaultEncryptedSecretSupplier d;
 
   @Test

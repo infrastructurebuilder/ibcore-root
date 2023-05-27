@@ -40,7 +40,8 @@ public class DefaultProcessExecutionResult implements ProcessExecutionResult {
   }
 
   public DefaultProcessExecutionResult(ProcessExecution pe, Optional<Integer> exitCode, Optional<Throwable> exception,
-      Instant startTime, Duration between) {
+      Instant startTime, Duration between)
+  {
     this(new GeneratedProcessExecutionResult(pe, exitCode, exception, startTime, between));
   }
 

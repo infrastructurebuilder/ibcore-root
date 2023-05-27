@@ -36,7 +36,6 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-
 @Named(WorkingPathSupplier.WORKING)
 public class WorkingPathSupplier implements PathSupplier {
 
@@ -52,12 +51,13 @@ public class WorkingPathSupplier implements PathSupplier {
     this(new HashMap<>(), new DefaultIdentifierSupplier(), true);
   }
 
-  public WorkingPathSupplier(final Map<String, String> params, /*@Nullable*/ final IdentifierSupplier id) {
+  public WorkingPathSupplier(final Map<String, String> params, /* @Nullable */ final IdentifierSupplier id) {
     this(params, id, false);
   }
 
-  public WorkingPathSupplier(final Map<String, String> params, /*@Nullable*/ final IdentifierSupplier id,
-      final boolean cleanup) {
+  public WorkingPathSupplier(final Map<String, String> params, /* @Nullable */ final IdentifierSupplier id,
+      final boolean cleanup)
+  {
     this(() -> cet.returns(() -> Paths
         .get(ofNullable(params.get(WORKING_PATH_KEY))
             .orElse(ofNullable(System.getProperty(TARGET_DIR_PROPERTY)).orElse(MAVEN_TARGET_PATH)))
@@ -106,6 +106,5 @@ public class WorkingPathSupplier implements PathSupplier {
   public Path getRoot() {
     return root;
   }
-
 
 }

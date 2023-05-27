@@ -89,23 +89,20 @@ public final class WGet {
 
   private static final PoolingHttpClientConnectionManager CONN_POOL;
   /**
-   * A map of file caches by their location paths. Ensures one cache instance per
-   * path and enables safe execution in parallel builds against the same cache.
+   * A map of file caches by their location paths. Ensures one cache instance per path and enables safe execution in
+   * parallel builds against the same cache.
    */
   private static final Map<String, DownloadCache> DOWNLOAD_CACHES = new ConcurrentHashMap<>();
 
   private static final Map<String, Lock> FILE_LOCKS = new ConcurrentHashMap<>();
 
   static {
-    CONN_POOL = new PoolingHttpClientConnectionManager(
-        RegistryBuilder.<ConnectionSocketFactory>create()
-            .register("http", PlainConnectionSocketFactory.getSocketFactory())
-            .register("https",
-                new SSLConnectionSocketFactory(SSLContexts.createSystemDefault(),
-                    new String[] { "SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2" }, null,
-                    SSLConnectionSocketFactory.getDefaultHostnameVerifier()))
-            .build(),
-        null, null, null, 1, TimeUnit.MINUTES);
+    CONN_POOL = new PoolingHttpClientConnectionManager(RegistryBuilder.<ConnectionSocketFactory>create()
+        .register("http", PlainConnectionSocketFactory.getSocketFactory())
+        .register("https", new SSLConnectionSocketFactory(SSLContexts.createSystemDefault(), new String[] {
+            "SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2"
+        }, null, SSLConnectionSocketFactory.getDefaultHostnameVerifier())).build(), null, null, null, 1,
+        TimeUnit.MINUTES);
   }
 
   /**
@@ -121,8 +118,7 @@ public final class WGet {
   private boolean overwrite;
 
   /**
-   * Represent the file name to use as output value. If not set, will use last
-   * segment of "url"
+   * Represent the file name to use as output value. If not set, will use last segment of "url"
    */
   // @Parameter(property = "download.outputFileName")
   // private String outputFileName;
@@ -136,22 +132,19 @@ public final class WGet {
   private Path outputPath;
 
   /**
-   * The md5 of the file. If set, file signature will be compared to this
-   * signature and plugin will fail.
+   * The md5 of the file. If set, file signature will be compared to this signature and plugin will fail.
    */
   // @Parameter
   // private String md5;
 
   /**
-   * The sha1 of the file. If set, file signature will be compared to this
-   * signature and plugin will fail.
+   * The sha1 of the file. If set, file signature will be compared to this signature and plugin will fail.
    */
   // @Parameter
   // private String sha1;
 
   /**
-   * The sha512 of the file. If set, file signature will be compared to this
-   * signature and plugin will fail.
+   * The sha512 of the file. If set, file signature will be compared to this signature and plugin will fail.
    */
   // @Parameter
   private String sha512;
@@ -163,8 +156,7 @@ public final class WGet {
   // private boolean unpack;
 
   /**
-   * Server Id from settings file to use for authentication Only one of serverId
-   * or (username/password) may be supplied
+   * Server Id from settings file to use for authentication Only one of serverId or (username/password) may be supplied
    */
   // @Parameter
   // private String serverId;
@@ -200,8 +192,7 @@ public final class WGet {
   private boolean skipCache;
 
   /**
-   * The directory to use as a cache. Default is
-   * ${local-repo}/.cache/maven-download-plugin
+   * The directory to use as a cache. Default is ${local-repo}/.cache/maven-download-plugin
    */
   // @Parameter(property = "download.cache.directory")
   private File cacheDirectory;
@@ -221,23 +212,19 @@ public final class WGet {
   /**
    * Whether to verify the checksum of an existing file
    * <p>
-   * By default, checksum verification only occurs after downloading a file. This
-   * option additionally enforces checksum verification for already existing,
-   * previously downloaded (or manually copied) files. If the checksum does not
+   * By default, checksum verification only occurs after downloading a file. This option additionally enforces checksum
+   * verification for already existing, previously downloaded (or manually copied) files. If the checksum does not
    * match, re-download the file.
    * <p>
-   * Use this option in order to ensure that a new download attempt is made after
-   * a previously interrupted build or network connection or some other event
-   * corrupted a file.
+   * Use this option in order to ensure that a new download attempt is made after a previously interrupted build or
+   * network connection or some other event corrupted a file.
    */
 //  @Parameter(property = "alwaysVerifyChecksum", defaultValue = "false")
   private boolean alwaysVerifyChecksum = true; // ALWAYS
 
   /**
-   * @deprecated The option name is counter-intuitive and not related to
-   *             signatures but to checksums, in fact. Please use
-   *             {@link #alwaysVerifyChecksum} instead. This option might be
-   *             removed in a future release.
+   * @deprecated The option name is counter-intuitive and not related to signatures but to checksums, in fact. Please
+   *             use {@link #alwaysVerifyChecksum} instead. This option might be removed in a future release.
    */
 //  @Parameter(property = "checkSignature", defaultValue = "false")
   @Deprecated
@@ -274,15 +261,13 @@ public final class WGet {
   /**
    * Maximum time (ms) to wait to acquire a file lock.
    *
-   * Customize the time when using the plugin to download the same file from
-   * several submodules in parallel build.
+   * Customize the time when using the plugin to download the same file from several submodules in parallel build.
    */
 //  @Parameter(property = "maxLockWaitTime", defaultValue = "30000")
   private long maxLockWaitTime = 30000L;
 
   /**
-   * {@link FileMapper}s to be used for rewriting each target path, or
-   * {@code null} if no rewriting shall happen.
+   * {@link FileMapper}s to be used for rewriting each target path, or {@code null} if no rewriting shall happen.
    *
    * @since 1.6.8
    */
@@ -534,8 +519,7 @@ public final class WGet {
         .setConnectionManagerShared(true).setRoutePlanner(routePlanner).build()) {
       final HttpFileRequester fileRequester = new HttpFileRequester(httpClient,
           /*
-           * this.session.getSettings().isInteractiveMode() ? new
-           * LoggingProgressReport(getLog()) :
+           * this.session.getSettings().isInteractiveMode() ? new LoggingProgressReport(getLog()) :
            */ new SilentProgressReport(getLog()));
 
       final HttpClientContext clientContext = HttpClientContext.create();

@@ -47,7 +47,8 @@ public class SettingsProxy implements CredentialsSupplier {
   private final List<ProxyProxy> proxies;
 
   public SettingsProxy(boolean offline, Path localRepo, Charset modelEncoding, List<ServerProxy> servers,
-      List<ProfileProxy> profiles, List<MirrorProxy> mirrors, List<String> pluginGroups, List<ProxyProxy> proxies) {
+      List<ProfileProxy> profiles, List<MirrorProxy> mirrors, List<String> pluginGroups, List<ProxyProxy> proxies)
+  {
     this.offline = offline;
     this.localRepository = requireNonNull(localRepo);
     this.modelEncoding = requireNonNull(modelEncoding);
@@ -163,8 +164,7 @@ public class SettingsProxy implements CredentialsSupplier {
   }
 
   /**
-   * Get whether Maven should use the plugin-registry.xml file to manage plugin
-   * versions.
+   * Get whether Maven should use the plugin-registry.xml file to manage plugin versions.
    *
    * @return false
    */

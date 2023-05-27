@@ -22,9 +22,8 @@ import static java.util.Objects.requireNonNull;
 import java.util.UUID;
 
 /**
- * REQUIREMENT: getId() must return a unique id for a given component. If the
- * component is not a singleton, it's id must be different from others,
- * including other singletons, of any of its types
+ * REQUIREMENT: getId() must return a unique id for a given component. If the component is not a singleton, it's id must
+ * be different from others, including other singletons, of any of its types
  *
  * @author mykel.alvis
  *

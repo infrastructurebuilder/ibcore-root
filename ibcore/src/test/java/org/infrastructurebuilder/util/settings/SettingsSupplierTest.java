@@ -58,7 +58,8 @@ public class SettingsSupplierTest {
 
       @Override
       public SettingsProxy get() {
-        return new SettingsProxy(false, wps.get(),Charset.defaultCharset(), servers, emptyList(), emptyList(), emptyList(), emptyList());
+        return new SettingsProxy(false, wps.get(), Charset.defaultCharset(), servers, emptyList(), emptyList(),
+            emptyList(), emptyList());
       }
     };
   }

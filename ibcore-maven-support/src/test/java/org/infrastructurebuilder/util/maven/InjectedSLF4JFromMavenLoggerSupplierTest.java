@@ -15,7 +15,6 @@
  */
 package org.infrastructurebuilder.util.maven;
 
-
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.apache.maven.monitor.logging.DefaultLog;

@@ -48,9 +48,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 public class DefaultProcessExecutionTest {
-  public final static Logger              log = LoggerFactory.getLogger(DefaultProcessExecutionTest.class.getName());
+  public final static Logger log = LoggerFactory.getLogger(DefaultProcessExecutionTest.class.getName());
   public final static TestingPathSupplier wps = new TestingPathSupplier();
 
   @BeforeAll
@@ -64,9 +63,9 @@ public class DefaultProcessExecutionTest {
   private ProcessExecutionModelXpp3Reader r;
   private ProcessExecutionModelXpp3WriterEx w;
   GeneratedProcessExecution p1;
-  private DefaultProcessExecution         p2;
-  private Path                            workDirectory;
-  private String                          id;
+  private DefaultProcessExecution p2;
+  private Path workDirectory;
+  private String id;
 
   @BeforeEach
   public void setUp() throws Exception {

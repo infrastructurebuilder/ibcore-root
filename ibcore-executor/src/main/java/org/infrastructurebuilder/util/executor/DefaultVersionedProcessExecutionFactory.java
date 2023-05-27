@@ -29,7 +29,7 @@ import org.infrastructurebuilder.util.executor.execution.model.ProcessExectionFa
 public class DefaultVersionedProcessExecutionFactory implements VersionedProcessExecutionFactory {
 
   private final Optional<PrintStream> addl;
-  private final Path                  scratchDir;
+  private final Path scratchDir;
 
   public final static String DEFAULT_VERSION = "1.0.0";
 
@@ -48,12 +48,12 @@ public class DefaultVersionedProcessExecutionFactory implements VersionedProcess
       final String id, final String executable) {
     ProcessExecutionFactory f = null;
     switch (version) {
-      case "1.1.0":
-        break;
-      case "1.0.0":
-      default:
-        f = createFactory_v1_0_0(workDirectory, id, executable);
-        break;
+    case "1.1.0":
+      break;
+    case "1.0.0":
+    default:
+      f = createFactory_v1_0_0(workDirectory, id, executable);
+      break;
     }
     return ofNullable(f);
   }

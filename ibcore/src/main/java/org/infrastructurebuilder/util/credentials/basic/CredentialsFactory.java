@@ -20,8 +20,7 @@ package org.infrastructurebuilder.util.credentials.basic;
 import java.util.Optional;
 
 /**
- * The {@code CredentialsFactory} is injected with mechanisms for lookup up
- * creds
+ * The {@code CredentialsFactory} is injected with mechanisms for lookup up creds
  *
  * @author mykel.alvis
  *

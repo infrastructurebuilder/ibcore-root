@@ -27,15 +27,14 @@ import org.infrastructurebuilder.util.vertx.blobstore.Blobstore;
 
 import io.vertx.core.Future;
 
-public interface TFactory<T extends Typed> extends Identified, Versioned  {
+public interface TFactory<T extends Typed> extends Identified, Versioned {
 
   /**
    *
    * @param name      Short Name of object
    * @param display   Name to display to user
    * @param type
-   * @param container Containing T. If null, this is the ROOT object and should
-   *                  be set to <code>this</code>
+   * @param container Containing T. If null, this is the ROOT object and should be set to <code>this</code>
    * @param tas
    * @return
    */

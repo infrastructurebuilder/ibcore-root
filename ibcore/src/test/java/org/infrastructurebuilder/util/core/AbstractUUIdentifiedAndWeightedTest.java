@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 
 public class AbstractUUIdentifiedAndWeightedTest {
 
-  private AbstractUUIdentifiedAndWeighted w1, w2,s1,s2,s3;
+  private AbstractUUIdentifiedAndWeighted w1, w2, s1, s2, s3;
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -54,14 +54,13 @@ public class AbstractUUIdentifiedAndWeightedTest {
     var c = UUIdentifiedAndWeighted.comparator;
     assertEquals(0, c.compare(w1, w1));
     assertTrue(c.compare(w2, w1) > 0);
-    assertEquals(0,c.compare(s1, s2));
+    assertEquals(0, c.compare(s1, s2));
   }
+
   @Test
   public void testCompareSameTime() {
     var c = UUIdentifiedAndWeighted.comparator;
     assertFalse(c.compare(s2, s3) == 0);
   }
-
-
 
 }

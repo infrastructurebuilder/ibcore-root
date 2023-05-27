@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Test;
 
 abstract public class TestWeightedAndIdentified {
 
-
   abstract public IdentifiedAndWeighted getItemToTest();
 
   @Test
@@ -35,6 +34,5 @@ abstract public class TestWeightedAndIdentified {
   @Test
   public void testGetWeight() {
   }
-
 
 }

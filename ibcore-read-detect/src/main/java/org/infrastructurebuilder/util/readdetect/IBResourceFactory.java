@@ -53,8 +53,9 @@ import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
 import org.json.JSONObject;
 
 /**
- * The IBResourceFactory produces various forms of IBResource, usually by copying and internally
- * checksumming them to some local space.
+ * The IBResourceFactory produces various forms of IBResource, usually by copying and internally checksumming them to
+ * some local space.
+ *
  * @author mykelalvis
  *
  */
@@ -75,14 +76,14 @@ public class IBResourceFactory {
       throw new IBException("file.not.regular.file");
 
     synchronized (tika) {
-      log.debug( "Detecting path " + path);
+      log.debug("Detecting path " + path);
       org.apache.tika.metadata.Metadata md = new org.apache.tika.metadata.Metadata();
       md.set(TikaCoreProperties.RESOURCE_NAME_KEY, path.toAbsolutePath().toString());
       try (Reader p = tika.parse(path, md)) {
-        log.debug( " Metadata is " + md);
+        log.debug(" Metadata is " + md);
         return tika.detect(path);
       } catch (IOException e) {
-        log.error( "Failed during attempt to get tika type", e);
+        log.error("Failed during attempt to get tika type", e);
         return IBConstants.APPLICATION_OCTET_STREAM;
       }
     }
@@ -123,9 +124,10 @@ public class IBResourceFactory {
   }
 
   /**
-   * Produces an IBResource by making a copy of some named source into a target directly.  The
-   * resulting source is indicated to be "contained" within an archive using the !/ syntax of
-   * path managenment if the original values are presented .
+   * Produces an IBResource by making a copy of some named source into a target directly. The resulting source is
+   * indicated to be "contained" within an archive using the !/ syntax of path managenment if the original values are
+   * presented .
+   *
    * @param targetDir
    * @param source
    * @param oSource
@@ -177,8 +179,9 @@ public class IBResourceFactory {
     return new DefaultIBResource(p, c, Optional.of(type), empty());
 
   }
+
   public final static IBResource from(Path p, Checksum c, String type) {
-    return from(p,c,type,null);
+    return from(p, c, type, null);
   }
 
   public final static IBResource fromPath(Path path) {

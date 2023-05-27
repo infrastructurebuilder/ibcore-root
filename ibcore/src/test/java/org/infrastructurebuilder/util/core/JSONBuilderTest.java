@@ -61,7 +61,7 @@ public class JSONBuilderTest {
 
     final JSONObject k = JSONBuilder.newInstance().addInstant("X", i).asJSON();
     assertTrue(JSONBuilder.instantFromJSON.apply(null).isEmpty());
-    assertEquals(JSONBuilder.instantFromJSON.apply(k.getString("X")).get(),i);
+    assertEquals(JSONBuilder.instantFromJSON.apply(k.getString("X")).get(), i);
   }
 
   @Test
@@ -264,8 +264,7 @@ public class JSONBuilderTest {
 
   @Test
   public void testAddThrowableStringThrowable() {
-    final JSONObject j = new JSONObject().put("X",
-        new JSONObject()
+    final JSONObject j = new JSONObject().put("X", new JSONObject()
 
         .put(IBConstants.MESSAGE, "@")
 

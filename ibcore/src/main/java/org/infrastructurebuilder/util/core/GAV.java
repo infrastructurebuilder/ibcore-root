@@ -36,19 +36,19 @@ import org.w3c.dom.Element;
 
 public interface GAV extends JSONAndChecksumEnabled, Comparable<GAV> {
   String BASIC_PACKAGING = "jar";
-  String COMPILE_SCOPE   = "compile";
+  String COMPILE_SCOPE = "compile";
 
-  String GAV_ARTIFACTID      = "artifactId";
-  String GAV_CLASSIFIER      = "classifier";
-  String GAV_EXTENSION       = "extension";
-  String GAV_GROUPID         = "groupId";
-  String GAV_VERSION         = "version";
-  String GAV_PATH            = "path";
-  String PROVIDED_SCOPE      = "provided";
-  String RUNTIME_SCOPE       = "runtime";
+  String GAV_ARTIFACTID = "artifactId";
+  String GAV_CLASSIFIER = "classifier";
+  String GAV_EXTENSION = "extension";
+  String GAV_GROUPID = "groupId";
+  String GAV_VERSION = "version";
+  String GAV_PATH = "path";
+  String PROVIDED_SCOPE = "provided";
+  String RUNTIME_SCOPE = "runtime";
   String SNAPSHOT_DESIGNATOR = "-SNAPSHOT";
-  String GAV_PACKAGING       = "packaging";
-  String GAV_TYPE            = "type";
+  String GAV_PACKAGING = "packaging";
+  String GAV_TYPE = "type";
 
   static String asPaxUrl(final GAV v) {
     final String cl = !v.getClassifier().isPresent() ? "" : "/" + v.getClassifier().orElse("");

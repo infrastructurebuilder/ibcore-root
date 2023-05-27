@@ -36,10 +36,9 @@ public class ActivationFileProxyTest {
 
   private final static TestingPathSupplier wps = new TestingPathSupplier();
 
-  private ActivationFileProxy fp,f2,f3;
+  private ActivationFileProxy fp, f2, f3;
 
   private Optional<Path> exists, missing;
-
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -74,6 +73,6 @@ public class ActivationFileProxyTest {
     assertFalse(new ActivationFileProxy(empty(), exists).isActive());
     assertFalse(new ActivationFileProxy(missing, empty()).isActive());
 
-}
+  }
 
 }

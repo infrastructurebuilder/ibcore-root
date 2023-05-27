@@ -69,8 +69,7 @@ public class DefaultIBDirScannerSupplier implements IBDirScannerSupplier {
       DEEP_TREE_MATCH + "/.bzr", DEEP_TREE_MATCH + "/.bzr/" + DEEP_TREE_MATCH, DEEP_TREE_MATCH + "/.bzrignore",
 
       // Mac
-      DEEP_TREE_MATCH + "/.DS_Store"
-      );
+      DEEP_TREE_MATCH + "/.DS_Store");
 
   private final Path root;
   private List<String> includes;
@@ -97,7 +96,8 @@ public class DefaultIBDirScannerSupplier implements IBDirScannerSupplier {
       // Ignore symlinks (this should almost always be true
       BooleanSupplier ignoreSymlinks,
       // Add the Ant default excludes list
-      BooleanSupplier includeDefaultExcludes) {
+      BooleanSupplier includeDefaultExcludes)
+  {
     this.root = requireNonNull(root.get());
     this.includes = new ArrayList<>(requireNonNull(includes.get()));
     this.excludes = new ArrayList<>(requireNonNull(excludes.get()));
@@ -144,7 +144,7 @@ public class DefaultIBDirScannerSupplier implements IBDirScannerSupplier {
       }
     }
     if (excludes.size() > 0) {
-      for (String s: excludes) {
+      for (String s : excludes) {
         if (localFS.getPathMatcher("glob:" + s).matches(path)) {
           include = false;
           break;
@@ -173,7 +173,7 @@ public class DefaultIBDirScannerSupplier implements IBDirScannerSupplier {
           return exclusionFunction;
         }
       };
-      Files.walkFileTree(this.srcDir,dirscan);
+      Files.walkFileTree(this.srcDir, dirscan);
 
       return dirscan;
     }

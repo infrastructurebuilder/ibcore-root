@@ -41,15 +41,15 @@ import org.zeroturnaround.exec.ProcessResult;
 import org.zeroturnaround.exec.listener.ProcessListener;
 
 public class MutableProcessExecutionResultBag extends ProcessListener {
-  private final ConcurrentMap<String, Instant>                   endTimes    = new ConcurrentHashMap<>();
-  private final ConcurrentMap<String, Throwable>                 exceptions  = new ConcurrentHashMap<>();
-  private final List<String>                                     executedIds = new ArrayList<>();
+  private final ConcurrentMap<String, Instant> endTimes = new ConcurrentHashMap<>();
+  private final ConcurrentMap<String, Throwable> exceptions = new ConcurrentHashMap<>();
+  private final List<String> executedIds = new ArrayList<>();
 //  private final ConcurrentMap<ProcessExecution, ProcessExecutor> executors   = new ConcurrentHashMap<>();
-  private final Vector<ProcessExecution>                            executors2  = new Vector<>();
-  private final ConcurrentMap<String, Integer>                   exitCodes   = new ConcurrentHashMap<>();
-  private final ConcurrentMap<String, Future<ProcessResult>>     futures     = new ConcurrentHashMap<>();
-  private final ConcurrentMap<String, Process>                   processes   = new ConcurrentHashMap<>();
-  private final ConcurrentMap<String, Instant>                   startTimes  = new ConcurrentHashMap<>();
+  private final Vector<ProcessExecution> executors2 = new Vector<>();
+  private final ConcurrentMap<String, Integer> exitCodes = new ConcurrentHashMap<>();
+  private final ConcurrentMap<String, Future<ProcessResult>> futures = new ConcurrentHashMap<>();
+  private final ConcurrentMap<String, Process> processes = new ConcurrentHashMap<>();
+  private final ConcurrentMap<String, Instant> startTimes = new ConcurrentHashMap<>();
 
   public void addExecution(final ProcessExecution pe, final ProcessExecutor pExecutor) {
     synchronized (executedIds) {
@@ -102,8 +102,7 @@ public class MutableProcessExecutionResultBag extends ProcessListener {
 //    .ifPresent(ee -> {
 //      startTimes.put(ee.getId(), now());
 //    });
-    executors2.stream().filter(e -> e.getProcessExecutor() == executor).findFirst()
-    .ifPresent(ee -> {
+    executors2.stream().filter(e -> e.getProcessExecutor() == executor).findFirst().ifPresent(ee -> {
       startTimes.put(ee.getId(), now());
     });
   }
@@ -142,8 +141,7 @@ public class MutableProcessExecutionResultBag extends ProcessListener {
         final Instant endTime = ofNullable(endTimes.get(id)).orElse(Instant.MAX);
         final Optional<Integer> exitCode = ofNullable(exitCodes.get(id));
         final Optional<Throwable> exception = ofNullable(exceptions.get(id));
-        m.put(id, new DefaultProcessExecutionResult(pe, exitCode, exception, startTime,
-            between(startTime, endTime)));
+        m.put(id, new DefaultProcessExecutionResult(pe, exitCode, exception, startTime, between(startTime, endTime)));
       }
       return m;
     }
@@ -172,7 +170,7 @@ public class MutableProcessExecutionResultBag extends ProcessListener {
   }
 
   public Map<String, Throwable> getExceptions() {
-    return Collections.unmodifiableMap( new HashMap<>(exceptions));
+    return Collections.unmodifiableMap(new HashMap<>(exceptions));
   }
 
 }

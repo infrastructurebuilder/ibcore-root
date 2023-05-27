@@ -27,7 +27,7 @@ import org.infrastructurebuilder.util.config.IBRuntimeUtils;
 
 abstract public class AbstractIBConfigurableParamFactory<T, P> implements IBConfigurableParamFactory<T, P> {
 
-  private final IBRuntimeUtils    ibr;
+  private final IBRuntimeUtils ibr;
   private final ConfigMapSupplier cms;
 
   public AbstractIBConfigurableParamFactory(IBRuntimeUtils ibr) {

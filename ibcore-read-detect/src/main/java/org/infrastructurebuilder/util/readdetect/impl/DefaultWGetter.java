@@ -103,7 +103,8 @@ class DefaultWGetter implements WGetter {
   private final TypeToExtensionMapper t2e;
 
   public DefaultWGetter(Logger log, TypeToExtensionMapper t2e, Map<String, String> headers, Path cacheDir,
-      Path workingDir, ArchiverManager archiverManager, Optional<WagonManager> pi, Optional<FileMapper[]> mappers) {
+      Path workingDir, ArchiverManager archiverManager, Optional<WagonManager> pi, Optional<FileMapper[]> mappers)
+  {
     this.t2e = requireNonNull(t2e);
     // this.wps = requireNonNull(wps);
     this.wget = new WGet();

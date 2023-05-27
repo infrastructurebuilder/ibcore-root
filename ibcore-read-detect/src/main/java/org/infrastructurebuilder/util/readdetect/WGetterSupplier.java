@@ -21,5 +21,4 @@ import java.util.function.Supplier;
 
 public interface WGetterSupplier extends Supplier<WGetter> {
 
-
 }

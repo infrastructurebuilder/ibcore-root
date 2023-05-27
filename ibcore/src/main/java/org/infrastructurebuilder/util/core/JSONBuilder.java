@@ -34,9 +34,7 @@ import java.util.stream.Collectors;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-
 public final class JSONBuilder implements JSONOutputEnabled {
-
 
   public final static Function<List<JSONOutputEnabled>, JSONArray> jsonOutputToJSONArray = oe -> {
     return new JSONArray(requireNonNull(oe).stream().map(JSONOutputEnabled::asJSON).collect(Collectors.toList()));
@@ -57,8 +55,6 @@ public final class JSONBuilder implements JSONOutputEnabled {
   public static Function<String, Optional<Instant>> instantFromJSON = s -> {
     return Optional.ofNullable(s).map(Instant::parse); // mebbe?
   };
-
-
 
   private final JSONObject json;
 

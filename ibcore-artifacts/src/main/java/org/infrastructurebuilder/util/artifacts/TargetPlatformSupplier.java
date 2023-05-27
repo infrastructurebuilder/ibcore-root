@@ -20,7 +20,6 @@ package org.infrastructurebuilder.util.artifacts;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-
-public interface TargetPlatformSupplier extends Supplier<Optional<TargetPlatform>>{
+public interface TargetPlatformSupplier extends Supplier<Optional<TargetPlatform>> {
 
 }

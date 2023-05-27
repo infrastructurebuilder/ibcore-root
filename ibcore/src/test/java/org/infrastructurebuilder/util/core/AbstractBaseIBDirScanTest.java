@@ -40,24 +40,24 @@ class AbstractBaseIBDirScanTest {
     this.scan = new AbstractBaseIBDirScan() {
       @Override
       public BiFunction<Path, BasicFileAttributes, Boolean> getExclusionFunction() {
-        return (a,b) -> true;
+        return (a, b) -> true;
       }
     };
   }
 
   @Test
   void testGetIncludedPaths() {
-    assertEquals(0,this.scan.getIncludedPaths().size());
+    assertEquals(0, this.scan.getIncludedPaths().size());
   }
 
   @Test
   void testGetExcludedPaths() {
-    assertEquals(0,this.scan.getExcludedPaths().size());
+    assertEquals(0, this.scan.getExcludedPaths().size());
   }
 
   @Test
   void testGetErroredPaths() {
-    assertEquals(0,this.scan.getErroredPaths().size());
+    assertEquals(0, this.scan.getErroredPaths().size());
   }
 
   @Test

@@ -25,7 +25,6 @@ public class ActivationOSProxy {
   private final Optional<String> name;
   private final Optional<String> version;
 
-
   /**
    * @param arch
    * @param family
@@ -33,7 +32,8 @@ public class ActivationOSProxy {
    * @param version
    */
   public ActivationOSProxy(Optional<String> arch, Optional<String> family, Optional<String> name,
-      Optional<String> version) {
+      Optional<String> version)
+  {
     this.arch = arch;
     this.family = family;
     this.name = name;
@@ -41,9 +41,7 @@ public class ActivationOSProxy {
   }
 
   /**
-   * Get the architecture of the operating system to be used to
-   * activate the
-   *           profile.
+   * Get the architecture of the operating system to be used to activate the profile.
    *
    * @return String
    */
@@ -52,9 +50,8 @@ public class ActivationOSProxy {
   }
 
   /**
-   * Get the general family of the OS to be used to activate the
-   * profile, such as
-   *             <code>windows</code> or <code>unix</code>.
+   * Get the general family of the OS to be used to activate the profile, such as <code>windows</code> or
+   * <code>unix</code>.
    *
    * @return String
    */
@@ -63,10 +60,8 @@ public class ActivationOSProxy {
   }
 
   /**
-   * Get the name of the operating system to be used to activate
-   * the profile. This must be an exact match
-   *             of the <code>${os.name}</code> Java property,
-   * such as <code>Windows XP</code>.
+   * Get the name of the operating system to be used to activate the profile. This must be an exact match of the
+   * <code>${os.name}</code> Java property, such as <code>Windows XP</code>.
    *
    * @return String
    */
@@ -75,9 +70,7 @@ public class ActivationOSProxy {
   }
 
   /**
-   * Get the version of the operating system to be used to
-   * activate the
-   *           profile.
+   * Get the version of the operating system to be used to activate the profile.
    *
    * @return String
    */

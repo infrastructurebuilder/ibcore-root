@@ -29,7 +29,8 @@ public class ActivationProxy {
   private final Optional<ActivationFileProxy> file;
 
   public ActivationProxy(boolean activeByDefault, Optional<ActivationFileProxy> file, Optional<String> jdk,
-      Optional<ActivationOSProxy> os, Optional<ActivationPropertyProxy> property) {
+      Optional<ActivationOSProxy> os, Optional<ActivationPropertyProxy> property)
+  {
     this.activeByDefault = activeByDefault;
     this.file = requireNonNull(file);
     this.jdk = requireNonNull(jdk);
@@ -38,8 +39,7 @@ public class ActivationProxy {
   }
 
   /**
-   * Get specifies that this profile will be activated based on
-   * existence of a file.
+   * Get specifies that this profile will be activated based on existence of a file.
    *
    * @return ActivationFile
    */
@@ -48,8 +48,7 @@ public class ActivationProxy {
   }
 
   /**
-   * Get specifies that this profile will be activated when a
-   * matching JDK is detected.
+   * Get specifies that this profile will be activated when a matching JDK is detected.
    *
    * @return String
    */
@@ -58,8 +57,7 @@ public class ActivationProxy {
   }
 
   /**
-   * Get specifies that this profile will be activated when
-   * matching OS attributes are detected.
+   * Get specifies that this profile will be activated when matching OS attributes are detected.
    *
    * @return ActivationOS
    */
@@ -68,8 +66,7 @@ public class ActivationProxy {
   }
 
   /**
-   * Get specifies that this profile will be activated when this
-   * System property is specified.
+   * Get specifies that this profile will be activated when this System property is specified.
    *
    * @return ActivationProperty
    */
@@ -78,8 +75,7 @@ public class ActivationProxy {
   }
 
   /**
-   * Get flag specifying whether this profile is active as a
-   * default.
+   * Get flag specifying whether this profile is active as a default.
    *
    * @return boolean
    */

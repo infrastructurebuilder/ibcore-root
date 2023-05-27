@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("unused")
 public class BasicCredentialsImplTest {
-  static final String PASSWORD  = "Y";
+  static final String PASSWORD = "Y";
   static final String PRINCIPAL = "X";
 
   @BeforeAll
@@ -74,7 +74,6 @@ public class BasicCredentialsImplTest {
   public void testCompleteEquals() {
     assertNotEquals(x, "X");
   }
-
 
   @Test
   public void testAbstractCredentialsImpl() {

@@ -20,8 +20,8 @@ package org.infrastructurebuilder.util.config.factory;
 import java.util.Optional;
 
 /**
- * Used for matching types to their processors. The "processable type" is
- * generally the name of the class that a given processor will handle.
+ * Used for matching types to their processors. The "processable type" is generally the name of the class that a given
+ * processor will handle.
  *
  * @author mykel.alvis
  *
@@ -29,24 +29,22 @@ import java.util.Optional;
 public interface ProcessableTyped<T> {
 
   /**
-   * Get the "processable type", which is generally a fully qualified class name
-   * of the thing being processed.
+   * Get the "processable type", which is generally a fully qualified class name of the thing being processed.
    *
    * @return non-null String
    */
   String getProcessableType();
 
   /**
-   * If a specific processor is desired, then this value will be compared to the
-   * component identifier for processing.
+   * If a specific processor is desired, then this value will be compared to the component identifier for processing.
    *
-   * @return name of required component processor, if available, else
-   *         {@code Optional#empty()}
+   * @return name of required component processor, if available, else {@code Optional#empty()}
    */
   Optional<String> getSpecificProcessor();
 
   /**
    * Some IB processors imply a direction (inbound or outbound)
+   *
    * @return
    */
   boolean isInbound();

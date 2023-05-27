@@ -42,10 +42,10 @@ public class DefaultCredentialsFactoryTest {
   }
 
   private Map<String, CredentialsSupplier> cs;
-  private DefaultCredentialsFactory        cf;
-  private DefaultURLAndCreds               uc;
-  private String                           url;
-  private Optional<String>                 creds;
+  private DefaultCredentialsFactory cf;
+  private DefaultURLAndCreds uc;
+  private String url;
+  private Optional<String> creds;
 
   @BeforeEach
   public void setUp() throws Exception {

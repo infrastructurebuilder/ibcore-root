@@ -26,7 +26,6 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 public class RepositoryProxyTest {
 
   private static final String NAME = "name";
@@ -37,7 +36,8 @@ public class RepositoryProxyTest {
   @BeforeEach
   public void setUp() throws Exception {
     rpp = new RepositoryPolicyProxy(true, ChecksumPolicy.IGNORE, UpdatePolicy.NEVER, 1);
-    rp = new RepositoryProxy("ABC", Layout.DEFAULT, Optional.of(NAME), new URL(HTTP_WWW_GOOGLE_COM), Optional.of(rpp), Optional.of(rpp));
+    rp = new RepositoryProxy("ABC", Layout.DEFAULT, Optional.of(NAME), new URL(HTTP_WWW_GOOGLE_COM), Optional.of(rpp),
+        Optional.of(rpp));
   }
 
   @Test

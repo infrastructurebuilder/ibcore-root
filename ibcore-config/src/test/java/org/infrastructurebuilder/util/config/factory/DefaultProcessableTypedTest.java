@@ -47,7 +47,6 @@ public class DefaultProcessableTypedTest {
     m = new DefaultProcessableTyped<>("p", "Y");
   }
 
-
   @Test
   public void testIsInbound() {
     assertFalse(k.isInbound());

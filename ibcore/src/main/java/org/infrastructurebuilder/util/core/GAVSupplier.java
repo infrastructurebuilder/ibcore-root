@@ -22,8 +22,8 @@ import java.util.Optional;
 /**
  * A GAVSupplier has mechanisms for supplying the GAV <b><i>of this artifact</i></b>
  *
- * It is not for arbitrary artifacts.  It allows us to query the GAV of a service or instance of a service
- * supplier.
+ * It is not for arbitrary artifacts. It allows us to query the GAV of a service or instance of a service supplier.
+ *
  * @author mykel
  *
  */

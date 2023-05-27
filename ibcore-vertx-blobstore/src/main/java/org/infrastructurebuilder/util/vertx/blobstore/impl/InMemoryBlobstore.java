@@ -74,8 +74,8 @@ public class InMemoryBlobstore implements Blobstore {
 
   @Override
   public Future<Instant> getLastUpdated(String id) {
-    return ofNullable(resources.get(id)).map(IBResource::getLastUpdateDate)
-        .map(Future::succeededFuture).orElse(failedFuture(NOT_FOUND));
+    return ofNullable(resources.get(id)).map(IBResource::getLastUpdateDate).map(Future::succeededFuture)
+        .orElse(failedFuture(NOT_FOUND));
   }
 
   @Override

@@ -18,8 +18,7 @@
 package org.infrastructurebuilder.util.core;
 
 /**
- * Merge identified and weighted for a type of convenience since they often go
- * together.
+ * Merge identified and weighted for a type of convenience since they often go together.
  *
  * @author mykel.alvis
  *
@@ -30,7 +29,7 @@ public interface IdentifiedAndWeighted extends Identified, Weighted {
     return new java.util.Comparator<IdentifiedAndWeighted>() {
       @Override
       public int compare(IdentifiedAndWeighted o1, IdentifiedAndWeighted o2) {
-        int retVal = weighted.compare(o2,o1);
+        int retVal = weighted.compare(o2, o1);
         if (retVal == 0)
           return Identified.comparator().compare(o1, o2);
         return retVal;

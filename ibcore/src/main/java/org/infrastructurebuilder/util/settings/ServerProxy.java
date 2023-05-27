@@ -51,7 +51,8 @@ public class ServerProxy implements Identified, JSONOutputEnabled, Supplier<Basi
 
   public ServerProxy(final String id, final Optional<String> principal, final Optional<String> secret,
       final Optional<String> passphrase, final Optional<Path> keyPath, final Optional<String> filePerms,
-      final Optional<String> directoryPerms, final Optional<String> configAsXML) {
+      final Optional<String> directoryPerms, final Optional<String> configAsXML)
+  {
     super();
     this.id = requireNonNull(id);
     this.principal = requireNonNull(principal);

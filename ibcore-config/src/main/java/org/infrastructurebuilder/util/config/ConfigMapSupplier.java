@@ -30,14 +30,16 @@ public interface ConfigMapSupplier extends Supplier<ConfigMap> {
 //  ConfigMapSupplier addConfiguration(ConfigMapSupplier add);
 
   ConfigMapSupplier addConfiguration(Map<String, Object> add);
+
   ConfigMapSupplier addConfiguration(ConfigMap add);
 
   ConfigMapSupplier addConfiguration(Properties add);
 
-  ConfigMapSupplier addValue(String key, Object  value);
+  ConfigMapSupplier addValue(String key, Object value);
 
   /**
    * The contract for ConfigMapSupplier is that "OVERRIDES" should <code>return this;</code>
+   *
    * @param over
    * @return
    */
@@ -47,12 +49,12 @@ public interface ConfigMapSupplier extends Supplier<ConfigMap> {
 
   ConfigMapSupplier overrideValue(String key, Object value);
 
-  ConfigMapSupplier overrideValueDefault(String key, Object  value, String defaultValue);
+  ConfigMapSupplier overrideValueDefault(String key, Object value, String defaultValue);
 
-  ConfigMapSupplier overrideValueDefaultBlank(String key, Object  value);
+  ConfigMapSupplier overrideValueDefaultBlank(String key, Object value);
 
   /** Transfer map. You shouldn't use this method unless there's a need */
-  Map<String,Object> asMap();
+  Map<String, Object> asMap();
 
   ConfigMapSupplier overrideConfigurationString(Map<String, String> over);
 

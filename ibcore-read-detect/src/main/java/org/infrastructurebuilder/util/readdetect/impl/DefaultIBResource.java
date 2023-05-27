@@ -73,7 +73,7 @@ public class DefaultIBResource implements IBResource {
       // I know, right?
       return Paths.get(cet.returns(() -> cet.returns(() -> u.toURI())));
     } catch (Throwable t) {
-      log.error( "Error converting to path", t);
+      log.error("Error converting to path", t);
       throw t;
     }
   };
@@ -125,12 +125,12 @@ public class DefaultIBResource implements IBResource {
     try {
       path = Paths.get(ps);
       if (path.isAbsolute()) {
-        log.debug( "Absolute path {}", path);
+        log.debug("Absolute path {}", path);
       } else {
-        log.debug( "Relative path {}", path);
+        log.debug("Relative path {}", path);
       }
     } catch (Throwable t) {
-      log.error( "Path was unavailable from {}", ps);
+      log.error("Path was unavailable from {}", ps);
     } finally {
     }
     this.originalPath = path;
@@ -195,7 +195,8 @@ public class DefaultIBResource implements IBResource {
   }
 
   public DefaultIBResource(Path p2, Optional<String> name, Optional<String> desc, Checksum checksum,
-      Optional<Properties> addlProps) {
+      Optional<Properties> addlProps)
+  {
     this(p2, checksum, of(IBResourceFactory.toType.apply(p2)), addlProps);
     this.m.setName(requireNonNull(name).orElse(null));
     this.m.setDescription(requireNonNull(desc).orElse(null));

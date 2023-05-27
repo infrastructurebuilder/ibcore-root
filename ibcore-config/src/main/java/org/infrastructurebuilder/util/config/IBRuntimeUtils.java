@@ -30,10 +30,9 @@ import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.credentials.basic.CredentialsFactory;
 
 /**
- * An {@code IBRuntimeUtils} instance is an aggregation of every
- * early-configurable, (somewhat) statically-usable, and easily-transported
- * element of functionality. It's purpose is to supply InfrastructureBuilder
- * projects with usable configuration to allow broad re-use and easy testing.
+ * An {@code IBRuntimeUtils} instance is an aggregation of every early-configurable, (somewhat) statically-usable, and
+ * easily-transported element of functionality. It's purpose is to supply InfrastructureBuilder projects with usable
+ * configuration to allow broad re-use and easy testing.
  *
  * It accomplishes about 75% of these goals.
  *
@@ -50,27 +49,23 @@ public interface IBRuntimeUtils extends
     // And whatever MIME<->Extension mapping is configured
     , TypeToExtensionMapper
     // Get GAV and other project data from current working project
-    , GAVSupplier
-    {
+    , GAVSupplier {
 
   /**
-   * Get an instance of a {@link Path} that the current instance considers a
-   * usable Path.
+   * Get an instance of a {@link Path} that the current instance considers a usable Path.
    *
-   * By contract, the returned value must exist and be a writeable directory. No
-   * guarantees that the returned value will remain the same for subsequent calls.
+   * By contract, the returned value must exist and be a writeable directory. No guarantees that the returned value will
+   * remain the same for subsequent calls.
    *
    * @return Existing {@link Path} that already exists and is a directory.
    */
   Path getWorkingPath();
 
   /**
-   * Get the list of {@link GAV} elements that define the entities that must be
-   * resolved and available for local use.
+   * Get the list of {@link GAV} elements that define the entities that must be resolved and available for local use.
    *
-   * The contract here is that the list of artifacts returned must be fully
-   * resolved (or implicitly resolvable with some internal resolver), so that one
-   * might do the following:
+   * The contract here is that the list of artifacts returned must be fully resolved (or implicitly resolvable with some
+   * internal resolver), so that one might do the following:
    *
    * <code>
    * List<Path> l = getDependencies().stream()

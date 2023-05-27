@@ -39,7 +39,8 @@ public class DefaultCryptoIdentifier implements CryptoIdentifier {
   private final ChecksumBuilder checksumBuilder = ChecksumBuilder.newInstance();
 
   public DefaultCryptoIdentifier(String type, String id, SortedSet<String> identifiers,
-      Optional<String> validationIdentifier) {
+      Optional<String> validationIdentifier)
+  {
     this.type = requireNonNull(type);
     this.identifiers = requireNonNull(identifiers);
     this.validationIdentifier = requireNonNull(validationIdentifier).orElse(null);
@@ -96,7 +97,7 @@ public class DefaultCryptoIdentifier implements CryptoIdentifier {
 
   @Override
   public ChecksumBuilder getChecksumBuilder() {
-    return this.checksumBuilder ;
+    return this.checksumBuilder;
   }
 
 }

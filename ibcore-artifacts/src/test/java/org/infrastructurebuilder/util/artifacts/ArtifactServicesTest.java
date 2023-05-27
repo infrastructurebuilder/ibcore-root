@@ -136,19 +136,19 @@ public class ArtifactServicesTest {
   public void testGetArtifactsMatching() {
     List<GAV> d = as.getArtifactsMatching(new DefaultGAV("junit", "junit", null, "4.0", "jar"), GAV.PROVIDED_SCOPE,
         true, null, null);
-    assertEquals(1, d.size(),"Size 1");
+    assertEquals(1, d.size(), "Size 1");
     d = as.getArtifactsMatching(new DefaultGAV("junit", "junit", null, "4.0", "jar"), GAV.PROVIDED_SCOPE, true, "x",
         null);
-    assertEquals(0, d.size(),"Size 0");
+    assertEquals(0, d.size(), "Size 0");
     d = as.getArtifactsMatching(new DefaultGAV("junit", "junit", null, "4.0", "jar"), GAV.PROVIDED_SCOPE, true, null,
         "zip");
-    assertEquals(0, d.size(),"Size 0");
+    assertEquals(0, d.size(), "Size 0");
     d = as.getArtifactsMatching(new DefaultGAV("junit", "junit", null, "4.0", "jar"), GAV.PROVIDED_SCOPE, true, "x",
         "jar");
-    assertEquals(0, d.size(),"Size 0");
+    assertEquals(0, d.size(), "Size 0");
     d = as.getArtifactsMatching(new DefaultGAV("junit", "junit", null, "4.0", "zip"), GAV.PROVIDED_SCOPE, true, "x",
         null);
-    assertEquals(0, d.size(),"Size 0");
+    assertEquals(0, d.size(), "Size 0");
   }
 
   @Test

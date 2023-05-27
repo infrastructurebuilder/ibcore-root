@@ -81,7 +81,8 @@ public class DefaultWGetterSupplier implements WGetterSupplier, IBConfigurable<J
 //      @Named(IBDATA_DOWNLOAD_CACHE_DIR_SUPPLIER) PathSupplier cacheDirSupplier,
       HeadersSupplier headerSupplier,
 
-      ArchiverManager archiverManager, Supplier<ProxyInfo> proxyInfoSupplier) {
+      ArchiverManager archiverManager, Supplier<ProxyInfo> proxyInfoSupplier)
+  {
     this.log = requireNonNull(log).get();
     this.t2e = requireNonNull(t2e);
     this.headers = requireNonNull(headerSupplier).get();

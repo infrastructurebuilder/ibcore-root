@@ -69,7 +69,7 @@ public class AbstractIBConfigurableTypedFactoryTest {
 
   @Test
   public void testGetInstance() {
-    s.getLog().info( "Testing getInstance (and getLog())");
+    s.getLog().info("Testing getInstance (and getLog())");
     IBConfigurableFactory<String, String> s1 = s.configure("hi!");
     Optional<Supplier<String>> p = s1.getInstance("there!");
     assertTrue(p.isPresent());

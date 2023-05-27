@@ -35,15 +35,16 @@ import org.slf4j.Logger;
 
 abstract public class AbstractIBRuntimeUtils implements IBRuntimeUtils {
 
-  protected final PathSupplier          wps;
-  private final GAVSupplier             gs;
-  private final LoggerSupplier          ls;
-  private final CredentialsFactory      cf;
+  protected final PathSupplier wps;
+  private final GAVSupplier gs;
+  private final LoggerSupplier ls;
+  private final CredentialsFactory cf;
   private final IBArtifactVersionMapper avm;
-  private final TypeToExtensionMapper   t2em;
+  private final TypeToExtensionMapper t2em;
 
   protected AbstractIBRuntimeUtils(PathSupplier wps, LoggerSupplier ls, GAVSupplier gs, CredentialsFactory cf,
-      IBArtifactVersionMapper avm, TypeToExtensionMapper t2em) {
+      IBArtifactVersionMapper avm, TypeToExtensionMapper t2em)
+  {
     this.wps = wps;
     this.ls = ls;
     this.gs = gs;
@@ -105,6 +106,5 @@ abstract public class AbstractIBRuntimeUtils implements IBRuntimeUtils {
   public Optional<String> getStructuredSupplyTypeClassName(String type) {
     return t2em.getStructuredSupplyTypeClassName(type);
   }
-
 
 }

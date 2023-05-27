@@ -27,7 +27,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 public class ListCapturingLogOutputStream extends CapturingLogOutputStream implements Supplier<List<String>> {
-  private final List<String>          list = new ArrayList<>();
+  private final List<String> list = new ArrayList<>();
   private final Optional<PrintStream> pw;
 
   public ListCapturingLogOutputStream(final Path p, final Optional<PrintStream> pw) {

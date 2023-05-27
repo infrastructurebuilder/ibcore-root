@@ -19,6 +19,6 @@ package org.infrastructurebuilder.util.config;
 
 import org.w3c.dom.Document;
 
-public interface DOMConfigurable<T> extends Configurable<T,Document> {
+public interface DOMConfigurable<T> extends Configurable<T, Document> {
 
 }

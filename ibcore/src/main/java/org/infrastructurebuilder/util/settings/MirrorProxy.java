@@ -39,8 +39,9 @@ public class MirrorProxy {
    * @param name
    * @param url
    */
-  public MirrorProxy(String id, Layout layout, List<String> mirrorOf, List<Layout> mirrorOfLayouts, Optional<String> name,
-      URL url) {
+  public MirrorProxy(String id, Layout layout, List<String> mirrorOf, List<Layout> mirrorOfLayouts,
+      Optional<String> name, URL url)
+  {
     this.id = id;
     this.layout = layout;
     this.mirrorOf = mirrorOf;
@@ -63,8 +64,7 @@ public class MirrorProxy {
   }
 
   /**
-   * Get the server IDs of the repositories being mirrored, e.g.,
-   *             "central". This MUST NOT match the mirror id.
+   * Get the server IDs of the repositories being mirrored, e.g., "central". This MUST NOT match the mirror id.
    *
    * @return String
    */
@@ -73,16 +73,14 @@ public class MirrorProxy {
   }
 
   /**
-   * Get the layouts of repositories being mirrored. This value
-   * can be used to restrict the usage
-   *             of the mirror to repositories with a matching
-   * layout (apart from a matching id). Since Maven 3.
+   * Get the layouts of repositories being mirrored. This value can be used to restrict the usage of the mirror to
+   * repositories with a matching layout (apart from a matching id). Since Maven 3.
    *
    * @return String
    */
   public List<Layout> getMirrorOfLayouts() {
     return this.mirrorOfLayouts;
-  }; //-- String getMirrorOfLayouts()
+  }; // -- String getMirrorOfLayouts()
 
   /**
    * Get the optional name that describes the mirror.

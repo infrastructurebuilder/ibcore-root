@@ -19,8 +19,7 @@ package org.infrastructurebuilder.util.core;
 
 import java.time.Instant;
 
-
-public interface LastUpdated  {
+public interface LastUpdated {
   public final static String LAST_UPDATED = "lastUpdated";
 
   public static java.util.Comparator<LastUpdated> lastupdatedComparator = new java.util.Comparator<LastUpdated>() {

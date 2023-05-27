@@ -15,8 +15,6 @@
  */
 package org.infrastructurebuilder.util.maven.artifacts.impl;
 
-
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.URL;
@@ -48,7 +46,7 @@ public class DefaultResolveOutcomeTest {
 
   @Test
   public void testGetCount() {
-    assertEquals(2,r.getCount());
+    assertEquals(2, r.getCount());
   }
 
   @Test

@@ -117,9 +117,8 @@ abstract public class AbstractBaseIBDirScan extends SimpleFileVisitor<Path> impl
   }
 
   /**
-   * The exclusion function determines if a given Path is included, excluded, or errored
-   * Not nullable path
-   * Nullable BasicFileAttributes
+   * The exclusion function determines if a given Path is included, excluded, or errored Not nullable path Nullable
+   * BasicFileAttributes
    *
    * @return
    */

@@ -59,9 +59,9 @@ class FilesystemBlobstoreTest {
   static void tearDownAfterClass() throws Exception {
   }
 
-
   FilesystemBlobstore bs;
   private Path root;
+
   @BeforeEach
   void setUp() throws Exception {
     root = tps.get();
@@ -78,7 +78,7 @@ class FilesystemBlobstoreTest {
   void testGetRelativeRoot() {
     var p1 = bs.getRelativeRoot().getPath().get().toString();
     var p2 = root.toString();
-    assertEquals(p1,p2);
+    assertEquals(p1, p2);
   }
 
   @Test

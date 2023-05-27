@@ -24,9 +24,9 @@ import java.util.Optional;
 
 public class DefaultProcessableTyped<T> implements ProcessableTyped<T> {
 
-  private final String           processableType;
+  private final String processableType;
   private final Optional<String> specificProcessor;
-  private final boolean          inbound;
+  private final boolean inbound;
   private final T value;
 
   public DefaultProcessableTyped(String type, T value) {

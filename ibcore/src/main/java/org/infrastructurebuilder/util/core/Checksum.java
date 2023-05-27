@@ -51,7 +51,7 @@ public class Checksum extends AbstractChecksum {
       ba[i] = c.b[i];
     }
     for (j = 0; j < ba.length; ++j) {
-      ba[j+i] = bytes[j];
+      ba[j + i] = bytes[j];
     }
     return new Checksum(ba, UNKNOWN);
   }
@@ -131,8 +131,8 @@ public class Checksum extends AbstractChecksum {
   }
 
   /**
-   * This constructor produces a checksum of a list of checksums. It DEFINITELY
-   * loses fidelity but for SHA-512 strings it's...OK.
+   * This constructor produces a checksum of a list of checksums. It DEFINITELY loses fidelity but for SHA-512 strings
+   * it's...OK.
    *
    * @param relativeRoot
    * @param list

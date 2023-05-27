@@ -31,9 +31,9 @@ import org.junit.jupiter.api.Test;
 
 public class DefaultBasicCredentialsMapSupplierTest {
 
-  private DefaultBasicCredentials            aCreds, bCreds, cCreds, dCreds;
+  private DefaultBasicCredentials aCreds, bCreds, cCreds, dCreds;
   private DefaultBasicCredentialsMapSupplier cs;
-  private Map<String, BasicCredentials>      testData, replaceData1;
+  private Map<String, BasicCredentials> testData, replaceData1;
 
   @BeforeEach
   public void setUp() throws Exception {

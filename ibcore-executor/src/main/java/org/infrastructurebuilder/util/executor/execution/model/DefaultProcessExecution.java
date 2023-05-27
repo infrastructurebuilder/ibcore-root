@@ -42,7 +42,7 @@ public class DefaultProcessExecution implements ProcessExecution {
 
   private final GeneratedProcessExecution gpe;
   private final PrintStream addl;
-  private  ProcessExecutor executor;
+  private ProcessExecutor executor;
   private ListCapturingLogOutputStream stdErr;
   private ListCapturingLogOutputStream stdOut;
   private final ChecksumBuilder builder = ChecksumBuilder.newInstance();
@@ -68,7 +68,8 @@ public class DefaultProcessExecution implements ProcessExecution {
   public DefaultProcessExecution(final String id, final String executable, final List<String> arguments,
       final Optional<java.time.Duration> timeout, final Optional<Path> stdIn, final Path workDirectory,
       final boolean optional, final Optional<Map<String, String>> environment, final Optional<Path> relativeRoot,
-      final Optional<List<Integer>> exitValues, final Optional<java.io.PrintStream> addl, final boolean background) {
+      final Optional<List<Integer>> exitValues, final Optional<java.io.PrintStream> addl, final boolean background)
+  {
     gpe = new GeneratedProcessExecution();
     gpe.setId(id);
     gpe.setExecutable(executable);
@@ -91,7 +92,8 @@ public class DefaultProcessExecution implements ProcessExecution {
       final Optional<Map<String, String>> environment, final Optional<Path> relativeRoot,
       final Optional<List<Integer>> exitValues, final Optional<java.io.PrintStream> addl, final boolean background,
       final org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream stdout,
-      final org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream stderr) {
+      final org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream stderr)
+  {
     this(id, executable, arguments, timeout, stdIn, workDirectory, optional, environment, relativeRoot, exitValues,
         addl, background);
     this.stdOut = stdout;
@@ -199,6 +201,7 @@ public class DefaultProcessExecution implements ProcessExecution {
   protected DefaultProcessExecution clone() throws CloneNotSupportedException {
     return new DefaultProcessExecution(this);
   }
+
   public ChecksumBuilder getChecksumBuilder() {
     return this.builder;
   }

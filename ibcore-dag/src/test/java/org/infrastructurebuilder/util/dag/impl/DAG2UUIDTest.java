@@ -37,10 +37,10 @@ import org.junit.jupiter.api.Test;
 
 public class DAG2UUIDTest {
 
-  private UUID                a, b, c, d, e;
-  private MutableDAG<UUID>    dag, dag1, dag2;
+  private UUID a, b, c, d, e;
+  private MutableDAG<UUID> dag, dag1, dag2;
   private MutableVertex<UUID> dV;
-  MutableVertex<UUID>         cV;
+  MutableVertex<UUID> cV;
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -114,7 +114,7 @@ public class DAG2UUIDTest {
 
   @Test
   public final void testGetLabels() {
-    final Set<UUID> l  = dag.getLabels();
+    final Set<UUID> l = dag.getLabels();
     final Set<UUID> l1 = dag1.getLabels();
     assertEquals(0, l.size());
     assertEquals(4, l1.size());
@@ -188,7 +188,9 @@ public class DAG2UUIDTest {
     assertEquals(5, z.size());
   }
 
-  @SuppressWarnings({ "unchecked", "rawtypes" })
+  @SuppressWarnings({
+      "unchecked", "rawtypes"
+  })
   @Test
   public final void testVertexEquals() throws CycleDetectedException {
     cV = dag1.getVertex(c);

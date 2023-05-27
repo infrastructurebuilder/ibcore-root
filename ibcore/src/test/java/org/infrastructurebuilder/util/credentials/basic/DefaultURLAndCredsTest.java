@@ -74,5 +74,4 @@ public class DefaultURLAndCredsTest {
     assertEquals("DefaultURLAndCreds [url=url, query=Optional.empty]", d.toString());
   }
 
-
 }

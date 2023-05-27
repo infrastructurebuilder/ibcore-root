@@ -20,15 +20,18 @@ package org.infrastructurebuilder.util.core;
 import java.util.Comparator;
 import java.util.UUID;
 
-public interface UUIdentified  {
+public interface UUIdentified {
   public final static String ID = "id";
+
   UUID getId();
 
   public static Comparator<UUIdentified> uuidcomparator = new Comparator<>() {
     @Override
     public int compare(UUIdentified o1, UUIdentified o2) {
-      if (o1 == null) return -1;
-      if (o2 == null) return 1;
+      if (o1 == null)
+        return -1;
+      if (o2 == null)
+        return 1;
       return o1.getId().compareTo(o2.getId());
     }
   };

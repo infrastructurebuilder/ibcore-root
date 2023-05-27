@@ -42,7 +42,7 @@ public class DefaultConfigMapSupplier implements ConfigMapSupplier {
   }
 
   public DefaultConfigMapSupplier(ConfigMap init) {
-    this.init= ofNullable(init);
+    this.init = ofNullable(init);
   }
 
   @Override

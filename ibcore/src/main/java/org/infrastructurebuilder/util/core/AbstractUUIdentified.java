@@ -40,9 +40,7 @@ public class AbstractUUIdentified implements UUIdentified {
   }
 
   public JSONObject getLocalJSON() {
-    return JSONBuilder.newInstance()
-        .addString(ID, getId().toString())
-        .asJSON();
+    return JSONBuilder.newInstance().addString(ID, getId().toString()).asJSON();
   }
 
 }

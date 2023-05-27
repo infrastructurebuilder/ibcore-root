@@ -40,19 +40,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class AbstractIBRuntimeUtilsTest {
-  public final static Logger              log = LoggerFactory.getLogger(AbstractIBRuntimeUtilsTest.class);
+  public final static Logger log = LoggerFactory.getLogger(AbstractIBRuntimeUtilsTest.class);
   public final static TestingPathSupplier wps = new TestingPathSupplier();
-  public final static GAV                 gav = new DefaultGAV("G:A:1.0.0:jar");
+  public final static GAV gav = new DefaultGAV("G:A:1.0.0:jar");
 
   @AfterAll
   public static void tearDownAfterClass() throws Exception {
     wps.finalize();
   }
 
-  private AbstractIBRuntimeUtils  ar;
-  private String                  princ, creds;
+  private AbstractIBRuntimeUtils ar;
+  private String princ, creds;
   private IBArtifactVersionMapper avm;
-  private FakeGAVSupplier         gavSupplier;
+  private FakeGAVSupplier gavSupplier;
 
   @BeforeEach
   public void setUp() throws Exception {

@@ -29,6 +29,7 @@ import org.infrastructurebuilder.util.dag.CycleDetectedException;
 import org.infrastructurebuilder.util.dag.MutableDAG;
 import org.infrastructurebuilder.util.dag.MutableVertex;
 import org.junit.jupiter.api.Test;
+
 public class DAGTest {
   @Test
   public void testCycleException() {
@@ -46,18 +47,18 @@ public class DAGTest {
     assertFalse(v.equals("ABC"));
     assertEquals(1, dag.getVerticies().size());
 
-    assertEquals( "a", dag.getVertex("a").getLabel());
+    assertEquals("a", dag.getVertex("a").getLabel());
 
     dag.addVertex("a");
 
     assertEquals(1, dag.getVerticies().size());
 
-    assertEquals( "a", dag.getVertex("a").getLabel());
+    assertEquals("a", dag.getVertex("a").getLabel());
 
     dag.addVertex("b");
     assertFalse(dag.getVertex("b").isConnected());
     assertFalse(dag.isConnected("b"));
-    assertEquals( 2, dag.getVerticies().size());
+    assertEquals(2, dag.getVerticies().size());
 
     assertFalse(dag.hasEdge("a", "b"));
 
@@ -67,9 +68,9 @@ public class DAGTest {
 
     final MutableVertex b = dag.getVertex("b");
 
-    assertEquals( "a", a.getLabel());
+    assertEquals("a", a.getLabel());
 
-    assertEquals( "b", b.getLabel());
+    assertEquals("b", b.getLabel());
 
     dag.addEdge("a", "b");
     assertTrue(dag.isConnected("b"));
@@ -94,7 +95,7 @@ public class DAGTest {
 
     assertEquals("b", b.getLabel());
 
-    assertEquals( "c", c.getLabel());
+    assertEquals("c", c.getLabel());
 
     assertEquals("d", d.getLabel());
 
@@ -140,7 +141,9 @@ public class DAGTest {
 
   }
 
-  @SuppressWarnings({ "unchecked", "rawtypes" })
+  @SuppressWarnings({
+      "unchecked", "rawtypes"
+  })
   @Test
   public void testGetPredessors() throws CycleDetectedException {
     final MutableDAG dag = new DAGBuilderImpl.MutableDAGImpl<>();

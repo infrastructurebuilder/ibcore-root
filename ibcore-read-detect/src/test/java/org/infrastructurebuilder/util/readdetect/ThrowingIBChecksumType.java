@@ -26,8 +26,7 @@ import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.readdetect.impl.DefaultIBResource;
 
 /**
- * Just a testing implementation that allows us to throw an excetion when get is
- * called
+ * Just a testing implementation that allows us to throw an excetion when get is called
  *
  * @author mykel.alvis
  *

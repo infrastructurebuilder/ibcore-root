@@ -28,16 +28,15 @@ import org.zeroturnaround.exec.ProcessResult;
 
 public class DefaultProcessExecutionResultBag implements ProcessExecutionResultBag {
 
-  private final List<String>                        executedIds;
+  private final List<String> executedIds;
   private final Map<String, ProcessExecutionResult> executions;
-  private final Map<String, Future<ProcessResult>>  futures;
+  private final Map<String, Future<ProcessResult>> futures;
 
   DefaultProcessExecutionResultBag(final MutableProcessExecutionResultBag r) {
     executions = unmodifiableMap(r.getExecutionResults());
     executedIds = unmodifiableList(r.getExecutedIds());
     futures = unmodifiableMap(r.getRunningFutures());
   }
-
 
   @Override
   public List<String> getExecutedIds() {
@@ -49,11 +48,9 @@ public class DefaultProcessExecutionResultBag implements ProcessExecutionResultB
     return executions;
   }
 
-
   @Override
   public Map<String, Future<ProcessResult>> getRunningFutures() {
     return futures;
   }
-
 
 }

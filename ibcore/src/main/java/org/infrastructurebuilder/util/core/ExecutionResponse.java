@@ -19,7 +19,8 @@ package org.infrastructurebuilder.util.core;
 
 import java.util.List;
 
-public interface ExecutionResponse<E,R>  {
+public interface ExecutionResponse<E, R> {
   List<E> getErrors();
+
   R getResponseValue();
 }

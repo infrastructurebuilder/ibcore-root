@@ -90,17 +90,17 @@ public class CoordinateSetTest {
 
   @Test
   public void testFromFullSignaturePath() {
-    assertEquals( fullSig, l.getDefaultSignaturePath(), "Full sig is as expect (" + fullSig + ")");
+    assertEquals(fullSig, l.getDefaultSignaturePath(), "Full sig is as expect (" + fullSig + ")");
   }
 
   @Test
   public void testGetArtifactId() {
-    assertEquals( "B", l.getArtifactId());
+    assertEquals("B", l.getArtifactId());
   }
 
   @Test
   public void testGetClassifier() {
-    assertEquals( "C", l.getClassifier().orElse(null));
+    assertEquals("C", l.getClassifier().orElse(null));
   }
 
   @Test
@@ -115,13 +115,12 @@ public class CoordinateSetTest {
 
   @Test
   public void testGetType() {
-    assertEquals(ArtifactServices.BASIC_PACKAGING,
-        l1.getExtension());
+    assertEquals(ArtifactServices.BASIC_PACKAGING, l1.getExtension());
   }
 
   @Test
   public void testGetVersion() {
-    assertEquals( "1.0.0", l.getVersion().get());
+    assertEquals("1.0.0", l.getVersion().get());
   }
 
   @Test
@@ -133,7 +132,7 @@ public class CoordinateSetTest {
   @Test
   public void testSetClassifier() {
     l.setClassifier("B");
-    assertEquals( "B", l.getClassifier().orElse(null));
+    assertEquals("B", l.getClassifier().orElse(null));
     l.setClassifier(null);
     assertTrue(!l.getClassifier().isPresent(), "Classifier empty");
   }
@@ -147,13 +146,13 @@ public class CoordinateSetTest {
   @Test
   public void testSetGroupId() {
     l.setGroupId("G");
-    assertEquals( "G", l.getGroupId());
+    assertEquals("G", l.getGroupId());
   }
 
   @Test
   public void testSetNullExtension() {
     l.setExtension(null);
-    assertEquals(DefaultGAV.BASIC_PACKAGING,l.getExtension());
+    assertEquals(DefaultGAV.BASIC_PACKAGING, l.getExtension());
   }
 
 }

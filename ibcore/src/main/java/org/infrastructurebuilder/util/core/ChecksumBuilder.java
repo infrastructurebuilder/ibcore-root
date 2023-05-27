@@ -203,6 +203,7 @@ public final class ChecksumBuilder implements ChecksumEnabled {
 
   /**
    * Warning If this is not a SortedSet, things could go awry
+   *
    * @param value
    * @return
    */
@@ -332,7 +333,7 @@ public final class ChecksumBuilder implements ChecksumEnabled {
       b.addJSONArray(ja);
     } else if (o instanceof Integer i) {
       b.addInteger(i);
-    } else if (o instanceof Long  l ) {
+    } else if (o instanceof Long l) {
       b.addLong(l);
     } else if (o instanceof Double d) {
       b.addDouble(d);

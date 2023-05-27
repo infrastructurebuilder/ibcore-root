@@ -16,6 +16,7 @@
  * @formatter:on
  */
 package org.infrastructurebuilder.util.executor;
+
 import static java.util.Collections.emptyMap;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -36,7 +37,7 @@ public class ExecutionEnvironmentFilterTest {
 
   @Test
   public void testNullFilter() {
-    assertThrows(NullPointerException.class,() ->  ExecutionEnvironmentFilter.defaultFilter.filter(null));
+    assertThrows(NullPointerException.class, () -> ExecutionEnvironmentFilter.defaultFilter.filter(null));
   }
 
 }

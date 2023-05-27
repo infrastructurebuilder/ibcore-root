@@ -26,9 +26,10 @@ import java.util.List;
 import javax.inject.Named;
 
 import org.infrastructurebuilder.util.core.GAV;
+
 /**
- * This maps to a list of "release versions" for some known golang release types that generally
- * release in Github.  The most common is the first ("v1.0.0") but the others exist.
+ * This maps to a list of "release versions" for some known golang release types that generally release in Github. The
+ * most common is the first ("v1.0.0") but the others exist.
  *
  * @author mykel.alvis
  *

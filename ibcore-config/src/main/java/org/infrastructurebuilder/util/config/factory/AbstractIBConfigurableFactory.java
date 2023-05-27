@@ -21,9 +21,9 @@ import java.util.Objects;
 
 import org.infrastructurebuilder.util.config.IBRuntimeUtils;
 
-abstract public class AbstractIBConfigurableFactory<T,C> implements IBConfigurableFactory<T,C> {
+abstract public class AbstractIBConfigurableFactory<T, C> implements IBConfigurableFactory<T, C> {
 
-  private final IBRuntimeUtils    ibr;
+  private final IBRuntimeUtils ibr;
 
   protected AbstractIBConfigurableFactory(IBRuntimeUtils ibr) {
     this.ibr = Objects.requireNonNull(ibr);

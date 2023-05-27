@@ -56,17 +56,17 @@ public class ProfileProxyTest {
 
   @Test
   public void testGetPluginRepositories() {
-    assertEquals(0,pp.getPluginRepositories().size());
+    assertEquals(0, pp.getPluginRepositories().size());
   }
 
   @Test
   public void testGetProperties() {
-    assertEquals(0,pp.getProperties().size());
+    assertEquals(0, pp.getProperties().size());
   }
 
   @Test
   public void testGetRepositories() {
-    assertEquals(0,pp.getRepositories().size());
+    assertEquals(0, pp.getRepositories().size());
   }
 
 }

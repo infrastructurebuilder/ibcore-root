@@ -44,9 +44,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The IMDelegatedIBResource is NOT a general-purpose IBResource implementation,
- * as it stores the resource data in-memory. If you try to use this as a general
- * resource, you will QUICKLY run out of memory.
+ * The IMDelegatedIBResource is NOT a general-purpose IBResource implementation, as it stores the resource data
+ * in-memory. If you try to use this as a general resource, you will QUICKLY run out of memory.
  *
  * @author mykel
  *
@@ -61,7 +60,8 @@ public class IMDelegatedIBResource implements IBResource {
   private final byte[] ba;
 
   public IMDelegatedIBResource(byte[] bb, String blobname, String description2, Instant createDate, Instant lastUpdated,
-      Optional<Properties> addlProps) {
+      Optional<Properties> addlProps)
+  {
     this.ba = bb.clone();
     IBResourceModel m = new IBResourceModel();
     m.setFileChecksum(new Checksum(get()).toString());

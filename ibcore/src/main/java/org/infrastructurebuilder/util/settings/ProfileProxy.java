@@ -29,7 +29,6 @@ public class ProfileProxy {
   private final Properties properties;
   private final List<RepositoryProxy> repositories;
 
-
   /**
    * @param id
    * @param active
@@ -39,7 +38,8 @@ public class ProfileProxy {
    * @param repositories
    */
   public ProfileProxy(String id, boolean active, Optional<ActivationProxy> activation,
-      List<RepositoryProxy> pluginRepositories, Properties properties, List<RepositoryProxy> repositories) {
+      List<RepositoryProxy> pluginRepositories, Properties properties, List<RepositoryProxy> repositories)
+  {
     this.id = id;
     this.active = active;
     this.activation = activation;
@@ -57,8 +57,7 @@ public class ProfileProxy {
   }
 
   /**
-   * Get the conditional logic which will automatically
-   *             trigger the inclusion of this profile.
+   * Get the conditional logic which will automatically trigger the inclusion of this profile.
    *
    * @return Activation
    */

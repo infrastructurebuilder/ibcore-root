@@ -51,5 +51,4 @@ public class FakeGAVSupplier implements GAVSupplier {
     return Optional.ofNullable(this.description);
   }
 
-
 }

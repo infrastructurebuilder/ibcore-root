@@ -46,7 +46,8 @@ public class DefaultGAVMatcher implements GAVMatcher {
 
   public DefaultGAVMatcher(final Optional<Pattern> groupId, final Optional<Pattern> artifactId,
       final Optional<IBVersionRange> versionRange, final Optional<Pattern> versionByString,
-      final Optional<Pattern> classifier, final Optional<Pattern> type) {
+      final Optional<Pattern> classifier, final Optional<Pattern> type)
+  {
     this.groupId = Objects.requireNonNull(groupId, "matching groupId");
     this.artifactId = Objects.requireNonNull(artifactId, "matching artifactId`");
 

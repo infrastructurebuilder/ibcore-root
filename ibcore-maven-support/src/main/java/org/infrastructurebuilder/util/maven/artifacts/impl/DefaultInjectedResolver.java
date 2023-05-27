@@ -51,7 +51,8 @@ public class DefaultInjectedResolver implements InjectedResolver {
 
   @Inject
   public DefaultInjectedResolver(final ArtifactRepository localRepository, final RepositorySystem mavRepositorySystem,
-      final List<ArtifactRepository> remoteArtifactRepositories) {
+      final List<ArtifactRepository> remoteArtifactRepositories)
+  {
     this.localRepository = Objects.requireNonNull(localRepository);
     mavenRepositorySystem = Objects.requireNonNull(mavRepositorySystem);
     remoteArtifactRepos = Objects.requireNonNull(remoteArtifactRepositories);
@@ -83,8 +84,8 @@ public class DefaultInjectedResolver implements InjectedResolver {
   @Override
   public ResolveOutcome resolutionOutcomeFor(final Artifact artifact) {
     final ArtifactResolutionResult res = resolve(artifact);
-    final List<URL> urls = res.getArtifacts().stream()
-        .map(a -> cet.returns(() -> a.getFile().toURI().toURL())).collect(Collectors.toList());
+    final List<URL> urls = res.getArtifacts().stream().map(a -> cet.returns(() -> a.getFile().toURI().toURL()))
+        .collect(Collectors.toList());
     final URL origi = cet.returns(() -> res.getOriginatingArtifact().getFile().toURI().toURL());
     return new DefaultResolveOutcome(urls, res.getOriginatingArtifact(), origi);
   }
@@ -103,7 +104,7 @@ public class DefaultInjectedResolver implements InjectedResolver {
   public ArtifactResolutionResult resolve(final Artifact artifact) {
     return mavenRepositorySystem.resolve(new ArtifactResolutionRequest(
         new DefaultRepositoryRequest().setRemoteRepositories(remoteArtifactRepos).setLocalRepository(localRepository))
-            .setArtifact(artifact).setResolveTransitively(true));
+        .setArtifact(artifact).setResolveTransitively(true));
   }
 
 }

@@ -30,7 +30,6 @@ public class ProxyProxy {
   private final Optional<String> username;
   private final boolean active;
 
-
   /**
    * @param id
    * @param host
@@ -42,20 +41,23 @@ public class ProxyProxy {
    * @param active
    */
   public ProxyProxy(String id, String host, List<String> nonProxyHosts, Optional<String> password, int port,
-      String protocol, Optional<String> username, boolean active) {
+      String protocol, Optional<String> username, boolean active)
+  {
     this.id = id;
     this.host = host;
     this.nonProxyHosts = nonProxyHosts;
     this.password = password;
     this.port = port;
-    this.protocol = protocol;  // "protocol" is the same as "type" for WagonManager
+    this.protocol = protocol; // "protocol" is the same as "type" for WagonManager
     this.username = username;
     this.active = active;
   }
+
   public String getId() {
     return this.id;
   }
- /**
+
+  /**
    * Get the proxy host.
    *
    * @return String
@@ -63,6 +65,7 @@ public class ProxyProxy {
   public String getHost() {
     return this.host;
   }
+
   /**
    * Get the list of non-proxied hosts (was delimited by |).
    *
@@ -71,6 +74,7 @@ public class ProxyProxy {
   public List<String> getNonProxyHosts() {
     return this.nonProxyHosts;
   }
+
   /**
    * Get the proxy password.
    *
@@ -79,6 +83,7 @@ public class ProxyProxy {
   public Optional<String> getPassword() {
     return this.password;
   }
+
   /**
    * Get the proxy port.
    *
@@ -86,7 +91,7 @@ public class ProxyProxy {
    */
   public int getPort() {
     return this.port;
-  }; //-- int getPort()
+  }; // -- int getPort()
 
   /**
    * Get the proxy protocol.
@@ -96,6 +101,7 @@ public class ProxyProxy {
   public String getProtocol() {
     return this.protocol;
   }
+
   /**
    * Get the proxy user.
    *
@@ -104,6 +110,7 @@ public class ProxyProxy {
   public Optional<String> getUsername() {
     return this.username;
   }
+
   /**
    * Get whether this proxy configuration is the active one.
    *

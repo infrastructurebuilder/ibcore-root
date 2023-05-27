@@ -51,7 +51,8 @@ public class IBRuntimeUtilsTesting extends AbstractIBRuntimeUtils {
   private final static Logger log = LoggerFactory.getLogger(IBRuntimeUtilsTesting.class);
 
   public IBRuntimeUtilsTesting(PathSupplier wps, Logger ls, GAV gs, CredentialsFactory cf,
-      IBArtifactVersionMapper avm) {
+      IBArtifactVersionMapper avm)
+  {
     super(wps, () -> ls, new FakeGAVSupplier(gs), cf, avm, new FakeTypeToExtensionMapper());
   }
 

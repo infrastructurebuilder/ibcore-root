@@ -63,7 +63,7 @@ public class FakeArchiverManager implements ArchiverManager {
   @Override
   @Nonnull
   public Archiver getArchiver(@Nonnull final String archiverName) throws NoSuchArchiverException {
-      return new ZipArchiver();
+    return new ZipArchiver();
   }
 
   @Override
@@ -87,7 +87,7 @@ public class FakeArchiverManager implements ArchiverManager {
   @Override
   @Nonnull
   public UnArchiver getUnArchiver(@Nonnull final String unArchiverName) throws NoSuchArchiverException {
-      return new ZipUnArchiver();
+    return new ZipUnArchiver();
   }
 
 }

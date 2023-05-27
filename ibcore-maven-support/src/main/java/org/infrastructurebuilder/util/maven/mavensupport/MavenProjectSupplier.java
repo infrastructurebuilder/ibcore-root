@@ -24,6 +24,6 @@ import org.infrastructurebuilder.util.core.TSupplier;
 
 @Named(IBConstants.MAVEN)
 @Singleton
-public class MavenProjectSupplier extends TSupplier<MavenProject>  {
+public class MavenProjectSupplier extends TSupplier<MavenProject> {
 
 }

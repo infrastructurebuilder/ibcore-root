@@ -25,8 +25,8 @@ public class IBCryptoException extends RuntimeException {
    *
    */
   private static final long serialVersionUID = -2115861405599391442L;
-  public static ExceptionTranslator et = ET.newConfiguration().translate(Exception.class)
-      .to(IBCryptoException.class).done();
+  public static ExceptionTranslator et = ET.newConfiguration().translate(Exception.class).to(IBCryptoException.class)
+      .done();
 
   public IBCryptoException() {
   }
@@ -40,7 +40,8 @@ public class IBCryptoException extends RuntimeException {
   }
 
   public IBCryptoException(final String message, final Throwable cause, final boolean enableSuppression,
-      final boolean writableStackTrace) {
+      final boolean writableStackTrace)
+  {
     super(message, cause, enableSuppression, writableStackTrace);
   }
 
