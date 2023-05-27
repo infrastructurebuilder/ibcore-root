@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
+    @formatter:off
     Copyright © 2019 admin (admin@infrastructurebuilder.org)
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,21 +15,26 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+    @formatter:on
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibcore-root</artifactId>
     <version>0.20.1-SNAPSHOT</version>
   </parent>
+
   <artifactId>ibcore</artifactId>
   <packaging>jar</packaging>
+
   <name>${project.artifactId}</name>
   <description>Lightly encumberd Standard interfaces (and exceptions) for JVM-based applications within IB codebases</description>
-	<!-- URL for site gen -->
+  <!-- URL for site gen -->
   <url>${github.url.base}/${project.artifactId}</url>
+
   <properties>
 
     <hashicorp.boundary.download.skip>false</hashicorp.boundary.download.skip>
@@ -45,6 +51,7 @@
     <test.coverage.percentage.required>88</test.coverage.percentage.required>
     <jacoco.max.missed.classes>0</jacoco.max.missed.classes>
   </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -54,29 +61,10 @@
       <groupId>io.avaje</groupId>
       <artifactId>javax.inject</artifactId>
     </dependency>
-    <!--
     <dependency>
-      <groupId>org.eclipse.sisu</groupId>
-      <artifactId>org.eclipse.sisu.inject</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.sisu</groupId>
-      <artifactId>org.eclipse.sisu.plexus</artifactId>
-    </dependency>
-     -->
-    <dependency>
-<!--       <groupId>com.vdurmont</groupId> -->
       <groupId>org.infrastructurebuilder.usurped</groupId>
       <artifactId>semver4j</artifactId>
     </dependency>
-<!--
-    <dependency>
-      <groupId>com.google.inject</groupId>
-      <artifactId>guice</artifactId>
-      <scope>test</scope>
-      <classifier>no_aop</classifier>
-    </dependency>
- -->
     <dependency>
       <groupId>org.jooq</groupId>
       <artifactId>joor</artifactId>
@@ -97,32 +85,10 @@
       <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>
     </dependency>
-<!--
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-     -->
-    <dependency>
-<!--       <groupId>org.skyscreamer</groupId> -->
       <groupId>org.infrastructurebuilder.usurped</groupId>
       <artifactId>jsonassert</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <build>
-  <!--
-    <plugins>
-      <plugin>
-        <groupId>de.sormuras.junit</groupId>
-        <artifactId>junit-platform-maven-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <skip>false</skip>
-        </configuration>
-      </plugin>
-    </plugins>
-   -->
-  </build>
 </project>

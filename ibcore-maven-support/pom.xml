@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Copyright © 2019 admin (admin@infrastructurebuilder.org)
@@ -15,23 +16,28 @@
     limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibcore-root</artifactId>
     <version>0.20.1-SNAPSHOT</version>
   </parent>
+
   <artifactId>ibcore-maven-support</artifactId>
   <packaging>jar</packaging>
+
   <name>${project.artifactId}</name>
   <description>Types and resolvers relevant to Maven plugins</description>
-	<!-- URL for site gen -->
+  <!-- URL for site gen -->
   <url>${github.url.base}/${project.artifactId}</url>
+
   <properties>
     <!-- CAN'T TEST DefaultInjectedResolver   [really, it's just too hard]  -->
     <test.coverage.percentage.required>30</test.coverage.percentage.required>
   </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -65,8 +71,7 @@
       <groupId>org.apache.maven.resolver</groupId>
       <artifactId>maven-resolver-util</artifactId>
     </dependency>
-    <dependency>
-<!--       <groupId>org.skyscreamer</groupId> -->
+    <dependency><!--       <groupId>org.skyscreamer</groupId> -->
       <groupId>org.infrastructurebuilder.usurped</groupId>
       <artifactId>jsonassert</artifactId>
       <scope>test</scope>
@@ -82,6 +87,7 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
   <build>
     <plugins>
       <plugin>
