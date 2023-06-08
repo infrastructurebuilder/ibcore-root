@@ -58,11 +58,11 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.ssl.SSLContexts;
-import org.apache.maven.artifact.manager.WagonManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.wagon.proxy.ProxyInfo;
+import org.apache.maven.wagon.proxy.ProxyInfoProvider;
 import org.apache.maven.wagon.proxy.ProxyUtils;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.components.io.filemappers.FileMapper;
@@ -71,8 +71,10 @@ import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
+import org.infrastructurebuilder.util.logging.LoggingMavenComponent;
 import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceFactory;
+import org.slf4j.Logger;
 
 import com.googlecode.download.maven.plugin.internal.HttpFileRequester;
 import com.googlecode.download.maven.plugin.internal.SilentProgressReport;
@@ -256,7 +258,7 @@ public final class WGet {
 
   /** Instance logger */
   // @Component
-  private Log log;
+  private Logger log;
 
   /**
    * Maximum time (ms) to wait to acquire a file lock.
@@ -275,8 +277,9 @@ public final class WGet {
   private FileMapper[] fileMappers;
 
   private boolean deleteIfPresent = false;
+  private Log mavenLog;
 
-  public Log getLog() {
+  public Logger getLog() {
     return log;
   }
 
@@ -335,7 +338,7 @@ public final class WGet {
     final Lock fileLock = FILE_LOCKS.computeIfAbsent(outputFile.getAbsolutePath(), ignored -> new ReentrantLock());
 
     final Checksums checksums = new Checksums(/* this.md5, this.sha1, this.sha256, */null, null, null, this.sha512,
-        this.getLog());
+        this.getLogAsMavenLog());
 
     // DO
     boolean lockAcquired = false;
@@ -434,7 +437,7 @@ public final class WGet {
     String computedType = pVal.getType();
     if (this.mimeType == null)
       this.mimeType = computedType;
-    var csum = new Checksums(null, null, null, this.sha512, getLog());
+    var csum = new Checksums(null, null, null, this.sha512, getLogAsMavenLog());
     return IBException.cet.returns(() -> {
 //      cache.install(this.uri, outputFile, checksums);
 //      /* Get the "final name" */
@@ -494,7 +497,7 @@ public final class WGet {
 
     }
     final HttpRoutePlanner routePlanner;
-    final ProxyInfo proxyInfo = this.wagonManager.getProxy(this.uri.getScheme());
+    final ProxyInfo proxyInfo = this.wagonManager.getProxyInfo(this.uri.getScheme());
     if (this.useHttpProxy(proxyInfo)) {
       routePlanner = new DefaultProxyRoutePlanner(new HttpHost(proxyInfo.getHost(), proxyInfo.getPort()));
       if (proxyInfo.getUserName() != null) {
@@ -520,7 +523,7 @@ public final class WGet {
       final HttpFileRequester fileRequester = new HttpFileRequester(httpClient,
           /*
            * this.session.getSettings().isInteractiveMode() ? new LoggingProgressReport(getLog()) :
-           */ new SilentProgressReport(getLog()));
+           */ new SilentProgressReport(getLogAsMavenLog()));
 
       final HttpClientContext clientContext = HttpClientContext.create();
       clientContext.setRequestConfig(requestConfig);
@@ -529,6 +532,13 @@ public final class WGet {
       }
       fileRequester.download(this.uri, outputFile, clientContext, getAdditionalHeaders());
     }
+  }
+
+  private Log getLogAsMavenLog() {
+    if (this.mavenLog == null)
+      this.mavenLog = new LoggingMavenComponent(getLog());
+    // TODO Auto-generated method stub
+    return mavenLog;
   }
 
   private List<Header> getAdditionalHeaders() {
@@ -721,7 +731,7 @@ public final class WGet {
 //      this.interactiveMode = interactiveMode;
 //    }
 
-  private WagonManager wagonManager;
+  private ProxyInfoProvider wagonManager;
 
   private ProxyInfo proxyInfo = null;
 
@@ -741,15 +751,15 @@ public final class WGet {
     this.t2e = t2e;
   }
 
-  public void setWagonManager(WagonManager info) {
+  public void setWagonManager(ProxyInfoProvider info) {
     this.wagonManager = info;
   }
 
   public void setProxyInfoFrom(String string) {
-    this.proxyInfo = Optional.ofNullable(this.wagonManager).map(wm -> wm.getProxy(string)).orElse(null);
+    this.proxyInfo = Optional.ofNullable(this.wagonManager).map(wm -> wm.getProxyInfo(string)).orElse(null);
   }
 
-  public void setLog(Log log) {
+  public void setLog(Logger log) {
     this.log = log;
   }
   /*

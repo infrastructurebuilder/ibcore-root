@@ -78,7 +78,7 @@
     -->
     <dependency>
       <groupId>org.infrastructurebuilder.util.logging</groupId>
-      <artifactId>iblog-JDKSL-component</artifactId>
+      <artifactId>iblog-slf4j-component</artifactId>
     </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder.util.logging</groupId>

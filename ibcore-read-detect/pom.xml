@@ -40,7 +40,6 @@
     <test.coverage.percentage.required>36</test.coverage.percentage.required>
     <jacoco.max.missed.classes>3</jacoco.max.missed.classes>
   </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.infrastructurebuilder</groupId>
@@ -64,7 +63,8 @@
     </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder.util.logging</groupId>
-      <artifactId>iblog-JDKSL-component</artifactId>
+      <artifactId>iblog-maven-component</artifactId>
+      <version>${iblog.version}</version>
     </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder.util.logging</groupId>

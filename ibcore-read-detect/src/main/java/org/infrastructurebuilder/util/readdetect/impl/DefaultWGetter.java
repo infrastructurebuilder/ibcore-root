@@ -18,54 +18,21 @@
 package org.infrastructurebuilder.util.readdetect.impl;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
 import static org.infrastructurebuilder.util.constants.IBConstants.IBDATA_PREFIX;
 import static org.infrastructurebuilder.util.readdetect.IBResourceFactory.copyToTempChecksumAndPath;
 
 import java.io.File;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.net.ProxySelector;
-import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
-import org.apache.http.HttpHost;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.NTCredentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.routing.HttpRoutePlanner;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
-import org.apache.http.ssl.SSLContexts;
-import org.apache.maven.artifact.manager.WagonManager;
-import org.apache.maven.monitor.logging.DefaultLog;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.wagon.proxy.ProxyInfo;
+import org.apache.maven.wagon.proxy.ProxyInfoProvider;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.bzip2.BZip2UnArchiver;
 import org.codehaus.plexus.archiver.gzip.GZipUnArchiver;
@@ -74,36 +41,25 @@ import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
 import org.codehaus.plexus.archiver.snappy.SnappyUnArchiver;
 import org.codehaus.plexus.archiver.xz.XZUnArchiver;
 import org.codehaus.plexus.components.io.filemappers.FileMapper;
-import org.codehaus.plexus.logging.console.ConsoleLogger;
-import org.codehaus.plexus.util.StringUtils;
-import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.constants.IBConstants;
+//import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.infrastructurebuilder.util.core.Checksum;
-import org.infrastructurebuilder.util.core.IBConfigurable;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
 import org.infrastructurebuilder.util.readdetect.IBResource;
-import org.infrastructurebuilder.util.readdetect.IBResourceFactory;
 import org.infrastructurebuilder.util.readdetect.WGetter;
-import org.json.JSONObject;
+import org.slf4j.Logger;
 
-import com.googlecode.download.maven.plugin.internal.HttpFileRequester;
-import com.googlecode.download.maven.plugin.internal.SilentProgressReport;
-import com.googlecode.download.maven.plugin.internal.cache.DownloadCache;
-
-public
-
-class DefaultWGetter implements WGetter {
+public class DefaultWGetter implements WGetter {
 
   private final WGet wget;
-  private final Log log;
+  private final Logger log;
   private final ArchiverManager am;
   private final Path workingDir;
   private final TypeToExtensionMapper t2e;
 
   public DefaultWGetter(Logger log, TypeToExtensionMapper t2e, Map<String, String> headers, Path cacheDir,
-      Path workingDir, ArchiverManager archiverManager, Optional<WagonManager> pi, Optional<FileMapper[]> mappers)
+      Path workingDir, ArchiverManager archiverManager, Optional<ProxyInfoProvider> pi, Optional<FileMapper[]> mappers)
   {
     this.t2e = requireNonNull(t2e);
     // this.wps = requireNonNull(wps);
@@ -112,7 +68,8 @@ class DefaultWGetter implements WGetter {
     // create a new LoggingMavenComponent from log
     // Log l2 = new LoggingMavenComponent(log);
 //      Logger localLogger = requireNonNull(log); // FIXME (See above)
-    Log l2 = new DefaultLog(new ConsoleLogger(0, WGetter.class.getCanonicalName()));
+    Logger l2 = log;
+
     this.wget.setLog(l2);
     this.wget.setT2EMapper(Objects.requireNonNull(t2e));
     this.wget.setCacheDirectory(requireNonNull(cacheDir).toFile());

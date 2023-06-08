@@ -26,8 +26,6 @@ import static org.infrastructurebuilder.util.constants.IBConstants.FILEMAPPERS;
 import static org.infrastructurebuilder.util.constants.IBConstants.WORKINGDIR;
 import static org.infrastructurebuilder.util.core.IBUtils.getJSONArrayAsListString;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
@@ -37,8 +35,8 @@ import java.util.function.Supplier;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.maven.artifact.manager.WagonManager;
 import org.apache.maven.wagon.proxy.ProxyInfo;
+import org.apache.maven.wagon.proxy.ProxyInfoProvider;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.components.io.filemappers.FileMapper;
 import org.infrastructurebuilder.exceptions.IBException;
@@ -50,6 +48,7 @@ import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.readdetect.WGetter;
 import org.infrastructurebuilder.util.readdetect.WGetterSupplier;
 import org.json.JSONObject;
+import org.slf4j.Logger;
 
 @Named
 public class DefaultWGetterSupplier implements WGetterSupplier, IBConfigurable<JSONObject> {
@@ -57,7 +56,7 @@ public class DefaultWGetterSupplier implements WGetterSupplier, IBConfigurable<J
   @Inject
   private final ArchiverManager archiverManager;
   @Inject
-  private WagonManager wagonManager;
+  private ProxyInfoProvider wagonManager;
 
   private final Logger log;
   private final TypeToExtensionMapper t2e;

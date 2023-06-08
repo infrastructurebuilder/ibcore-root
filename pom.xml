@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibparent</artifactId>
-    <version>74</version>
+    <version>77</version>
   </parent>
 
   <artifactId>ibcore-root</artifactId>
@@ -69,8 +69,8 @@
   </distributionManagement>
 
   <properties>
-    <iblog.version>0.14.0</iblog.version>
-    <ib.exceptions.version>74</ib.exceptions.version>
+    <iblog.version>0.14.3</iblog.version>
+    <ib.exceptions.version>77</ib.exceptions.version>
   </properties>
 
   <dependencyManagement>
