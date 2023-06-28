@@ -88,7 +88,7 @@ public class DefaultWGetter implements WGetter {
       Optional<Checksum> checksum, Optional<String> type, int retries, int readTimeOut, boolean skipCache,
       boolean expandArchives) {
 
-    wget.setDeleteIfPresent(deleteExistingCacheIfPresent);
+//    wget.setDeleteIfPresent(deleteExistingCacheIfPresent);
     requireNonNull(creds).ifPresent(bc -> {
       wget.setUsername(bc.getKeyId());
       wget.setPassword(bc.getSecret().orElse(null));
@@ -102,14 +102,17 @@ public class DefaultWGetter implements WGetter {
     wget.setRetries(retries);
     wget.setReadTimeOut(readTimeOut);
     wget.setSkipCache(skipCache);
-    wget.setCheckSignature(checksum.isPresent());
     wget.setMimeType(type.orElse(null));
     Optional<List<IBResource>> o = cet.returns(() -> this.wget.downloadIt());
+
+
     if (expandArchives) {
-      o.ifPresent(c -> {
+      o  = o.map(c -> {
+        List<IBResource> b = new ArrayList<IBResource>(c);
         IBResource src = c.get(0);
         List<IBResource> l = expand(workingDir, src, src.getSourceURL().map(URL::toExternalForm).map(n -> "zip:" + n));
-        c.addAll(l);
+        b.addAll(l);
+        return b;
       });
     }
     return o;

@@ -28,6 +28,7 @@ import static org.infrastructurebuilder.util.core.IBUtils.getJSONArrayAsListStri
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
@@ -55,7 +56,7 @@ public class DefaultWGetterSupplier implements WGetterSupplier, IBConfigurable<J
   @Inject
   private final ArchiverManager archiverManager;
   @Inject
-  private ProxyInfoProvider wagonManager;
+  private ProxyInfoProvider proxyInfoProvider; // was wagonProvider
 
   private final Logger log;
   private final TypeToExtensionMapper t2e;
@@ -79,7 +80,8 @@ public class DefaultWGetterSupplier implements WGetterSupplier, IBConfigurable<J
 //      @Named(IBDATA_DOWNLOAD_CACHE_DIR_SUPPLIER) PathSupplier cacheDirSupplier,
       HeadersSupplier headerSupplier,
 
-      ArchiverManager archiverManager, Supplier<ProxyInfo> proxyInfoSupplier)
+      ArchiverManager archiverManager,
+      ProxyInfoProvider pip)
   {
     this.log = requireNonNull(log).get();
     this.t2e = requireNonNull(t2e);
@@ -87,6 +89,7 @@ public class DefaultWGetterSupplier implements WGetterSupplier, IBConfigurable<J
     this.pathSuppliers = requireNonNull(pathSuppliers);
     this.fileMappers = requireNonNull(fileMappers);
     this.archiverManager = requireNonNull(archiverManager);
+    this.proxyInfoProvider = requireNonNull(pip);
   }
 
   @Override
@@ -97,7 +100,12 @@ public class DefaultWGetterSupplier implements WGetterSupplier, IBConfigurable<J
   @Override
   public WGetter get() {
     return new DefaultWGetter(log, t2e, headers, cacheDirectory.get(), workingDirectory.get(), this.archiverManager,
-        ofNullable(this.wagonManager), ofNullable(mappers.get()));
+        ofNullable(this.proxyInfoProvider), ofNullable(mappers.get()));
+  }
+
+  public void setProxyInfoProvider(ProxyInfoProvider proxyInfoProvider) {
+    if (this.proxyInfoProvider == null)
+      this.proxyInfoProvider = proxyInfoProvider;
   }
 
   @Override
@@ -108,7 +116,7 @@ public class DefaultWGetterSupplier implements WGetterSupplier, IBConfigurable<J
 
     List<FileMapper> ls = getJSONArrayAsListString(config, FILEMAPPERS).stream()
         .map(key -> ofNullable(fileMappers.get(key))
-            .orElseThrow(() -> new IBException(format("FileMapper {} not found", key))))
+            .orElseThrow(() -> new IBException(String.format("FileMapper {} not found", key))))
         .collect(toList());
     this.mappers.compareAndSet(null, ls.toArray(new FileMapper[ls.size()]));
     return this;

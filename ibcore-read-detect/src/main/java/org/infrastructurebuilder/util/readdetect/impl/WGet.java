@@ -18,55 +18,52 @@
 package org.infrastructurebuilder.util.readdetect.impl;
 
 import static java.util.Objects.requireNonNull;
-import static org.infrastructurebuilder.util.readdetect.IBResourceFactory.toType;
+import static org.apache.maven.shared.utils.StringUtils.isBlank;
+import static org.codehaus.plexus.util.StringUtils.isNotBlank;
 
 import java.io.File;
-import java.net.ProxySelector;
+import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.http.Header;
-import org.apache.http.HttpHost;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.NTCredentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.routing.HttpRoutePlanner;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.ssl.SSLContexts;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.wagon.proxy.ProxyInfo;
 import org.apache.maven.wagon.proxy.ProxyInfoProvider;
 import org.apache.maven.wagon.proxy.ProxyUtils;
+import org.codehaus.plexus.archiver.UnArchiver;
+import org.codehaus.plexus.archiver.bzip2.BZip2UnArchiver;
+import org.codehaus.plexus.archiver.gzip.GZipUnArchiver;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
+import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
+import org.codehaus.plexus.archiver.snappy.SnappyUnArchiver;
+import org.codehaus.plexus.archiver.xz.XZUnArchiver;
 import org.codehaus.plexus.components.io.filemappers.FileMapper;
-import org.codehaus.plexus.util.StringUtils;
+import org.eclipse.aether.repository.Authentication;
+import org.eclipse.aether.repository.Proxy;
+import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.IBUtils;
@@ -76,10 +73,9 @@ import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceFactory;
 import org.slf4j.Logger;
 
+import com.googlecode.download.maven.plugin.internal.DownloadFailureException;
+import com.googlecode.download.maven.plugin.internal.FileNameUtils;
 import com.googlecode.download.maven.plugin.internal.HttpFileRequester;
-import com.googlecode.download.maven.plugin.internal.SilentProgressReport;
-import com.googlecode.download.maven.plugin.internal.cache.DownloadCache;
-import com.googlecode.download.maven.plugin.internal.checksum.Checksums;
 
 /**
  * Will download a file from a web site using the standard HTTP protocol.
@@ -89,12 +85,20 @@ import com.googlecode.download.maven.plugin.internal.checksum.Checksums;
  */
 public final class WGet {
 
+  public final static Function<ProxyInfo, Proxy> mapPIPToProxy = (pip) -> {
+    Authentication a = new AuthenticationBuilder().addNtlm(pip.getNtlmHost(), pip.getNtlmDomain())
+        .addPassword(pip.getPassword()).addUsername(pip.getUserName())
+
+        .build();
+    return new Proxy(pip.getType(), pip.getHost(), pip.getPort(), a);
+  };
+
   private static final PoolingHttpClientConnectionManager CONN_POOL;
   /**
    * A map of file caches by their location paths. Ensures one cache instance per path and enables safe execution in
    * parallel builds against the same cache.
    */
-  private static final Map<String, DownloadCache> DOWNLOAD_CACHES = new ConcurrentHashMap<>();
+//  private static final Map<String, DownloadCache> DOWNLOAD_CACHES = new ConcurrentHashMap<>();
 
   private static final Map<String, Lock> FILE_LOCKS = new ConcurrentHashMap<>();
 
@@ -221,43 +225,8 @@ public final class WGet {
    * Use this option in order to ensure that a new download attempt is made after a previously interrupted build or
    * network connection or some other event corrupted a file.
    */
-//  @Parameter(property = "alwaysVerifyChecksum", defaultValue = "false")
   private boolean alwaysVerifyChecksum = true; // ALWAYS
 
-  /**
-   * @deprecated The option name is counter-intuitive and not related to signatures but to checksums, in fact. Please
-   *             use {@link #alwaysVerifyChecksum} instead. This option might be removed in a future release.
-   */
-//  @Parameter(property = "checkSignature", defaultValue = "false")
-  @Deprecated
-  private boolean checkSignature;
-
-  // @Parameter(property = "session")
-  // private MavenSession session;
-
-  // @Component
-  // private ArchiverManager archiverManager;
-
-  /**
-   * For transfers
-   */
-  // @Component
-  // private WagonManager wagonManager;
-
-  // @Component
-  // private BuildContext buildContext;
-
-  // @Parameter(defaultValue = "${settings}", readonly = true, required = true)
-  // private Settings settings;
-
-  // /**
-  // * Maven Security Dispatcher
-  // */
-  // @Component( hint = "mng-4384" )
-  // private SecDispatcher securityDispatcher;
-
-  /** Instance logger */
-  // @Component
   private Logger log;
 
   /**
@@ -276,262 +245,28 @@ public final class WGet {
 //  @Parameter(property = "download.fileMappers")
   private FileMapper[] fileMappers;
 
-  private boolean deleteIfPresent = false;
   private Log mavenLog;
+
+  private String ntlmDomain;
+
+  private String ntlmHost;
+
+  private Path localRepo;
+
+  private String proxyUsername;
+
+  private String proxyPassword;
+
+  public void setProxyPassword(String proxyPassword) {
+    this.proxyPassword = proxyPassword;
+  }
+
+  public void setProxyUsername(String proxyUsername) {
+    this.proxyUsername = proxyUsername;
+  }
 
   public Logger getLog() {
     return log;
-  }
-
-  public void setDeleteIfPresent(boolean deleteExistingCacheIfPresent) {
-    this.deleteIfPresent = deleteExistingCacheIfPresent;
-  }
-
-  /**
-   * Method call when the mojo is executed for the first time.
-   *
-   * @throws MojoExecutionException if an error is occuring in this mojo.
-   * @throws MojoFailureException   if an error is occuring in this mojo.
-   */
-  // @Override
-  // public void execute() throws MojoExecutionException, MojoFailureException {
-  // if (this.skip) {
-  // getLog().info("maven-download-plugin:wget skipped");
-  // return;
-  // }
-  // NOTE FYI: Always returns a list of size() == 1 or empty()
-  public Optional<List<IBResource>> downloadIt() /* throws MojoExecutionException, MojoFailureException */ {
-//      if (/*StringUtils.isNotBlank(serverId) && */ (StringUtils.isNotBlank(username)
-//          || StringUtils.isNotBlank(password))) {
-//        throw new MojoExecutionException("Specify either serverId or username/password, not both");
-//      }
-
-    // if (settings == null) {
-    // getLog().warn("settings is null");
-    // }
-    // getLog().debug("Got settings");
-    if (retries < 1) {
-//      throw new MojoFailureException("retries must be at least 1");
-      throw new IBException("retries must be at least 1");
-    }
-
-    // PREPARE
-    // if (this.outputFileName == null) {
-    // try {
-    // this.outputFileName = new File(this.uri.toURL().getFile()).getName();
-    // } catch (Exception ex) {
-    // throw new MojoExecutionException("Invalid URL", ex);
-    // }
-    // }
-    // if (this.cacheDirectory == null) {
-    // this.cacheDirectory = new File(this.session.getLocalRepository()
-    // .getBasedir(), ".cache/download-maven-plugin");
-    // }
-    getLog().debug("Cache is: " + this.cacheDirectory.getAbsolutePath());
-    DownloadCache cache = new DownloadCache(this.cacheDirectory);
-    Path outputDirectory = outputPath;
-    String outputFileName = UUID.randomUUID().toString();
-    IBException.cet.translate(() -> Files.createDirectories(outputDirectory));
-    // this.outputDirectory.mkdirs();
-    File outputFile = outputDirectory.resolve(outputFileName).toFile();
-    // File outputFile = new File(this.outputDirectory, this.outputFileName);
-    final Lock fileLock = FILE_LOCKS.computeIfAbsent(outputFile.getAbsolutePath(), ignored -> new ReentrantLock());
-
-    final Checksums checksums = new Checksums(/* this.md5, this.sha1, this.sha256, */null, null, null, this.sha512,
-        this.getLogAsMavenLog());
-
-    // DO
-    boolean lockAcquired = false;
-    try {
-      lockAcquired = fileLock.tryLock(this.maxLockWaitTime, TimeUnit.MILLISECONDS);
-      if (!lockAcquired) {
-        final String message = String.format("Could not acquire lock for File: %s in %dms", outputFile,
-            this.maxLockWaitTime);
-        if (this.failOnError) {
-//            throw new MojoExecutionException(message);
-          throw new IBException(message);
-        } else {
-          getLog().warn(message);
-          return Optional.empty();
-        }
-      }
-      boolean haveFile = outputFile.exists();
-      if (haveFile) {
-        boolean checksumMatch = true;
-        if (this.alwaysVerifyChecksum || this.checkSignature) {
-          try {
-            checksums.validate(outputFile);
-          } catch (final MojoFailureException e) {
-            getLog().warn("The local version of file " + outputFile.getName() + " doesn't match the expected checksum. "
-                + "You should consider checking the specified checksum is correctly set.");
-            checksumMatch = false;
-          }
-        }
-        if (!checksumMatch || overwrite) {
-          outputFile.delete();
-          haveFile = false;
-        } else {
-          getLog().info("File already exist, skipping");
-        }
-      }
-
-      if (!haveFile) {
-        File cached = cache.getArtifact(this.uri, checksums);
-        if (!this.skipCache && cached != null && cached.exists()) {
-          getLog().debug("Got from cache: " + cached.getAbsolutePath());
-          Files.copy(cached.toPath(), outputFile.toPath());
-        } else {
-          if (/* this.settings.isOffline() */ false) {
-            if (this.failOnError) {
-//              throw new MojoExecutionException("No file in cache and maven is in offline mode");
-              throw new IBException("No file in cache and maven is in offline mode");
-            } else {
-              getLog().warn("Ignoring download failure.");
-            }
-          }
-          boolean done = false;
-          while (!done && this.retries > 0) {
-            try {
-              this.doGet(outputFile);
-              checksums.validate(outputFile);
-              done = true;
-            } catch (Exception ex) {
-              getLog().warn("Could not get content", ex);
-              this.retries--;
-              if (this.retries > 0) {
-                getLog().warn("Retrying (" + this.retries + " more)");
-              }
-            }
-          }
-          if (!done) {
-            if (this.failOnError) {
-//              throw new MojoFailureException("Could not get content");
-              throw new MojoFailureException("Could not get content");
-            } else {
-              getLog().warn("Ignoring download failure.");
-//              return;
-              return Optional.empty();
-            }
-          }
-        }
-      }
-      cache.install(this.uri, outputFile, checksums);
-      if (/* this.unpack */ false) {
-//        unpack(outputFile);
-//        buildContext.refresh(outputDirectory);
-      } else {
-//        buildContext.refresh(outputFile);
-      }
-    } catch (final Exception ex) {
-      throw new IBException("IO Error", ex);
-    } finally {
-      if (lockAcquired) {
-        fileLock.unlock();
-      }
-    }
-
-    Path outputPath = outputFile.toPath();
-    Checksum finalChecksum = (this.sha512 == null ? new Checksum(outputFile.toPath()) : new Checksum(this.sha512));
-
-    IBResource pVal = IBResourceFactory.from(outputFile.toPath(), finalChecksum, toType.apply(outputPath));
-    String computedType = pVal.getType();
-    if (this.mimeType == null)
-      this.mimeType = computedType;
-    var csum = new Checksums(null, null, null, this.sha512, getLogAsMavenLog());
-    return IBException.cet.returns(() -> {
-//      cache.install(this.uri, outputFile, checksums);
-//      /* Get the "final name" */
-      String finalFileName = finalChecksum.asUUID().get().toString() + t2e.getExtensionForType(this.mimeType);
-      Path newTarget = outputPath.resolve(finalFileName);
-      try {
-        IBUtils.moveAtomic(outputFile.toPath(), newTarget);
-      } finally {
-        outputFile.delete();
-      }
-
-      Path outPath = newTarget;
-
-      IBResource retVal = IBResourceFactory.from(outPath, finalChecksum, this.mimeType,
-          this.uri.toURL().toExternalForm());
-      return Optional.of(List.of(retVal));
-    });
-  }
-  // private void unpack(File outputFile) throws NoSuchArchiverException {
-//    UnArchiver unarchiver = this.archiverManager.getUnArchiver(outputFile);
-//    unarchiver.setSourceFile(outputFile);
-//    if (isFileUnArchiver(unarchiver)) {
-//      unarchiver
-//          .setDestFile(new File(this.outputDirectory, outputFileName.substring(0, outputFileName.lastIndexOf('.'))));
-//    } else {
-//      unarchiver.setDestDirectory(this.outputDirectory);
-//    }
-//    unarchiver.setFileMappers(this.fileMappers);
-//    unarchiver.extract();
-//    outputFile.delete();
-//  }
-
-//  private boolean isFileUnArchiver(final UnArchiver unarchiver) {
-//    return unarchiver instanceof BZip2UnArchiver || unarchiver instanceof GZipUnArchiver
-//        || unarchiver instanceof SnappyUnArchiver || unarchiver instanceof XZUnArchiver;
-//  }
-
-  private void doGet(final File outputFile) throws Exception {
-    final RequestConfig requestConfig;
-    if (readTimeOut > 0) {
-      getLog().info(String.format("Read Timeout is set to %d milliseconds (apprx %d minutes)", readTimeOut,
-          Math.round(readTimeOut * 1.66667e-5)));
-      requestConfig = RequestConfig.custom().setConnectTimeout(readTimeOut).setSocketTimeout(readTimeOut)
-          .setRedirectsEnabled(followRedirects).build();
-    } else {
-      requestConfig = RequestConfig.DEFAULT;
-    }
-
-    CredentialsProvider credentialsProvider = null;
-    if (StringUtils.isNotBlank(username)) {
-      getLog().debug("providing custom authentication");
-      getLog().debug("username: " + username + " and password: ***");
-
-      credentialsProvider = new BasicCredentialsProvider();
-      credentialsProvider.setCredentials(new AuthScope(this.uri.getHost(), this.uri.getPort()),
-          new UsernamePasswordCredentials(username, password));
-
-    }
-    final HttpRoutePlanner routePlanner;
-    final ProxyInfo proxyInfo = this.wagonManager.getProxyInfo(this.uri.getScheme());
-    if (this.useHttpProxy(proxyInfo)) {
-      routePlanner = new DefaultProxyRoutePlanner(new HttpHost(proxyInfo.getHost(), proxyInfo.getPort()));
-      if (proxyInfo.getUserName() != null) {
-        final Credentials creds;
-        if (proxyInfo.getNtlmHost() != null || proxyInfo.getNtlmDomain() != null) {
-          creds = new NTCredentials(proxyInfo.getUserName(), proxyInfo.getPassword(), proxyInfo.getNtlmHost(),
-              proxyInfo.getNtlmDomain());
-        } else {
-          creds = new UsernamePasswordCredentials(proxyInfo.getUserName(), proxyInfo.getPassword());
-        }
-        AuthScope authScope = new AuthScope(proxyInfo.getHost(), proxyInfo.getPort());
-        if (credentialsProvider == null) {
-          credentialsProvider = new BasicCredentialsProvider();
-        }
-        credentialsProvider.setCredentials(authScope, creds);
-      }
-    } else {
-      routePlanner = new SystemDefaultRoutePlanner(ProxySelector.getDefault());
-    }
-
-    try (final CloseableHttpClient httpClient = HttpClientBuilder.create().setConnectionManager(CONN_POOL)
-        .setConnectionManagerShared(true).setRoutePlanner(routePlanner).build()) {
-      final HttpFileRequester fileRequester = new HttpFileRequester(httpClient,
-          /*
-           * this.session.getSettings().isInteractiveMode() ? new LoggingProgressReport(getLog()) :
-           */ new SilentProgressReport(getLogAsMavenLog()));
-
-      final HttpClientContext clientContext = HttpClientContext.create();
-      clientContext.setRequestConfig(requestConfig);
-      if (credentialsProvider != null) {
-        clientContext.setCredentialsProvider(credentialsProvider);
-      }
-      fileRequester.download(this.uri, outputFile, clientContext, getAdditionalHeaders());
-    }
   }
 
   private Log getLogAsMavenLog() {
@@ -539,11 +274,6 @@ public final class WGet {
       this.mavenLog = new LoggingMavenComponent(getLog());
     // TODO Auto-generated method stub
     return mavenLog;
-  }
-
-  private List<Header> getAdditionalHeaders() {
-    return headers.entrySet().stream().map(pair -> new BasicHeader(pair.getKey(), pair.getValue()))
-        .collect(Collectors.toList());
   }
 
 //  private void doGet2(final File outputFile) throws Exception {
@@ -569,7 +299,7 @@ public final class WGet {
 //      // getLog().debug("providing custom authentication for " + serverId);
 //      // Server server = settings.getServer(serverId);
 //      // if (server == null) {
-//      // throw new MojoExecutionException(String.format("Server %s not found",
+//      // throw new IBWGetException(String.format("Server %s not found",
 //      // serverId));
 //      // }
 //      // getLog().debug(String.format("serverId %s supplies username: %s and password:
@@ -674,9 +404,34 @@ public final class WGet {
     this.overwrite = overwrite;
   }
 
+  public void setLocalRespository(File localRepo) {
+    this.localRepo = Optional.ofNullable(localRepo).map(File::toPath).map(Path::toAbsolutePath).orElse(null);
+  }
+
+  public Path getLocalRepository() {
+    if (this.localRepo == null) {
+      Properties p = getAvailableProperties();
+      if (p.containsKey("maven.repo.local")) {
+        this.localRepo = Paths.get(p.getProperty("maven.repo.local"));
+      } else if (p.containsKey("user.home")) {
+        this.localRepo = Paths.get(p.getProperty("user.home")).resolve(".m2").resolve("repository");
+      } else {
+        String home = System.getenv("HOME");
+        this.localRepo = Optional.ofNullable(home).map(Paths::get).map(Path::toAbsolutePath)
+            .map(p2 -> p2.resolve(".m2").resolve("repository")).orElse(null);
+      }
+    }
+    return this.localRepo;
+  }
+
   // public void setOutputFileName(String outputFileName) {
   // this.outputFileName = outputFileName;
   // }
+
+  private Properties getAvailableProperties() {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
   public void setOutputPath(Path outputPath) {
     this.outputPath = outputPath;
@@ -699,6 +454,14 @@ public final class WGet {
     this.password = password;
   }
 
+  public void setNtlmDomain(String domain) {
+    this.ntlmDomain = domain;
+  }
+
+  public void setNtlmHost(String host) {
+    this.ntlmHost = host;
+  }
+
   public void setRetries(int retries) {
     this.retries = retries;
   }
@@ -717,10 +480,6 @@ public final class WGet {
 
   public void setFailOnError(boolean failOnError) {
     this.failOnError = failOnError;
-  }
-
-  public void setCheckSignature(boolean checkSignature) {
-    this.checkSignature = checkSignature;
   }
 
   private boolean interactiveMode = false;
@@ -788,4 +547,304 @@ public final class WGet {
   // this.proxyInfo = cet.withReturningTranslation(() -> ((ProxyInfo)
   // requireNonNull(pi).get()));
   // }
+
+  private String outputFileName;
+
+  private boolean unpack;
+
+  private String serverId;
+
+  /**
+   * For transfers
+   */
+
+//  @Inject
+//  private BuildContext buildContext;
+
+  private boolean preemptiveAuth;
+
+  /**
+   * Method call when the mojo is executed for the first time.
+   * @return
+   *
+   * @throws IBWGetException      if an error is occuring in this mojo.
+   * @throws MojoFailureException if an error is occuring in this mojo.
+   */
+  Optional<List<IBResource>> downloadIt() throws IBWGetException {
+
+    if (this.proxyInfo == null) {
+      this.proxyInfo = new ProxyInfo();
+      this.proxyInfo.setHost(this.uri.getHost());
+      this.proxyInfo.setNonProxyHosts(this.ntlmDomain);
+      this.proxyInfo.setNtlmHost(this.ntlmHost);
+      this.proxyInfo.setUserName(this.proxyUsername);
+      this.proxyInfo.setPassword(this.proxyPassword);
+    }
+
+    if (isNotBlank(this.serverId) && (isNotBlank(this.username) || isNotBlank(this.password))) {
+      throw new IBWGetException("Specify either serverId or username/password, not both");
+    }
+    if (this.retries < 1) {
+      throw new IBException("retries must be at least 1");
+    }
+
+    // PREPARE
+    if (this.outputFileName == null) {
+      this.outputFileName = FileNameUtils.getOutputFileName(this.uri);
+    }
+    if (!this.skipCache) {
+      if (this.cacheDirectory == null) {
+        this.cacheDirectory = Optional.ofNullable(getLocalRepository())
+            .map(repo -> repo.resolve(".cache").resolve("download-maven-plugin")).map(Path::toFile)
+            .orElseThrow(() -> new IBException("No local repo"));
+//        this.cacheDirectory = new File(this.session.getLocalRepository().getBasedir(), ".cache/download-maven-plugin");
+      } else if (this.cacheDirectory.exists() && !this.cacheDirectory.isDirectory()) {
+        throw new IBException(
+            String.format("cacheDirectory is not a directory: " + this.cacheDirectory.getAbsolutePath()));
+      }
+      getLog().debug("Cache is: " + this.cacheDirectory.getAbsolutePath());
+
+    } else {
+      getLog().debug("Cache is skipped");
+    }
+    IBException.cet.translate(() -> Files.createDirectories(this.outputPath));
+    final File outputFile = new File(this.outputPath.toFile(), this.outputFileName);
+    final Lock fileLock = FILE_LOCKS.computeIfAbsent(outputFile.getAbsolutePath(), ignored -> new ReentrantLock());
+
+    final Checksums checksums = new Checksums(null, null, null, this.sha512, this.getLog());
+    // DO
+    boolean lockAcquired = false;
+    try {
+      lockAcquired = fileLock.tryLock(this.maxLockWaitTime, TimeUnit.MILLISECONDS);
+      if (!lockAcquired) {
+        final String message = String.format("Could not acquire lock for File: %s in %dms", outputFile,
+            this.maxLockWaitTime);
+        if (this.failOnError) {
+          throw new IBWGetException(message);
+        } else {
+          getLog().warn(message);
+          return Optional.empty();
+        }
+      }
+      boolean haveFile = outputFile.exists();
+      if (haveFile) {
+        boolean checksumMatch = true;
+        if (true /* this.alwaysVerifyChecksum */) {
+          try {
+            checksums.validate(outputFile);
+          } catch (final IBWGetException e) {
+            getLog().warn("The local version of file " + outputFile.getName() + " doesn't match the expected checksum. "
+                + "You should consider checking the specified checksum is correctly set.");
+            checksumMatch = false;
+          }
+        }
+        if (!checksumMatch || this.overwrite) {
+          outputFile.delete();
+          haveFile = false;
+        } else {
+          getLog().info("File already exist, skipping");
+        }
+      }
+
+      if (!haveFile) {
+//              if (this.session.getRepositorySession().isOffline()) {
+//                  if (this.failOnError) {
+//                      throw new IBWGetException("No file in cache and maven is in offline mode");
+//                  } else {
+//                      getLog().warn("Ignoring download failure.");
+//                  }
+//              }
+        boolean done = false;
+        for (int retriesLeft = this.retries; !done && retriesLeft > 0; --retriesLeft) {
+          try {
+            this.doGet(outputFile);
+            checksums.validate(outputFile);
+            done = true;
+          } catch (DownloadFailureException ex) {
+            // treating HTTP codes >= 500 as transient and thus always retriable
+            if (this.failOnError && ex.getHttpCode() < 500) {
+              throw new IBWGetException(ex.getMessage(), ex);
+            } else {
+              getLog().warn(ex.getMessage());
+            }
+          } catch (IOException ex) {
+            if (this.failOnError) {
+              throw new IBWGetException(ex.getMessage(), ex);
+            } else {
+              getLog().warn(ex.getMessage());
+            }
+          }
+          if (!done) {
+            getLog().warn("Retrying (" + (retriesLeft - 1) + " more)");
+          }
+        }
+        if (!done) {
+          if (this.failOnError) {
+            throw new IBWGetException("Could not get content after " + this.retries + " failed attempts.");
+          } else {
+            getLog().warn("Ignoring download failure(s).");
+            return Optional.empty();
+          }
+        }
+      }
+      if (this.unpack) {
+        unpack(outputFile);
+//        this.buildContext.refresh(this.outputDirectory);
+      } else {
+//        this.buildContext.refresh(outputFile);
+      }
+    } catch (IBWGetException e) {
+      throw e;
+    } catch (IOException ex) {
+      throw new IBWGetException("IO Error: ", ex);
+    } catch (NoSuchArchiverException e) {
+      throw new IBWGetException("No such archiver: " + e.getMessage());
+    } catch (Exception e) {
+      throw new IBWGetException("General error: ", e);
+    } finally {
+      if (lockAcquired) {
+        fileLock.unlock();
+      }
+    }
+    Path outputPath = outputFile.toPath();
+    Checksum finalChecksum = (this.sha512 == null ? new Checksum(outputFile.toPath()) : new Checksum(this.sha512));
+
+    IBResource pVal = IBResourceFactory.from(outputFile.toPath(), finalChecksum,
+        IBResourceFactory.toType.apply(outputPath));
+    if (this.mimeType == null)
+      this.mimeType = pVal.getType();
+    var csum = new Checksums(null, null, null, this.sha512, getLog());
+    return IBException.cet.returns(() -> {
+//      cache.install(this.uri, outputFile, checksums);
+//      /* Get the "final name" */
+
+      getLog().error("OutputPath {}",outputPath.toString());
+      String finalFileName = finalChecksum.asUUID().get().toString() + t2e.getExtensionForType(this.mimeType);
+      getLog().info("Final file name {}", finalFileName);
+      Path newTarget = outputPath.getParent().resolve(finalFileName);
+      getLog().info("new Target is {}",newTarget.toString());
+      try {
+        getLog().info("Calling moveAtomic({},{})",outputFile.toPath(), newTarget);
+        IBUtils.moveAtomic(outputFile.toPath(), newTarget);
+      } finally {
+        outputFile.delete();
+      }
+
+      Path outPath = newTarget;
+
+      IBResource retVal = IBResourceFactory.from(outPath, finalChecksum, this.mimeType,
+          this.uri.toURL().toExternalForm());
+      return Optional.of(List.of(retVal));
+    });
+  }
+
+  private void unpack(File outputFile) throws NoSuchArchiverException {
+    UnArchiver unarchiver = this.archiverManager.getUnArchiver(outputFile);
+    unarchiver.setSourceFile(outputFile);
+    if (isFileUnArchiver(unarchiver)) {
+      unarchiver.setDestFile(
+          new File(this.outputPath.toFile(), this.outputFileName.substring(0, this.outputFileName.lastIndexOf('.'))));
+    } else {
+      unarchiver.setDestDirectory(this.outputPath.toFile());
+    }
+    unarchiver.setFileMappers(this.fileMappers);
+    unarchiver.extract();
+    outputFile.delete();
+  }
+
+  private boolean isFileUnArchiver(final UnArchiver unarchiver) {
+    return unarchiver instanceof BZip2UnArchiver || unarchiver instanceof GZipUnArchiver
+        || unarchiver instanceof SnappyUnArchiver || unarchiver instanceof XZUnArchiver;
+  }
+
+  private static RemoteRepository createRemoteRepository(String serverId, URI uri) {
+    return new RemoteRepository.Builder(isBlank(serverId) ? null : serverId, isBlank(serverId) ? uri.getScheme() : null,
+        isBlank(serverId) ? uri.getHost() : null).build();
+  }
+
+  private void doGet(final File outputFile) throws IOException {
+    final HttpFileRequester.Builder fileRequesterBuilder = new HttpFileRequester.Builder();
+
+    final RemoteRepository repository = createRemoteRepository(null /* this.serverId */, this.uri);
+
+    // set proxy if present
+
+    Optional.ofNullable(this.wagonManager).map(pip -> pip.getProxyInfo(repository.getProtocol()))
+//      Optional.ofNullable(this.session.getRepositorySession().getProxySelector())
+//              .map(selector -> selector.getProxy(repository))
+        .filter(pip -> !ProxyUtils.validateNonProxyHosts(pip, this.uri.getHost())).map(WGet.mapPIPToProxy)
+        .ifPresent(proxy -> addProxy(fileRequesterBuilder, repository, proxy));
+
+    // Optional.ofNullable(this.session.getRepositorySession().getAuthenticationSelector())
+//        .map(selector -> selector.getAuthentication(repository))
+//        .ifPresent(auth -> addAuthentication(fileRequesterBuilder, repository, auth));
+    Authentication auth = new AuthenticationBuilder().addNtlm(this.ntlmHost, this.ntlmDomain).addUsername(this.username)
+        .addPassword(this.password).build();
+    addAuthentication(fileRequesterBuilder, repository, auth);
+
+    if (!this.skipCache) {
+      fileRequesterBuilder.withCacheDir(this.cacheDirectory);
+    }
+
+    try {
+      final HttpFileRequester fileRequester = fileRequesterBuilder
+          .withProgressReport(new LoggerProgressReport(getLog())).withConnectTimeout(this.readTimeOut)
+          .withSocketTimeout(this.readTimeOut).withUri(this.uri).withUsername(this.username).withPassword(this.password)
+          .withServerId(this.serverId).withPreemptiveAuth(this.preemptiveAuth)
+//              .withMavenSession(this.session)
+          .withRedirectsEnabled(this.followRedirects).withLog(this.getLogAsMavenLog()).build();
+      fileRequester.download(outputFile, getAdditionalHeaders());
+    } catch (Exception e) {
+      throw new IOException(e);
+    }
+  }
+
+  private void addProxy(final HttpFileRequester.Builder fileRequesterBuilder, final RemoteRepository repository,
+      final Proxy proxy) {
+    fileRequesterBuilder.withProxyHost(proxy.getHost());
+    fileRequesterBuilder.withProxyPort(proxy.getPort());
+
+//    final RemoteRepository proxyRepo = new RemoteRepository.Builder(repository).setProxy(proxy).build();
+    fileRequesterBuilder.withProxyUserName(this.proxyInfo.getUserName());
+    fileRequesterBuilder.withProxyPassword(this.proxyInfo.getPassword());
+    fileRequesterBuilder.withProxyPort(this.proxyInfo.getPort());
+
+    fileRequesterBuilder.withNtlmDomain(this.proxyInfo.getNtlmDomain());
+    fileRequesterBuilder.withNtlmHost(this.proxyInfo.getNtlmHost());
+
+//    try (final AuthenticationContext ctx = AuthenticationContext.forProxy(this.session.getRepositorySession(),
+//        proxyRepo)) {
+//      fileRequesterBuilder.withProxyUserName(ctx.get(AuthenticationContext.USERNAME));
+//      fileRequesterBuilder.withProxyPassword(ctx.get(AuthenticationContext.PASSWORD));
+//      fileRequesterBuilder.withNtlmDomain(ctx.get(AuthenticationContext.NTLM_DOMAIN));
+//      fileRequesterBuilder.withNtlmHost(ctx.get(AuthenticationContext.NTLM_WORKSTATION));
+//    }
+  }
+
+  private void addAuthentication(final HttpFileRequester.Builder fileRequesterBuilder,
+      final RemoteRepository repository, final Authentication authentication) {
+//    final RemoteRepository authRepo = new RemoteRepository.Builder(repository).setAuthentication(authentication)
+//        .build();
+//    try (final AuthenticationContext authCtx = AuthenticationContext.forRepository(this.session.getRepositorySession(),
+//        authRepo)) {
+//      final String username = authCtx.get(AuthenticationContext.USERNAME);
+//      final String password = authCtx.get(AuthenticationContext.PASSWORD);
+//      final String ntlmDomain = authCtx.get(AuthenticationContext.NTLM_DOMAIN);
+//      final String ntlmHost = authCtx.get(AuthenticationContext.NTLM_WORKSTATION);
+//
+//      getLog().debug("providing custom authentication");
+//      getLog().debug("username: " + username + " and password: ***");
+
+    fileRequesterBuilder.withUsername(this.username);
+    fileRequesterBuilder.withPassword(this.password);
+    fileRequesterBuilder.withNtlmDomain(this.ntlmDomain);
+    fileRequesterBuilder.withNtlmHost(this.ntlmHost);
+//    }
+  }
+
+  private List<Header> getAdditionalHeaders() {
+    return headers.entrySet().stream().map(pair -> new BasicHeader(pair.getKey(), pair.getValue()))
+        .collect(Collectors.toList());
+  }
+
 }

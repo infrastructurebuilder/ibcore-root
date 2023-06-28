@@ -39,12 +39,21 @@
 	<properties>
 		<test.coverage.percentage.required>36</test.coverage.percentage.required>
 		<jacoco.max.missed.classes>3</jacoco.max.missed.classes>
+<!--
+		<maven.download.plugin.groupId>com.googlecode.maven-download-plugin</maven.download.plugin.groupId>
+		<maven.download.plugin.version>1.6.8</maven.download.plugin.version>
+-->
+		<maven.download.plugin.version>1.7.1.0-SNAPSHOT</maven.download.plugin.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.infrastructurebuilder</groupId>
 			<artifactId>ibcore</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.infrastructurebuilder</groupId>
+			<artifactId>ibcore-maven-support</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.infrastructurebuilder</groupId>

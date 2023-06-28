@@ -21,6 +21,7 @@ import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 
+@FunctionalInterface
 public interface LoggerSupplier extends Supplier<Logger> {
 
 }
