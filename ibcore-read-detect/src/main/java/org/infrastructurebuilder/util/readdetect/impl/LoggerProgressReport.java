@@ -52,7 +52,7 @@ public class LoggerProgressReport implements ProgressReport {
 
   @Override
   public void error(Exception ex) {
-    log.error("Error",ex);
+    log.error("Error", ex);
   }
 
 }

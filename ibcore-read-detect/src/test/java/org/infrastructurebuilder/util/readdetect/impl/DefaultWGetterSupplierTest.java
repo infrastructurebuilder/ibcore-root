@@ -66,7 +66,7 @@ public class DefaultWGetterSupplierTest {
   private static final String HTTP_WWW_EXAMPLE_COM_INDEX_HTML = "http://www.example.com/index.html";
   private static final String WWW_IANA_ORG = "/www.iana.org/";
   private static final Optional<Checksum> ZIP_CHECKSUM = Optional.of(new Checksum(
-      "e7513f1f1f2f07f5dcf8259145134833aa70dfe50b4efaf10b477634966b9eed45cc3c91ba908bcb029aeff6530fb630895c141d950e6c19bb97400fbd803c96"));
+      "6877e3512f026803128e9cbe531a4e849fef0562c30d702854edfcbb4e50dc983f81155924b56c919272e695a8cdd4e91d982407271e2c523b1451f6c560f812"));
   private static final Optional<Checksum> CHECKSUM = Optional.of(new Checksum(
       "d06b93c883f8126a04589937a884032df031b05518eed9d433efb6447834df2596aebd500d69b8283e5702d988ed49655ae654c1683c7a4ae58bfa6b92f2b73a"));
   private final static Logger log = LoggerFactory.getLogger(DefaultWGetterSupplierTest.class.toString());
@@ -107,7 +107,6 @@ public class DefaultWGetterSupplierTest {
     this.ws = new DefaultWGetterSupplier(ls, new DefaultTypeToExtensionMapper(), pathSuppliers, fileMAppers,
         headerSupplier, new FakeArchiverManager(), pip).configure(config);
 
-
   }
 
   @AfterEach
@@ -116,9 +115,8 @@ public class DefaultWGetterSupplierTest {
 
   @Test
   public void testRetries() {
-    assertThrows(IBException.class, () ->
-    this.ws.get().collectCacheAndCopyToChecksumNamedFile(true, empty(), wps.get(), HTTP_WWW_EXAMPLE_COM_INDEX_HTML,
-        CHECKSUM, empty(), 0, 1000, true, false));
+    assertThrows(IBException.class, () -> this.ws.get().collectCacheAndCopyToChecksumNamedFile(true, empty(), wps.get(),
+        HTTP_WWW_EXAMPLE_COM_INDEX_HTML, CHECKSUM, empty(), 0, 1000, true, false));
   }
 
   @Test
@@ -179,15 +177,15 @@ public class DefaultWGetterSupplierTest {
   public void testZip() throws IOException {
     WGetter w = this.ws.get();
     Path outputPath = wps.get();
-    String src = "https://file-examples.com/storage/feb01e0890649c510949c8e/2017/02/zip_2MB.zip";
+    String src = "https://releases.hashicorp.com/athena-cli/0.1.0/athena-cli_0.1.0_darwin_arm64.zip";
 //    String src = wps.getTestClasses().resolve("test.zip").toUri().toURL().toExternalForm();
     Optional<List<IBResource>> v = w.collectCacheAndCopyToChecksumNamedFile(false, empty(), outputPath, src,
         ZIP_CHECKSUM, empty(), 5, 0, true, true);
     assertTrue(v.isPresent());
     List<IBResource> l = v.get();
     assertEquals(IBConstants.APPLICATION_ZIP, l.get(0).getType());
-    assertEquals(IBConstants.APPLICATION_MSWORD, l.get(1).getType());
-    assertEquals(1027072, Files.size(l.get(1).getPath()));
+    assertEquals(IBConstants.APPLICATION_OCTET_STREAM, l.get(1).getType());
+    assertEquals(17117024, Files.size(l.get(1).getPath()));
   }
 
 }

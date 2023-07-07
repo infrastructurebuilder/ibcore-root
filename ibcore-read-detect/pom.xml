@@ -43,7 +43,7 @@
 		<maven.download.plugin.groupId>com.googlecode.maven-download-plugin</maven.download.plugin.groupId>
 		<maven.download.plugin.version>1.6.8</maven.download.plugin.version>
 -->
-		<maven.download.plugin.version>1.7.1.0-SNAPSHOT</maven.download.plugin.version>
+		<maven.download.plugin.version>1.7.1.1</maven.download.plugin.version>
 	</properties>
 
 	<dependencies>

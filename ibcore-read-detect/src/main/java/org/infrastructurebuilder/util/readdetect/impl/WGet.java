@@ -565,6 +565,7 @@ public final class WGet {
 
   /**
    * Method call when the mojo is executed for the first time.
+   *
    * @return
    *
    * @throws IBWGetException      if an error is occuring in this mojo.
@@ -718,13 +719,13 @@ public final class WGet {
 //      cache.install(this.uri, outputFile, checksums);
 //      /* Get the "final name" */
 
-      getLog().error("OutputPath {}",outputPath.toString());
+      getLog().error("OutputPath {}", outputPath.toString());
       String finalFileName = finalChecksum.asUUID().get().toString() + t2e.getExtensionForType(this.mimeType);
       getLog().info("Final file name {}", finalFileName);
       Path newTarget = outputPath.getParent().resolve(finalFileName);
-      getLog().info("new Target is {}",newTarget.toString());
+      getLog().info("new Target is {}", newTarget.toString());
       try {
-        getLog().info("Calling moveAtomic({},{})",outputFile.toPath(), newTarget);
+        getLog().info("Calling moveAtomic({},{})", outputFile.toPath(), newTarget);
         IBUtils.moveAtomic(outputFile.toPath(), newTarget);
       } finally {
         outputFile.delete();
