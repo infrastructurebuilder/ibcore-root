@@ -27,7 +27,7 @@ import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_V
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_XLS;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_XLSX;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_XML;
-import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_X_TIKA_MSOFFICE;
+import static org.infrastructurebuilder.util.constants.IBConstants.*;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_ZIP;
 import static org.infrastructurebuilder.util.constants.IBConstants.AVI;
 import static org.infrastructurebuilder.util.constants.IBConstants.AVRO;
@@ -96,9 +96,11 @@ public class DefaultTypeToExtensionMapper implements TypeToExtensionMapper {
   @Inject
   public DefaultTypeToExtensionMapper() {
     this.defaultExtension = DEFAULT_EXTENSION;
-    list.addAll(Arrays.asList( //
+    list.addAll(Arrays.asList(
         new TypeMapTuple(IBDATA_SCHEMA, XML) //
         , new TypeMapTuple(APPLICATION_XML, XML, ORG_W3C_DOM_NODE) //
+        , new TypeMapTuple(TEXT_HTML, HTM, JAVA_LANG_STRING)
+        , new TypeMapTuple(TEXT_HTML, HTML, JAVA_LANG_STRING)
         , new TypeMapTuple(TEXT_PLAIN, TXT, JAVA_LANG_STRING) //
         , new TypeMapTuple(APPLICATION_ZIP, ZIP) //
         , new TypeMapTuple(TEXT_CSV, CSV, JAVA_LANG_STRING) //

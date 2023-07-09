@@ -93,6 +93,8 @@ public interface IBConstants {
   String CSV = ".csv";
   String ZIP = ".zip";
   String TXT = ".txt";
+  String HTML = ".html";
+  String HTM = ".htm";
   String XML = ".xml";
   String ODS = ".ods";
   String PPT = ".ppt";
