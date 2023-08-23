@@ -80,6 +80,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Random;
@@ -1073,6 +1074,10 @@ public class IBUtils {
       sb.add(String.format("%s:%s", k, ov));
     });
     return sb.toString();
+  }
+
+  public static boolean isParent(Path targetDir, Path sourcePath) {
+    return Objects.requireNonNull(targetDir).startsWith(sourcePath);
   };
 
 }
