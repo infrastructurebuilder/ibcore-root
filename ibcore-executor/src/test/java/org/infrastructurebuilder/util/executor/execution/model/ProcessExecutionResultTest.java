@@ -267,6 +267,7 @@ public class ProcessExecutionResultTest {
     ProcessExecution vv = new DefaultProcessExecution(ID, EXEC, ARGS, of(ofHours(-1)), empty(), scratchDir, false,
         empty(), of(scratchDir), empty(), empty(), false);
     Assertions.assertThrows(ProcessException.class, () -> vv.getProcessExecutor());
+    vv.close();
   }
 
   @Test
