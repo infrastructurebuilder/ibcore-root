@@ -194,5 +194,6 @@ public interface IBConstants {
   String WORKINGDIR = "working.dir";
   String CACHEDIR = "download.cache.dir";
   String FILEMAPPERS = "file.mappers";
+  String UNIMPLEMENTED = "UNIMPLEMENTED";
 
 }
