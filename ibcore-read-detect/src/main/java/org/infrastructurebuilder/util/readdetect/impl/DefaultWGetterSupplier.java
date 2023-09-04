@@ -45,6 +45,7 @@ import org.infrastructurebuilder.util.core.IBConfigurable;
 import org.infrastructurebuilder.util.core.LoggerSupplier;
 import org.infrastructurebuilder.util.core.PathSupplier;
 import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
+import org.infrastructurebuilder.util.readdetect.IBResourceCacheFactory;
 import org.infrastructurebuilder.util.readdetect.WGetter;
 import org.infrastructurebuilder.util.readdetect.WGetterSupplier;
 import org.json.JSONObject;
@@ -107,6 +108,7 @@ public class DefaultWGetterSupplier implements WGetterSupplier, IBConfigurable<J
       this.proxyInfoProvider = proxyInfoProvider;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public WGetterSupplier configure(JSONObject config) {
     this.workingDirectory.compareAndSet(null,

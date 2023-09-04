@@ -32,6 +32,7 @@ import java.util.Optional;
 
 import org.infrastructurebuilder.util.core.ChecksumBuilder;
 import org.infrastructurebuilder.util.core.IBUtils;
+import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream;
 import org.infrastructurebuilder.util.executor.ProcessException;
 import org.infrastructurebuilder.util.executor.ProcessExecution;
@@ -177,8 +178,8 @@ public class DefaultProcessExecution implements ProcessExecution {
     return gpe.getExitValues().stream().map(Integer::parseInt).collect(toList());
   }
 
-  public java.util.Optional<java.nio.file.Path> getRelativeRoot() {
-    return ofNullable(gpe.getRelativeRoot()).map(java.nio.file.Paths::get);
+  public Optional<RelativeRoot> getRelativeRoot() {
+    return ofNullable(gpe.getRelativeRoot()).map(Paths::get).map(RelativeRoot::from);
   }
 
   @Override

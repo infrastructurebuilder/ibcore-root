@@ -15,9 +15,10 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.core;
-
-@Deprecated
-public interface Named extends NameDescribed {
-
-}
+/**
+ * 
+ */
+/**
+ * 
+ */
+package org.infrastructurebuilder.util.readdetect.model;

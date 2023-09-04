@@ -152,7 +152,6 @@ public final class JSONBuilder implements JSONOutputEnabled {
   }
 
   public JSONBuilder addInstant(final String key, final Instant s) {
-
     json.put(key, requireNonNull(s).toString());
     return this;
   }

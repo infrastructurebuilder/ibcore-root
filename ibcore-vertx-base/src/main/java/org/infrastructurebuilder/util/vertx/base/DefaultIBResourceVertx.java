@@ -32,7 +32,7 @@ import static org.infrastructurebuilder.util.constants.IBConstants.PATH;
 import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_URL;
 import static org.infrastructurebuilder.util.constants.IBConstants.UPDATE_DATE;
 import static org.infrastructurebuilder.util.core.ChecksumEnabled.CHECKSUM;
-import static org.infrastructurebuilder.util.readdetect.IBResourceFactory.getAttributes;
+import static org.infrastructurebuilder.util.readdetect.IBResourceCacheFactory.getAttributes;
 import static org.infrastructurebuilder.util.vertx.base.VertxChecksumFactory.checksumFrom;
 
 import java.io.IOException;
@@ -156,7 +156,7 @@ public class DefaultIBResourceVertx implements IBResourceVertx {
     m.setFileChecksum(j.getString(CHECKSUM));
     m.setFilePath(j.getString(PATH));
     m.setLastUpdate(j.getString(UPDATE_DATE));
-    m.setModelEncoding("UTF-8");
+//    m.setModelEncoding("UTF-8");
     m.setMostRecentReadTime(j.getString(MOST_RECENT_READ_TIME));
     m.setName(j.getString(NAME));
     m.setSource(j.getString(SOURCE_URL));

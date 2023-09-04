@@ -98,14 +98,26 @@ public class DefaultWGetterSupplierTest {
     HeadersSupplier headerSupplier = () -> new HashMap<>();
     JSONObject config = new JSONObject().put(WORKINGDIR, WORKINGDIR).put(CACHEDIR, CACHEDIR).put(FILEMAPPERS,
         new JSONArray());
-    ProxyInfoProvider pip = new ProxyInfoProvider() {
-      @Override
-      public ProxyInfo getProxyInfo(String arg0) {
-        return null;
-      }
-    };
-    this.ws = new DefaultWGetterSupplier(ls, new DefaultTypeToExtensionMapper(), pathSuppliers, fileMAppers,
-        headerSupplier, new FakeArchiverManager(), pip).configure(config);
+    this.ws = new DefaultWGetterSupplier(
+        //Logger
+        ls,
+        // Type mapper
+        new DefaultTypeToExtensionMapper(),
+        // PAth suppliers?
+        pathSuppliers,
+        // File mappers
+        fileMAppers,
+        // Headers supplier
+        headerSupplier,
+        // Archive manager
+        new FakeArchiverManager(),
+        // ProxyInfoProvider (returns no proxy)
+        new ProxyInfoProvider() {
+          @Override
+          public ProxyInfo getProxyInfo(String arg0) {
+            return null;
+          }
+        }).configure(config);
 
   }
 
@@ -129,18 +141,20 @@ public class DefaultWGetterSupplierTest {
         .collectCacheAndCopyToChecksumNamedFile(true, empty(), outputPath, src, CHECKSUM, empty(), 5, 1000, true, false)
         .map(l -> l.get(0));
     assertTrue(q.isPresent());
-    assertEquals(CHECKSUM.get().toString(), q.get().getChecksum().toString());
-    assertEquals(IBConstants.TEXT_HTML, q.get().getType());
-    String v = IBUtils.readToString(q.get().get());
+    IBResource qr = q.get();
+    assertEquals(CHECKSUM.get().toString(), qr.getChecksum().toString());
+    assertEquals(IBConstants.TEXT_HTML, qr.getType());
+    String v = IBUtils.readToString(qr.get().get());
     assertTrue(v.contains(WWW_IANA_ORG));
 
     // Do it again
     q = w.collectCacheAndCopyToChecksumNamedFile(false, empty(), outputPath, src, CHECKSUM, empty(), 5, 1000, false,
         false).map(l -> l.get(0));
     assertTrue(q.isPresent());
-    assertEquals(CHECKSUM.get().toString(), q.get().getChecksum().toString());
-    assertEquals(IBConstants.TEXT_HTML, q.get().getType());
-    v = IBUtils.readToString(q.get().get());
+    qr = q.get();
+    assertEquals(CHECKSUM.get().toString(), qr.getChecksum().toString());
+    assertEquals(IBConstants.TEXT_HTML, qr.getType());
+    v = IBUtils.readToString(qr.get().get());
     assertTrue(v.contains(WWW_IANA_ORG));
 
   }
@@ -159,7 +173,7 @@ public class DefaultWGetterSupplierTest {
     assertTrue(q.isPresent());
     assertEquals(CHECKSUM.get().toString(), q.get().getChecksum().toString());
     assertEquals(IBConstants.TEXT_HTML, q.get().getType());
-    String v = IBUtils.readToString(q.get().get());
+    String v = IBUtils.readToString(q.get().get().get());
     assertTrue(v.contains(WWW_IANA_ORG));
 
     // Do it again
@@ -168,7 +182,7 @@ public class DefaultWGetterSupplierTest {
     assertTrue(q.isPresent());
     assertEquals(CHECKSUM.get().toString(), q.get().getChecksum().toString());
     assertEquals(IBConstants.TEXT_HTML, q.get().getType());
-    v = IBUtils.readToString(q.get().get());
+    v = IBUtils.readToString(q.get().get().get());
     assertTrue(v.contains(WWW_IANA_ORG));
 
   }
@@ -185,7 +199,7 @@ public class DefaultWGetterSupplierTest {
     List<IBResource> l = v.get();
     assertEquals(IBConstants.APPLICATION_ZIP, l.get(0).getType());
     assertEquals(IBConstants.APPLICATION_OCTET_STREAM, l.get(1).getType());
-    assertEquals(17117024, Files.size(l.get(1).getPath()));
+    assertEquals(17117024, Files.size(l.get(1).getPath().get()));
   }
 
 }

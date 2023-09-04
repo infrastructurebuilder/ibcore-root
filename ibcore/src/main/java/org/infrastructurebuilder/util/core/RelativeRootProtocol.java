@@ -17,15 +17,6 @@
  */
 package org.infrastructurebuilder.util.core;
 
+public interface RelativeRootProtocol {
 
-import java.util.Optional;
-
-import org.json.JSONObject;
-
-public interface JSONOutputEnabled {
-  JSONObject asJSON();
-
-  default Optional<RelativeRoot> getRelativeRoot() {
-    return Optional.empty();
-  }
 }

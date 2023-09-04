@@ -15,17 +15,8 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.core;
+package org.infrastructurebuilder.util.readdetect.model;
 
+public interface IBResourceCacheIF {
 
-import java.util.Optional;
-
-import org.json.JSONObject;
-
-public interface JSONOutputEnabled {
-  JSONObject asJSON();
-
-  default Optional<RelativeRoot> getRelativeRoot() {
-    return Optional.empty();
-  }
 }

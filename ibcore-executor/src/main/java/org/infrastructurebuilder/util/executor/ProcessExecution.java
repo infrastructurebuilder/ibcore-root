@@ -73,7 +73,7 @@ public interface ProcessExecution extends JSONAndChecksumEnabled, AutoCloseable 
 
   @Override
   default JSONObject asJSON() {
-    return JSONBuilder.newInstance(getRelativeRoot())
+    return JSONBuilder.newInstance(getRelativeRoot().flatMap(r -> r.getPath()))
 
         .addString(ID, getId())
 

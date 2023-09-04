@@ -18,6 +18,7 @@
 package org.infrastructurebuilder.util.readdetect.impl;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import static org.apache.maven.shared.utils.StringUtils.isBlank;
 import static org.codehaus.plexus.util.StringUtils.isNotBlank;
 
@@ -70,7 +71,8 @@ import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.logging.LoggingMavenComponent;
 import org.infrastructurebuilder.util.readdetect.IBResource;
-import org.infrastructurebuilder.util.readdetect.IBResourceFactory;
+import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
+import org.infrastructurebuilder.util.readdetect.IBResourceCacheFactory;
 import org.slf4j.Logger;
 
 import com.googlecode.download.maven.plugin.internal.DownloadFailureException;
@@ -405,7 +407,7 @@ public final class WGet {
   }
 
   public void setLocalRespository(File localRepo) {
-    this.localRepo = Optional.ofNullable(localRepo).map(File::toPath).map(Path::toAbsolutePath).orElse(null);
+    this.localRepo = ofNullable(localRepo).map(File::toPath).map(Path::toAbsolutePath).orElse(null);
   }
 
   public Path getLocalRepository() {
@@ -417,7 +419,7 @@ public final class WGet {
         this.localRepo = Paths.get(p.getProperty("user.home")).resolve(".m2").resolve("repository");
       } else {
         String home = System.getenv("HOME");
-        this.localRepo = Optional.ofNullable(home).map(Paths::get).map(Path::toAbsolutePath)
+        this.localRepo = ofNullable(home).map(Paths::get).map(Path::toAbsolutePath)
             .map(p2 -> p2.resolve(".m2").resolve("repository")).orElse(null);
       }
     }
@@ -515,7 +517,7 @@ public final class WGet {
   }
 
   public void setProxyInfoFrom(String string) {
-    this.proxyInfo = Optional.ofNullable(this.wagonManager).map(wm -> wm.getProxyInfo(string)).orElse(null);
+    this.proxyInfo = ofNullable(this.wagonManager).map(wm -> wm.getProxyInfo(string)).orElse(null);
   }
 
   public void setLog(Logger log) {
@@ -563,6 +565,8 @@ public final class WGet {
 
   private boolean preemptiveAuth;
 
+  private IBResourceCacheFactory cf;
+
   /**
    * Method call when the mojo is executed for the first time.
    *
@@ -595,7 +599,7 @@ public final class WGet {
     }
     if (!this.skipCache) {
       if (this.cacheDirectory == null) {
-        this.cacheDirectory = Optional.ofNullable(getLocalRepository())
+        this.cacheDirectory = ofNullable(getLocalRepository())
             .map(repo -> repo.resolve(".cache").resolve("download-maven-plugin")).map(Path::toFile)
             .orElseThrow(() -> new IBException("No local repo"));
 //        this.cacheDirectory = new File(this.session.getLocalRepository().getBasedir(), ".cache/download-maven-plugin");
@@ -710,10 +714,6 @@ public final class WGet {
     Path outputPath = outputFile.toPath();
     Checksum finalChecksum = (this.sha512 == null ? new Checksum(outputFile.toPath()) : new Checksum(this.sha512));
 
-    IBResource pVal = IBResourceFactory.from(outputFile.toPath(), finalChecksum,
-        IBResourceFactory.toType.apply(outputPath));
-    if (this.mimeType == null)
-      this.mimeType = pVal.getType();
     var csum = new Checksums(null, null, null, this.sha512, getLog());
     return IBException.cet.returns(() -> {
 //      cache.install(this.uri, outputFile, checksums);
@@ -733,9 +733,13 @@ public final class WGet {
 
       Path outPath = newTarget;
 
-      IBResource retVal = IBResourceFactory.from(outPath, finalChecksum, this.mimeType,
-          this.uri.toURL().toExternalForm());
-      return Optional.of(List.of(retVal));
+      final IBResourceBuilder b = cf.builderFromPathAndChecksum(outPath, finalChecksum)
+
+          .withSource(this.uri.toURL().toExternalForm())
+
+          .withType(ofNullable(this.mimeType));
+
+      return Optional.of(List.of(b.build()));
     });
   }
 
@@ -770,7 +774,7 @@ public final class WGet {
 
     // set proxy if present
 
-    Optional.ofNullable(this.wagonManager).map(pip -> pip.getProxyInfo(repository.getProtocol()))
+    ofNullable(this.wagonManager).map(pip -> pip.getProxyInfo(repository.getProtocol()))
 //      Optional.ofNullable(this.session.getRepositorySession().getProxySelector())
 //              .map(selector -> selector.getProxy(repository))
         .filter(pip -> !ProxyUtils.validateNonProxyHosts(pip, this.uri.getHost())).map(WGet.mapPIPToProxy)
@@ -846,6 +850,11 @@ public final class WGet {
   private List<Header> getAdditionalHeaders() {
     return headers.entrySet().stream().map(pair -> new BasicHeader(pair.getKey(), pair.getValue()))
         .collect(Collectors.toList());
+  }
+
+  public void setCacheFactory(IBResourceCacheFactory cf) {
+    this.cf = requireNonNull(cf);
+
   }
 
 }

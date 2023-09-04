@@ -18,7 +18,7 @@
 package org.infrastructurebuilder.util.vertx.base;
 
 import static org.infrastructurebuilder.util.readdetect.IBResource.*;
-import static org.infrastructurebuilder.util.readdetect.IBResourceFactory.getAttributes;
+import static org.infrastructurebuilder.util.readdetect.IBResourceCacheFactory.getAttributes;
 import static io.vertx.core.Future.succeededFuture;
 import static java.nio.file.Files.readAttributes;
 import static java.util.Objects.hash;

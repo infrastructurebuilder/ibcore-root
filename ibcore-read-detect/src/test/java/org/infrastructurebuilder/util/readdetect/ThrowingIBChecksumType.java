@@ -43,8 +43,8 @@ public class ThrowingIBChecksumType extends DefaultIBResource {
   }
 
   @Override
-  public InputStream get() {
-    return new ThrowingInputStream(IOException.class);
+  public Optional<InputStream> get() {
+    return Optional.of(new ThrowingInputStream(IOException.class));
   }
 
 }

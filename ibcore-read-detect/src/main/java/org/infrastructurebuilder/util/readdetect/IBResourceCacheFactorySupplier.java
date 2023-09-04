@@ -15,29 +15,30 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.core;
+package org.infrastructurebuilder.util.readdetect;
 
-import java.util.Map;
+import static java.util.Objects.requireNonNull;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Provider;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.infrastructurebuilder.util.core.PathSupplier;
+import org.infrastructurebuilder.util.readdetect.impl.IBResourceCacheFactoryImpl;
 
-@Named
-public class DefaultEnvSupplier implements EnvSupplier {
-  private static final String FORMAT = "{} = {}";
-  private final static Logger log = LoggerFactory.getLogger(DefaultEnvSupplier.class);
+@Named(IBResourceCacheFactorySupplier.NAME)
+public class IBResourceCacheFactorySupplier implements Provider<IBResourceCacheFactory> {
+  public final static String NAME = "IBResourceCacheFactorySupplier";
+  private final PathSupplier root;
 
   @Inject
-  public DefaultEnvSupplier() {
+  public IBResourceCacheFactorySupplier(PathSupplier root) {
+    this.root = requireNonNull(root);
   }
 
   @Override
-  public Map<String, String> get() {
-    Map<String, String> m = System.getenv();
-    return System.getenv();
+  public IBResourceCacheFactory get() {
+    return new IBResourceCacheFactoryImpl(this.root);
   }
 
 }

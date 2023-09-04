@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -52,6 +53,7 @@ class RelativeRootTest {
     tps.finalize();
   }
 
+  private RelativeRootProvider rrp;
   private RelativeRoot prr, hrr;
   private Path tp;
   private Path ssPath;
@@ -63,6 +65,8 @@ class RelativeRootTest {
   @BeforeEach
   void setUp() throws Exception {
     tp = tps.get();
+    rrp = new RelativeRootProvider(Collections.emptySet());
+
     prr = RelativeRoot.from(tp);
     hrr = RelativeRoot.from(new URL(URLROOT));
     ss = UUID.randomUUID().toString();

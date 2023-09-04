@@ -114,6 +114,8 @@ import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.constants.IBConstants;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
@@ -353,7 +355,11 @@ public class IBUtils {
   }
 
   public static Path copy(final Path in, final Path out) throws IOException {
-    try (InputStream ins = Files.newInputStream(in); OutputStream outs = Files.newOutputStream(out)) {
+    try (
+
+        InputStream ins = Files.newInputStream(in);
+
+        OutputStream outs = Files.newOutputStream(out)) {
       copy(ins, outs);
     }
     return out;
@@ -820,9 +826,15 @@ public class IBUtils {
 
   }
 
-  public static Path moveFileToNewIdPath(final Path oldFile, final UUID newPath) throws IOException {
-    final Path newFile = oldFile.getParent().resolve(newPath.toString());
+  @Deprecated
+  public static Path moveFileToNewIdPath(final Path oldFile, final UUID d) throws IOException {
+    final Path newFile = oldFile.getParent().resolve(d.toString());
     return Files.move(oldFile, newFile, ATOMIC_MOVE);
+
+  }
+
+  public static Path moveFileToNewIdPath(final Path oldFile, final Checksum d) throws IOException {
+    return moveFileToNewIdPath(oldFile, d.asUUID().get());
   }
 
   public static String readFile(final Path path) throws IOException {

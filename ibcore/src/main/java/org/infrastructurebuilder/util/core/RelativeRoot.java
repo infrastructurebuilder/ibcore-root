@@ -23,6 +23,7 @@ import static org.infrastructurebuilder.exceptions.IBException.cet;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -83,6 +84,7 @@ public class RelativeRoot {
     this.stringRoot = (!requireNonNull(u).endsWith("/")) ? u + "/" : u;
     this.url = fromString(requireNonNull(u));
     this.path = (this.url.getProtocol().equals("file")) ? Paths.get(cet.returns(() -> this.url.toURI())) : null;
+    getPath().ifPresent(p ->  cet.translate(() -> Files.createDirectories(p)));
   }
 
   public Optional<Path> getPath() {
@@ -126,3 +128,4 @@ public class RelativeRoot {
   }
 
 }
+

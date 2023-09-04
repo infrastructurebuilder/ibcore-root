@@ -17,15 +17,20 @@
  */
 package org.infrastructurebuilder.util.core;
 
+import java.util.Set;
 
-import java.util.Optional;
+import javax.inject.Inject;
+import javax.inject.Named;
 
-import org.json.JSONObject;
+@Named
+public class RelativeRootProvider  {
 
-public interface JSONOutputEnabled {
-  JSONObject asJSON();
-
-  default Optional<RelativeRoot> getRelativeRoot() {
-    return Optional.empty();
+  @Inject
+  public RelativeRootProvider(Set<RelativeRootProtocol> protocols) {
   }
+
+  public final RelativeRoot get(String rootString) {
+    return RelativeRoot.from((String)null);
+  }
+
 }

@@ -18,8 +18,10 @@
 package org.infrastructurebuilder.util.readdetect.impl;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
 import static org.infrastructurebuilder.util.constants.IBConstants.IBDATA_PREFIX;
+import static org.infrastructurebuilder.util.core.IBUtils.copy;
 import static org.infrastructurebuilder.util.readdetect.IBResourceFactory.copyToTempChecksumAndPath;
 
 import java.io.File;
@@ -47,6 +49,9 @@ import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
 import org.infrastructurebuilder.util.readdetect.IBResource;
+import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
+import org.infrastructurebuilder.util.readdetect.IBResourceCacheFactory;
+import org.infrastructurebuilder.util.readdetect.IBResourceException;
 import org.infrastructurebuilder.util.readdetect.WGetter;
 import org.slf4j.Logger;
 
@@ -57,6 +62,7 @@ public class DefaultWGetter implements WGetter {
   private final ArchiverManager am;
   private final Path workingDir;
   private final TypeToExtensionMapper t2e;
+  private IBResourceCacheFactory cf;
 
   public DefaultWGetter(Logger log, TypeToExtensionMapper t2e, Map<String, String> headers, Path cacheDir,
       Path workingDir, ArchiverManager archiverManager, Optional<ProxyInfoProvider> pi, Optional<FileMapper[]> mappers)
@@ -69,7 +75,8 @@ public class DefaultWGetter implements WGetter {
     // Log l2 = new LoggingMavenComponent(log);
 //      Logger localLogger = requireNonNull(log); // FIXME (See above)
     Logger l2 = log;
-
+    cf = new IBResourceCacheFactoryImpl(() -> workingDir);
+    this.wget.setCacheFactory(cf);
     this.wget.setLog(l2);
     this.wget.setT2EMapper(Objects.requireNonNull(t2e));
     this.wget.setCacheDirectory(requireNonNull(cacheDir).toFile());
@@ -120,7 +127,7 @@ public class DefaultWGetter implements WGetter {
   @Override
   public List<IBResource> expand(Path tempPath, IBResource src, Optional<String> oSource) {
 
-    Path source = requireNonNull(src).getPath();
+    Path source = requireNonNull(src).getPath().orElseThrow(() -> new IBResourceException("no.path"));
     List<IBResource> l = new ArrayList<>();
     Path targetDir = cet.returns(() -> Files.createTempDirectory(IBDATA_PREFIX)).toAbsolutePath();
     File outputFile = source.toFile();
@@ -140,8 +147,10 @@ public class DefaultWGetter implements WGetter {
       String rPath = cet.returns(() -> targetDir.toUri().toURL().toExternalForm());
       for (Path p : IBUtils.allFilesInTree(targetDir)) {
         String tPath = cet.returns(() -> p.toUri().toURL().toExternalForm()).substring(rPath.length());
-        IBResource q = cet.returns(() -> copyToTempChecksumAndPath(tempPath, p, oSource, tPath));
-        l.add(q);
+// FIXME?
+//        IBResource q = cet.returns(() -> copyToTempChecksumAndPath(tempPath, p, oSource, tPath));
+        final var v = relocateChecksumNamedToTargetDir(tempPath, p);
+        l.add(oSource.map(o -> v.withSource(o + "!/" + tPath)).orElse(v).build());
       }
 
       IBUtils.deletePath(targetDir);
@@ -152,6 +161,13 @@ public class DefaultWGetter implements WGetter {
     return l;
   }
 
+  private final IBResourceBuilder relocateChecksumNamedToTargetDir(Path targetDir, Path source) {
+
+    Checksum cSum = new Checksum(source);
+    Path newTarget = targetDir.resolve(cSum.asUUID().get().toString());
+    cet.returns(() -> copy(source, newTarget));
+    return cf.builderFromPathAndChecksum(newTarget, cSum);
+  }
   private boolean isFileUnArchiver(final UnArchiver unarchiver) {
     return unarchiver instanceof BZip2UnArchiver || unarchiver instanceof GZipUnArchiver
         || unarchiver instanceof SnappyUnArchiver || unarchiver instanceof XZUnArchiver;

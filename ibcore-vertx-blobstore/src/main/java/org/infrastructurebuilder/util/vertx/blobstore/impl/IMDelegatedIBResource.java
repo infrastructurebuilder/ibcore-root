@@ -64,14 +64,14 @@ public class IMDelegatedIBResource implements IBResource {
   {
     this.ba = bb.clone();
     IBResourceModel m = new IBResourceModel();
-    m.setFileChecksum(new Checksum(get()).toString());
+    m.setFileChecksum(new Checksum(get().get()).toString());
     m.setName(blobname);
     m.setDescription(description2);
     m.setLastUpdate(requireNonNull(lastUpdated).toString());
     m.setCreated(requireNonNull(createDate).toString());
     m.setFilePath("." + UUID.randomUUID().toString());
     try {
-      m.setType(tika.detect(get()));
+      m.setType(tika.detect(get().get()));
     } catch (IOException e) {
       m.setType(APPLICATION_OCTET_STREAM);
     }
@@ -81,7 +81,7 @@ public class IMDelegatedIBResource implements IBResource {
     r = IBResourceFactory.from(m);
   }
 
-  public Path getPath() {
+  public Optional<Path> getPath() {
     throw new IBException(UNAVAILABLE_PATH);
   }
 
@@ -91,10 +91,6 @@ public class IMDelegatedIBResource implements IBResource {
 
   public String getType() {
     return r.getType();
-  }
-
-  public IBResource moveTo(Path target) throws IOException {
-    return r.moveTo(target);
   }
 
   public Instant getMostRecentReadTime() {
@@ -109,8 +105,8 @@ public class IMDelegatedIBResource implements IBResource {
     return r.getLastUpdateDate();
   }
 
-  public InputStream get() {
-    return new ByteArrayInputStream(this.ba);
+  public Optional<InputStream> get() {
+    return Optional.of(new ByteArrayInputStream(this.ba));
   }
 
   public Optional<URL> getSourceURL() {
@@ -148,6 +144,11 @@ public class IMDelegatedIBResource implements IBResource {
   @Override
   public Optional<Properties> getAdditionalProperties() {
     return r.getAdditionalProperties();
+  }
+
+  @Override
+  public IBResourceModel copyModel() {
+    return r.copyModel();
   }
 
 }

@@ -22,35 +22,33 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
-import static org.infrastructurebuilder.exceptions.IBException.cet;
 import static org.infrastructurebuilder.util.constants.IBConstants.CREATE_DATE;
 import static org.infrastructurebuilder.util.constants.IBConstants.DESCRIPTION;
 import static org.infrastructurebuilder.util.constants.IBConstants.MIME_TYPE;
 import static org.infrastructurebuilder.util.constants.IBConstants.MOST_RECENT_READ_TIME;
-import static org.infrastructurebuilder.util.constants.IBConstants.NAME;
 import static org.infrastructurebuilder.util.constants.IBConstants.NO_PATH_SUPPLIED;
 import static org.infrastructurebuilder.util.constants.IBConstants.PATH;
 import static org.infrastructurebuilder.util.constants.IBConstants.SIZE;
+import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_NAME;
 import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_URL;
 import static org.infrastructurebuilder.util.constants.IBConstants.UPDATE_DATE;
 import static org.infrastructurebuilder.util.core.ChecksumEnabled.CHECKSUM;
+import static org.infrastructurebuilder.util.readdetect.IBResourceCacheFactory.extracted;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.function.Function;
 
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.readdetect.IBResource;
+import org.infrastructurebuilder.util.readdetect.IBResourceCacheFactory;
 import org.infrastructurebuilder.util.readdetect.IBResourceFactory;
 import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
 import org.json.JSONObject;
@@ -58,67 +56,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DefaultIBResource implements IBResource {
-  private static final long serialVersionUID = 5978749189830232137L;
   private final static Logger log = LoggerFactory.getLogger(DefaultIBResource.class.getName());
-
-  public final static Function<String, Path> extracted = (x) -> {
-    try {
-      Path p1 = Paths.get(x);
-      URL u;
-      if (Files.isRegularFile(p1)) {
-        u = cet.returns(() -> p1.toUri().toURL());
-      } else {
-        u = cet.returns(() -> new URL(x));
-      }
-      // I know, right?
-      return Paths.get(cet.returns(() -> cet.returns(() -> u.toURI())));
-    } catch (Throwable t) {
-      log.error("Error converting to path", t);
-      throw t;
-    }
-  };
-
-  // User IBResourceFactory
-  @Deprecated
-  public final static IBResource copyToTempChecksumAndPath(Path targetDir, final Path source) throws IOException {
-    return IBResourceFactory.copyToTempChecksumAndPath(targetDir, source);
-  }
-
-  // User IBResourceFactory
-  @Deprecated
-  public final static IBResource copyToDeletedOnExitTempChecksumAndPath(Path targetDir, String prefix, String suffix,
-      final InputStream source) {
-    return IBResourceFactory.copyToDeletedOnExitTempChecksumAndPath(targetDir, prefix, suffix, source);
-  }
-
-  // User IBResourceFactory
-  @Deprecated
-  public final static Function<Path, String> toType = IBResourceFactory.toType;
-
-  // User IBResourceFactory
-  @Deprecated
-  public final static IBResource from(Path p, Checksum c, String type) {
-    return IBResourceFactory.from(p, c, type);
-  }
-
-  // User IBResourceFactory
-  @Deprecated
-  public final static IBResource copyToTempChecksumAndPath(Path targetDir, final Path source,
-      final Optional<String> oSource, final String pString) throws IOException {
-    return IBResourceFactory.copyToTempChecksumAndPath(targetDir, source, oSource, pString);
-  }
-
-  @Deprecated
-  public final static IBResource fromPath(Path path) {
-    return new DefaultIBResource(path, new Checksum(path), empty(), empty());
-  }
 
   private final IBResourceModel m;
 
-  private Path p;
-  private final Path originalPath;
+  private final Path cachedPath;
+//  private final Path originalPath;
+  private Checksum checksum;
 
-  public DefaultIBResource(IBResourceModel m) {
+  public DefaultIBResource(IBResourceModel m, Path sourcePath) {
+    this.cachedPath = sourcePath;
     this.m = requireNonNull(m);
     String ps = m.getFilePath();
     Path path = null;
@@ -133,7 +80,12 @@ public class DefaultIBResource implements IBResource {
       log.error("Path was unavailable from {}", ps);
     } finally {
     }
-    this.originalPath = path;
+//    this.originalPath = path;
+  }
+
+
+  public DefaultIBResource(IBResourceModel m) {
+    this(m,null);
   }
 
   public DefaultIBResource setCreateDate(Instant cdate) {
@@ -159,34 +111,35 @@ public class DefaultIBResource implements IBResource {
     m.setType(j.getString(MIME_TYPE));
     m.setFilePath(j.optString(PATH, null));
     m.setLastUpdate(j.optString(UPDATE_DATE, null));
-    m.setModelEncoding("UTF-8");
     m.setMostRecentReadTime(j.optString(MOST_RECENT_READ_TIME, null));
-    m.setName(j.optString(NAME, null));
+    m.setName(j.optString(SOURCE_NAME, null));
     m.setSource(j.optString(SOURCE_URL, null));
     m.setDescription(j.optString(DESCRIPTION, null));
-    Optional.ofNullable(j.optJSONObject(IBConstants.ADDITIONAL_PROPERTIES)).ifPresent(jo -> {
+    ofNullable(j.optJSONObject(IBConstants.ADDITIONAL_PROPERTIES)).ifPresent(jo -> {
       jo.toMap().forEach((k, v) -> {
         m.addAdditionalProperty(k, v.toString());
       });
     });
 
-    this.p = ofNullable(j.optString(IBConstants.PATH, null)).map(extracted)
+    this.cachedPath = ofNullable(j.optString(IBConstants.PATH, null)).map(extracted)
         .orElseThrow(() -> new IBException(NO_PATH_SUPPLIED));
-    this.originalPath = ofNullable(j.optString(IBConstants.ORIGINAL_PATH, null)).map(extracted).orElse(null);
+//    this.originalPath = ofNullable(j.optString(IBConstants.ORIGINAL_PATH, null)).map(extracted).orElse(null);
   }
 
   public DefaultIBResource(Path path, Checksum checksum, Optional<String> type, Optional<Properties> addlProps) {
     this.m = new IBResourceModel();
-    this.originalPath = requireNonNull(path);
-    m.setFilePath(this.originalPath.toAbsolutePath().toString());
+//    this.originalPath = requireNonNull(path);
+//    m.setFilePath(this.originalPath.toAbsolutePath().toString());
+    m.setFilePath(requireNonNull(path).toAbsolutePath().toString());
     m.setFileChecksum(requireNonNull(checksum).toString());
-    IBResourceFactory.getAttributes.apply(path).ifPresent(bfa -> {
+    IBResourceCacheFactory.getAttributes.apply(path).ifPresent(bfa -> {
       this.m.setCreated(bfa.creationTime().toInstant().toString());
       this.m.setLastUpdate(bfa.lastModifiedTime().toInstant().toString());
       this.m.setMostRecentReadTime(bfa.lastAccessTime().toInstant().toString());
       this.m.setSize(bfa.size());
     });
 
+    this.cachedPath = null;
     requireNonNull(type).ifPresent(t -> m.setType(t));
   }
 
@@ -197,7 +150,7 @@ public class DefaultIBResource implements IBResource {
   public DefaultIBResource(Path p2, Optional<String> name, Optional<String> desc, Checksum checksum,
       Optional<Properties> addlProps)
   {
-    this(p2, checksum, of(IBResourceFactory.toType.apply(p2)), addlProps);
+    this(p2, checksum, of(IBResourceCacheFactory.toType.apply(p2)), addlProps);
     this.m.setName(requireNonNull(name).orElse(null));
     this.m.setDescription(requireNonNull(desc).orElse(null));
   }
@@ -212,29 +165,23 @@ public class DefaultIBResource implements IBResource {
 
   @Override
   public Checksum getChecksum() {
-    return new Checksum(m.getFileChecksum());
+    if (this.checksum == null)
+      this.checksum = new Checksum(m.getFileChecksum());
+    return this.checksum;
   }
 
   @Override
   public String getType() {
     if (m.getType() == null) {
-      m.setType(IBResourceFactory.toType.apply(getPath()));
+      getPath().ifPresent(path -> m.setType(IBResourceCacheFactory.toType.apply(path)));
     }
     return m.getType();
   }
 
   @Override
-  public IBResource moveTo(Path target) throws IOException {
-    IBUtils.moveAtomic(getPath(), target);
-    IBResourceModel m2 = m.clone();
-    m2.setFilePath(target.toAbsolutePath().toString());
-    return new DefaultIBResource(m2);
-  }
-
-  @Override
-  public java.io.InputStream get() {
+  public Optional<InputStream> get() {
     m.setMostRecentReadTime(now().toString());
-    return org.infrastructurebuilder.util.readdetect.IBResource.super.get();
+    return IBResource.super.get();
   }
 
   @Override
@@ -258,14 +205,15 @@ public class DefaultIBResource implements IBResource {
   }
 
   @Override
-  public Path getPath() {
-    if (this.p == null && m.getFilePath() != null) {
-      this.p = Paths.get(m.getFilePath());
-    }
-    if (this.p == null && getSourceURL().isPresent()) {
-      this.p = Paths.get(cet.returns(() -> getSourceURL().get().toURI()));
-    }
-    return ofNullable(this.p).orElseThrow(() -> new IBException("No available path"));
+  public Optional<Path> getPath() {
+    // FIXME Set cached path at creation time
+//    if (this.cachedPath == null && m.getFilePath() != null) {
+//      this.cachedPath = Paths.get(m.getFilePath());
+//    }
+//    if (this.cachedPath == null && getSourceURL().isPresent()) {
+//      this.cachedPath = Paths.get(cet.returns(() -> getSourceURL().get().toURI()));
+//    }
+    return ofNullable(this.cachedPath);
   }
 
   @Override
@@ -298,10 +246,10 @@ public class DefaultIBResource implements IBResource {
     return ofNullable(this.m.getDescription());
   }
 
-  @Override
-  public Path getOriginalPath() {
-    return originalPath;
-  }
+//  @Override
+//  public Path getOriginalPath() {
+//    return originalPath;
+//  }
 
   @Override
   public long size() {
@@ -314,4 +262,8 @@ public class DefaultIBResource implements IBResource {
     return (p.size() == 0) ? empty() : of(p);
   }
 
+  @Override
+  public IBResourceModel copyModel() {
+    return this.m.clone();
+  }
 }

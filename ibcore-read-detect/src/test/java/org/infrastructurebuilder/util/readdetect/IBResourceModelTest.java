@@ -18,13 +18,17 @@
 package org.infrastructurebuilder.util.readdetect;
 
 import static java.util.Optional.of;
+import static org.infrastructurebuilder.util.constants.IBConstants.IMAGE_JPG;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.infrastructurebuilder.util.core.Checksum;
@@ -32,6 +36,7 @@ import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.IBUtilsTest;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
 import org.infrastructurebuilder.util.readdetect.impl.DefaultIBResource;
+import org.infrastructurebuilder.util.readdetect.impl.IBResourceCacheFactoryImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,20 +44,25 @@ import org.junit.jupiter.api.Test;
 public class IBResourceModelTest {
 
   private TestingPathSupplier wps;
-  private DefaultIBResource c1, c2;
+  private IBResource c1, c2;
   private Path path;
   private Checksum checksum;
-//  private IBResource def;
+  private IBResourceCacheFactory f;
+  private Path root;
+  private Path source;
 
   @BeforeEach
   public void setUp() throws Exception {
     wps = new TestingPathSupplier();
-    Path source = wps.getTestClasses().resolve(IBUtilsTest.TESTFILE);
+    source = wps.getTestClasses().resolve(IBUtilsTest.TESTFILE);
+    root = wps.get();
     path = wps.get().resolve(UUID.randomUUID().toString());
     IBUtils.copy(source, path);
+    f = new IBResourceCacheFactoryImpl(root);
     checksum = new Checksum(IBUtilsTest.TESTFILE_CHECKSUM);
-    c2 = new DefaultIBResource(path, checksum);
-    c1 = new DefaultIBResource(path, checksum, of("ABC"));
+    c2 = f.fromPath(source, "ABC").get();
+//    c2 = new DefaultIBResource(path, checksum);
+    c1 = f.fromPath(path).get();
 
   }
 
@@ -67,8 +77,8 @@ public class IBResourceModelTest {
 
   @Test
   public void testGetPath() {
-    assertEquals(path, c1.getPath());
-    assertEquals(path, c2.getPath());
+    assertEquals(path, c1.getPath().get());
+    assertEquals(source, c2.getPath().get());
   }
 
   @Test
@@ -79,15 +89,19 @@ public class IBResourceModelTest {
 
   @Test
   public void testGetType() {
-    assertEquals("image/jpeg", c2.getType());
-    assertEquals("ABC", c1.getType());
+    assertEquals("ABC", c2.getType());
+    assertEquals(IMAGE_JPG, c1.getType());
   }
 
   @Test
   public void testGet() {
-    assertEquals(checksum, new Checksum(c1.get()));
+    Optional<InputStream> ins = c1.get();
+    if (ins.isEmpty()) {
+      fail("No inputstream");
+    }
+    assertEquals(checksum, new Checksum(ins.get()));
     assertEquals(Long.valueOf(22152), c1.size());
-    assertFalse(c1.getSourceURL().isPresent());
+    assertTrue(c1.getSourceURL().isPresent());
   }
 
   @Test
@@ -95,21 +109,12 @@ public class IBResourceModelTest {
     String v = c1.toString();
     assertTrue(v.contains(checksum.asUUID().get().toString()));
     assertTrue(v.contains(path.toString()));
-    assertTrue(v.contains("ABC"));
-  }
-
-  @Test
-  public void testMoveTo() throws IOException {
-    Path p = wps.get().resolve(UUID.randomUUID().toString());
-    IBResource b = c1.moveTo(p);
-    assertEquals(p, b.getPath());
-    assertEquals(c1.getType(), b.getType());
-    assertEquals(c1.getChecksum(), b.getChecksum());
+    assertTrue(v.contains(IMAGE_JPG));
   }
 
   @Test
   public void testEqualsHash() {
-    DefaultIBResource c3 = new DefaultIBResource(path, checksum, of("ABC"));
+//    DefaultIBResource c3 = new DefaultIBResource(path, checksum, of(IMAGE_JPG));
     c1.hashCode();
     c1.hashCode();
     c1.hashCode();
@@ -118,8 +123,8 @@ public class IBResourceModelTest {
     assertNotEquals(c1, "");
     assertNotEquals(c1, c2);
     assertNotEquals(c1, null);
-    assertEquals(c1, c3);
-    assertEquals(c1.hashCode(), c3.hashCode());
+//    assertEquals(c1, c3);
+//    assertEquals(c1.hashCode(), c3.hashCode());
   }
 
   @Test

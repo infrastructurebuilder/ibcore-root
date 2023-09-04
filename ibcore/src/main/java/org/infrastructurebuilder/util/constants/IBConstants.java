@@ -52,6 +52,7 @@ public interface IBConstants {
   String DBUNIT_DTD = "application/dbunit-DTD";
   String DBUNIT_FLATXML = "application/dbunit-export+xml";
   String IBDATA_SCHEMA = "application/vnd.ibdata-schema+xml";
+  String IMAGE_JPG = "image/jpeg";
   String JSON_TYPE = "application/json";
   String JSON_TYPE_SEQ = JSON_TYPE + "-seq"; // See https://tools.ietf.org/html/rfc7464
   // This is a specific type that keeps cropping up
@@ -102,6 +103,8 @@ public interface IBConstants {
   String THRIFT = ".thrift";
   String DTD = ".dtd";
   String JSON_EXT = ".json";
+  String JPG = ".jpg";
+  String JPEG = ".jpeg";
   String NLD_JSON_EXT = ".nldjson";
 
   String _SHA512 = "sha512";
@@ -187,6 +190,8 @@ public interface IBConstants {
   String ORIGINAL_PATH = "originalPath";
   String METADATA_DIR_NAME = "METADATA";
   String BLOBSTORE_ROOT = "blobstoreRoot";
+  String BLOBSTORE_MAXBYTES = "blobstoreMaxBytes";
+  Long BLOBSTORE_NO_MAXBYTES = -1L;
   String NO_PATH_SUPPLIED = "no.path.supplied";
   String METADATA = "metadata";
   String NOT_FOUND = "not.found";

@@ -42,6 +42,8 @@ public interface Blobstore {
 
   Future<String> putBlob(String blobname, @Nullable String description, Path p, Optional<Properties> addlProps);
 
+  Future<Void> removeBlob(String id);
+
   default Future<String> putBlob(String blobname, @Nullable String description, Path p) {
     return putBlob(blobname, description, p, Optional.empty());
   }

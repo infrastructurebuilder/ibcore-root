@@ -946,8 +946,8 @@ public class IBUtilsTest {
     final Path p = Paths.get(".", "target");
     final Path f = Files.createTempFile(p, ABC, "DEF");
     assertTrue(Files.exists(f, LinkOption.NOFOLLOW_LINKS), "Temp File exists");
-    final UUID u = randomUUID();
-    final Path q = p.resolve(u.toString());
+    final Checksum u = new Checksum(ABC_CHECKSUM);
+    final Path q = p.resolve(u.asUUID().get().toString());
     IBUtils.moveFileToNewIdPath(f, u);
     assertTrue(!Files.exists(f, LinkOption.NOFOLLOW_LINKS), "Old file does not exist");
     assertTrue(Files.exists(q, LinkOption.NOFOLLOW_LINKS), "Moved file does exist");

@@ -54,6 +54,7 @@
 		<dependency>
 			<groupId>org.infrastructurebuilder</groupId>
 			<artifactId>ibcore-maven-support</artifactId>
+			<version>0.20.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.infrastructurebuilder</groupId>

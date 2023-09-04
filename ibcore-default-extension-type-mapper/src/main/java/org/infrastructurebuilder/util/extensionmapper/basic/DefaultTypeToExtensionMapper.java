@@ -27,7 +27,7 @@ import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_V
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_XLS;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_XLSX;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_XML;
-import static org.infrastructurebuilder.util.constants.IBConstants.*;
+import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_X_TIKA_MSOFFICE;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_ZIP;
 import static org.infrastructurebuilder.util.constants.IBConstants.AVI;
 import static org.infrastructurebuilder.util.constants.IBConstants.AVRO;
@@ -41,8 +41,13 @@ import static org.infrastructurebuilder.util.constants.IBConstants.DEFAULT_EXTEN
 import static org.infrastructurebuilder.util.constants.IBConstants.DOC;
 import static org.infrastructurebuilder.util.constants.IBConstants.DOCX;
 import static org.infrastructurebuilder.util.constants.IBConstants.DTD;
+import static org.infrastructurebuilder.util.constants.IBConstants.HTM;
+import static org.infrastructurebuilder.util.constants.IBConstants.HTML;
 import static org.infrastructurebuilder.util.constants.IBConstants.IBDATA_SCHEMA;
+import static org.infrastructurebuilder.util.constants.IBConstants.IMAGE_JPG;
 import static org.infrastructurebuilder.util.constants.IBConstants.JAVA_LANG_STRING;
+import static org.infrastructurebuilder.util.constants.IBConstants.JPEG;
+import static org.infrastructurebuilder.util.constants.IBConstants.JPG;
 import static org.infrastructurebuilder.util.constants.IBConstants.JSONSTRUCT;
 import static org.infrastructurebuilder.util.constants.IBConstants.JSON_EXT;
 import static org.infrastructurebuilder.util.constants.IBConstants.JSON_TYPE;
@@ -62,6 +67,7 @@ import static org.infrastructurebuilder.util.constants.IBConstants.PROTOBUF3;
 import static org.infrastructurebuilder.util.constants.IBConstants.PSV;
 import static org.infrastructurebuilder.util.constants.IBConstants.TEXT_CSV;
 import static org.infrastructurebuilder.util.constants.IBConstants.TEXT_CSV_WITH_HEADER;
+import static org.infrastructurebuilder.util.constants.IBConstants.TEXT_HTML;
 import static org.infrastructurebuilder.util.constants.IBConstants.TEXT_PLAIN;
 import static org.infrastructurebuilder.util.constants.IBConstants.TEXT_PSV;
 import static org.infrastructurebuilder.util.constants.IBConstants.TEXT_PSV_WITH_HEADER;
@@ -129,6 +135,8 @@ public class DefaultTypeToExtensionMapper implements TypeToExtensionMapper {
         , new TypeMapTuple(DBUNIT_DTD, DTD) //
         , new TypeMapTuple(JSON_TYPE, JSON_EXT, JSONSTRUCT) //
         , new TypeMapTuple(NLD_JSON_TYPE, NLD_JSON_EXT) //
+        , new TypeMapTuple(IMAGE_JPG, JPG) //
+        , new TypeMapTuple(IMAGE_JPG, JPEG) //
         , new TypeMapTuple(VIDEO_AVI_1, AVI) //
     ));
     ;
