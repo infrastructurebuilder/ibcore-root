@@ -15,7 +15,7 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.vertx.blobstore.impl;
+package org.infrastructurebuilder.util.readdetect.impl;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
@@ -59,16 +59,21 @@ public class IMDelegatedIBResource implements IBResource {
 
   private final byte[] ba;
 
-  public IMDelegatedIBResource(byte[] bb, String blobname, String description2, Instant createDate, Instant lastUpdated,
+  public IMDelegatedIBResource(byte[] bb, String blobname,
+
+      String desc,
+
+      Instant create, Instant updated,
+
       Optional<Properties> addlProps)
   {
     this.ba = bb.clone();
     IBResourceModel m = new IBResourceModel();
     m.setFileChecksum(new Checksum(get().get()).toString());
     m.setName(blobname);
-    m.setDescription(description2);
-    m.setLastUpdate(requireNonNull(lastUpdated).toString());
-    m.setCreated(requireNonNull(createDate).toString());
+    m.setDescription(desc);
+    m.setLastUpdate(requireNonNull(updated).toString());
+    m.setCreated(requireNonNull(create).toString());
     m.setFilePath("." + UUID.randomUUID().toString());
     try {
       m.setType(tika.detect(get().get()));
@@ -78,7 +83,8 @@ public class IMDelegatedIBResource implements IBResource {
 
     requireNonNull(addlProps).ifPresent(p -> p.forEach((k, v) -> m.addAdditionalProperty(k.toString(), v.toString())));
 
-    r = IBResourceFactory.from(m);
+    r = new IBResourceBuilderImpl().fromModel(m).build();
+    log.debug("Built model {}",r.getChecksum().asUUID().get());
   }
 
   public Optional<Path> getPath() {

@@ -88,16 +88,16 @@ public class DefaultIBResource implements IBResource {
     this(m,null);
   }
 
-  public DefaultIBResource setCreateDate(Instant cdate) {
-    this.m.setCreated(requireNonNull(cdate).toString());
-    return this;
-  }
-
-  public DefaultIBResource setLastUpdated(Instant udate) {
-    this.m.setLastUpdate(requireNonNull(udate).toString());
-    return this;
-  }
-
+//  public DefaultIBResource setCreateDate(Instant cdate) {
+//    this.m.setCreated(requireNonNull(cdate).toString());
+//    return this;
+//  }
+//
+//  public DefaultIBResource setLastUpdated(Instant udate) {
+//    this.m.setLastUpdate(requireNonNull(udate).toString());
+//    return this;
+//  }
+//
   /**
    * Magic deserializer :)
    *
@@ -206,13 +206,7 @@ public class DefaultIBResource implements IBResource {
 
   @Override
   public Optional<Path> getPath() {
-    // FIXME Set cached path at creation time
-//    if (this.cachedPath == null && m.getFilePath() != null) {
-//      this.cachedPath = Paths.get(m.getFilePath());
-//    }
-//    if (this.cachedPath == null && getSourceURL().isPresent()) {
-//      this.cachedPath = Paths.get(cet.returns(() -> getSourceURL().get().toURI()));
-//    }
+    // FIXME Set cached path at creation time?
     return ofNullable(this.cachedPath);
   }
 
@@ -245,11 +239,6 @@ public class DefaultIBResource implements IBResource {
   public Optional<String> getDescription() {
     return ofNullable(this.m.getDescription());
   }
-
-//  @Override
-//  public Path getOriginalPath() {
-//    return originalPath;
-//  }
 
   @Override
   public long size() {

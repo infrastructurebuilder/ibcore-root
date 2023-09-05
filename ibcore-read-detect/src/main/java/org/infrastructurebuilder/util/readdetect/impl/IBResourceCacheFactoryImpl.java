@@ -142,9 +142,7 @@ public class IBResourceCacheFactoryImpl implements IBResourceCacheFactory {
 
   @Override
   public Optional<IBResource> fromJSON(JSONObject json) {
-    // TODO Auto-generated method stub
-    DefaultIBResource r = new DefaultIBResource(json);
-    return Optional.of(r);
+    return Optional.of(this.builder.get().fromJSON(json).build());
   }
 
   @Override

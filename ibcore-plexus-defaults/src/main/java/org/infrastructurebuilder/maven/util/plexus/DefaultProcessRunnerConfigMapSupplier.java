@@ -17,10 +17,9 @@
  */
 package org.infrastructurebuilder.maven.util.plexus;
 
+import static java.util.Collections.unmodifiableMap;
+import static java.util.stream.Collectors.toMap;
 import static org.infrastructurebuilder.util.executor.plexus.ProcessRunnerSupplier.PROCESS_NAMESPACE;
-
-import java.util.Collections;
-import java.util.stream.Collectors;
 
 import javax.inject.Named;
 
@@ -37,8 +36,11 @@ public class DefaultProcessRunnerConfigMapSupplier extends DefaultConfigMapSuppl
   public DefaultProcessRunnerConfigMapSupplier(final ConfigMapSupplier cms) {
     final ConfigMap tempMap = cms.get();
     configMap = new ConfigMap(
-        Collections.unmodifiableMap(tempMap.entrySet().stream().filter(e -> e.getKey().startsWith(PROCESS_NAMESPACE))
-            .collect(Collectors.toMap(k -> k.getKey().toString(), v -> v.getValue()))));
+        unmodifiableMap(tempMap.entrySet().stream()
+
+            .filter(e -> e.getKey().startsWith(PROCESS_NAMESPACE))
+
+            .collect(toMap(k -> k.getKey().toString(), v -> v.getValue()))));
   }
 
   @Override

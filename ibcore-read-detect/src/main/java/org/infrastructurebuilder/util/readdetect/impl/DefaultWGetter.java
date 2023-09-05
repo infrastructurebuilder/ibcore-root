@@ -18,11 +18,9 @@
 package org.infrastructurebuilder.util.readdetect.impl;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
 import static org.infrastructurebuilder.util.constants.IBConstants.IBDATA_PREFIX;
 import static org.infrastructurebuilder.util.core.IBUtils.copy;
-import static org.infrastructurebuilder.util.readdetect.IBResourceFactory.copyToTempChecksumAndPath;
 
 import java.io.File;
 import java.net.URL;

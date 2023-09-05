@@ -17,17 +17,15 @@
  */
 package org.infrastructurebuilder.util.vertx.blobstore.impl;
 
-import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
 import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 
 import org.infrastructurebuilder.util.constants.IBConstants;
-import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
-import org.infrastructurebuilder.util.readdetect.IBResourceFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -42,6 +40,7 @@ import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.junit5.RunTestOnContext;
+import io.vertx.junit5.Timeout;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
 
@@ -70,7 +69,7 @@ class FilesystemBlobstoreTest {
   @BeforeEach
   void setUp(VertxTestContext testContext) throws Exception {
     Path root = wps.get();
-    IBResourceFactory.setRelativeRoot(RelativeRoot.from(requireNonNull(root)));
+//    IBResourceFactory.setRelativeRoot(RelativeRoot.from(requireNonNull(root)));
     this.fsbs = new FilesystemBlobstore(new JsonObject().put(IBConstants.BLOBSTORE_ROOT, root)
         .put(IBConstants.BLOBSTORE_MAXBYTES, IBConstants.BLOBSTORE_NO_MAXBYTES));
     vertx = rtoc.vertx();
@@ -90,13 +89,14 @@ class FilesystemBlobstoreTest {
   }
 
   @Test
+  @Timeout(value = 200, timeUnit = TimeUnit.SECONDS)
   void testPutBlobStringStringPath(VertxTestContext testContext) {
     this.fsbs.putBlob(BFILE, "Bee dot xml", wps.getTestClasses().resolve(BFILE).toAbsolutePath())
 
         .compose(id -> this.fsbs.getMetadata(id))
 
         .compose(md -> {
-          log.info("Logging {}", md.asJSON().toString(2));
+          log.info("Logging {}", md.getChecksum().asUUID().get());
           Instant i = md.getCreateDate();
           assertTrue(Instant.now().isAfter(i));
           return Future.succeededFuture();

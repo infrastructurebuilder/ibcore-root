@@ -26,7 +26,6 @@ import static org.infrastructurebuilder.util.constants.IBConstants.MIME_TYPE;
 import static org.infrastructurebuilder.util.constants.IBConstants.MOST_RECENT_READ_TIME;
 import static org.infrastructurebuilder.util.constants.IBConstants.NAME;
 import static org.infrastructurebuilder.util.constants.IBConstants.NO_PATH_SUPPLIED;
-import static org.infrastructurebuilder.util.constants.IBConstants.ORIGINAL_PATH;
 import static org.infrastructurebuilder.util.constants.IBConstants.PATH;
 import static org.infrastructurebuilder.util.constants.IBConstants.SIZE;
 import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_URL;
@@ -35,17 +34,16 @@ import static org.infrastructurebuilder.util.core.ChecksumEnabled.CHECKSUM;
 import static org.infrastructurebuilder.util.readdetect.IBResourceCacheFactory.extracted;
 import static org.infrastructurebuilder.util.readdetect.IBResourceCacheFactory.toType;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
 
 import org.infrastructurebuilder.util.core.Checksum;
-import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceException;
-import org.infrastructurebuilder.util.readdetect.IBResourceFactory;
 import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -68,30 +66,30 @@ public class IBResourceBuilderImpl implements IBResourceBuilder {
 
   @Override
   public IBResourceBuilder fromJSON(JSONObject j) {
-    var m = new IBResourceModel();
-    m.setFileChecksum(j.getString(CHECKSUM));
-    m.setSize(j.getLong(SIZE));
-    m.setSource(j.getString(SOURCE_URL));
-    m.setType(j.getString(MIME_TYPE));
-    m.setCreated(requireNonNull(j).optString(CREATE_DATE, null));
-    m.setFilePath(j.optString(PATH, null)); // Nope!
-    m.setLastUpdate(j.optString(UPDATE_DATE, null));
-    m.setMostRecentReadTime(j.optString(MOST_RECENT_READ_TIME, null));
-    m.setName(j.optString(NAME, null));
-    m.setDescription(j.optString(DESCRIPTION, null));
+    model = new IBResourceModel();
+    model.setFileChecksum(j.getString(CHECKSUM));
+    model.setSize(j.getLong(SIZE));
+    model.setSource(j.getString(SOURCE_URL));
+    model.setType(j.getString(MIME_TYPE));
+    model.setCreated(requireNonNull(j).optString(CREATE_DATE, null));
+    model.setFilePath(j.optString(PATH, null)); // Nope!
+    model.setLastUpdate(j.optString(UPDATE_DATE, null));
+    model.setMostRecentReadTime(j.optString(MOST_RECENT_READ_TIME, null));
+    model.setName(j.optString(NAME, null));
+    model.setDescription(j.optString(DESCRIPTION, null));
     ofNullable(j.optJSONObject(ADDITIONAL_PROPERTIES)).ifPresent(jo -> {
       jo.toMap().forEach((k, v) -> {
-        m.addAdditionalProperty(k, v.toString());
+        model.addAdditionalProperty(k, v.toString());
       });
     });
 
-    var p = ofNullable(m.getFilePath())
+    var p = ofNullable(model.getFilePath())
         //
         .map(extracted)
         //
         .orElseThrow(() -> new IBResourceException(NO_PATH_SUPPLIED));
-    var originalPath = ofNullable(j.optString(ORIGINAL_PATH, null)).map(extracted).orElse(null);
-    throw new IBResourceException("FIXORIGINALPATH");
+//    var originalPath = ofNullable(j.optString(ORIGINAL_PATH, null)).map(extracted).orElse(null);
+    return this;
 //    return this.fromModel(m).from(p).fromOriginalPath(originalPath);
 
   }
@@ -208,16 +206,22 @@ public class IBResourceBuilderImpl implements IBResourceBuilder {
 //        }
 //    });
 
-    if (this.sourcePath == null) {
+    if (this.sourcePath != null) {
+      if (!Files.exists(sourcePath))
+        throw new IBResourceException("unreadable.path");
+      if (this.targetChecksum == null) {
+        log.warn("Checksum not available");
+        this.targetChecksum = Checksum.ofPath.apply(this.sourcePath).get();
+      }
+      if (this.model.getType() == null) {
+        log.warn("Type not available");
+        this.model.setType(toType.apply(this.sourcePath));
+      }
 
       // There has been no source path set.
-    }
-    if (this.targetChecksum == null) {
-      this.targetChecksum = Checksum.ofPath.apply(this.sourcePath)
-          .orElseThrow(() -> new IBResourceException("unreadable.path"));
-    }
-    if (this.model.getType() == null) {
-      this.model.setType(toType.apply(this.sourcePath));
+    } else {
+      log.warn("No sourcePath set for resource");
+      // TODO??
     }
     return this;
   }
@@ -232,4 +236,17 @@ public class IBResourceBuilderImpl implements IBResourceBuilder {
   public IBResource build() {
     return build(false);
   }
+
+  /**
+   * For IMDeletedIBResource. Do not use for general construction of a resource. This method is not available outside of
+   * this package.
+   *
+   * @param m model to replace existing model with
+   * @return this builder.
+   */
+  IBResourceBuilderImpl fromModel(IBResourceModel m) {
+    this.model = m;
+    return this;
+  }
+
 }

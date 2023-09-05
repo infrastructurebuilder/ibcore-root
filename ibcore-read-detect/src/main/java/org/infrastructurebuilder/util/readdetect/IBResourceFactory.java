@@ -62,31 +62,31 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class IBResourceFactory {
-  private final static AtomicReference<RelativeRoot> root = new AtomicReference<>();
+//  private final static AtomicReference<RelativeRoot> root = new AtomicReference<>();
+//
+//  public final static void setRelativeRoot(RelativeRoot r) {
+//    root.set(r);
+//  }
 
-  public final static void setRelativeRoot(RelativeRoot r) {
-    root.set(r);
-  }
 
-
-  private final static BiFunction<Path, Path, Optional<IBResource>> toIBResource = (targetDir, source) -> {
-    try {
-      return Optional.of(IBResourceFactory.copyToTempChecksumAndPath(targetDir, source));
-    } catch (IOException e) {
-      // TODO ??
-    }
-    return empty();
-  };
-
-  private final static BiFunction<Path, Optional<String>, String> nameMapper = (p, on) -> {
-    var str = requireNonNull(p).toString();
-    return requireNonNull(on).orElse(str.substring(0, str.lastIndexOf('.')));
-  };
-
-  public final static IBResource from(IBResourceModel m) {
-    return new DefaultIBResource(m);
-  }
-
+//  private final static BiFunction<Path, Path, Optional<IBResource>> toIBResource = (targetDir, source) -> {
+//    try {
+//      return Optional.of(IBResourceFactory.copyToTempChecksumAndPath(targetDir, source));
+//    } catch (IOException e) {
+//      // TODO ??
+//    }
+//    return empty();
+//  };
+//
+//  private final static BiFunction<Path, Optional<String>, String> nameMapper = (p, on) -> {
+//    var str = requireNonNull(p).toString();
+//    return requireNonNull(on).orElse(str.substring(0, str.lastIndexOf('.')));
+//  };
+//
+//  public final static IBResource from(IBResourceModel m) {
+//    return new DefaultIBResource(m);
+//  }
+//
 //  public final static IBResource fromJSON(JSONObject j) {
 //    return new DefaultIBResource(j);
 //  }
@@ -94,70 +94,70 @@ public class IBResourceFactory {
   IBResourceFactory() {
   }
 
-  /**
-   * Produces an IBResource by making a copy of some named source into a target directly. The resulting source is
-   * indicated to be "contained" within an archive using the !/ syntax of path managenment if the original values are
-   * presented .
-   *
-   * @param targetDir
-   * @param source
-   * @param oSource
-   * @param pString
-   * @return
-   * @throws IOException
-   */
-  public final static IBResource copyToTempChecksumAndPath(Path targetDir, final Path source,
-      final Optional<String> oSource, final String pString) throws IOException {
-    DefaultIBResource d = (DefaultIBResource) copyToTempChecksumAndPath(targetDir, source);
-    requireNonNull(oSource).ifPresent(o -> {
-      d.setSource(o + "!/" + pString);
-    });
-    return d;
-  }
+//  /**
+//   * Produces an IBResource by making a copy of some named source into a target directly. The resulting source is
+//   * indicated to be "contained" within an archive using the !/ syntax of path managenment if the original values are
+//   * presented .
+//   *
+//   * @param targetDir
+//   * @param source
+//   * @param oSource
+//   * @param pString
+//   * @return
+//   * @throws IOException
+//   */
+//  public final static IBResource copyToTempChecksumAndPath(Path targetDir, final Path source,
+//      final Optional<String> oSource, final String pString) throws IOException {
+//    DefaultIBResource d = (DefaultIBResource) copyToTempChecksumAndPath(targetDir, source);
+//    requireNonNull(oSource).ifPresent(o -> {
+//      d.setSource(o + "!/" + pString);
+//    });
+//    return d;
+//  }
+//
+//  private final static IBResource copyToTempChecksumAndPath(Path targetDir, final Path source) throws IOException {
+//
+//    String localType = IBResourceCacheFactory.toType.apply(requireNonNull(source));
+//    Checksum cSum = new Checksum(source);
+//    Path newTarget = targetDir.resolve(cSum.asUUID().get().toString());
+//    cet.returns(() -> copy(source, newTarget));
+//    return new DefaultIBResource(newTarget, cSum, Optional.of(localType), empty());
+//  }
+//
+//  private final static IBResource copyToDeletedOnExitTempChecksumAndPath(Path targetDir, String prefix, String suffix,
+//      final InputStream source) {
+//    return cet.returns(() -> {
+//      Path target = createTempFile(requireNonNull(targetDir), prefix, suffix);
+//      try (OutputStream outs = Files.newOutputStream(target)) {
+//        copy(source, outs);
+//        source.close();
+//      }
+//      return copyToTempChecksumAndPath(targetDir, target);
+//    });
+//  }
 
-  private final static IBResource copyToTempChecksumAndPath(Path targetDir, final Path source) throws IOException {
+//  public final static IBResource from(Path p, Optional<String> name, Optional<String> desc) {
+//    return new DefaultIBResource(requireNonNull(p), name, desc,
+//        Checksum.ofPath.apply(p).orElseThrow(() -> new RuntimeException("unreadable.path")), empty());
+//  }
+//
+//  public final static IBResource from(Path p, Checksum c, String type, String source) {
+//    IBResourceModel m = new IBResourceModel();
+//    m.setFilePath(requireNonNull(p).toAbsolutePath().toString());
+//    m.setFileChecksum(c.toString());
+//    m.setType(type);
+//    m.setSource(source);
+//    return new DefaultIBResource(p, c, Optional.of(type), empty());
+//
+//  }
 
-    String localType = IBResourceCacheFactory.toType.apply(requireNonNull(source));
-    Checksum cSum = new Checksum(source);
-    Path newTarget = targetDir.resolve(cSum.asUUID().get().toString());
-    cet.returns(() -> copy(source, newTarget));
-    return new DefaultIBResource(newTarget, cSum, Optional.of(localType), empty());
-  }
+//  public final static IBResource from(Path p, Checksum c, String type) {
+//    return from(p, c, type, null);
+//  }
 
-  private final static IBResource copyToDeletedOnExitTempChecksumAndPath(Path targetDir, String prefix, String suffix,
-      final InputStream source) {
-    return cet.returns(() -> {
-      Path target = createTempFile(requireNonNull(targetDir), prefix, suffix);
-      try (OutputStream outs = Files.newOutputStream(target)) {
-        copy(source, outs);
-        source.close();
-      }
-      return copyToTempChecksumAndPath(targetDir, target);
-    });
-  }
-
-  public final static IBResource from(Path p, Optional<String> name, Optional<String> desc) {
-    return new DefaultIBResource(requireNonNull(p), name, desc,
-        Checksum.ofPath.apply(p).orElseThrow(() -> new RuntimeException("unreadable.path")), empty());
-  }
-
-  public final static IBResource from(Path p, Checksum c, String type, String source) {
-    IBResourceModel m = new IBResourceModel();
-    m.setFilePath(requireNonNull(p).toAbsolutePath().toString());
-    m.setFileChecksum(c.toString());
-    m.setType(type);
-    m.setSource(source);
-    return new DefaultIBResource(p, c, Optional.of(type), empty());
-
-  }
-
-  public final static IBResource from(Path p, Checksum c, String type) {
-    return from(p, c, type, null);
-  }
-
-  public final static IBResource fromPath(Path path) {
-    return new DefaultIBResource(path, new Checksum(path), empty(), empty());
-  }
+//  public final static IBResource fromPath(Path path) {
+//    return new DefaultIBResource(path, new Checksum(path), empty(), empty());
+//  }
 
 //  /**
 //   * Dont (at) me bro. The string is a JSON string
@@ -169,10 +169,10 @@ public class IBResourceFactory {
 //    return fromJSON(new JSONObject(json));
 //  }
 //
-  public static IBResource from(Path path, Optional<String> originalName, Optional<String> desc, Instant createDate,
-      Instant lastUpdated, Optional<Properties> addlProps) {
-    Path rpath = root.get().relativize(path).orElseThrow(() -> new IBException(String.format("Invalid path {}", path)));
-    return new DefaultIBResource(rpath, new Checksum(path), of(IBResourceCacheFactory.toType.apply(path)), addlProps).setCreateDate(createDate)
-        .setLastUpdated(lastUpdated);
-  }
+//  public static IBResource from(Path path, Optional<String> originalName, Optional<String> desc, Instant createDate,
+//      Instant lastUpdated, Optional<Properties> addlProps) {
+//    Path rpath = root.get().relativize(path).orElseThrow(() -> new IBException(String.format("Invalid path {}", path)));
+//    return new DefaultIBResource(rpath, new Checksum(path), of(IBResourceCacheFactory.toType.apply(path)), addlProps).setCreateDate(createDate)
+//        .setLastUpdated(lastUpdated);
+//  }
 }

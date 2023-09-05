@@ -18,31 +18,22 @@
 package org.infrastructurebuilder.util.readdetect;
 
 import static org.infrastructurebuilder.exceptions.IBException.cet;
-import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_ZIP;
-import static org.infrastructurebuilder.util.constants.IBConstants.TEXT_PLAIN;
 import static org.infrastructurebuilder.util.readdetect.IBResourceCacheFactory.toType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
-import org.infrastructurebuilder.util.readdetect.impl.DefaultIBResource;
 import org.infrastructurebuilder.util.readdetect.impl.IBResourceCacheFactoryImpl;
-import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -65,11 +56,11 @@ public class IBResourceTest {
     this.rcf = new IBResourceCacheFactoryImpl(this.root);
   }
 
-  @Test
-  public void testBasicType() {
-    assertEquals(APPLICATION_OCTET_STREAM,
-        IBResourceFactory.from(Paths.get("."), new Checksum(), APPLICATION_OCTET_STREAM).getType());
-  }
+//  @Test
+//  public void testBasicType() {
+//    assertEquals(APPLICATION_OCTET_STREAM,
+//        IBResourceFactory.from(Paths.get("."), new Checksum(), APPLICATION_OCTET_STREAM).getType());
+//  }
 
   @Test
   public void testNonExistentFile() {

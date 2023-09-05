@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceCacheFactory;
+import org.infrastructurebuilder.util.readdetect.impl.IMDelegatedIBResource;
 import org.infrastructurebuilder.util.vertx.blobstore.Blobstore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

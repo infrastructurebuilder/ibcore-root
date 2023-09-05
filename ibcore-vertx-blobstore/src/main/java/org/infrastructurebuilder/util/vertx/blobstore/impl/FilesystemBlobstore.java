@@ -22,7 +22,6 @@ import static io.vertx.core.Future.succeededFuture;
 import static java.nio.file.Files.readString;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
-import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.summingLong;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
@@ -32,7 +31,6 @@ import static org.infrastructurebuilder.util.constants.IBConstants.BLOBSTORE_ROO
 import static org.infrastructurebuilder.util.constants.IBConstants.METADATA_DIR_NAME;
 import static org.infrastructurebuilder.util.core.Checksum.ofPath;
 import static org.infrastructurebuilder.util.readdetect.IBResourceCacheFactory.getAttributes;
-import static org.infrastructurebuilder.util.readdetect.IBResourceFactory.from;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -45,7 +43,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
@@ -53,7 +50,6 @@ import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceCacheFactory;
 import org.infrastructurebuilder.util.readdetect.IBResourceCacheFactorySupplier;
-import org.infrastructurebuilder.util.readdetect.IBResourceFactory;
 import org.infrastructurebuilder.util.vertx.blobstore.Blobstore;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -61,7 +57,6 @@ import org.slf4j.LoggerFactory;
 
 import io.vertx.codegen.annotations.Nullable;
 import io.vertx.core.Future;
-import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.file.FileSystem;
@@ -255,6 +250,7 @@ public class FilesystemBlobstore implements Blobstore {
         .readFile(getMetadataPath(id).toString())
 
         .compose(b -> {
+          log.debug("Metadata json is {} ", new JsonObject(b).encodePrettily());
           var q = this.rcf.fromJSONString(new JsonObject(b).toString());
           return q.isPresent() ? succeededFuture(q.get()) : Future.failedFuture("could.not.deserialize");
         });
