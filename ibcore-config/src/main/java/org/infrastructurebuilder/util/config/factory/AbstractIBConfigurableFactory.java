@@ -21,7 +21,12 @@ import java.util.Objects;
 
 import org.infrastructurebuilder.util.config.IBRuntimeUtils;
 
-abstract public class AbstractIBConfigurableFactory<T, C> implements IBConfigurableFactory<T, C> {
+/**
+ *
+ * @param <T> an IBConfigurableFactory type
+ * @param <C> A configuration supply type
+ */
+abstract public class AbstractIBConfigurableFactory<T , C> implements IBConfigurableFactory<T, C> {
 
   private final IBRuntimeUtils ibr;
 
@@ -34,6 +39,9 @@ abstract public class AbstractIBConfigurableFactory<T, C> implements IBConfigura
     return ibr;
   }
 
+  @SuppressWarnings({
+      "unchecked", "hiding"
+  })
   @Override
   public <T> T configure(C config) {
     return (T) this;
