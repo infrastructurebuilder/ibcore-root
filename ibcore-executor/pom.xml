@@ -54,8 +54,8 @@
   <url>${github.url.base}/${project.artifactId}</url>
 
   <properties>
-    <test.coverage.percentage.required>30</test.coverage.percentage.required>
-    <jacoco.max.missed.classes>20</jacoco.max.missed.classes>
+    <test.coverage.percentage.required>85</test.coverage.percentage.required>
+    <jacoco.max.missed.classes>13</jacoco.max.missed.classes>
     <current.process.execution.model.version>1.0.0</current.process.execution.model.version>
   </properties>
 
