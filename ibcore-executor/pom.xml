@@ -56,6 +56,7 @@
   <properties>
     <test.coverage.percentage.required>30</test.coverage.percentage.required>
     <jacoco.max.missed.classes>20</jacoco.max.missed.classes>
+    <current.process.execution.model.version>1.0.0</current.process.execution.model.version>
   </properties>
 
   <dependencies>
@@ -105,6 +106,11 @@
     <dependency>
       <groupId>org.infrastructurebuilder.util.logging</groupId>
       <artifactId>iblog-noop-component</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>1.33</version>
     </dependency>
   </dependencies>
 
@@ -157,7 +163,7 @@
         <groupId>org.codehaus.modello</groupId>
         <artifactId>modello-maven-plugin</artifactId>
         <configuration>
-          <version>2.0.0</version>
+          <version>${current.process.execution.model.version}</version> <!-- Add packaged versions as the model changes -->
           <domAsXpp3>true</domAsXpp3>
           <javaSource>5</javaSource>
           <packageWithVersion>true</packageWithVersion>
@@ -175,7 +181,16 @@
               <goal>xpp3-reader</goal>
               <goal>xpp3-extended-reader</goal>
               <goal>xpp3-extended-writer</goal>
+              <!--
+              <goal>snakeyaml-reader</goal>
+              <goal>snakeyaml-writer</goal>
+              -->
             </goals>
+            <configuration>
+              <packagedVersions>
+                <packagedVersion>1.0.0</packagedVersion>
+              </packagedVersions>
+            </configuration>
           </execution>
           <!--
           <execution>

@@ -2,11 +2,11 @@
   xmlns="http://codehaus-plexus.github.io/MODELLO/1.8.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://codehaus-plexus.github.io/MODELLO/1.8.0 http://codehaus-plexus.github.io/modello/xsd/modello-1.8.0.xsd"
-  java.suppressAllWarnings="false"
-  xml.namespace="https://resources.infrastructurebuilder.org/IBDataSet/${apiVersion}"
-  xml.schemaLocation="https://resources.infrastructurebuilder.org/xsd/IBDataSet-${apiVersion}"
-  xsd.namespace="https://resources.infrastructurebuilder.org/IBDataSet/${apiVersion}"
-  xsd.targetNamespace="https://resources.infrastructurebuilder.org/IBDataSet/${apiVersion}"
+  java.suppressAllWarnings="true"
+  xml.namespace="https://resources.infrastructurebuilder.org/IBExecutionResult/${apiVersion}"
+  xml.schemaLocation="https://resources.infrastructurebuilder.org/xsd/IBExecutionResult-${apiVersion}"
+  xsd.namespace="https://resources.infrastructurebuilder.org/IBExecutionResult/${apiVersion}"
+  xsd.targetNamespace="https://resources.infrastructurebuilder.org/IBExecutionResult/${apiVersion}"
 >
   <id>checksum</id>
   <name>ProcessExecutionResultModel</name> <!-- Must be a single (no spaces, no dashes, no periods) identifier in order

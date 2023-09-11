@@ -26,8 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Arrays;
@@ -39,14 +37,16 @@ import java.util.UUID;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
-import org.infrastructurebuilder.util.executor.execution.model.v2_0_0.GeneratedProcessExecution;
-import org.infrastructurebuilder.util.executor.execution.model.v2_0_0.io.xpp3.ProcessExecutionModelXpp3Reader;
-import org.infrastructurebuilder.util.executor.execution.model.v2_0_0.io.xpp3.ProcessExecutionModelXpp3WriterEx;
+import org.infrastructurebuilder.util.executor.execution.model.v1_0_0.GeneratedProcessExecution;
+import org.infrastructurebuilder.util.executor.execution.model.v1_0_0.io.xpp3.ProcessExecutionModelXpp3Reader;
+import org.infrastructurebuilder.util.executor.execution.model.v1_0_0.io.xpp3.ProcessExecutionModelXpp3WriterEx;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DefaultProcessExecutionTest {
   public final static Logger log = LoggerFactory.getLogger(DefaultProcessExecutionTest.class.getName());

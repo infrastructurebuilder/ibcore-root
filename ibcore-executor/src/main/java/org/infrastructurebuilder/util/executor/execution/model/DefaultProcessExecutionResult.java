@@ -27,7 +27,7 @@ import java.util.Optional;
 import org.infrastructurebuilder.util.core.ChecksumBuilder;
 import org.infrastructurebuilder.util.executor.ProcessExecution;
 import org.infrastructurebuilder.util.executor.ProcessExecutionResult;
-import org.infrastructurebuilder.util.executor.execution.model.v2_0_0.GeneratedProcessExecutionResult;
+import org.infrastructurebuilder.util.executor.execution.model.v1_0_0.GeneratedProcessExecutionResult;
 
 public class DefaultProcessExecutionResult implements ProcessExecutionResult {
 

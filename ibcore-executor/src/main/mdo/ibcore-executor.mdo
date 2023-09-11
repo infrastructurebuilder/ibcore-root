@@ -2,13 +2,13 @@
   xmlns="http://codehaus-plexus.github.io/MODELLO/1.8.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://codehaus-plexus.github.io/MODELLO/1.8.0 http://codehaus-plexus.github.io/modello/xsd/modello-1.8.0.xsd"
-  java.suppressAllWarnings="false"
-  xml.namespace="https://resources.infrastructurebuilder.org/IBDataSet/${apiVersion}"
-  xml.schemaLocation="https://resources.infrastructurebuilder.org/xsd/IBDataSet-${apiVersion}"
-  xsd.namespace="https://resources.infrastructurebuilder.org/IBDataSet/${apiVersion}"
-  xsd.targetNamespace="https://resources.infrastructurebuilder.org/IBDataSet/${apiVersion}"
+  java.suppressAllWarnings="true"
+  xml.namespace="https://resources.infrastructurebuilder.org/IBExecutor/${apiVersion}"
+  xml.schemaLocation="https://resources.infrastructurebuilder.org/xsd/IBExecutor-${apiVersion}"
+  xsd.namespace="https://resources.infrastructurebuilder.org/IBExecutor/${apiVersion}"
+  xsd.targetNamespace="https://resources.infrastructurebuilder.org/IBExecutor/${apiVersion}"
 >
-  <id>checksum</id>
+  <id>execution</id>
   <name>ProcessExecutionModel</name> <!-- Must be a single (no spaces, no dashes, no periods) identifier in order
     to create reader/writer -->
   <description>Model for ProcessExecution instances</description>
@@ -20,6 +20,11 @@
     </default>
   </defaults>
 
+
+  <versionDefinition>
+    <type>field+namespace</type>
+    <value>modelVersion</value>
+  </versionDefinition>
   <classes>
     <!-- MODEL -->
     <class
@@ -36,6 +41,13 @@
           <version>1.0.0+</version>
           <required>true</required>
           <description>Processing ID</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>modelVersion</name>
+          <version>1.0.0+</version>
+          <required>true</required>
+          <description>Model Version</description>
           <type>String</type>
         </field>
         <field>
@@ -88,7 +100,7 @@
             <multiplicity>*</multiplicity>
           </association>
         </field>
-                <field>
+        <field>
           <name>exy</name>
           <description>Extra vocabulary as key/value.</description>
           <version>1.0.0+</version>

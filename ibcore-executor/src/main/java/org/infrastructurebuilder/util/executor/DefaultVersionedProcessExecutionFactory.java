@@ -31,7 +31,7 @@ public class DefaultVersionedProcessExecutionFactory implements VersionedProcess
   private final Optional<PrintStream> addl;
   private final Path scratchDir;
 
-  public final static String DEFAULT_VERSION = "1.0.0";
+  public final static String DEFAULT_VERSION = "2.0.0";
 
   public DefaultVersionedProcessExecutionFactory(Path scratchDir, Optional<PrintStream> addl) {
     this.scratchDir = Objects.requireNonNull(scratchDir);

@@ -30,10 +30,6 @@ import static org.infrastructurebuilder.util.executor.ProcessException.pet;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.helpers.NOPLogger;
-
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
@@ -51,6 +47,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.util.logging.NOOPLogger;
+import org.slf4j.Logger;
 //import org.infrastructurebuilder.util.execution.model.v1_0_0.DefaultProcessExecution;
 import org.zeroturnaround.exec.InvalidExitValueException;
 import org.zeroturnaround.exec.ProcessExecutor;
