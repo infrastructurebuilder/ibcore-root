@@ -114,7 +114,7 @@ public interface IBResourceVertx extends Supplier<Future<Buffer>>, JsonOutputEna
   Optional<String> getSourceName();
 
   default Future<String> defaultToString() {
-    return CompositeFuture.all(getChecksum(), getType()).compose(f -> {
+    return Future.all(getChecksum(), getType()).compose(f -> {
 
       StringJoiner sj = new StringJoiner("|") //
           .add(getPath().toString()); // Path
@@ -141,7 +141,7 @@ public interface IBResourceVertx extends Supplier<Future<Buffer>>, JsonOutputEna
 
   @Override
   default Future<JsonObject> toFutureJson() {
-    CompositeFuture cf = CompositeFuture.all(getChecksum(), getType());
+    CompositeFuture cf = Future.all(getChecksum(), getType());
     return cf.compose(f -> {
       JsonBuilder jb = new JsonBuilder(empty()).addInstant(CREATE_DATE, getCreateDate())
           .addInstant(UPDATE_DATE, getLateUpdateDate()).addInstant(MOST_RECENT_READ_TIME, getMostRecentReadTime())

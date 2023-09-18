@@ -17,42 +17,42 @@
  */
 package org.infrastructurebuilder.util.readdetect;
 
-import static java.nio.file.Files.createTempFile;
-import static java.nio.file.Files.readAttributes;
-import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
-import static org.infrastructurebuilder.exceptions.IBException.cet;
-import static org.infrastructurebuilder.util.core.IBUtils.copy;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.time.Instant;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
-import org.apache.tika.Tika;
-import org.apache.tika.metadata.TikaCoreProperties;
-import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.constants.IBConstants;
-import org.infrastructurebuilder.util.core.Checksum;
-import org.infrastructurebuilder.util.core.RelativeRoot;
-import org.infrastructurebuilder.util.readdetect.impl.DefaultIBResource;
-import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import static java.nio.file.Files.createTempFile;
+//import static java.nio.file.Files.readAttributes;
+//import static java.util.Objects.requireNonNull;
+//import static java.util.Optional.empty;
+//import static java.util.Optional.of;
+//import static java.util.Optional.ofNullable;
+//import static org.infrastructurebuilder.exceptions.IBException.cet;
+//import static org.infrastructurebuilder.util.core.IBUtils.copy;
+//
+//import java.io.IOException;
+//import java.io.InputStream;
+//import java.io.OutputStream;
+//import java.io.Reader;
+//import java.net.URL;
+//import java.nio.file.Files;
+//import java.nio.file.Path;
+//import java.nio.file.Paths;
+//import java.nio.file.attribute.BasicFileAttributes;
+//import java.time.Instant;
+//import java.util.Optional;
+//import java.util.Properties;
+//import java.util.concurrent.atomic.AtomicReference;
+//import java.util.function.BiFunction;
+//import java.util.function.Function;
+//
+//import org.apache.tika.Tika;
+//import org.apache.tika.metadata.TikaCoreProperties;
+//import org.infrastructurebuilder.exceptions.IBException;
+//import org.infrastructurebuilder.util.constants.IBConstants;
+//import org.infrastructurebuilder.util.core.Checksum;
+//import org.infrastructurebuilder.util.core.RelativeRoot;
+//import org.infrastructurebuilder.util.readdetect.impl.DefaultIBResource;
+//import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
+//import org.json.JSONObject;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 /**
  * The IBResourceFactory produces various forms of IBResource, usually by copying and internally checksumming them to
