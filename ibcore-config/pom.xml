@@ -70,14 +70,6 @@
       <groupId>org.infrastructurebuilder.usurped</groupId>
       <artifactId>semver4j</artifactId>
     </dependency>
-<!--
-    <dependency>
-      <groupId>com.google.inject</groupId>
-      <artifactId>guice</artifactId>
-      <scope>test</scope>
-      <classifier>no_aop</classifier>
-    </dependency>
- -->
     <dependency>
       <groupId>org.jooq</groupId>
       <artifactId>joor</artifactId>
@@ -98,13 +90,6 @@
       <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>
     </dependency>
-<!--
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-     -->
     <dependency><!--       <groupId>org.skyscreamer</groupId> -->
       <groupId>org.infrastructurebuilder.usurped</groupId>
       <artifactId>jsonassert</artifactId>

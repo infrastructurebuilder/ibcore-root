@@ -39,6 +39,7 @@ public interface IBConstants {
   String APPLICATION_MSWORD = "application/msword";
   String APPLICATION_MSWORDX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
   String APPLICATION_OCTET_STREAM = "application/octet-stream";
+  String APPLICATION_X_MAC = "application/x-mach-o";
   String APPLICATION_PDF = "application/pdf";
   String APPLICATION_PPTX = "application/vnd.ms-powerpoint";
   String APPLICATION_VND_OASIS_SPREADSHEET = "application/vnd.oasis.opendocument.spreadsheet";

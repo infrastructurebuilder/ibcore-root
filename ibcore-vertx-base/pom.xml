@@ -72,14 +72,6 @@
       <groupId>org.infrastructurebuilder.usurped</groupId>
       <artifactId>semver4j</artifactId>
     </dependency>
-    <!--
-    <dependency>
-      <groupId>com.google.inject</groupId>
-      <artifactId>guice</artifactId>
-      <scope>test</scope>
-      <classifier>no_aop</classifier>
-    </dependency>
- -->
     <dependency>
       <groupId>org.jooq</groupId>
       <artifactId>joor</artifactId>

@@ -60,7 +60,7 @@ public interface ArtifactServices extends Weighted {
   default List<GAV> getArtifactsMatching(final GAV coords, final String scope, final boolean includeUnresolved,
       final String classifier, final String type) {
     final List<GAV> s = getArtifacts(coords, scope, includeUnresolved);
-    return s.stream().filter(a -> (classifier == null || classifier.equals(a.getClassifier())))
+    return s.stream().filter(a -> (classifier == null || classifier.equals(a.getClassifier().orElse(null))))
         .filter(a -> (type == null || type.equals(a.getExtension()))).collect(Collectors.toList());
   }
 

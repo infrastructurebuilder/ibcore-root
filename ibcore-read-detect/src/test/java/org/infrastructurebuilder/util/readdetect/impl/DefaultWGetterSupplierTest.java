@@ -198,7 +198,7 @@ public class DefaultWGetterSupplierTest {
     assertTrue(v.isPresent());
     List<IBResource> l = v.get();
     assertEquals(IBConstants.APPLICATION_ZIP, l.get(0).getType());
-    assertEquals(IBConstants.APPLICATION_OCTET_STREAM, l.get(1).getType());
+    assertEquals(IBConstants.APPLICATION_X_MAC, l.get(1).getType());
     assertEquals(17117024, Files.size(l.get(1).getPath().get()));
   }
 

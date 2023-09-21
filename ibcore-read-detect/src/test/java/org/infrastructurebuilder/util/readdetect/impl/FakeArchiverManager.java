@@ -18,6 +18,8 @@
 package org.infrastructurebuilder.util.readdetect.impl;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
@@ -86,6 +88,24 @@ public class FakeArchiverManager implements ArchiverManager {
   @Nonnull
   public UnArchiver getUnArchiver(@Nonnull final String unArchiverName) throws NoSuchArchiverException {
     return new ZipUnArchiver();
+  }
+
+  @Override
+  public Collection<String> getAvailableArchivers() {
+    // TODO Auto-generated method stub
+    return List.of("zip");
+  }
+
+  @Override
+  public Collection<String> getAvailableUnArchivers() {
+    // TODO Auto-generated method stub
+    return List.of("zip");
+  }
+
+  @Override
+  public Collection<String> getAvailableResourceCollections() {
+    // TODO Auto-generated method stub
+    return List.of("zip");
   }
 
 }
