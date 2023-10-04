@@ -18,5 +18,5 @@
 package org.infrastructurebuilder.util.core;
 
 public interface RelativeRootProtocol {
-
+// TODO
 }

@@ -1076,10 +1076,10 @@ public class IBUtils {
       String ov;
       if (v == null || JSONObject.NULL.equals(v)) {
         ov = "null";
-      } else if (v instanceof JSONObject) {
-        ov = String.format("{%s}", _deepMapJSONtoOrderedString((JSONObject) v));
-      } else if (v instanceof String) {
-        ov = String.format("\"%s\"", v);
+      } else if (v instanceof JSONObject jo) {
+        ov = String.format("{%s}", _deepMapJSONtoOrderedString(jo));
+      } else if (v instanceof String strang) {
+        ov = String.format("\"%s\"", strang);
       } else {
         ov = v.toString();
       }

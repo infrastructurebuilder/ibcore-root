@@ -15,9 +15,21 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.vertx.base;
+package org.infrastructurebuilder.util.readdetect;
 
-public interface Versioned {
-  VertxGAV getGAV();
+import org.infrastructurebuilder.util.core.RelativeRoot;
+
+public class URLLikeIBResourceRelativeRootSupplier extends AbstractIBResourceRelativeRootSupplier {
+
+  private final RelativeRoot rr;
+
+  public URLLikeIBResourceRelativeRootSupplier(String urlLike) {
+    this.rr = RelativeRoot.from(urlLike);
+  }
+
+  @Override
+  public RelativeRoot get() {
+    return rr;
+  }
 
 }

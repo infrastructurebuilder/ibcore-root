@@ -28,14 +28,11 @@ import static org.infrastructurebuilder.util.core.IBUtils.getJSONArrayAsListStri
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.maven.wagon.proxy.ProxyInfo;
 import org.apache.maven.wagon.proxy.ProxyInfoProvider;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.components.io.filemappers.FileMapper;
@@ -45,7 +42,6 @@ import org.infrastructurebuilder.util.core.IBConfigurable;
 import org.infrastructurebuilder.util.core.LoggerSupplier;
 import org.infrastructurebuilder.util.core.PathSupplier;
 import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
-import org.infrastructurebuilder.util.readdetect.IBResourceCacheFactory;
 import org.infrastructurebuilder.util.readdetect.WGetter;
 import org.infrastructurebuilder.util.readdetect.WGetterSupplier;
 import org.json.JSONObject;

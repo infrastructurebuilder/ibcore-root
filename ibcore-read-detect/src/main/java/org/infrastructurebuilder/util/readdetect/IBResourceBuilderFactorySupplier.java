@@ -19,26 +19,28 @@ package org.infrastructurebuilder.util.readdetect;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.function.Supplier;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
 
 import org.infrastructurebuilder.util.core.PathSupplier;
-import org.infrastructurebuilder.util.readdetect.impl.IBResourceCacheFactoryImpl;
+import org.infrastructurebuilder.util.readdetect.impl.IBResourceBuilderFactoryImpl;
 
-@Named(IBResourceCacheFactorySupplier.NAME)
-public class IBResourceCacheFactorySupplier implements Provider<IBResourceCacheFactory> {
+@Named(IBResourceBuilderFactorySupplier.NAME)
+public class IBResourceBuilderFactorySupplier implements Supplier<IBResourceBuilderFactory>, Provider<IBResourceBuilderFactory> {
   public final static String NAME = "IBResourceCacheFactorySupplier";
   private final PathSupplier root;
 
   @Inject
-  public IBResourceCacheFactorySupplier(PathSupplier root) {
+  public IBResourceBuilderFactorySupplier(PathSupplier root) {
     this.root = requireNonNull(root);
   }
 
   @Override
-  public IBResourceCacheFactory get() {
-    return new IBResourceCacheFactoryImpl(this.root);
+  public IBResourceBuilderFactory get() {
+    return new IBResourceBuilderFactoryImpl(new PathBackedIBResourceRelativeRootSupplier(this.root.get()));
   }
 
 }

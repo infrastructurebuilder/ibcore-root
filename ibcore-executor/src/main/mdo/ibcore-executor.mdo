@@ -3,10 +3,10 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://codehaus-plexus.github.io/MODELLO/1.8.0 http://codehaus-plexus.github.io/modello/xsd/modello-1.8.0.xsd"
   java.suppressAllWarnings="true"
-  xml.namespace="https://resources.infrastructurebuilder.org/IBExecutor/${version}"
-  xml.schemaLocation="https://resources.infrastructurebuilder.org/xsd/IBExecutor-${version}"
-  xsd.namespace="https://resources.infrastructurebuilder.org/IBExecutor/${version}"
-  xsd.targetNamespace="https://resources.infrastructurebuilder.org/IBExecutor/${version}"
+  xml.namespace="https://resources.infrastructurebuilder.org/IBExecutor/${apiVersion}"
+  xml.schemaLocation="https://resources.infrastructurebuilder.org/xsd/IBExecutor-${apiVersion}"
+  xsd.namespace="https://resources.infrastructurebuilder.org/IBExecutor/${apiVersion}"
+  xsd.targetNamespace="https://resources.infrastructurebuilder.org/IBExecutor/${apiVersion}"
 >
   <id>execution</id>
   <name>ProcessExecutionModel</name> <!-- Must be a single (no spaces, no dashes, no periods) identifier in order

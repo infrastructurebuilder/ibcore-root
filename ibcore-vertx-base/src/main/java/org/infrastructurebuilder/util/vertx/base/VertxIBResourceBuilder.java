@@ -15,7 +15,7 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.readdetect;
+package org.infrastructurebuilder.util.vertx.base;
 
 import java.nio.file.Path;
 import java.time.Instant;
@@ -23,41 +23,46 @@ import java.util.Optional;
 import java.util.Properties;
 
 import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.util.readdetect.IBResource;
+import org.infrastructurebuilder.util.readdetect.IBResourceException;
 import org.json.JSONObject;
 
-public interface IBResourceBuilder {
+import io.vertx.core.Future;
+import io.vertx.core.file.AsyncFile;
 
-  IBResourceBuilder fromJSON(JSONObject j);
+public interface VertxIBResourceBuilder {
 
-  IBResourceBuilder withChecksum(Checksum csum);
+  VertxIBResourceBuilder fromJSON(JSONObject j);
 
-  IBResourceBuilder from(Path path);
+  VertxIBResourceBuilder withChecksum(Checksum csum);
 
-  IBResourceBuilder withFilePath(String path);
+  VertxIBResourceBuilder from(Path path);
 
-  IBResourceBuilder cached(boolean cached);
+  VertxIBResourceBuilder withFilePath(String path);
 
-  IBResourceBuilder withName(String name);
+  VertxIBResourceBuilder cached(boolean cached);
 
-  IBResourceBuilder withDescription(String desc);
+  VertxIBResourceBuilder withName(String name);
 
-  IBResourceBuilder withType(String type);
+  VertxIBResourceBuilder withDescription(String desc);
 
-  IBResourceBuilder withType(Optional<String> type);
+  VertxIBResourceBuilder withType(String type);
 
-  IBResourceBuilder withAdditionalProperties(Properties p);
+  VertxIBResourceBuilder withType(Optional<String> type);
 
-  IBResourceBuilder withLastUpdated(Instant last);
+  VertxIBResourceBuilder withAdditionalProperties(Properties p);
 
-  IBResourceBuilder withSource(String source);
+  VertxIBResourceBuilder withLastUpdated(Instant last);
 
-  IBResourceBuilder withCreateDate(Instant create);
+  VertxIBResourceBuilder withSource(String source);
 
-  IBResourceBuilder withSize(long size);
+  VertxIBResourceBuilder withCreateDate(Instant create);
 
-  IBResourceBuilder withMostRecentAccess(Instant access);
+  VertxIBResourceBuilder withSize(long size);
 
-  IBResourceBuilder movedTo(Path path);
+  VertxIBResourceBuilder withMostRecentAccess(Instant access);
+
+  VertxIBResourceBuilder movedTo(Path path);
 
   /**
    * validate checks the values provided so far and throws IBResourceException if anything is off.
@@ -68,11 +73,11 @@ public interface IBResourceBuilder {
    * @throws IBResourceException if validation fails
    * @return this builder
    */
-  IBResourceBuilder validate(boolean hard);
+  VertxIBResourceBuilder validate(boolean hard);
 
-  Optional<IBResource> build(boolean hard);
+  Future<IBResource> build(boolean hard);
 
-  default Optional<IBResource> build() {
+  default Future<IBResource> build() {
     return build(false);
   }
 

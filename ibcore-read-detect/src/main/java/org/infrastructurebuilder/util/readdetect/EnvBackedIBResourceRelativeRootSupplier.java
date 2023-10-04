@@ -15,29 +15,31 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.core;
-
-import static java.util.Optional.empty;
+package org.infrastructurebuilder.util.readdetect;
 
 import java.util.Optional;
 
-public interface NameDescribed {
-  public final static String NAME = "name";
-  public final static String DISPLAYNAME = "displayName";
-  public final static String DESCRIPTION = "description";
+import javax.inject.Inject;
+import javax.inject.Named;
 
-  /**
-   * It is possible for a NameDescribed to have a null name. This should be the exception, however.
-   *
-   * @return
-   */
-  public String getName();
+import org.infrastructurebuilder.util.core.RelativeRoot;
 
-  default Optional<String> getDisplayName() {
-    return empty();
+@Named
+public class EnvBackedIBResourceRelativeRootSupplier extends AbstractIBResourceRelativeRootSupplier {
+
+  public static final String RELATIVE_ROOT = "RELATIVE_ROOT";
+  private final RelativeRoot rr;
+
+  @Inject
+  public EnvBackedIBResourceRelativeRootSupplier() {
+    String s = Optional.ofNullable(System.getenv(RELATIVE_ROOT))
+        .orElseThrow(() -> new IBResourceException("No " + RELATIVE_ROOT + " supplied in environment"));
+    this.rr = RelativeRoot.from(s);
   }
 
-  default Optional<String> getDescription() {
-    return getDisplayName();
+  @Override
+  public RelativeRoot get() {
+    return rr;
   }
+
 }

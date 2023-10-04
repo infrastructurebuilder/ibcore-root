@@ -18,6 +18,7 @@
 package org.infrastructurebuilder.util.core;
 
 import static java.util.Objects.requireNonNull;
+import static org.infrastructurebuilder.exceptions.IBException.cet;
 import static org.infrastructurebuilder.util.core.IBVersionException.ibt;
 
 import java.util.Objects;
@@ -42,8 +43,8 @@ public final class DefaultIBVersion implements IBVersion {
     private final RangeOperator op;
 
     public DefaultIBVersionRange(final IBVersion version, final RangeOperator op) {
-      this.version = Objects.requireNonNull(version);
-      this.op = Objects.requireNonNull(op);
+      this.version = requireNonNull(version);
+      this.op = requireNonNull(op);
 
       range = new Range(new Semver(version.getValue(), SemverType.LOOSE), Range.RangeOperator.valueOf(op.name()));
     }
@@ -203,9 +204,7 @@ public final class DefaultIBVersion implements IBVersion {
   private final Semver semver;
 
   public DefaultIBVersion(final String version) {
-    if (version == null)
-      throw new IBVersionException("Null version not allowed");
-    semver = new Semver(version, com.vdurmont.semver4j.Semver.SemverType.LOOSE);
+    semver = new Semver(cet.returns(() -> requireNonNull(version)), com.vdurmont.semver4j.Semver.SemverType.LOOSE);
   }
 
   public DefaultIBVersion(final String orig, final IBVersionType type) {
@@ -213,9 +212,7 @@ public final class DefaultIBVersion implements IBVersion {
   }
 
   private DefaultIBVersion(final Semver semver) {
-    if (semver == null)
-      throw new IBVersionException("Null version not allowed");
-    this.semver = semver;
+    this.semver = cet.returns(() -> requireNonNull(semver));
   }
 
   @Override

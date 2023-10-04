@@ -23,14 +23,13 @@ import static java.nio.file.Files.readString;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.summingLong;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
 import static org.infrastructurebuilder.util.constants.IBConstants.BLOBSTORE_MAXBYTES;
 import static org.infrastructurebuilder.util.constants.IBConstants.BLOBSTORE_NO_MAXBYTES;
 import static org.infrastructurebuilder.util.constants.IBConstants.BLOBSTORE_ROOT;
 import static org.infrastructurebuilder.util.constants.IBConstants.METADATA_DIR_NAME;
 import static org.infrastructurebuilder.util.core.Checksum.ofPath;
-import static org.infrastructurebuilder.util.readdetect.IBResourceCacheFactory.getAttributes;
+import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory.getAttributes;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -43,13 +42,17 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.IBResource;
-import org.infrastructurebuilder.util.readdetect.IBResourceCacheFactory;
-import org.infrastructurebuilder.util.readdetect.IBResourceCacheFactorySupplier;
+import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
+import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
+import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactorySupplier;
 import org.infrastructurebuilder.util.vertx.blobstore.Blobstore;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -74,7 +77,7 @@ public class FilesystemBlobstore implements Blobstore {
   private final AtomicLong size = new AtomicLong(0);
   private final Set<String> blobs; // = new ConcurrentHashSet<>();
   private final long maxBytes;
-  private IBResourceCacheFactory rcf;
+  private IBResourceBuilderFactory rcf;
 
   public FilesystemBlobstore(JsonObject config) {
     this(Paths.get(config.getString(BLOBSTORE_ROOT)),
@@ -83,7 +86,7 @@ public class FilesystemBlobstore implements Blobstore {
 
   public FilesystemBlobstore(Path root, Long size) {
     this.root = RelativeRoot.from(requireNonNull(root));
-    this.rcf = new IBResourceCacheFactorySupplier(() -> root).get();
+    this.rcf = new IBResourceBuilderFactorySupplier(() -> root).get();
     this.metadata = root.resolve(METADATA_DIR_NAME).toAbsolutePath();
     try {
       Files.createDirectories(this.metadata);
@@ -100,7 +103,8 @@ public class FilesystemBlobstore implements Blobstore {
     cet.translate(() -> Files.newDirectoryStream(metadata).forEach(p -> {
       try {
         UUID u = UUID.fromString(p.getFileName().toString());
-        Optional<IBResource> res = this.rcf.fromJSONString(new JsonObject(readString(p)).toString());
+        Optional<IBResource> res = this.rcf.fromJSONString(new JsonObject(readString(p)).toString())
+            .flatMap(IBResourceBuilder::build);
         res.ifPresent(r -> {
           resources.add(u.toString());
           size.addAndGet(r.size());
@@ -117,13 +121,19 @@ public class FilesystemBlobstore implements Blobstore {
 
         .map(this::getMetadataPath)
 
-        .map(f -> cet.returns(() -> readString(f))).map(JSONObject::new)
+        .map(f -> cet.returns(() -> readString(f)))
+
+        .map(s -> new JSONObject(s))
 
         .map(this.rcf::fromJSON)
 
         .flatMap(Optional::stream)
 
-        .collect(summingLong(IBResource::size));
+        .map(k -> k.build())
+
+        .flatMap(Optional::stream)
+
+        .collect(Collectors.summingLong(IBResource::size));
   }
 
   public RelativeRoot getRelativeRoot() {
@@ -185,26 +195,30 @@ public class FilesystemBlobstore implements Blobstore {
       Instant lastUpdated, Optional<Properties> addlProps) {
     getLog().error("writeMetadata {}, {}, desc {}, {}, {}, {}", root.relativize(blob).get(), originalName, description,
         createDate, lastUpdated, addlProps);
-//    IBResource bsm = from(blob.toAbsolutePath(), of(originalName), description, createDate, lastUpdated, addlProps);
-    var bsm = rcf.builderFromPath(blob)
-        .withName(originalName)
-        .withDescription(description.orElse(null))
-        .withLastUpdated(lastUpdated)
-        .withCreateDate(createDate)
+    return rcf.fromPath(blob, IBConstants.JSON_TYPE).map(builder -> {
 
-        .build();
+      return builder
 
-    getLog().error("bsm is {}", bsm.asJSON().toString());
-    var id = bsm.getChecksum().asUUID().get().toString();
-    getLog().error("Writing metadata for {}", id);
-    return writeFile(getMetadataPath(id),
-        // Pull the buffer out of JSON
-        Buffer.buffer(new JsonObject(bsm.asJSON().toString()).encodePrettily()))
+          .withName(originalName)
 
-        .compose(v -> {
-          log.info("Wrote metadata ");
-          return succeededFuture(id);
-        });
+          .withDescription(description.orElse(null))
+
+          .withLastUpdated(lastUpdated)
+
+          .withCreateDate(createDate)
+
+          .build().map(bsm -> {
+            getLog().error("bsm is {}", bsm.asJSON().toString());
+            var id = bsm.getChecksum().asUUID().get().toString();
+            getLog().error("Writing metadata for {}", id);
+            return writeFile(getMetadataPath(id),
+                // Pull the buffer out of JSON
+                Buffer.buffer(new JsonObject(bsm.asJSON().toString()).encodePrettily())).compose(v -> {
+                  log.info("Wrote metadata ");
+                  return succeededFuture(id);
+                });
+          }).orElse(Future.failedFuture("Could not build IBResource"));
+    }).orElse(Future.failedFuture("Could not build IBResourceBuilder"));
   }
 
   private Future<Void> writeFile(Path blobFile, Buffer buffer) {
@@ -251,8 +265,14 @@ public class FilesystemBlobstore implements Blobstore {
 
         .compose(b -> {
           log.debug("Metadata json is {} ", new JsonObject(b).encodePrettily());
-          var q = this.rcf.fromJSONString(new JsonObject(b).toString());
-          return q.isPresent() ? succeededFuture(q.get()) : Future.failedFuture("could.not.deserialize");
+          var q = this.rcf.fromJSONString(new JsonObject(b).toString())
+
+              .flatMap(IBResourceBuilder::build);
+          return q.isPresent() ?
+
+              succeededFuture(q.get())
+
+              : Future.failedFuture("could.not.deserialize");
         });
   }
 
@@ -263,20 +283,23 @@ public class FilesystemBlobstore implements Blobstore {
   }
 
   private Path getPath(String id) {
-    return root.resolve(requireNonNull(id)).map(Path::toAbsolutePath).orElseThrow(() -> new IBException());
+    return root.resolvePath(requireNonNull(id)).map(Path::toAbsolutePath).orElseThrow(() -> new IBException());
   }
 
   @Override
   public Future<Void> removeBlob(String id) {
     blobs.remove(id);
     var mdPath = getMetadataPath(id);
-    var res = this.rcf.fromJSON(new JSONObject(cet.returns(() -> Files.readString(mdPath))));
-    res.ifPresent(r -> {
-      r.getPath().ifPresent(rPath -> {
-        cet.translate(() -> Files.delete(rPath));
-      });
-      cet.translate(() -> Files.delete(mdPath));
-    });
+    this.rcf.fromJSON(new JSONObject(cet.returns(() -> Files.readString(mdPath))))
+
+        .ifPresent(r2 -> {
+          r2.build().ifPresent(r -> {
+            r.getPath().ifPresent(rPath -> {
+              cet.translate(() -> Files.delete(rPath));
+            });
+            cet.translate(() -> Files.delete(mdPath));
+          });
+        });
     return succeededFuture(); // FIXME
   }
 

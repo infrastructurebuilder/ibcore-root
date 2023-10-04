@@ -36,7 +36,7 @@ import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.IBUtilsTest;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
 import org.infrastructurebuilder.util.readdetect.impl.DefaultIBResource;
-import org.infrastructurebuilder.util.readdetect.impl.IBResourceCacheFactoryImpl;
+import org.infrastructurebuilder.util.readdetect.impl.IBResourceBuilderFactoryImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,7 +47,7 @@ public class IBResourceModelTest {
   private IBResource c1, c2;
   private Path path;
   private Checksum checksum;
-  private IBResourceCacheFactory f;
+  private IBResourceBuilderFactory f;
   private Path root;
   private Path source;
 
@@ -58,11 +58,11 @@ public class IBResourceModelTest {
     root = wps.get();
     path = wps.get().resolve(UUID.randomUUID().toString());
     IBUtils.copy(source, path);
-    f = new IBResourceCacheFactoryImpl(root);
+    f = new IBResourceBuilderFactoryImpl(root);
     checksum = new Checksum(IBUtilsTest.TESTFILE_CHECKSUM);
-    c2 = f.fromPath(source, "ABC").get();
+    c2 = f.fromPath(source, "ABC").flatMap(IBResourceBuilder::build).get();
 //    c2 = new DefaultIBResource(path, checksum);
-    c1 = f.fromPath(path).get();
+    c1 = f.fromPath(path).flatMap(IBResourceBuilder::build).get();
 
   }
 

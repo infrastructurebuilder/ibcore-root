@@ -72,7 +72,7 @@ import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.logging.LoggingMavenComponent;
 import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
-import org.infrastructurebuilder.util.readdetect.IBResourceCacheFactory;
+import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
 import org.slf4j.Logger;
 
 import com.googlecode.download.maven.plugin.internal.DownloadFailureException;
@@ -565,7 +565,7 @@ public final class WGet {
 
   private boolean preemptiveAuth;
 
-  private IBResourceCacheFactory cf;
+  private IBResourceBuilderFactory cf;
 
   /**
    * Method call when the mojo is executed for the first time.
@@ -739,7 +739,7 @@ public final class WGet {
 
           .withType(ofNullable(this.mimeType));
 
-      return Optional.of(List.of(b.build()));
+      return Optional.of(List.of(b.build().get())); // FIXME!!!!!
     });
   }
 
@@ -852,7 +852,7 @@ public final class WGet {
         .collect(Collectors.toList());
   }
 
-  public void setCacheFactory(IBResourceCacheFactory cf) {
+  public void setCacheFactory(IBResourceBuilderFactory cf) {
     this.cf = requireNonNull(cf);
 
   }

@@ -48,8 +48,9 @@ import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
 import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
-import org.infrastructurebuilder.util.readdetect.IBResourceCacheFactory;
+import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.IBResourceException;
+import org.infrastructurebuilder.util.readdetect.PathBackedIBResourceRelativeRootSupplier;
 import org.infrastructurebuilder.util.readdetect.WGetter;
 import org.slf4j.Logger;
 
@@ -60,7 +61,7 @@ public class DefaultWGetter implements WGetter {
   private final ArchiverManager am;
   private final Path workingDir;
   private final TypeToExtensionMapper t2e;
-  private IBResourceCacheFactory cf;
+  private IBResourceBuilderFactory cf;
 
   public DefaultWGetter(Logger log, TypeToExtensionMapper t2e, Map<String, String> headers, Path cacheDir,
       Path workingDir, ArchiverManager archiverManager, Optional<ProxyInfoProvider> pi, Optional<FileMapper[]> mappers)
@@ -73,7 +74,7 @@ public class DefaultWGetter implements WGetter {
     // Log l2 = new LoggingMavenComponent(log);
 //      Logger localLogger = requireNonNull(log); // FIXME (See above)
     Logger l2 = log;
-    cf = new IBResourceCacheFactoryImpl(() -> workingDir);
+    cf = new IBResourceBuilderFactoryImpl(new PathBackedIBResourceRelativeRootSupplier(workingDir));
     this.wget.setCacheFactory(cf);
     this.wget.setLog(l2);
     this.wget.setT2EMapper(Objects.requireNonNull(t2e));
@@ -148,7 +149,8 @@ public class DefaultWGetter implements WGetter {
 // FIXME?
 //        IBResource q = cet.returns(() -> copyToTempChecksumAndPath(tempPath, p, oSource, tPath));
         final var v = relocateChecksumNamedToTargetDir(tempPath, p);
-        l.add(oSource.map(o -> v.withSource(o + "!/" + tPath)).orElse(v).build());
+        // FIXME????
+        l.add(oSource.map(o -> v.withSource(o + "!/" + tPath)).orElse(v).build().get());
       }
 
       IBUtils.deletePath(targetDir);

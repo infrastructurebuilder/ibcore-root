@@ -48,6 +48,10 @@
     </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore-default-extension-type-mapper</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
       <artifactId>ibcore</artifactId>
       <type>test-jar</type>
       <scope>test</scope>

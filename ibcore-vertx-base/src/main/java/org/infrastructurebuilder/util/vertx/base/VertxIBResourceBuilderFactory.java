@@ -15,7 +15,7 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.readdetect;
+package org.infrastructurebuilder.util.vertx.base;
 
 import static java.nio.file.Files.readAttributes;
 import static java.util.Objects.requireNonNull;
@@ -23,7 +23,6 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
-import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -32,7 +31,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.FileTime;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -42,88 +40,41 @@ import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.RelativeRoot;
+import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.vertx.core.Future;
 
 /**
  * IBResourceCacheFactor is the part of ibcore-read-detect that actually copies files from some remote location to it's
  * local copy. An IBResourceCache is expected to be inviolate from the time a cache is created until it is no longer
  * needed. A cache has a serialized representation of all the IBResource elements within it, and thus can be persisted.
  */
-public interface IBResourceCacheFactory {
-  final static Logger log = LoggerFactory.getLogger(IBResourceFactory.class.getName());
-  final static Tika tika = new Tika();
-
-  public final static Function<String, Path> extracted = (x) -> {
-    try {
-      Path p1 = Paths.get(x);
-      URL u;
-      if (Files.isRegularFile(p1)) {
-        u = cet.returns(() -> p1.toUri().toURL());
-      } else {
-        u = cet.returns(() -> new URL(x));
-      }
-      // I know, right?
-      return Paths.get(cet.returns(() -> u.toURI()));
-    } catch (Throwable t) {
-      log.error("Error converting to path", t);
-      throw t;
-    }
-  };
-
-  public final static Function<Path, String> toType = (path) -> {
-    if (!Files.exists(requireNonNull(path)))
-      throw new IBException("file.does.not.exist");
-    if (!Files.isRegularFile(path))
-      throw new IBException("file.not.regular.file");
-
-    synchronized (tika) {
-      log.debug("Detecting path " + path);
-      org.apache.tika.metadata.Metadata md = new org.apache.tika.metadata.Metadata();
-      md.set(TikaCoreProperties.RESOURCE_NAME_KEY, path.toAbsolutePath().toString());
-      try (Reader p = tika.parse(path, md)) {
-        log.debug(" Metadata is " + md);
-        return tika.detect(path);
-      } catch (IOException e) {
-        log.error("Failed during attempt to get tika type", e);
-        return IBConstants.APPLICATION_OCTET_STREAM;
-      }
-    }
-  };
-
-  public final static Function<Path, Optional<String>> toOptionalType = (path) -> {
-    try {
-      return ofNullable(toType.apply(path));
-    } catch (Throwable t2) {
-      return Optional.empty();
-    }
-  };
-
-
+public interface VertxIBResourceBuilderFactory {
+  final static Logger log = LoggerFactory.getLogger(VertxIBResourceBuilderFactory.class.getName());
 
   public final static Function<Path, Optional<BasicFileAttributes>> getAttributes = (i) -> {
     Optional<BasicFileAttributes> retVal = empty();
     try {
       retVal = of(readAttributes(requireNonNull(i), BasicFileAttributes.class));
     } catch (IOException e) {
-      // Do nothing
+      // TODO Log an error, maybe?
     }
     return retVal;
   };
 
-
-
-  default Optional<IBResource> fromPath(Path p) {
+  default Future<VertxIBResourceBuilder> fromPath(Path p) {
     return fromPath(p, null);
   }
 
-  default Optional<IBResource> fromURL(URL u) {
+  default Future<VertxIBResourceBuilder> fromURL(URL u) {
     return fromURL(u, null);
   }
 
-  default Optional<IBResource> fromURLLike(String u) {
+  default Future<VertxIBResourceBuilder> fromURLLike(String u) {
     return fromURLLike(u, null);
   }
 
@@ -134,18 +85,18 @@ public interface IBResourceCacheFactory {
    * @param type type to force. If null, type will be interpreted.
    * @return IBResource instance
    */
-  Optional<IBResource> fromPath(Path p, String type);
+  Future<VertxIBResourceBuilder> fromPath(Path p, String type);
 
-  default Optional<IBResource> fromURL(URL u, String type) {
-    return fromURLLike(u.toExternalForm(), type);
+  default Future<VertxIBResourceBuilder> fromURL(URL u, String type) {
+    return fromURLLike(requireNonNull(u).toExternalForm(), type);
   }
 
-  Optional<IBResource> fromURLLike(String u, String type);
+  Future<VertxIBResourceBuilder> fromURLLike(String u, String type);
 
-  Optional<IBResource> fromModel(IBResourceModel model);
+  Future<VertxIBResourceBuilder> fromModel(IBResourceModel model);
 
-  default IBResourceBuilder builderFromPath(Path p) {
-    return builderFromPathAndChecksum(p, new Checksum(p));
+  default VertxIBResourceBuilder builderFromPath(Path p) {
+    return builderFromPathAndChecksum(requireNonNull(p), new Checksum(p));
   }
 
   /**
@@ -154,15 +105,20 @@ public interface IBResourceCacheFactory {
    * @param json
    * @return
    */
-  default Optional<IBResource> fromJSONString(String json) {
-    return fromJSON(new JSONObject(json));
+  default Future<VertxIBResourceBuilder> fromJSONString(String json) {
+    try {
+      return fromJSON(cet.returns(() -> new JSONObject(json)));
+    } catch (IBException e) {
+      // TODO?
+      return Future.failedFuture("Could not build from JSONString");
+    }
+
   }
 
-  Optional<IBResource> fromJSON(JSONObject json);
-
+  Future<VertxIBResourceBuilder> fromJSON(JSONObject json);
 
   Optional<RelativeRoot> getRoot();
 
-  IBResourceBuilder builderFromPathAndChecksum(Path p, Checksum checksum);
+  VertxIBResourceBuilder builderFromPathAndChecksum(Path p, Checksum checksum);
 
 }

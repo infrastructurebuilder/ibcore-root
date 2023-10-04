@@ -15,9 +15,4 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.vertx.base;
-
-public interface Versioned {
-  VertxGAV getGAV();
-
-}
+package org.infrastructurebuilder.util.vertx.base.impl;

@@ -47,9 +47,9 @@ public class DefaultProcessExecutionResult implements ProcessExecutionResult {
 
   @Override
   public boolean equals(Object obj) {
-    if (obj == null || !(obj instanceof DefaultProcessExecutionResult))
-      return false;
-    return ((DefaultProcessExecutionResult) obj).getId().equals(getId());
+    if (obj != null && obj instanceof DefaultProcessExecutionResult dper)
+      return dper.getId().equals(getId());
+    return false;
   }
 
   @Override

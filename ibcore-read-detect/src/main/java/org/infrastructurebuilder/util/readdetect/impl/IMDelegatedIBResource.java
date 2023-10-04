@@ -25,6 +25,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -37,7 +38,7 @@ import org.apache.tika.Tika;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.readdetect.IBResource;
-import org.infrastructurebuilder.util.readdetect.IBResourceFactory;
+import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -83,7 +84,7 @@ public class IMDelegatedIBResource implements IBResource {
 
     requireNonNull(addlProps).ifPresent(p -> p.forEach((k, v) -> m.addAdditionalProperty(k.toString(), v.toString())));
 
-    r = new IBResourceBuilderImpl().fromModel(m).build();
+    r = new DefaultIBResourceBuilder(Optional.empty()).fromModel(m).build().get();
     log.debug("Built model {}",r.getChecksum().asUUID().get());
   }
 
@@ -155,6 +156,20 @@ public class IMDelegatedIBResource implements IBResource {
   @Override
   public IBResourceModel copyModel() {
     return r.copyModel();
+  }
+
+  @Override
+  public boolean validate(boolean hard) {
+    Checksum s = this.getChecksum();
+    IBResourceModel model = this.r.copyModel();
+    if (!s.equals(new Checksum(model.getFileChecksum())))
+      return false;
+    if (hard) {
+      Checksum n = new Checksum(this.ba);
+      if (!s.equals(n))
+        return false;
+    }
+    return true;
   }
 
 }

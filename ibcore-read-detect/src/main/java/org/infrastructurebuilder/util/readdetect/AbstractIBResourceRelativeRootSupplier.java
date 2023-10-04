@@ -15,9 +15,7 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.vertx.base;
+package org.infrastructurebuilder.util.readdetect;
 
-public interface Versioned {
-  VertxGAV getGAV();
-
+abstract public class AbstractIBResourceRelativeRootSupplier implements IBResourceRelativeRootSupplier {
 }

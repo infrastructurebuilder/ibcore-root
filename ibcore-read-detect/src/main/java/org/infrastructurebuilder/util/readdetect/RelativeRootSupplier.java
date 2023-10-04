@@ -15,9 +15,14 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.vertx.base;
+package org.infrastructurebuilder.util.readdetect;
 
-public interface Versioned {
-  VertxGAV getGAV();
+import java.util.function.Supplier;
+
+import javax.inject.Provider;
+
+import org.infrastructurebuilder.util.core.RelativeRoot;
+
+public interface RelativeRootSupplier extends Supplier<RelativeRoot>, Provider<RelativeRoot> {
 
 }

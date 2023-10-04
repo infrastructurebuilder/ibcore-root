@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.DefaultIBVersion;
 import org.infrastructurebuilder.util.core.DefaultIBVersion.DefaultIBVersionBoundedRange;
 import org.infrastructurebuilder.util.core.DefaultIBVersion.DefaultIBVersionRange;
@@ -233,7 +234,7 @@ public class DefaultIBVersionTest {
 
   @Test
   public void testEquals() {
-    assertThrows(IBVersionException.class,
+    assertThrows(IBException.class,
         () -> assertNotEquals(new DefaultIBVersion(null), new DefaultIBVersion(_1_0_0), "Null semver != nonnull"));
 //    assertNotEquals(new DefaultIBVersion(null), new DefaultIBVersion(null), "Null semver == null");
   }
@@ -291,7 +292,7 @@ public class DefaultIBVersionTest {
 
   @Test
   public void testNullVersion() {
-    Assertions.assertThrows(IBVersionException.class, () -> new DefaultIBVersion(null));
+    Assertions.assertThrows(IBException.class, () -> new DefaultIBVersion(null));
   }
 
   @Test
@@ -374,7 +375,7 @@ public class DefaultIBVersionTest {
 
   @Test
   public void testNull() {
-    assertThrows(IBVersionException.class, () -> new DefaultIBVersion(null));
+    assertThrows(IBException.class, () -> new DefaultIBVersion(null));
   }
 
   @Test

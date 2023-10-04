@@ -134,7 +134,6 @@ public class Checksum extends AbstractChecksum {
    * This constructor produces a checksum of a list of checksums. It DEFINITELY loses fidelity but for SHA-512 strings
    * it's...OK.
    *
-   * @param relativeRoot
    * @param list
    */
   public Checksum(final List<Checksum> list) {

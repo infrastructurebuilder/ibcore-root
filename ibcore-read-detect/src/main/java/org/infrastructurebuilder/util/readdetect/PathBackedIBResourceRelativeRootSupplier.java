@@ -15,9 +15,23 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.vertx.base;
+package org.infrastructurebuilder.util.readdetect;
 
-public interface Versioned {
-  VertxGAV getGAV();
+import java.nio.file.Path;
+
+import org.infrastructurebuilder.util.core.RelativeRoot;
+
+public class PathBackedIBResourceRelativeRootSupplier extends AbstractIBResourceRelativeRootSupplier {
+
+  private final RelativeRoot rr;
+
+  public PathBackedIBResourceRelativeRootSupplier(Path p) {
+    this.rr = RelativeRoot.from(p);
+  }
+
+  @Override
+  public RelativeRoot get() {
+    return rr;
+  }
 
 }

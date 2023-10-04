@@ -36,11 +36,8 @@ import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_URL;
 import static org.infrastructurebuilder.util.constants.IBConstants.UPDATE_DATE;
 import static org.infrastructurebuilder.util.core.ChecksumEnabled.CHECKSUM;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.file.OpenOption;
-import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -54,7 +51,6 @@ import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.JSONBuilder;
 import org.infrastructurebuilder.util.core.JSONOutputEnabled;
 import org.infrastructurebuilder.util.core.RelativeRoot;
-import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
 import org.json.JSONObject;
 
 /**
@@ -96,8 +92,8 @@ import org.json.JSONObject;
  * <li>From a remote resource at the end of some URL-like. If realized, this will be copied to an available relroot like
  * above, or not cached and read to a temp file to be deleted on
  * <ul>
- * <li>This file is copied to the relroot, if present.</li>
- * <li>If the file cannot be copied, this is considered a "reference" resource.</li>
+ * <li>This stream is copied to the relroot, if present.</li>
+ * <li>If the stream cannot be copied, this is considered a "reference" resource.</li>
  * <li>The file size is read from the copied file.</li>
  * <li>The checksum is computed from the copied file.</li>
  * <li>The MIME type is read from headers, if available, unless supplied (as above). If not available, the type is
@@ -125,56 +121,7 @@ import org.json.JSONObject;
  * @author mykelalvis
  *
  */
-public interface IBResource extends JSONOutputEnabled {
-  /**
-   * @return Path to this result. If <code>empty()</code>, this is considered a reference resource.
-   * @throws IBResourceException (runtime) if not available
-   */
-  Optional<Path> getPath();
-
-  /**
-   * @return Non-null. Equivalent to calculated Checksum of the contents of the file at getPath()
-   */
-  Checksum getChecksum();
-
-  /**
-   * @return Non-null MIME type for the file at getPath()
-   */
-  String getType();
-
-  /**
-   * Sub-types may, at their discretion, return a {@link Instant} of the most recent "get()" call. The generated
-   * IBResourceModel doesn't because it's really a persistence mechanism and that value isn't relevant.
-   *
-   *
-   * @return most recent read time or null
-   */
-  Instant getMostRecentReadTime();
-
-  /**
-   * Nullable (but probably not) create date
-   *
-   * @return create date or null
-   */
-  Instant getCreateDate();
-
-  /**
-   * @return last file update or null
-   */
-  Instant getLastUpdateDate();
-
-  default Optional<Instant> getOptionalCreateDate() {
-    return ofNullable(getCreateDate());
-  }
-
-  default Optional<Instant> getOptionalMostRecentReadTime() {
-    return ofNullable(getMostRecentReadTime());
-  }
-
-  default Optional<Instant> getOptionalLastUpdateDate() {
-    return ofNullable(getLastUpdateDate());
-  }
-
+public interface IBResource extends IBResourceBase {
   default Optional<InputStream> get() {
     if (getPath().isEmpty())
       return Optional.empty();
@@ -186,104 +133,4 @@ public interface IBResource extends JSONOutputEnabled {
     return getPath().map(path -> cet.returns(() -> newInputStream(path, o.toArray(new OpenOption[o.size()]))));
   }
 
-  Optional<URL> getSourceURL();
-
-  Optional<String> getSourceName();
-
-  default int defaultHashCode() {
-    return hash(getChecksum(), getPath(), getSourceName(), getSourceURL(), getType());
-  }
-
-  default boolean defaultEquals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null) {
-      return false;
-    }
-    if ((obj instanceof IBResource other)) {
-      return Objects.equals(getChecksum(), other.getChecksum()) // checksum
-          && Objects.equals(getPath(), other.getPath()) // path
-          && Objects.equals(getSourceName(), other.getSourceName()) // source
-          && Objects.equals(getSourceURL(), other.getSourceURL()) // sourceURL
-          && Objects.equals(getType(), other.getType()); // Type
-    }
-    return false;
-  }
-
-  default String defaultToString() {
-    StringJoiner sj = new StringJoiner("|") //
-        .add(getChecksum().asUUID().get().toString()) // Checksum
-        .add(getType()) // type
-        .add(getPath().toString()); // Path
-    getSourceURL().ifPresent(u -> sj.add(u.toExternalForm()));
-    getSourceName().ifPresent(sj::add);
-    return sj.toString();
-  }
-
-  long size();
-
-  Optional<String> getName();
-
-  Optional<String> getDescription();
-
-  @Override
-  default JSONObject asJSON() {
-    return new JSONBuilder(empty())
-
-        .addChecksum(CHECKSUM, getChecksum())
-
-        .addInstant(CREATE_DATE, getCreateDate())
-
-        .addInstant(UPDATE_DATE, getLastUpdateDate())
-
-        .addInstant(MOST_RECENT_READ_TIME, ofNullable(getMostRecentReadTime()))
-
-        .addString(SOURCE_NAME, getSourceName())
-
-        .addString(SOURCE_URL, getSourceURL().map(java.net.URL::toExternalForm))
-
-        .addString(MIME_TYPE, getType())
-
-        .addPath(PATH, getPath())
-
-//        .addString(ORIGINAL_PATH, getOriginalPath().toString())
-
-        .addLong(SIZE, size())
-
-        .addString(DESCRIPTION, getDescription())
-
-        .addProperties(ADDITIONAL_PROPERTIES, getAdditionalProperties())
-
-        .asJSON();
-  }
-
-//  Path getOriginalPath();
-
-  /**
-   * This method should not return an empty Properties object. If there are no additional properties then the return
-   * should be Optional.empty()
-   *
-   * @return empty or a Properties with size() > 0
-   */
-  default Optional<Properties> getAdditionalProperties() {
-    return empty();
-  }
-
-  default Optional<BasicFileAttributes> getBasicFileAttributes() {
-    return getPath().flatMap(path -> IBResourceCacheFactory.getAttributes.apply(path));
-  }
-
-  /**
-   * @return true if this file was cached, which means the path is based on a RelativeRoot
-   */
-  default boolean isCached() {
-    return false;
-  }
-
-  default Optional<RelativeRoot> getRelativeRoot() {
-    return Optional.empty();
-  }
-
-  IBResourceModel copyModel();
 }

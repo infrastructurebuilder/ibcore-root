@@ -31,8 +31,8 @@ import static org.infrastructurebuilder.util.constants.IBConstants.SIZE;
 import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_URL;
 import static org.infrastructurebuilder.util.constants.IBConstants.UPDATE_DATE;
 import static org.infrastructurebuilder.util.core.ChecksumEnabled.CHECKSUM;
-import static org.infrastructurebuilder.util.readdetect.IBResourceCacheFactory.extracted;
-import static org.infrastructurebuilder.util.readdetect.IBResourceCacheFactory.toType;
+import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory.extracted;
+import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory.toType;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,7 +40,9 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
 
+import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceException;
@@ -49,20 +51,18 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class IBResourceBuilderImpl implements IBResourceBuilder {
+public class DefaultIBResourceBuilder implements IBResourceBuilder {
 
   private final static Logger log = LoggerFactory.getLogger(IBResourceBuilder.class);
   private IBResourceModel model = new IBResourceModel();
   private Checksum targetChecksum;
   private Path sourcePath;
-//  private RelativeRoot root;
+  private Path finalRestingPath;
+  private RelativeRoot root;
 
-  public IBResourceBuilderImpl() {
+  public DefaultIBResourceBuilder(Optional<RelativeRoot> root) {
+    this.root = requireNonNull(root).orElse(null);
   }
-
-//  private Optional<Path> getTargetDir() {
-//    return root.getPath();
-//  }
 
   @Override
   public IBResourceBuilder fromJSON(JSONObject j) {
@@ -227,26 +227,36 @@ public class IBResourceBuilderImpl implements IBResourceBuilder {
   }
 
   @Override
-  public IBResource build(boolean hard) {
-    validate(hard);
-    return new DefaultIBResource(this.model, this.sourcePath);
-  }
-
-  @Override
-  public IBResource build() {
-    return build(false);
+  public Optional<IBResource> build(boolean hard) {
+    try {
+      validate(hard);
+      return Optional.of(new DefaultIBResource(getRoot(),this.model, this.sourcePath));
+    } catch (IBException e) {
+      log.error("Error building IBResource");
+      return Optional.empty();
+    }
   }
 
   /**
-   * For IMDeletedIBResource. Do not use for general construction of a resource. This method is not available outside of
+   * For IMDelegatedIBResource. Do not use for general construction of a resource. This method is not available outside of
    * this package.
    *
    * @param m model to replace existing model with
    * @return this builder.
    */
-  IBResourceBuilderImpl fromModel(IBResourceModel m) {
+  DefaultIBResourceBuilder fromModel(IBResourceModel m) {
     this.model = m;
     return this;
+  }
+
+  @Override
+  public IBResourceBuilder movedTo(Path path) {
+    this.finalRestingPath = path;
+    return this;
+  }
+
+  public Optional<RelativeRoot> getRoot() {
+    return Optional.of(root);
   }
 
 }

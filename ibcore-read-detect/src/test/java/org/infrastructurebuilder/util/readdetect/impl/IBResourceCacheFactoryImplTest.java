@@ -39,11 +39,11 @@ class IBResourceCacheFactoryImplTest {
     wps.finalize();
   }
 
-  private IBResourceCacheFactoryImpl rcf;
+  private IBResourceBuilderFactoryImpl rcf;
 
   @BeforeEach
   void setUp() throws Exception {
-    this.rcf = new IBResourceCacheFactoryImpl(wps.get());
+    this.rcf = new IBResourceBuilderFactoryImpl(wps.get());
   }
 
   @AfterEach

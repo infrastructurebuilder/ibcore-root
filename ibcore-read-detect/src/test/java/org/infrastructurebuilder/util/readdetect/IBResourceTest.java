@@ -19,7 +19,7 @@ package org.infrastructurebuilder.util.readdetect;
 
 import static org.infrastructurebuilder.exceptions.IBException.cet;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_ZIP;
-import static org.infrastructurebuilder.util.readdetect.IBResourceCacheFactory.toType;
+import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory.toType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -33,7 +33,7 @@ import java.util.UUID;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
-import org.infrastructurebuilder.util.readdetect.impl.IBResourceCacheFactoryImpl;
+import org.infrastructurebuilder.util.readdetect.impl.IBResourceBuilderFactoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -46,14 +46,14 @@ public class IBResourceTest {
   private TestingPathSupplier wps;
   private Path testFile;
 
-  private IBResourceCacheFactory rcf ;
+  private IBResourceBuilderFactory rcf ;
   private Path root;
   @BeforeEach
   public void setUp() throws Exception {
     this.wps = new TestingPathSupplier();
     testFile = this.wps.getTestClasses().resolve(TFILE_TEST);
     this.root = this.wps.get();
-    this.rcf = new IBResourceCacheFactoryImpl(this.root);
+    this.rcf = new IBResourceBuilderFactoryImpl(this.root);
   }
 
 //  @Test
@@ -121,7 +121,7 @@ public class IBResourceTest {
 
   @Test
   public void testFromPath() {
-    IBResource cset = this.rcf.fromPath(testFile).get();
+    IBResource cset = this.rcf.fromPath(testFile).flatMap(IBResourceBuilder::build).get();
     long d = new Date().toInstant().toEpochMilli();
     InputStream g = cset.get().get();
     cet.translate(() -> g.close());

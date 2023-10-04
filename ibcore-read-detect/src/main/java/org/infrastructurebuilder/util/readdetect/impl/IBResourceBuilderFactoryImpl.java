@@ -17,6 +17,7 @@
  */
 package org.infrastructurebuilder.util.readdetect.impl;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
@@ -38,12 +39,13 @@ import javax.inject.Named;
 
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.core.PathSupplier;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
-import org.infrastructurebuilder.util.readdetect.IBResourceCacheFactory;
 import org.infrastructurebuilder.util.readdetect.IBResourceException;
+import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
+import org.infrastructurebuilder.util.readdetect.IBResourceRelativeRootSupplier;
+import org.infrastructurebuilder.util.readdetect.PathBackedIBResourceRelativeRootSupplier;
 import org.infrastructurebuilder.util.readdetect.model.IBResourceCache;
 import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
 import org.json.JSONObject;
@@ -51,8 +53,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Named
-public class IBResourceCacheFactoryImpl implements IBResourceCacheFactory {
-  private final static Logger log = LoggerFactory.getLogger(IBResourceCacheFactoryImpl.class);
+public class IBResourceBuilderFactoryImpl implements IBResourceBuilderFactory {
+  private final static Logger log = LoggerFactory.getLogger(IBResourceBuilderFactoryImpl.class);
 
   private RelativeRoot root;
   private final IBResourceCache cache;
@@ -60,10 +62,10 @@ public class IBResourceCacheFactoryImpl implements IBResourceCacheFactory {
   private Supplier<IBResourceBuilder> builder;
 
   @Inject
-  public IBResourceCacheFactoryImpl(PathSupplier relRootSupplier) {
-    this.root = ofNullable(relRootSupplier.get()).map(path -> RelativeRoot.from(path)).orElse(null);
+  public IBResourceBuilderFactoryImpl(IBResourceRelativeRootSupplier relRootSupplier) {
+    this.root = requireNonNull(relRootSupplier).get();
     // Delivers a new builder from the relative root each time
-    this.builder = () -> new IBResourceBuilderImpl();
+    this.builder = () -> new DefaultIBResourceBuilder(getRoot());
     log.debug("Root is {}", this.root);
     this.cache = new IBResourceCache();
 
@@ -71,12 +73,12 @@ public class IBResourceCacheFactoryImpl implements IBResourceCacheFactory {
     cache.setRoot(this.root.getPath().map(Path::toAbsolutePath).map(Path::toString).orElse(null));
   }
 
-  public IBResourceCacheFactoryImpl() {
+  public IBResourceBuilderFactoryImpl() {
     this(() -> null); // No cache
   }
 
-  public IBResourceCacheFactoryImpl(Path p) {
-    this(() -> p);
+  public IBResourceBuilderFactoryImpl(Path p) {
+    this(new PathBackedIBResourceRelativeRootSupplier(p));
   }
 
   @Override
@@ -85,23 +87,33 @@ public class IBResourceCacheFactoryImpl implements IBResourceCacheFactory {
   }
 
   @Override
-  public Optional<IBResource> fromPath(Path p, String type) {
+  public Optional<IBResourceBuilder> fromPath(Path p, String type) {
     log.debug("Getting stream from {}", p);
-    var r = getRoot().map(rr -> cacheIt(p, type)).orElseGet(() -> readIt(p, type));
-    r.ifPresent(rr -> this.cache.addResource(rr.copyModel()));
+    var r = getRoot()
+
+        .map(rr -> cacheIt(p, type))
+
+        .orElseGet(() -> readIt(p, type));
+
+    r.ifPresent(rr -> this.cache.addResource(rr.build().get().copyModel())); // FIXME?  builds the model
     return r;
   }
 
-  private Optional<IBResource> readIt(Path p, String type) {
-    Optional<Checksum> c = Checksum.ofPath.apply(p);
-    return Optional.ofNullable(c.map(checksum -> {
-      var m = builderFromPathAndChecksum(p, checksum);
-      Optional.ofNullable(type).ifPresent(t -> m.withType(t));
-      return m.build();
-    }).orElse(null));
+  private Optional<RelativeRoot> getRelativeRoot() {
+    return Optional.ofNullable(this.root);
   }
 
-  private Optional<IBResource> cacheIt(Path p, String type) {
+  private Optional<IBResourceBuilder> readIt(Path p, String type) {
+    log.info("Reading from {}", p);
+    return Checksum.ofPath.apply(p).map(checksum -> {
+      var m = builderFromPathAndChecksum(p, checksum);
+      Optional.ofNullable(type).ifPresent(t -> m.withType(t));
+      return m;
+    });
+  }
+
+  private Optional<IBResourceBuilder> cacheIt(Path p, String type) {
+    log.info("Cacheing from {}", p);
     var rootPath = getRoot().flatMap(RelativeRoot::getPath);
 
     if (rootPath.isEmpty()) {
@@ -128,25 +140,19 @@ public class IBResourceCacheFactoryImpl implements IBResourceCacheFactory {
 
           .cached(true);
       Optional.ofNullable(type).ifPresent(t -> builder.withType(t));
-      return Optional.of(builder.build());
+      return Optional.of(builder);
     } catch (IOException | NoSuchAlgorithmException e) {
       return empty();
     }
   }
 
   @Override
-  public Optional<IBResource> fromURLLike(String u) {
-    // TODO Auto-generated method stub
-    return empty();
+  public Optional<IBResourceBuilder> fromJSON(JSONObject json) {
+    return Optional.of(this.builder.get().fromJSON(json));
   }
 
   @Override
-  public Optional<IBResource> fromJSON(JSONObject json) {
-    return Optional.of(this.builder.get().fromJSON(json).build());
-  }
-
-  @Override
-  public Optional<IBResource> fromURLLike(String u, String type) {
+  public Optional<IBResourceBuilder> fromURLLike(String u, String type) {
     // TODO Auto-generated method stub
     return empty();
   }
@@ -155,14 +161,14 @@ public class IBResourceCacheFactoryImpl implements IBResourceCacheFactory {
   @Override
   public IBResourceBuilder builderFromPathAndChecksum(Path p, Checksum checksum) {
     // We have a checksum, so we can read it, etc.
-    Optional<BasicFileAttributes> bfa = IBResourceCacheFactory.getAttributes.apply(p);
+    Optional<BasicFileAttributes> bfa = IBResourceBuilderFactory.getAttributes.apply(p);
     var m = this.builder.get()
 
         .from(p) // sets filepath and name (and source?)
 
         .withChecksum(checksum)
 
-        .withType(IBResourceCacheFactory.toOptionalType.apply(p).orElse(APPLICATION_OCTET_STREAM))
+        .withType(IBResourceBuilderFactory.toOptionalType.apply(p).orElse(APPLICATION_OCTET_STREAM))
 
         .withCreateDate(bfa.map(attrib -> attrib.creationTime()).map(FileTime::toInstant).orElse(null))
 
@@ -178,7 +184,7 @@ public class IBResourceCacheFactoryImpl implements IBResourceCacheFactory {
   }
 
   @Override
-  public Optional<IBResource> fromModel(IBResourceModel model) {
+  public Optional<IBResourceBuilder> fromModel(IBResourceModel model) {
 //    var m = Objects.requireNonNull(model);
     // TODO
     return empty();

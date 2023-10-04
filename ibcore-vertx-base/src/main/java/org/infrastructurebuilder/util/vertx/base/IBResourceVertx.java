@@ -17,15 +17,9 @@
  */
 package org.infrastructurebuilder.util.vertx.base;
 
-import static org.infrastructurebuilder.util.readdetect.IBResource.*;
-import static org.infrastructurebuilder.util.readdetect.IBResourceCacheFactory.getAttributes;
 import static io.vertx.core.Future.succeededFuture;
-import static java.nio.file.Files.readAttributes;
-import static java.util.Objects.hash;
-import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import static org.infrastructurebuilder.exceptions.IBException.cet;
+import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.util.constants.IBConstants.CREATE_DATE;
 import static org.infrastructurebuilder.util.constants.IBConstants.DESCRIPTION;
 import static org.infrastructurebuilder.util.constants.IBConstants.MIME_TYPE;
@@ -40,21 +34,17 @@ import static org.infrastructurebuilder.util.core.ChecksumEnabled.CHECKSUM;
 
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
-import java.util.Date;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.readdetect.IBResource;
+import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
 
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
@@ -72,7 +62,7 @@ public interface IBResourceVertx extends Supplier<Future<Buffer>>, JsonOutputEna
    * @return Non-null Path to this result
    * @throws IBException (runtime) if not available
    */
-  Path getPath();
+  Optional<Path> getPath();
 
   /**
    * @return Equivalent to calculated Checksum of the contents of the file at getPath()
@@ -93,25 +83,9 @@ public interface IBResourceVertx extends Supplier<Future<Buffer>>, JsonOutputEna
    */
   Future<IBResourceVertx> moveTo(Path target) throws IOException;
 
-  /**
-   * Sub-types may, at their discretion, return a {@link Date} of the most recent "get()" call. The generated
-   * IBResourceModel doesn't because it's really a persistence mechanism and that value isn't relevant.
-   *
-   * @return
-   */
-  Optional<Instant> getMostRecentReadTime();
-
-  Optional<Instant> getCreateDate();
-
-  Optional<Instant> getLateUpdateDate();
-
   default Future<Buffer> get() {
     return vertx().fileSystem().readFile(getPath().toString());
   }
-
-  Optional<URL> getSourceURL();
-
-  Optional<String> getSourceName();
 
   default Future<String> defaultToString() {
     return Future.all(getChecksum(), getType()).compose(f -> {
@@ -126,10 +100,7 @@ public interface IBResourceVertx extends Supplier<Future<Buffer>>, JsonOutputEna
     });
   }
 
-  default Long size() {
-    return cet.returns(() -> Files.size(getPath()));
-
-  }
+  long size();
 
   default Optional<String> getName() {
     return empty();
@@ -144,7 +115,7 @@ public interface IBResourceVertx extends Supplier<Future<Buffer>>, JsonOutputEna
     CompositeFuture cf = Future.all(getChecksum(), getType());
     return cf.compose(f -> {
       JsonBuilder jb = new JsonBuilder(empty()).addInstant(CREATE_DATE, getCreateDate())
-          .addInstant(UPDATE_DATE, getLateUpdateDate()).addInstant(MOST_RECENT_READ_TIME, getMostRecentReadTime())
+          .addInstant(UPDATE_DATE, getLastUpdateDate()).addInstant(MOST_RECENT_READ_TIME, getMostRecentReadTime())
           .addString(SOURCE_NAME, getSourceName())
           .addString(SOURCE_URL, getSourceURL().map(java.net.URL::toExternalForm)).addPath(PATH, getPath())
           .addLong(SIZE, size()).addString(DESCRIPTION, getDescription())
@@ -158,7 +129,57 @@ public interface IBResourceVertx extends Supplier<Future<Buffer>>, JsonOutputEna
   Path getOriginalPath();
 
   default Optional<BasicFileAttributes> getBasicFileAttributes() {
-    return getAttributes.apply(getPath());
+    return getPath().flatMap(path -> IBResourceBuilderFactory.getAttributes.apply(path));
   }
+
+  IBResource asIBResource();
+
+  /**
+   * Sub-types may, at their discretion, return a {@link Instant} of the most recent "get()" call. The generated
+   * IBResourceModel doesn't because it's really a persistence mechanism and that value isn't relevant.
+   *
+   *
+   * @return most recent read time or null
+   */
+  Instant getMostRecentReadTime();
+
+  /**
+   * Nullable (but probably not) create date
+   *
+   * @return create date or null
+   */
+  Instant getCreateDate();
+
+  /**
+   * @return last file update or null
+   */
+  Instant getLastUpdateDate();
+
+  default Optional<Instant> getOptionalCreateDate() {
+    return ofNullable(getCreateDate());
+  }
+
+  default Optional<Instant> getOptionalMostRecentReadTime() {
+    return ofNullable(getMostRecentReadTime());
+  }
+
+  default Optional<Instant> getOptionalLastUpdateDate() {
+    return ofNullable(getLastUpdateDate());
+  }
+
+//  default Optional<InputStream> get() {
+//    if (getPath().isEmpty())
+//      return Optional.empty();
+//    List<OpenOption> o = new ArrayList<>(List.of(READ));
+//    if (getPath().get().getClass().getCanonicalName().contains("Zip")) {
+//    } else {
+//      o.add(NOFOLLOW_LINKS);
+//    }
+//    return getPath().map(path -> cet.returns(() -> newInputStream(path, o.toArray(new OpenOption[o.size()]))));
+//  }
+//
+  Optional<URL> getSourceURL();
+
+  Optional<String> getSourceName();
 
 }
