@@ -15,8 +15,8 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.readdetect;
+package org.infrastructurebuilder.util.core;
 
-public interface IBResourceRelativeRootSupplier extends RelativeRootSupplier{
-
+public interface Modeled {
+    String getModelVersion();
 }

@@ -15,8 +15,9 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.readdetect;
+package org.infrastructurebuilder.util.maven.mavensupport;
 
-public interface IBResourceRelativeRootSupplier extends RelativeRootSupplier{
+import org.infrastructurebuilder.util.core.RelativeRootProtocol;
 
+public interface MavenBackedRelativeRoot extends RelativeRootProtocol {
 }

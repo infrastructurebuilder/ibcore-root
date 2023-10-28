@@ -87,7 +87,7 @@ public class VertxIBResourceBuilderFactoryImpl implements VertxIBResourceBuilder
     this.vertx = Objects.requireNonNull(vertx);
     this.root = requireNonNull(relRootSupplier).get();
     // Delivers a new builder from the relative root each time
-    this.builder = () -> new DefaultVertxIBResourceBuilder(relRootSupplier);
+    this.builder = () -> new DefaultVertxIBResourceBuilder(this.vertx, relRootSupplier);
     log.debug("Root is {}", this.root);
     this.cache = new IBResourceCache();
 
@@ -153,27 +153,30 @@ public class VertxIBResourceBuilderFactoryImpl implements VertxIBResourceBuilder
     var tempopts = new OpenOptions().setCreate(true).setWrite(true);
     var readopts = new OpenOptions().setCreate(false).setWrite(false).setRead(true);
     Future<AsyncFile> inbound = fs.open(p.toAbsolutePath().toString(), readopts);
-    Future<AsyncFile> copied = fs.createTempFile(r, this.typeMapper.getExtensionForType(type))
+    Future<String> copied = fs.createTempFile(r, this.typeMapper.getExtensionForType(type))
         // Set temp file to deleteOnExit
         .compose(tempfilename -> {
           Path f = Paths.get(tempfilename);
           f.toFile().deleteOnExit();
           return succeededFuture(tempfilename);
-        })
+        });
+    Future<AsyncFile> outbound = copied
         // Open temp file for writing
         .compose(tfn -> fs.open(tfn, tempopts));
 
-    return Future.all(inbound, copied).compose(cf -> {
+    return Future.all(inbound, outbound).compose(cf -> {
       List<AsyncFile> retvals = cf.list();
       AsyncFile in = retvals.get(0);
       AsyncFile out = retvals.get(1);
       Pump pump = Pump.pump(retvals.get(0), retvals.get(1)).start();
       return succeededFuture(out);
     }).compose(outfile -> {
+      Path target = Paths.get(copied.result()).toAbsolutePath();
+      // Get path to copied file
       // File is copied?
-      VertxIBResourceBuilder builder = new DefaultVertxIBResourceBuilder(() -> getRelativeRoot().get())
+      VertxIBResourceBuilder builder = new DefaultVertxIBResourceBuilder(this.vertx, () -> getRelativeRoot().get())
           // From the file
-          .from(outfile);
+          .from(target);
       return succeededFuture(builder);
     });
 

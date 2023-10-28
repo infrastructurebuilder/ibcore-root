@@ -17,31 +17,41 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import static java.util.Objects.requireNonNull;
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toMap;
+import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+class HintedTest {
 
-@Named
-public class RelativeRootProvider  {
+  private static final String VAL2 = "VAL2";
 
-  private Map<String, RelativeRootProtocol> protocols;
-
-  @Inject
-  public RelativeRootProvider(Set<RelativeRootProtocol> protocols) {
-    this.protocols = requireNonNull(protocols).stream() //
-        .collect(toMap(k -> k.getName(), identity()));
+  @BeforeAll
+  static void setUpBeforeClass() throws Exception {
   }
 
-  public final Optional<RelativeRoot> get(String name) {
-    return Optional.ofNullable(this.protocols.get(name)) //
-        .flatMap(p -> p.get());
+  @AfterAll
+  static void tearDownAfterClass() throws Exception {
+  }
+
+  private Hinted h;
+
+  @BeforeEach
+  void setUp() throws Exception {
+    this.h = new Hinted() {
+      @Override
+      public String getName() {
+        return VAL2;
+      }
+    };
+  }
+
+  @Test
+  void testGetHint() {
+    assertEquals(this.h.getHint(), VAL2);
   }
 
 }

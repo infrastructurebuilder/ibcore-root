@@ -48,12 +48,14 @@ import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceException;
 import org.infrastructurebuilder.util.readdetect.IBResourceRelativeRootSupplier;
 import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
+import org.infrastructurebuilder.util.vertx.base.VertxIBResource;
 import org.infrastructurebuilder.util.vertx.base.VertxIBResourceBuilder;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.vertx.core.Future;
+import io.vertx.core.Vertx;
 
 public class DefaultVertxIBResourceBuilder implements VertxIBResourceBuilder {
 
@@ -63,8 +65,10 @@ public class DefaultVertxIBResourceBuilder implements VertxIBResourceBuilder {
   private Path sourcePath;
   private Path finalRestingPath;
   private RelativeRoot root;
+  private final Vertx vertx;
 
-  public DefaultVertxIBResourceBuilder(IBResourceRelativeRootSupplier root) {
+  public DefaultVertxIBResourceBuilder(Vertx vertx, IBResourceRelativeRootSupplier root) {
+    this.vertx = requireNonNull(vertx);
     this.root = requireNonNull(root).get();
   }
 
@@ -235,10 +239,10 @@ public class DefaultVertxIBResourceBuilder implements VertxIBResourceBuilder {
   }
 
   @Override
-  public Future<IBResource> build(boolean hard) {
+  public Future<VertxIBResource> build(boolean hard) {
     try {
       validate(hard);
-      return Future.succeededFuture(new VertxDefaultIBResource(getRoot(),this.model, this.sourcePath));
+      return Future.succeededFuture(new VertxDefaultIBResource(this.vertx, getRoot(),this.model, this.sourcePath));
     } catch (IBException e) {
       log.error("Error building IBResource");
       return Future.failedFuture("Error building IBResource");

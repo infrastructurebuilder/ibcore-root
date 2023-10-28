@@ -75,9 +75,9 @@ public interface VertxIBResourceBuilder {
    */
   VertxIBResourceBuilder validate(boolean hard);
 
-  Future<IBResource> build(boolean hard);
+  Future<VertxIBResource> build(boolean hard);
 
-  default Future<IBResource> build() {
+  default Future<VertxIBResource> build() {
     return build(false);
   }
 

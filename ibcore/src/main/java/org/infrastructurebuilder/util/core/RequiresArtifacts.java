@@ -15,8 +15,26 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.readdetect;
+package org.infrastructurebuilder.util.core;
 
-public interface IBResourceRelativeRootSupplier extends RelativeRootSupplier{
+import java.util.Collections;
+import java.util.List;
 
+public interface RequiresArtifacts {
+  /**
+   * Return a list of coordinates that must be in the classpath in order to load the driver
+   *
+   * @return List of GAV items in order of required insertion into the (new) classpath that the driver will be created
+   *         from
+   */
+  List<GAV> getRequiredArtifacts();
+
+  /**
+   * As above, but optional.  By convention, the optional artifacts would be added
+   * to the classpath BEFORE the required artifacts.
+   * @return
+   */
+  default List<GAV> getOptionalArtifacts() {
+    return Collections.emptyList();
+  }
 }

@@ -721,16 +721,16 @@ public class IBUtils {
       final Object tGot = tbm.get(k);
 
       if (!tGot.equals(kGot))
-        if (kGot instanceof JSONObject kGot1 && tGot instanceof JSONObject tGot1) {
-          kGot = mergeJsonObjects(kGot1, tGot1);
-        } else if (kGot instanceof JSONArray kGot1 && tGot instanceof JSONArray tGot1) {
-          kGot = mergeJSONArray(kGot1, tGot1);
-        } else if (kGot instanceof JSONArray kGot1 && tGot instanceof String tGot1) {
-          kGot = mergeJSONArray(kGot1, tGot1);
-        } else if (tGot instanceof JSONArray kGot1 && kGot instanceof String tGot1) {
-          kGot = mergeJSONArray(kGot1, tGot1);
-        } else if (tGot instanceof String kGot1 && kGot instanceof String tGot1) {
-          kGot = new JSONArray(new HashSet<>(Arrays.asList(tGot1, kGot1)));
+        if (kGot instanceof JSONObject && tGot instanceof JSONObject) {
+          kGot = mergeJsonObjects((JSONObject) kGot, (JSONObject) tGot);
+        } else if (kGot instanceof JSONArray && tGot instanceof JSONArray) {
+          kGot = mergeJSONArray((JSONArray) kGot, (JSONArray) tGot);
+        } else if (kGot instanceof JSONArray && tGot instanceof String) {
+          kGot = mergeJSONArray((JSONArray) kGot, (String) tGot);
+        } else if (tGot instanceof JSONArray && kGot instanceof String) {
+          kGot = mergeJSONArray((JSONArray) tGot, (String) kGot);
+        } else if (tGot instanceof String && kGot instanceof String) {
+          kGot = new JSONArray(new HashSet<>(Arrays.asList((String) kGot, (String) tGot)));
         }
 
       b.put(k, kGot);
@@ -1076,10 +1076,10 @@ public class IBUtils {
       String ov;
       if (v == null || JSONObject.NULL.equals(v)) {
         ov = "null";
-      } else if (v instanceof JSONObject jo) {
-        ov = String.format("{%s}", _deepMapJSONtoOrderedString(jo));
-      } else if (v instanceof String strang) {
-        ov = String.format("\"%s\"", strang);
+      } else if (v instanceof JSONObject) {
+        ov = String.format("{%s}", _deepMapJSONtoOrderedString((JSONObject) v));
+      } else if (v instanceof String) {
+        ov = String.format("\"%s\"", (String) v);
       } else {
         ov = v.toString();
       }

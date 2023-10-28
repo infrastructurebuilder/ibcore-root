@@ -19,13 +19,13 @@ package org.infrastructurebuilder.util.readdetect.impl;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
-import static org.infrastructurebuilder.util.constants.IBConstants.*;
+import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
+import static org.infrastructurebuilder.util.constants.IBConstants.UNAVAILABLE_PATH;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -37,8 +37,9 @@ import java.util.UUID;
 import org.apache.tika.Tika;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.util.core.ChecksumBuilder;
+import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.IBResource;
-import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -85,7 +86,7 @@ public class IMDelegatedIBResource implements IBResource {
     requireNonNull(addlProps).ifPresent(p -> p.forEach((k, v) -> m.addAdditionalProperty(k.toString(), v.toString())));
 
     r = new DefaultIBResourceBuilder(Optional.empty()).fromModel(m).build().get();
-    log.debug("Built model {}",r.getChecksum().asUUID().get());
+    log.debug("Built model {}", r.getChecksum().asUUID().get());
   }
 
   public Optional<Path> getPath() {
@@ -93,7 +94,7 @@ public class IMDelegatedIBResource implements IBResource {
   }
 
   public Checksum getChecksum() {
-    return r.getChecksum();
+    return asChecksum();
   }
 
   public String getType() {
@@ -172,4 +173,8 @@ public class IMDelegatedIBResource implements IBResource {
     return true;
   }
 
+  @Override
+  public ChecksumBuilder getChecksumBuilder() {
+    return ChecksumBuilder.newInstance(getRelativeRoot().flatMap(RelativeRoot::getPath)).addChecksum(r.getChecksum());
+  }
 }

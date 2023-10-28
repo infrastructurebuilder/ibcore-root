@@ -15,33 +15,41 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.core;
+package org.infrastructurebuilder.util.maven.mavensupport;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toMap;
+import static java.util.Optional.of;
 
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
-@Named
-public class RelativeRootProvider  {
+import org.infrastructurebuilder.util.core.PathSupplier;
+import org.infrastructurebuilder.util.core.RelativeRoot;
 
-  private Map<String, RelativeRootProtocol> protocols;
+@Named(DefaultMavenBackedRelativeRoot.NAME)
+@Singleton
+public class DefaultMavenBackedRelativeRoot implements MavenBackedRelativeRoot {
+  final static String NAME = "maven-target";
+  private final RelativeRoot target;
 
   @Inject
-  public RelativeRootProvider(Set<RelativeRootProtocol> protocols) {
-    this.protocols = requireNonNull(protocols).stream() //
-        .collect(toMap(k -> k.getName(), identity()));
+  public DefaultMavenBackedRelativeRoot(
+      @Named(MavenProjectBuildOutputDirectoryPathSupplier.NAME) PathSupplier mavenTargetPath)
+  {
+    this.target =RelativeRoot.from( requireNonNull(mavenTargetPath).get());
   }
 
-  public final Optional<RelativeRoot> get(String name) {
-    return Optional.ofNullable(this.protocols.get(name)) //
-        .flatMap(p -> p.get());
+  @Override
+  public String getName() {
+    return NAME;
+  }
+
+  @Override
+  public Optional<RelativeRoot> get() {
+    return of(target);
   }
 
 }

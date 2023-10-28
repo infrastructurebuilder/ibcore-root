@@ -15,33 +15,31 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.core;
+package org.infrastructurebuilder.util.maven.mavensupport;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toMap;
-
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import static java.util.UUID.randomUUID;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-@Named
-public class RelativeRootProvider  {
+import org.infrastructurebuilder.util.core.PathSupplier;
 
-  private Map<String, RelativeRootProtocol> protocols;
+@Named(DefaultMavenBackedTempBasedRelativeRoot.NAME)
+public class DefaultMavenBackedTempBasedRelativeRoot extends DefaultMavenBackedRelativeRoot {
+
+  final static String NAME = "maven-target-temp";
 
   @Inject
-  public RelativeRootProvider(Set<RelativeRootProtocol> protocols) {
-    this.protocols = requireNonNull(protocols).stream() //
-        .collect(toMap(k -> k.getName(), identity()));
+  public DefaultMavenBackedTempBasedRelativeRoot(
+      @Named(MavenProjectBuildOutputDirectoryPathSupplier.NAME) PathSupplier mavenTargetPath)
+  {
+    super(() -> requireNonNull(mavenTargetPath).get().resolve(randomUUID().toString()));
   }
 
-  public final Optional<RelativeRoot> get(String name) {
-    return Optional.ofNullable(this.protocols.get(name)) //
-        .flatMap(p -> p.get());
+  @Override
+  public String getName() {
+    return NAME;
   }
 
 }

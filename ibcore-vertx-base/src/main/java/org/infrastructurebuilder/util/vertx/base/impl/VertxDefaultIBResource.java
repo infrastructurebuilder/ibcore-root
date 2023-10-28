@@ -47,6 +47,7 @@ import java.util.Properties;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.util.core.ChecksumBuilder;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
@@ -274,4 +275,9 @@ public class VertxDefaultIBResource implements VertxIBResource {
     return true;
   }
 
+  @Override
+  public ChecksumBuilder getChecksumBuilder() {
+    return ChecksumBuilder.newInstance(getRelativeRoot().flatMap(RelativeRoot::getPath))
+        .addChecksum(new Checksum(m.getFileChecksum()));
+  }
 }

@@ -15,29 +15,17 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.vertx.base;
+package org.infrastructurebuilder.util.core;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.function.Supplier;
 
-import org.infrastructurebuilder.util.readdetect.IBResourceBase;
+import org.infrastructurebuilder.exceptions.IBException;
 
-import io.vertx.core.Future;
-import io.vertx.core.Vertx;
-import io.vertx.core.file.AsyncFile;
-import io.vertx.core.file.OpenOptions;
+public interface TSupplierFactory<T, C> extends Hinted, LoggerEnabled, IdentifiedAndWeighted, Supplier<TSupplier<T>> {
+  Optional<TSupplier<T>> build();
 
-public interface VertxIBResource extends IBResourceBase {
-
-  Vertx vertx();
-
-  default Optional<Future<AsyncFile>> get() {
-    if (getPath().isEmpty())
-      return Optional.empty();
-    OpenOptions o = new OpenOptions().setRead(true);
-    Path p = Paths.get(".");
-    return Optional.of(vertx().fileSystem().open(p.toAbsolutePath().toString(), o));
+  default TSupplier<T> get() {
+    return build().orElseThrow(() -> new IBException("Failure to build"));
   }
-
 }

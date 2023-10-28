@@ -17,6 +17,8 @@
  */
 package org.infrastructurebuilder.util.core;
 
-public interface RelativeRootProtocol {
-// TODO
+import java.util.Optional;
+import java.util.function.Supplier;
+
+public interface RelativeRootProtocol extends NameDescribed, Supplier<Optional<RelativeRoot>>{
 }

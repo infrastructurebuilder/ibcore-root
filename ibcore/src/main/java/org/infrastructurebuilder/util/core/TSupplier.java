@@ -27,9 +27,10 @@ public class TSupplier<T> implements Supplier<T> {
     this.t = null;
   }
 
-  public void setT(T t) {
+  public TSupplier<T> setT(T t) {
     if (this.t == null) // You can only set it once
       this.t = t;
+    return this;
   }
 
   @Override

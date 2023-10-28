@@ -33,7 +33,6 @@ import static org.infrastructurebuilder.util.constants.IBConstants.SIZE;
 import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_NAME;
 import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_URL;
 import static org.infrastructurebuilder.util.constants.IBConstants.UPDATE_DATE;
-import static org.infrastructurebuilder.util.core.ChecksumEnabled.CHECKSUM;
 import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory.extracted;
 
 import java.io.InputStream;
@@ -49,6 +48,7 @@ import java.util.Properties;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.util.core.ChecksumBuilder;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.IBResource;
@@ -155,7 +155,7 @@ public class DefaultIBResource implements IBResource {
   @Override
   public Checksum getChecksum() {
     if (this.checksum == null)
-      this.checksum = new Checksum(m.getFileChecksum());
+      this.checksum = asChecksum();
     return this.checksum;
   }
 
@@ -262,5 +262,11 @@ public class DefaultIBResource implements IBResource {
         return false;
     }
     return true;
+  }
+
+  @Override
+  public ChecksumBuilder getChecksumBuilder() {
+    return ChecksumBuilder.newInstance(getRelativeRoot().flatMap(RelativeRoot::getPath))
+        .addChecksum(new Checksum(m.getFileChecksum()));
   }
 }
