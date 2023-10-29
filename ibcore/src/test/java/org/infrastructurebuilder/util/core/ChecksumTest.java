@@ -68,6 +68,11 @@ public class ChecksumTest {
   }
 
   @Test
+  public void testRick() {
+    assertEquals(cRick.toString(), IBUtilsTest.TESTFILE_CHECKSUM);
+  }
+
+  @Test
   public void testAsUUID() {
     final String uuid = "747a8830-5c25-3d28-ab17-81ed541f236e";
     assertEquals(uuid, cString.get().get().toString());

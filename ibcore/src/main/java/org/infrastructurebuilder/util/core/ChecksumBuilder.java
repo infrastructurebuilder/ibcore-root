@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
@@ -63,6 +64,10 @@ public final class ChecksumBuilder implements ChecksumEnabled {
     return newAlternateInstance(IBConstants.DIGEST_TYPE, relativeRoot);
   }
 
+  public final static ChecksumBuilder flatInstance(Checksum csum) {
+    return new ChecksumBuilder(csum);
+  }
+
   private final AtomicReference<Checksum> checksum = new AtomicReference<>(null);
   private final MessageDigest md;
   private final Optional<Path> relativeRoot;
@@ -73,6 +78,13 @@ public final class ChecksumBuilder implements ChecksumEnabled {
     md = requireNonNull(digestType);
     final Optional<Path> rr = requireNonNull(relativeRoot);
     this.relativeRoot = rr.map(r -> r.toAbsolutePath());
+  }
+
+  public ChecksumBuilder(Checksum csum) {
+    this.checksum.set(csum);
+    this.type = IBConstants.DIGEST_TYPE;
+    this.md = IBException.cet.returns(() ->  MessageDigest.getInstance(requireNonNull(this.type)));
+    this.relativeRoot = Optional.empty();
   }
 
   public ChecksumBuilder addBoolean(final Boolean s) {

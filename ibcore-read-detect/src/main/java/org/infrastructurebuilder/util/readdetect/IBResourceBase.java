@@ -26,11 +26,11 @@ import static org.infrastructurebuilder.util.constants.IBConstants.DESCRIPTION;
 import static org.infrastructurebuilder.util.constants.IBConstants.MIME_TYPE;
 import static org.infrastructurebuilder.util.constants.IBConstants.MOST_RECENT_READ_TIME;
 import static org.infrastructurebuilder.util.constants.IBConstants.PATH;
+import static org.infrastructurebuilder.util.constants.IBConstants.PATH_CHECKSUM;
 import static org.infrastructurebuilder.util.constants.IBConstants.SIZE;
 import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_NAME;
 import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_URL;
 import static org.infrastructurebuilder.util.constants.IBConstants.UPDATE_DATE;
-import static org.infrastructurebuilder.util.core.ChecksumEnabled.CHECKSUM;
 
 import java.net.URL;
 import java.nio.file.Path;
@@ -59,6 +59,11 @@ public interface IBResourceBase extends JSONOutputEnabled , ChecksumEnabled {
 
   /**
    * @return Non-null. Equivalent to calculated Checksum of the contents of the file at getPath()
+   */
+  Checksum getPathChecksum();
+
+  /**
+   * @return Non-null. Equivalent to calculated Checksum of the model, not just the file
    */
   Checksum getChecksum();
 
@@ -135,7 +140,7 @@ public interface IBResourceBase extends JSONOutputEnabled , ChecksumEnabled {
 
   default String defaultToString() {
     StringJoiner sj = new StringJoiner("|") //
-        .add(getChecksum().asUUID().get().toString()) // Checksum
+        .add(getPathChecksum().asUUID().get().toString()) // Checksum
         .add(getType()) // type
         .add(getPath().toString()); // Path
     getSourceURL().ifPresent(u -> sj.add(u.toExternalForm()));
@@ -145,6 +150,8 @@ public interface IBResourceBase extends JSONOutputEnabled , ChecksumEnabled {
 
   default JSONObject asJSON() {
     return new JSONBuilder(empty())
+
+        .addChecksum(PATH_CHECKSUM, getPathChecksum())
 
         .addChecksum(CHECKSUM, getChecksum())
 

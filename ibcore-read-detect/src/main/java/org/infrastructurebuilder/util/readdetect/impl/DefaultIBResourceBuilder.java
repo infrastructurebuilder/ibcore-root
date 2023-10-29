@@ -27,10 +27,10 @@ import static org.infrastructurebuilder.util.constants.IBConstants.MOST_RECENT_R
 import static org.infrastructurebuilder.util.constants.IBConstants.NAME;
 import static org.infrastructurebuilder.util.constants.IBConstants.NO_PATH_SUPPLIED;
 import static org.infrastructurebuilder.util.constants.IBConstants.PATH;
+import static org.infrastructurebuilder.util.constants.IBConstants.PATH_CHECKSUM;
 import static org.infrastructurebuilder.util.constants.IBConstants.SIZE;
 import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_URL;
 import static org.infrastructurebuilder.util.constants.IBConstants.UPDATE_DATE;
-import static org.infrastructurebuilder.util.core.ChecksumEnabled.CHECKSUM;
 import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory.extracted;
 import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory.toType;
 
@@ -67,7 +67,7 @@ public class DefaultIBResourceBuilder implements IBResourceBuilder {
   @Override
   public IBResourceBuilder fromJSON(JSONObject j) {
     model = new IBResourceModel();
-    model.setFileChecksum(j.getString(CHECKSUM));
+    model.setFileChecksum(j.getString(PATH_CHECKSUM));
     model.setSize(j.getLong(SIZE));
     model.setSource(j.getString(SOURCE_URL));
     model.setType(j.getString(MIME_TYPE));

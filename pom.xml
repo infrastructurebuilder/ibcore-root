@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibparent</artifactId>
-    <version>90</version>
+    <version>91-SNAPSHOT</version>
   </parent>
 
   <artifactId>ibcore-root</artifactId>
@@ -72,8 +72,8 @@
 
   <properties>
     <iblog.version>0.14.4-SNAPSHOT</iblog.version>
-    <ib.exceptions.version>90</ib.exceptions.version>
-    <maven.compiler.jdk.version>17</maven.compiler.jdk.version>
+    <ib.exceptions.version>91-SNAPSHOT</ib.exceptions.version>
+    <maven.compiler.jdk.version>11</maven.compiler.jdk.version>
 
   </properties>
 

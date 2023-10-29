@@ -50,6 +50,7 @@ public class IBResourceModelTest {
   private IBResourceBuilderFactory f;
   private Path root;
   private Path source;
+  private Checksum lc;
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -58,6 +59,7 @@ public class IBResourceModelTest {
     root = wps.get();
     path = wps.get().resolve(UUID.randomUUID().toString());
     IBUtils.copy(source, path);
+    lc = new Checksum(source);
     f = new IBResourceBuilderFactoryImpl(root);
     checksum = new Checksum(IBUtilsTest.TESTFILE_CHECKSUM);
     c2 = f.fromPath(source, "ABC").flatMap(IBResourceBuilder::build).get();
@@ -84,8 +86,8 @@ public class IBResourceModelTest {
   @Test
   public void testGetChecksum() {
     assertEquals(c1.getChecksum(), c2.getChecksum());
-    assertEquals(checksum, c1.getChecksum());
-    assertEquals(checksum, c2.getChecksum());
+    assertEquals(checksum, c1.getPathChecksum());
+    assertEquals(checksum, c2.getPathChecksum());
   }
 
   @Test

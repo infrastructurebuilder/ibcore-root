@@ -142,7 +142,7 @@ public class DefaultWGetterSupplierTest {
         .map(l -> l.get(0));
     assertTrue(q.isPresent());
     IBResource qr = q.get();
-    assertEquals(CHECKSUM.get().toString(), qr.getChecksum().toString());
+    assertEquals(CHECKSUM.get().toString(), qr.getPathChecksum().toString());
     assertEquals(IBConstants.TEXT_HTML, qr.getType());
     String v = IBUtils.readToString(qr.get().get());
     assertTrue(v.contains(WWW_IANA_ORG));
@@ -152,7 +152,7 @@ public class DefaultWGetterSupplierTest {
         false).map(l -> l.get(0));
     assertTrue(q.isPresent());
     qr = q.get();
-    assertEquals(CHECKSUM.get().toString(), qr.getChecksum().toString());
+    assertEquals(CHECKSUM.get().toString(), qr.getPathChecksum().toString());
     assertEquals(IBConstants.TEXT_HTML, qr.getType());
     v = IBUtils.readToString(qr.get().get());
     assertTrue(v.contains(WWW_IANA_ORG));
@@ -171,7 +171,7 @@ public class DefaultWGetterSupplierTest {
         .collectCacheAndCopyToChecksumNamedFile(false, of(creds), outputPath, src, CHECKSUM, empty(), 5, 0, true, false)
         .map(l -> l.get(0));
     assertTrue(q.isPresent());
-    assertEquals(CHECKSUM.get().toString(), q.get().getChecksum().toString());
+    assertEquals(CHECKSUM.get().toString(), q.get().getPathChecksum().toString());
     assertEquals(IBConstants.TEXT_HTML, q.get().getType());
     String v = IBUtils.readToString(q.get().get().get());
     assertTrue(v.contains(WWW_IANA_ORG));
@@ -180,7 +180,7 @@ public class DefaultWGetterSupplierTest {
     q = w.collectCacheAndCopyToChecksumNamedFile(true, empty(), outputPath, src, CHECKSUM, empty(), 5, 1000, false,
         false).map(l -> l.get(0));
     assertTrue(q.isPresent());
-    assertEquals(CHECKSUM.get().toString(), q.get().getChecksum().toString());
+    assertEquals(CHECKSUM.get().toString(), q.get().getPathChecksum().toString());
     assertEquals(IBConstants.TEXT_HTML, q.get().getType());
     v = IBUtils.readToString(q.get().get().get());
     assertTrue(v.contains(WWW_IANA_ORG));

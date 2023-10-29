@@ -128,7 +128,7 @@ public class IBResourceTest {
     assertTrue(cset.getMostRecentReadTime().toEpochMilli() - d < 3);
 
     assertEquals(183, cset.getPath().get().toFile().length());
-    assertEquals(CHECKSUMVAL, cset.getChecksum().toString());
+    assertEquals(CHECKSUMVAL, cset.getPathChecksum().toString());
     assertEquals(APPLICATION_ZIP, cset.getType());
     assertEquals(CHECKSUMVAL, new Checksum(cset.get().get()).toString());
 

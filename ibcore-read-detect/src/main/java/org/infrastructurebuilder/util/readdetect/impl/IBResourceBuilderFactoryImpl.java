@@ -95,7 +95,7 @@ public class IBResourceBuilderFactoryImpl implements IBResourceBuilderFactory {
 
         .orElseGet(() -> readIt(p, type));
 
-    r.ifPresent(rr -> this.cache.addResource(rr.build().get().copyModel())); // FIXME?  builds the model
+    r.ifPresent(rr -> this.cache.addResource(rr.build().get().copyModel())); // FIXME? builds the model
     return r;
   }
 
@@ -162,9 +162,8 @@ public class IBResourceBuilderFactoryImpl implements IBResourceBuilderFactory {
   public IBResourceBuilder builderFromPathAndChecksum(Path p, Checksum checksum) {
     // We have a checksum, so we can read it, etc.
     Optional<BasicFileAttributes> bfa = IBResourceBuilderFactory.getAttributes.apply(p);
-    var m = this.builder.get()
-
-        .from(p) // sets filepath and name (and source?)
+    var m = this.builder.get();
+    m = m.from(p) // sets filepath and name (and source?)
 
         .withChecksum(checksum)
 

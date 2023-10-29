@@ -93,6 +93,11 @@ public class IMDelegatedIBResource implements IBResource {
     throw new IBException(UNAVAILABLE_PATH);
   }
 
+  @Override
+  public Checksum getPathChecksum() {
+    return r.getPathChecksum();
+  }
+
   public Checksum getChecksum() {
     return asChecksum();
   }

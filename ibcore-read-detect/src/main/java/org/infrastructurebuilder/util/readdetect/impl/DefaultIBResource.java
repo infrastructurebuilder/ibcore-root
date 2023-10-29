@@ -265,6 +265,11 @@ public class DefaultIBResource implements IBResource {
   }
 
   @Override
+  public Checksum getPathChecksum() {
+    return new Checksum(m.getFileChecksum());
+  }
+
+  @Override
   public ChecksumBuilder getChecksumBuilder() {
     return ChecksumBuilder.newInstance(getRelativeRoot().flatMap(RelativeRoot::getPath))
         .addChecksum(new Checksum(m.getFileChecksum()));

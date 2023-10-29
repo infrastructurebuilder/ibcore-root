@@ -170,6 +170,11 @@ public class VertxDefaultIBResource implements VertxIBResource {
   }
 
   @Override
+  public Checksum getPathChecksum() {
+    return new Checksum(m.getFileChecksum());
+  }
+
+  @Override
   public Checksum getChecksum() {
     if (this.checksum == null)
       this.checksum = new Checksum(m.getFileChecksum());

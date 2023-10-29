@@ -178,6 +178,7 @@ public interface IBConstants {
   String STACK_TRACE = "stackTrace";
   String UNKNOWN_THROWABLE_CLASS = "unknown.throwable.class";
 
+  String PATH_CHECKSUM = "pathChecksum";
   String CREATE_DATE = "created";
   String UPDATE_DATE = "updated";
   String EXPIRE_DATE = "expires";
