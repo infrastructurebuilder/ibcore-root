@@ -344,6 +344,16 @@ public class IBUtilsTest {
   }
 
   @Test
+  public void testCopyTree() throws IOException {
+    Path cl = this.wps.getTestClasses();
+    var v = IBUtils.allFilesInTree(cl);
+    Path cl2 = wps.get();
+    IBUtils.copyTree(cl, cl2);
+    assertTrue(v.size() > 0);
+    assertEquals(v.size(), IBUtils.allFilesInTree(cl2).size());
+  }
+
+  @Test
   public void testCopyAndDigestInputStream() throws IOException, NoSuchAlgorithmException {
     final String x = ABC;
     Checksum y;

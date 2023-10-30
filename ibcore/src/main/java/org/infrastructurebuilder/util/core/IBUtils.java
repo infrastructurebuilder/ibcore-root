@@ -365,6 +365,38 @@ public class IBUtils {
     return out;
   }
 
+  public static Path copyTree(final Path in, final Path out) throws IOException {
+    walkFileTree(in, new SimpleFileVisitor<Path>() {
+      private final Path relativize(Path p) {
+        return in.relativize(p);
+      }
+
+      private final Path outTarget(Path p) {
+        return out.resolve(relativize(p));
+      }
+
+      @Override
+      public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+        super.preVisitDirectory(dir, attrs);
+        Path outTarget = outTarget(dir);
+        if (!Files.exists(outTarget.getParent()) || !Files.isDirectory(outTarget.getParent()))
+          Files.createDirectories(outTarget.getParent());
+        if (!Files.isDirectory(outTarget))
+          Files.createDirectory(outTarget(dir));
+        return FileVisitResult.CONTINUE;
+      }
+
+      @Override
+      public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+        Path outTarget = outTarget(file);
+        Files.copy(file, outTarget);
+        return FileVisitResult.CONTINUE;
+      }
+
+    });
+    return out;
+  }
+
   public static Checksum copyAndDigest(final String type, final InputStream ins, final OutputStream target)
       throws IOException, NoSuchAlgorithmException {
     try (DigestInputStream sink = new DigestInputStream(ins, MessageDigest.getInstance(requireNonNull(type)))) {
