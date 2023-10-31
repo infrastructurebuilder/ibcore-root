@@ -22,11 +22,9 @@ import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Nullable;
 
 import org.slf4j.Logger;
 
-import com.googlecode.download.maven.plugin.internal.ChecksumUtils;
 
 /**
  * Checksums supplied to verify file integrity.
@@ -37,8 +35,8 @@ public final class Checksums {
 
   private final Map<String, String> supplied;
 
-  public Checksums(@Nullable final String md5, @Nullable final String sha1, @Nullable final String sha256,
-      @Nullable final String sha512, Logger log)
+  public Checksums( final String md5,  final String sha1,  final String sha256,
+       final String sha512, Logger log)
   {
     this.supplied = Checksums.create(md5, sha1, sha256, sha512);
     if (this.supplied.isEmpty()) {
@@ -85,8 +83,8 @@ public final class Checksums {
    * @param sha512 Supplied sha512 checksum, may be {@literal null}.
    * @return A map of a checksum type to a digest; {@literal null} digests are not included.
    */
-  private static Map<String, String> create(@Nullable final String md5, @Nullable final String sha1,
-      @Nullable final String sha256, @Nullable final String sha512) {
+  private static Map<String, String> create( final String md5,  final String sha1,
+       final String sha256,  final String sha512) {
     final Map<String, String> digests = new HashMap<>();
 //            digests.put(DownloadChecksum.MD5, md5);
 //        }
