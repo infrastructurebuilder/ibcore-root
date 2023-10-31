@@ -89,9 +89,9 @@ class ProcessExecutionModelXpp3WriterExTest {
     StringReader is = new StringReader(os.toString());
     ResultInputSource s = new ResultInputSource();
     GeneratedProcessExecutionResult q = this.r.read(is, true, s);
-    assertEquals(m.getId(),q.getId());
-    assertEquals(m.getStdOut(),q.getStdOut());
-    assertEquals(m.getRunningtime() ,q.getRunningtime());
+    assertEquals(m.getId(), q.getId());
+    assertEquals(m.getStdOut(), q.getStdOut());
+    assertEquals(m.getRunningtime(), q.getRunningtime());
 
   }
 
@@ -102,9 +102,9 @@ class ProcessExecutionModelXpp3WriterExTest {
     ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
     ResultInputSource s = new ResultInputSource();
     GeneratedProcessExecutionResult q = this.r.read(is, true, s);
-    assertEquals(m.getId(),q.getId());
-    assertEquals(m.getStdOut(),q.getStdOut());
-    assertEquals(m.getRunningtime() ,q.getRunningtime());
+    assertEquals(m.getId(), q.getId());
+    assertEquals(m.getStdOut(), q.getStdOut());
+    assertEquals(m.getRunningtime(), q.getRunningtime());
   }
 
 }

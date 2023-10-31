@@ -30,8 +30,9 @@ public interface RequiresArtifacts {
   List<GAV> getRequiredArtifacts();
 
   /**
-   * As above, but optional.  By convention, the optional artifacts would be added
-   * to the classpath BEFORE the required artifacts.
+   * As above, but optional. By convention, the optional artifacts would be added to the classpath BEFORE the required
+   * artifacts.
+   *
    * @return
    */
   default List<GAV> getOptionalArtifacts() {

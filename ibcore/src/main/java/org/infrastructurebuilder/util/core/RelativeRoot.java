@@ -36,44 +36,50 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A RelativeRoot ("root") is an object that holds some base location as the base location of filesystem or
- * filesystem-like collection.  Some persisted things, like ChecksumBuilder and JSONBuilder, accept a RelativeRoot and strip off
- * the prefix from an absolute value.
+ * filesystem-like collection. Some persisted things, like ChecksumBuilder and JSONBuilder, accept a RelativeRoot and
+ * strip off the prefix from an absolute value.
  *
- * The RelativeRoot solves a problem of checksumming values that have paths baked into them.  It allows us to manage
- * any number of filesystem objects as relative paths from some RelativeRoot, and thus as long as the root is set to the same
- * value those streams should be the same streams in the future.  So if the path of an object is part of its checksum, then
- * we can just path everything off the RelativeRoot.
+ * The RelativeRoot solves a problem of checksumming values that have paths baked into them. It allows us to manage any
+ * number of filesystem objects as relative paths from some RelativeRoot, and thus as long as the root is set to the
+ * same value those streams should be the same streams in the future. So if the path of an object is part of its
+ * checksum, then we can just path everything off the RelativeRoot.
  *
- * It is possible that at some point we will make RelativeRoot values into a Java FileSystem object, allowing us to treat everything
- * as 'absolute' within the root area.
+ * It is possible that at some point we will make RelativeRoot values into a Java FileSystem object, allowing us to
+ * treat everything as 'absolute' within the root area.
  *
  * Requirements:
  * <ol>
- * <li>A root cannot be null.  A null value is not applicable as a root.</li>
+ * <li>A root cannot be null. A null value is not applicable as a root.</li>
  * <li>A root may be a <code>Path</code></li>
- *  <ol>
- *    <li>The Path must be absolute</li>
- *    <li>Any relativization or resolution must be <b><i>within the path</i></b>.  Relative links cannot travel outside the root path.
- *  </ol>
+ * <ol>
+ * <li>The Path must be absolute</li>
+ * <li>Any relativization or resolution must be <b><i>within the path</i></b>. Relative links cannot travel outside the
+ * root path.
+ * </ol>
  * <li>A root may be a <code>java.net.URL</code></li>
- *  <ol>
- *    <li>File paths are commuted to their URI equivalent and then externalized, so all Path objects are really URL-backed.</li>
- *    <li>Since a URL is more "outside of the control" of the local system (usually), it is possible that some relocation might be problematic.</li>
- *    <li>Since URL <code>scheme</code>'s are loaded at runtime, it is possible that a reconstituted runtime would have different schemes
- *      available to it.  For instance, one might have a <code>java.net.URLStreamHandler</code> for S3, such that <code>s3://blahblahblah</code> pointed to a viable
- *      URL location.  When that is persisted, but then later the runtime didn't have access to that <code>URLStreamHandler</code> for whatever reason,
- *      the underlying system's integrity would not be damaged but access definitely would be.</li>
- *  </ol>
+ * <ol>
+ * <li>File paths are commuted to their URI equivalent and then externalized, so all Path objects are really
+ * URL-backed.</li>
+ * <li>Since a URL is more "outside of the control" of the local system (usually), it is possible that some relocation
+ * might be problematic.</li>
+ * <li>Since URL <code>scheme</code>'s are loaded at runtime, it is possible that a reconstituted runtime would have
+ * different schemes available to it. For instance, one might have a <code>java.net.URLStreamHandler</code> for S3, such
+ * that <code>s3://blahblahblah</code> pointed to a viable URL location. When that is persisted, but then later the
+ * runtime didn't have access to that <code>URLStreamHandler</code> for whatever reason, the underlying system's
+ * integrity would not be damaged but access definitely would be.</li>
+ * </ol>
  * <li>A root may be a URL-like string, such as an S3 url
- *  <ol>
- *    <li>A "URL-like" means that the implementation of whatever IB-based code exists is going to handle the transfers for us, much in the manner
- *    of a <code>URLStreamHandler</code>.</li>
- *    <li>However, unlike above, there will be application logic that interprets the string so that configuration is simpler.</li>
- *    <li>Either way has advantages.</li>
- *  </ol>
+ * <ol>
+ * <li>A "URL-like" means that the implementation of whatever IB-based code exists is going to handle the transfers for
+ * us, much in the manner of a <code>URLStreamHandler</code>.</li>
+ * <li>However, unlike above, there will be application logic that interprets the string so that configuration is
+ * simpler.</li>
+ * <li>Either way has advantages.</li>
+ * </ol>
  * </ol>
  *
- * Generally, the URL or the Path implementation is the correct one.  Those are loaded at runtime by default, and thus always available.
+ * Generally, the URL or the Path implementation is the correct one. Those are loaded at runtime by default, and thus
+ * always available.
  *
  */
 public class RelativeRoot implements JSONAndChecksumEnabled {
@@ -116,6 +122,7 @@ public class RelativeRoot implements JSONAndChecksumEnabled {
       }
     return u;
   }
+
   public final static RelativeRoot from(String s) {
     return new RelativeRoot(s);
   }
@@ -220,8 +227,7 @@ public class RelativeRoot implements JSONAndChecksumEnabled {
 
   @Override
   public JSONObject asJSON() {
-    return new JSONBuilder(Optional.empty())
-        .addString(STRING_ROOT, this.stringRoot) // required
+    return new JSONBuilder(Optional.empty()).addString(STRING_ROOT, this.stringRoot) // required
         .asJSON();
   }
 

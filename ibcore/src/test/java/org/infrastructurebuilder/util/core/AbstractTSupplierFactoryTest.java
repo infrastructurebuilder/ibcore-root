@@ -79,7 +79,6 @@ class AbstractTSupplierFactoryTest {
   void tearDown() throws Exception {
   }
 
-
   @Test
   void testBuild() {
     TSupplier<String> v1 = this.tsf.get();

@@ -85,28 +85,24 @@ import org.slf4j.Logger;
  */
 public final class WGet {
   public static String getOutputFileName(URI uri) {
-    return uri.getPath().isEmpty() || uri.getPath().equals("/")
-            ? uri.getHost()
-            : uri.getPath().substring(uri.getPath().lastIndexOf('/') + 1);
-}
+    return uri.getPath().isEmpty() || uri.getPath().equals("/") ? uri.getHost()
+        : uri.getPath().substring(uri.getPath().lastIndexOf('/') + 1);
+  }
 
-  public static boolean isBlank(  String str )
-  {
-      int strLen;
-      // CHECKSTYLE_OFF: InnerAssignment
-      if ( str == null || ( strLen = str.length() ) == 0 )
-      // CHECKSTYLE_ON: InnerAssignment
-      {
-          return true;
-      }
-      for ( int i = 0; i < strLen; i++ )
-      {
-          if ( !Character.isWhitespace( str.charAt( i ) ) )
-          {
-              return false;
-          }
-      }
+  public static boolean isBlank(String str) {
+    int strLen;
+    // CHECKSTYLE_OFF: InnerAssignment
+    if (str == null || (strLen = str.length()) == 0)
+    // CHECKSTYLE_ON: InnerAssignment
+    {
       return true;
+    }
+    for (int i = 0; i < strLen; i++) {
+      if (!Character.isWhitespace(str.charAt(i))) {
+        return false;
+      }
+    }
+    return true;
   }
 
   public final static Function<ProxyInfo, Proxy> mapPIPToProxy = (pip) -> {

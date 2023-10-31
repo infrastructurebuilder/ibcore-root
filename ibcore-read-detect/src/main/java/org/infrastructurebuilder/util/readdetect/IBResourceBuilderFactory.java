@@ -152,7 +152,7 @@ public interface IBResourceBuilderFactory {
     try {
       return fromJSON(cet.returns(() -> new JSONObject(json)));
     } catch (IBException e) {
-      //TODO?
+      // TODO?
       return Optional.empty();
     }
 

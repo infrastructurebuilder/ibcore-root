@@ -56,5 +56,4 @@ public interface JsonOutputEnabled {
     return requireNonNull(f).toJson();
   }
 
-
 }

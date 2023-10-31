@@ -57,7 +57,7 @@ class IBResourceCacheFactoryImplTest {
 //
   @Test
   void testFromURLLikeString() {
-    assertTrue(rcf.fromURLLike(null,null).isEmpty());
+    assertTrue(rcf.fromURLLike(null, null).isEmpty());
   }
 
 //  @Test

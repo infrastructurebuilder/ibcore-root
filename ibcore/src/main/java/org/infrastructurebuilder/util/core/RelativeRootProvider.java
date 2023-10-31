@@ -29,7 +29,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 @Named
-public class RelativeRootProvider  {
+public class RelativeRootProvider {
 
   private Map<String, RelativeRootProtocol> protocols;
 

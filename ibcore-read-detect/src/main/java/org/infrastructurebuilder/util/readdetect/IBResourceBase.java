@@ -49,7 +49,7 @@ import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
 import org.json.JSONObject;
 
-public interface IBResourceBase extends JSONOutputEnabled , ChecksumEnabled {
+public interface IBResourceBase extends JSONOutputEnabled, ChecksumEnabled {
 
   /**
    * @return Path to this result. If <code>empty()</code>, this is considered a reference resource.
@@ -105,7 +105,6 @@ public interface IBResourceBase extends JSONOutputEnabled , ChecksumEnabled {
     return ofNullable(getLastUpdateDate());
   }
 
-
   Optional<URL> getSourceURL();
 
   Optional<String> getSourceName();
@@ -127,8 +126,8 @@ public interface IBResourceBase extends JSONOutputEnabled , ChecksumEnabled {
     if (obj == null) {
       return false;
     }
-    if ((obj instanceof IBResource )) {
-      IBResource other = (IBResource)obj;
+    if ((obj instanceof IBResource)) {
+      IBResource other = (IBResource) obj;
       return Objects.equals(getChecksum(), other.getChecksum()) // checksum
           && Objects.equals(getPath(), other.getPath()) // path
           && Objects.equals(getSourceName(), other.getSourceName()) // source

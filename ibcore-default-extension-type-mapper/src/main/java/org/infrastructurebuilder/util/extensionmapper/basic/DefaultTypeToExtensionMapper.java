@@ -102,12 +102,10 @@ public class DefaultTypeToExtensionMapper implements TypeToExtensionMapper {
   @Inject
   public DefaultTypeToExtensionMapper() {
     this.defaultExtension = DEFAULT_EXTENSION;
-    list.addAll(Arrays.asList(
-        new TypeMapTuple(IBDATA_SCHEMA, XML) //
+    list.addAll(Arrays.asList(new TypeMapTuple(IBDATA_SCHEMA, XML) //
         , new TypeMapTuple(APPLICATION_XML, XML, ORG_W3C_DOM_NODE) //
-        , new TypeMapTuple(TEXT_HTML, HTM, JAVA_LANG_STRING)
-        , new TypeMapTuple(TEXT_HTML, HTML, JAVA_LANG_STRING)
-        , new TypeMapTuple(TEXT_PLAIN, TXT, JAVA_LANG_STRING) //
+        , new TypeMapTuple(TEXT_HTML, HTM, JAVA_LANG_STRING), new TypeMapTuple(TEXT_HTML, HTML, JAVA_LANG_STRING),
+        new TypeMapTuple(TEXT_PLAIN, TXT, JAVA_LANG_STRING) //
         , new TypeMapTuple(APPLICATION_ZIP, ZIP) //
         , new TypeMapTuple(TEXT_CSV, CSV, JAVA_LANG_STRING) //
         , new TypeMapTuple(TEXT_TSV, TSV, JAVA_LANG_STRING) //

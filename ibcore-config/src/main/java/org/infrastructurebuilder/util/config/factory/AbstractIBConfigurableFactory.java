@@ -26,7 +26,7 @@ import org.infrastructurebuilder.util.config.IBRuntimeUtils;
  * @param <T> an IBConfigurableFactory type
  * @param <C> A configuration supply type
  */
-abstract public class AbstractIBConfigurableFactory<T , C> implements IBConfigurableFactory<T, C> {
+abstract public class AbstractIBConfigurableFactory<T, C> implements IBConfigurableFactory<T, C> {
 
   private final IBRuntimeUtils ibr;
 

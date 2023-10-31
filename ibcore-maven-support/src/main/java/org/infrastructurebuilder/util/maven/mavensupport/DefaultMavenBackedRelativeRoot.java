@@ -39,7 +39,7 @@ public class DefaultMavenBackedRelativeRoot implements MavenBackedRelativeRoot {
   public DefaultMavenBackedRelativeRoot(
       @Named(MavenProjectBuildOutputDirectoryPathSupplier.NAME) PathSupplier mavenTargetPath)
   {
-    this.target =RelativeRoot.from( requireNonNull(mavenTargetPath).get());
+    this.target = RelativeRoot.from(requireNonNull(mavenTargetPath).get());
   }
 
   @Override

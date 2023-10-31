@@ -17,7 +17,6 @@
  */
 package org.infrastructurebuilder.util.core;
 
-
 import java.util.Optional;
 
 import org.json.JSONObject;

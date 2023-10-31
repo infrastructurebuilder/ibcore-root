@@ -25,9 +25,9 @@ import io.vertx.core.json.JsonObject;
 
 public interface InstanceFactory<T> extends LoggerEnabled {
   /**
-   * Return an instance of type T from the value in a
-   * JsonObject.  If the values aren't available, by defaults
-   * you should return empty()
+   * Return an instance of type T from the value in a JsonObject. If the values aren't available, by defaults you should
+   * return empty()
+   *
    * @param j
    * @return Instance of T from values in j
    */

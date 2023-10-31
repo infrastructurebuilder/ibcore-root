@@ -22,32 +22,31 @@ import java.net.URI;
 import org.slf4j.Logger;
 
 /**
- * Silent (no-op) implementation of {@link ProgressReport}. Only errors will get logged
- * at ERROR priority.
+ * Silent (no-op) implementation of {@link ProgressReport}. Only errors will get logged at ERROR priority.
  */
 public final class SilentProgressReport implements ProgressReport {
 
-    private final Logger log;
+  private final Logger log;
 
-    public SilentProgressReport(Logger log) {
-        this.log = log;
-    }
+  public SilentProgressReport(Logger log) {
+    this.log = log;
+  }
 
-    @Override
-    public void initiate(URI uri, long total) {
-    }
+  @Override
+  public void initiate(URI uri, long total) {
+  }
 
-    @Override
-    public void update(long bytesRead) {
-    }
+  @Override
+  public void update(long bytesRead) {
+  }
 
-    @Override
-    public void completed() {
-    }
+  @Override
+  public void completed() {
+  }
 
-    @Override
-    public void error(Exception ex) {
-        log.error("Error",ex);
-    }
+  @Override
+  public void error(Exception ex) {
+    log.error("Error", ex);
+  }
 
 }

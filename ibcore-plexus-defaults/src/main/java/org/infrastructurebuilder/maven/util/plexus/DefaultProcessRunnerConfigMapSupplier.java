@@ -35,12 +35,11 @@ public class DefaultProcessRunnerConfigMapSupplier extends DefaultConfigMapSuppl
 
   public DefaultProcessRunnerConfigMapSupplier(final ConfigMapSupplier cms) {
     final ConfigMap tempMap = cms.get();
-    configMap = new ConfigMap(
-        unmodifiableMap(tempMap.entrySet().stream()
+    configMap = new ConfigMap(unmodifiableMap(tempMap.entrySet().stream()
 
-            .filter(e -> e.getKey().startsWith(PROCESS_NAMESPACE))
+        .filter(e -> e.getKey().startsWith(PROCESS_NAMESPACE))
 
-            .collect(toMap(k -> k.getKey().toString(), v -> v.getValue()))));
+        .collect(toMap(k -> k.getKey().toString(), v -> v.getValue()))));
   }
 
   @Override

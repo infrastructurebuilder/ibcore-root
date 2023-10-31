@@ -46,8 +46,9 @@ public class IBResourceTest {
   private TestingPathSupplier wps;
   private Path testFile;
 
-  private IBResourceBuilderFactory rcf ;
+  private IBResourceBuilderFactory rcf;
   private Path root;
+
   @BeforeEach
   public void setUp() throws Exception {
     this.wps = new TestingPathSupplier();
@@ -64,8 +65,7 @@ public class IBResourceTest {
 
   @Test
   public void testNonExistentFile() {
-    assertThrows(IBException.class,
-        () -> toType.apply(Paths.get(".").resolve(UUID.randomUUID().toString())));
+    assertThrows(IBException.class, () -> toType.apply(Paths.get(".").resolve(UUID.randomUUID().toString())));
   }
 
   @Test

@@ -37,7 +37,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 public class FakeArchiverManager implements ArchiverManager {
 
-  private static String getFileExtention( final File file) {
+  private static String getFileExtention(final File file) {
     final String path = file.getAbsolutePath();
 
     String archiveExt = FileUtils.getExtension(path).toLowerCase(Locale.ENGLISH);
@@ -56,37 +56,37 @@ public class FakeArchiverManager implements ArchiverManager {
 
   @Override
 
-  public Archiver getArchiver( final File file) throws NoSuchArchiverException {
+  public Archiver getArchiver(final File file) throws NoSuchArchiverException {
     return getArchiver(getFileExtention(file));
   }
 
   @Override
 
-  public Archiver getArchiver( final String archiverName) throws NoSuchArchiverException {
+  public Archiver getArchiver(final String archiverName) throws NoSuchArchiverException {
     return new ZipArchiver();
   }
 
   @Override
 
-  public PlexusIoResourceCollection getResourceCollection( final File file) throws NoSuchArchiverException {
+  public PlexusIoResourceCollection getResourceCollection(final File file) throws NoSuchArchiverException {
     return getResourceCollection(getFileExtention(file));
   }
 
   @Override
-  public  PlexusIoResourceCollection getResourceCollection(final String resourceCollectionName)
+  public PlexusIoResourceCollection getResourceCollection(final String resourceCollectionName)
       throws NoSuchArchiverException {
     return new PlexusIoZipFileResourceCollection();
   }
 
   @Override
 
-  public UnArchiver getUnArchiver( final File file) throws NoSuchArchiverException {
+  public UnArchiver getUnArchiver(final File file) throws NoSuchArchiverException {
     return getUnArchiver(getFileExtention(file));
   }
 
   @Override
 
-  public UnArchiver getUnArchiver( final String unArchiverName) throws NoSuchArchiverException {
+  public UnArchiver getUnArchiver(final String unArchiverName) throws NoSuchArchiverException {
     return new ZipUnArchiver();
   }
 

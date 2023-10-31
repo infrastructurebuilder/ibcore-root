@@ -59,7 +59,7 @@ class RelativeRootTest {
   }
 
   private RelativeRootProvider rrp;
-  private RelativeRoot prr, hrr, s3r,s3r2;
+  private RelativeRoot prr, hrr, s3r, s3r2;
   private Path tp;
   private Path ssPath;
   private Path r2;
@@ -114,7 +114,7 @@ class RelativeRootTest {
     assertFalse(hrr.isURLLike());
     String v = hrr.relativize(ssURL).get();
     assertEquals(ss, v);
-    Path rr  = ssPath.toAbsolutePath();
+    Path rr = ssPath.toAbsolutePath();
     assertTrue(hrr.relativize(rr).isEmpty());
   }
 
@@ -122,7 +122,7 @@ class RelativeRootTest {
   void testURLLikeStuff() {
     String ok = URLLIKE + "/" + ss;
     String v = s3r.relativize(ok);
-    assertEquals(ss,v);
+    assertEquals(ss, v);
 
     String notOK = OTHLIKE + "/" + ss;
     String w = s3r.relativize(notOK);
@@ -130,7 +130,7 @@ class RelativeRootTest {
 
     assertEquals(ssPath, s3r.relativize(ssPath).get());
     var s3rr = s3r.resolvePath(ssPath);
-    assertEquals(ok,s3rr);
+    assertEquals(ok, s3rr);
 
     assertTrue(s3r.relativize(ssPath.toAbsolutePath()).isEmpty());
   }
@@ -144,6 +144,6 @@ class RelativeRootTest {
   @Test
   void testJSON() {
     var json = s3r.asJSON().toString();
-    assertEquals(STRING_ROOT_S3_AMAZON_BUCKET,json);
+    assertEquals(STRING_ROOT_S3_AMAZON_BUCKET, json);
   }
 }

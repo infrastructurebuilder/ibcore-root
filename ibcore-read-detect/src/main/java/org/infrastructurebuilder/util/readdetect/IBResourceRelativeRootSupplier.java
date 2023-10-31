@@ -17,6 +17,6 @@
  */
 package org.infrastructurebuilder.util.readdetect;
 
-public interface IBResourceRelativeRootSupplier extends RelativeRootSupplier{
+public interface IBResourceRelativeRootSupplier extends RelativeRootSupplier {
 
 }

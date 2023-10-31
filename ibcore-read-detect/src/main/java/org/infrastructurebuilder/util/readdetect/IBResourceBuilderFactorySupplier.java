@@ -29,7 +29,8 @@ import org.infrastructurebuilder.util.core.PathSupplier;
 import org.infrastructurebuilder.util.readdetect.impl.IBResourceBuilderFactoryImpl;
 
 @Named(IBResourceBuilderFactorySupplier.NAME)
-public class IBResourceBuilderFactorySupplier implements Supplier<IBResourceBuilderFactory>, Provider<IBResourceBuilderFactory> {
+public class IBResourceBuilderFactorySupplier
+    implements Supplier<IBResourceBuilderFactory>, Provider<IBResourceBuilderFactory> {
   public final static String NAME = "IBResourceCacheFactorySupplier";
   private final PathSupplier root;
 

@@ -22,7 +22,6 @@ import java.util.Objects;
 
 import org.slf4j.Logger;
 
-
 public class LoggerProgressReport implements ProgressReport {
   private final Logger log;
 

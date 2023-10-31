@@ -16,9 +16,9 @@
  * @formatter:on
  */
 /**
- * 
+ *
  */
 /**
- * 
+ *
  */
 package org.infrastructurebuilder.util.readdetect.model;

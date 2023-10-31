@@ -31,26 +31,26 @@ import org.infrastructurebuilder.util.readdetect.IBResourceException;
  */
 public class ChecksumUtils {
 
-    public static void verifyChecksum(File file, String expectedDigest, MessageDigest digest) throws Exception {
-        String actualDigestHex = ChecksumUtils.computeChecksumAsString(file, digest);
-        if (!actualDigestHex.equals(expectedDigest)) {
-            throw new IBResourceException("Not same digest as expected: expected <" + expectedDigest + "> was <" + actualDigestHex + ">");
-        }
+  public static void verifyChecksum(File file, String expectedDigest, MessageDigest digest) throws Exception {
+    String actualDigestHex = ChecksumUtils.computeChecksumAsString(file, digest);
+    if (!actualDigestHex.equals(expectedDigest)) {
+      throw new IBResourceException(
+          "Not same digest as expected: expected <" + expectedDigest + "> was <" + actualDigestHex + ">");
     }
+  }
 
-    public static String computeChecksumAsString(File file,
-        MessageDigest digest) throws IOException {
-        InputStream fis = Files.newInputStream(file.toPath());
-        byte[] buffer = new byte[1024];
-        int numRead;
-        do {
-            numRead = fis.read(buffer);
-            if (numRead > 0) {
-                digest.update(buffer, 0, numRead);
-            }
-        } while (numRead != -1);
-        fis.close();
-        byte[] actualDigest = digest.digest();
-        return new String(Hex.encodeHex(actualDigest));
-    }
+  public static String computeChecksumAsString(File file, MessageDigest digest) throws IOException {
+    InputStream fis = Files.newInputStream(file.toPath());
+    byte[] buffer = new byte[1024];
+    int numRead;
+    do {
+      numRead = fis.read(buffer);
+      if (numRead > 0) {
+        digest.update(buffer, 0, numRead);
+      }
+    } while (numRead != -1);
+    fis.close();
+    byte[] actualDigest = digest.digest();
+    return new String(Hex.encodeHex(actualDigest));
+  }
 }

@@ -168,6 +168,7 @@ public class DefaultWGetter implements WGetter {
     cet.returns(() -> copy(source, newTarget));
     return cf.builderFromPathAndChecksum(newTarget, cSum);
   }
+
   private boolean isFileUnArchiver(final UnArchiver unarchiver) {
     return unarchiver instanceof BZip2UnArchiver || unarchiver instanceof GZipUnArchiver
         || unarchiver instanceof SnappyUnArchiver || unarchiver instanceof XZUnArchiver;

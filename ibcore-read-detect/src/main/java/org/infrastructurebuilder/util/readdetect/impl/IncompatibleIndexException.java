@@ -24,7 +24,7 @@ package org.infrastructurebuilder.util.readdetect.impl;
  * (including Java serialization changes, or even moving to a different serialization mechanism (JSON, XML, etc.).
  */
 class IncompatibleIndexException extends RuntimeException {
-    IncompatibleIndexException(Exception cause) {
-        super(cause);
-    }
+  IncompatibleIndexException(Exception cause) {
+    super(cause);
+  }
 }

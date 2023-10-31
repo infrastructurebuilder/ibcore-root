@@ -83,7 +83,7 @@ public final class ChecksumBuilder implements ChecksumEnabled {
   public ChecksumBuilder(Checksum csum) {
     this.checksum.set(csum);
     this.type = IBConstants.DIGEST_TYPE;
-    this.md = IBException.cet.returns(() ->  MessageDigest.getInstance(requireNonNull(this.type)));
+    this.md = IBException.cet.returns(() -> MessageDigest.getInstance(requireNonNull(this.type)));
     this.relativeRoot = Optional.empty();
   }
 
@@ -342,7 +342,7 @@ public final class ChecksumBuilder implements ChecksumEnabled {
     if (o instanceof JSONObject) {
       b.addJSONObject((JSONObject) o);
     } else if (o instanceof JSONArray) {
-      b.addJSONArray((JSONArray)o);
+      b.addJSONArray((JSONArray) o);
     } else if (o instanceof Integer) {
       b.addInteger((Integer) o);
     } else if (o instanceof Long) {
@@ -351,7 +351,7 @@ public final class ChecksumBuilder implements ChecksumEnabled {
       b.addDouble((Double) o);
     } else if (o instanceof Float) {
       b.addFloat((Float) o);
-    } else if (o instanceof Boolean ) {
+    } else if (o instanceof Boolean) {
       b.addBoolean((Boolean) o);
     } else {
       b.addString(o.toString());

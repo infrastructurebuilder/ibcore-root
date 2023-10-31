@@ -99,7 +99,7 @@ public class DefaultWGetterSupplierTest {
     JSONObject config = new JSONObject().put(WORKINGDIR, WORKINGDIR).put(CACHEDIR, CACHEDIR).put(FILEMAPPERS,
         new JSONArray());
     this.ws = new DefaultWGetterSupplier(
-        //Logger
+        // Logger
         ls,
         // Type mapper
         new DefaultTypeToExtensionMapper(),

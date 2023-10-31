@@ -230,7 +230,7 @@ public class DefaultIBResourceBuilder implements IBResourceBuilder {
   public Optional<IBResource> build(boolean hard) {
     try {
       validate(hard);
-      return Optional.of(new DefaultIBResource(getRoot(),this.model, this.sourcePath));
+      return Optional.of(new DefaultIBResource(getRoot(), this.model, this.sourcePath));
     } catch (IBException e) {
       log.error("Error building IBResource");
       return Optional.empty();
@@ -238,8 +238,8 @@ public class DefaultIBResourceBuilder implements IBResourceBuilder {
   }
 
   /**
-   * For IMDelegatedIBResource. Do not use for general construction of a resource. This method is not available outside of
-   * this package.
+   * For IMDelegatedIBResource. Do not use for general construction of a resource. This method is not available outside
+   * of this package.
    *
    * @param m model to replace existing model with
    * @return this builder.

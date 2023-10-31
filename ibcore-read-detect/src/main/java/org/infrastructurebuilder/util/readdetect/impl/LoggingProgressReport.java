@@ -26,53 +26,52 @@ import org.slf4j.Logger;
  */
 public final class LoggingProgressReport implements ProgressReport {
 
-    private static final long KBYTE = 1024L;
-    private static final char K_UNIT = 'K';
-    private static final char B_UNIT = 'b';
+  private static final long KBYTE = 1024L;
+  private static final char K_UNIT = 'K';
+  private static final char B_UNIT = 'b';
 
-    private final Logger log;
+  private final Logger log;
 
-    private char unit;
-    private long total;
-    private long completed;
+  private char unit;
+  private long total;
+  private long completed;
 
-    public LoggingProgressReport(Logger log) {
-        this.log = log;
+  public LoggingProgressReport(Logger log) {
+    this.log = log;
+  }
+
+  @Override
+  public void initiate(URI uri, long total) {
+    this.total = total;
+    this.completed = 0L;
+    this.unit = total >= KBYTE ? K_UNIT : B_UNIT;
+    log.info(String.format("%s: %s", "Downloading", uri));
+  }
+
+  @Override
+  public void update(long bytesRead) {
+    completed += bytesRead;
+    final String totalInUnits;
+    final long completedInUnits;
+    if (unit == K_UNIT) {
+      totalInUnits = total == -1 ? "?" : Long.toString(total / KBYTE) + unit;
+      completedInUnits = completed / KBYTE;
+    } else {
+      totalInUnits = total == -1 ? "?" : Long.toString(total);
+      completedInUnits = completed;
     }
+    log.info(String.format("%d/%s", completedInUnits, totalInUnits));
+  }
 
-    @Override
-    public void initiate(URI uri, long total) {
-        this.total = total;
-        this.completed = 0L;
-        this.unit = total >= KBYTE ? K_UNIT : B_UNIT;
-        log.info(String.format( "%s: %s", "Downloading", uri));
-    }
+  @Override
+  public void completed() {
+    log.info(String.format("%s %s", "downloaded",
+        unit == K_UNIT ? Long.toString(completed / KBYTE) + unit : Long.toString(completed)));
+  }
 
-    @Override
-    public void update(long bytesRead) {
-        completed += bytesRead;
-        final String totalInUnits;
-        final long completedInUnits;
-        if (unit == K_UNIT) {
-            totalInUnits = total == -1 ? "?" : Long.toString(total / KBYTE) + unit;
-            completedInUnits = completed / KBYTE;
-        } else {
-            totalInUnits = total == -1 ? "?" : Long.toString(total);
-            completedInUnits = completed;
-        }
-        log.info(String.format("%d/%s", completedInUnits, totalInUnits));
-    }
-
-    @Override
-    public void completed() {
-        log.info(String.format("%s %s",
-                "downloaded",
-                unit == K_UNIT ? Long.toString(completed / KBYTE) + unit : Long.toString(completed)));
-    }
-
-    @Override
-    public void error(Exception ex) {
-        log.error("error",ex);
-    }
+  @Override
+  public void error(Exception ex) {
+    log.error("error", ex);
+  }
 
 }

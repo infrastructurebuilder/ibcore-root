@@ -242,7 +242,7 @@ public class DefaultVertxIBResourceBuilder implements VertxIBResourceBuilder {
   public Future<VertxIBResource> build(boolean hard) {
     try {
       validate(hard);
-      return Future.succeededFuture(new VertxDefaultIBResource(this.vertx, getRoot(),this.model, this.sourcePath));
+      return Future.succeededFuture(new VertxDefaultIBResource(this.vertx, getRoot(), this.model, this.sourcePath));
     } catch (IBException e) {
       log.error("Error building IBResource");
       return Future.failedFuture("Error building IBResource");

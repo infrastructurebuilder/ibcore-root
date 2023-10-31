@@ -62,7 +62,7 @@ class MavenProjectBuildOutputDirectoryPathSupplierTest {
 
   @Test
   void testGet() {
-    assertEquals(path,mpbo.get());
+    assertEquals(path, mpbo.get());
   }
 
 }

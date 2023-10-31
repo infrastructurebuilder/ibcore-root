@@ -20,5 +20,5 @@ package org.infrastructurebuilder.util.core;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public interface RelativeRootProtocol extends NameDescribed, Supplier<Optional<RelativeRoot>>{
+public interface RelativeRootProtocol extends NameDescribed, Supplier<Optional<RelativeRoot>> {
 }
