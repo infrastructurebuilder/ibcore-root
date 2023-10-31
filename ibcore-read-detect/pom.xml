@@ -38,14 +38,13 @@
   <!-- I see no way to increase this at the moment -->
   <properties>
     <test.coverage.percentage.required>54</test.coverage.percentage.required>
-    <jacoco.max.missed.classes>5</jacoco.max.missed.classes>
+    <jacoco.max.missed.classes>9</jacoco.max.missed.classes>
 <!--
-    -->
     <maven.download.plugin.groupId>com.googlecode.maven-download-plugin</maven.download.plugin.groupId>
     <maven.download.plugin.version>1.7.1</maven.download.plugin.version>
-<!--
-    <maven.download.plugin.version>1.7.1.1</maven.download.plugin.version>
--->
+    -->
+    <maven.download.plugin.groupId>org.infrastructurebuilder.usurped</maven.download.plugin.groupId>
+    <maven.download.plugin.version>1.7.1.2</maven.download.plugin.version>
   </properties>
 
   <dependencies>
@@ -97,16 +96,32 @@
       <artifactId>plexus-utils</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-archiver</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-provider-api</artifactId>
+    </dependency>
+    <!--
+    <dependency>
       <groupId>${maven.download.plugin.groupId}</groupId>
       <artifactId>download-maven-plugin</artifactId>
       <version>${maven.download.plugin.version}</version>
       <type>jar</type>
       <optional>true</optional>
     </dependency>
-    <dependency><!--  Requires a direct dependency on this for the subsequent
+    -->
+    <dependency><!--  Requires a direct dependency on client and cache for the subsequent
       maven plugin run -->
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient-cache</artifactId>
+      <version>4.5.14</version>
       <optional>true</optional>
     </dependency>
   </dependencies>

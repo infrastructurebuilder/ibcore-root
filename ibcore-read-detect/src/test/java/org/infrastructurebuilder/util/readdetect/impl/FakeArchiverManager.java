@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-import javax.annotation.Nonnull;
+//import javax.annotation.Nonnull;
 
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.UnArchiver;
@@ -37,7 +37,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 public class FakeArchiverManager implements ArchiverManager {
 
-  private static @Nonnull String getFileExtention(@Nonnull final File file) {
+  private static String getFileExtention( final File file) {
     final String path = file.getAbsolutePath();
 
     String archiveExt = FileUtils.getExtension(path).toLowerCase(Locale.ENGLISH);
@@ -55,38 +55,38 @@ public class FakeArchiverManager implements ArchiverManager {
   }
 
   @Override
-  @Nonnull
-  public Archiver getArchiver(@Nonnull final File file) throws NoSuchArchiverException {
+
+  public Archiver getArchiver( final File file) throws NoSuchArchiverException {
     return getArchiver(getFileExtention(file));
   }
 
   @Override
-  @Nonnull
-  public Archiver getArchiver(@Nonnull final String archiverName) throws NoSuchArchiverException {
+
+  public Archiver getArchiver( final String archiverName) throws NoSuchArchiverException {
     return new ZipArchiver();
   }
 
   @Override
-  @Nonnull
-  public PlexusIoResourceCollection getResourceCollection(@Nonnull final File file) throws NoSuchArchiverException {
+
+  public PlexusIoResourceCollection getResourceCollection( final File file) throws NoSuchArchiverException {
     return getResourceCollection(getFileExtention(file));
   }
 
   @Override
-  public @Nonnull PlexusIoResourceCollection getResourceCollection(final String resourceCollectionName)
+  public  PlexusIoResourceCollection getResourceCollection(final String resourceCollectionName)
       throws NoSuchArchiverException {
     return new PlexusIoZipFileResourceCollection();
   }
 
   @Override
-  @Nonnull
-  public UnArchiver getUnArchiver(@Nonnull final File file) throws NoSuchArchiverException {
+
+  public UnArchiver getUnArchiver( final File file) throws NoSuchArchiverException {
     return getUnArchiver(getFileExtention(file));
   }
 
   @Override
-  @Nonnull
-  public UnArchiver getUnArchiver(@Nonnull final String unArchiverName) throws NoSuchArchiverException {
+
+  public UnArchiver getUnArchiver( final String unArchiverName) throws NoSuchArchiverException {
     return new ZipUnArchiver();
   }
 

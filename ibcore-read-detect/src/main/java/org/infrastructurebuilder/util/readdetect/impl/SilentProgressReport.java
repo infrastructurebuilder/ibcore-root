@@ -18,40 +18,36 @@
 package org.infrastructurebuilder.util.readdetect.impl;
 
 import java.net.URI;
-import java.util.Objects;
 
 import org.slf4j.Logger;
 
+/**
+ * Silent (no-op) implementation of {@link ProgressReport}. Only errors will get logged
+ * at ERROR priority.
+ */
+public final class SilentProgressReport implements ProgressReport {
 
-public class LoggerProgressReport implements ProgressReport {
-  private final Logger log;
+    private final Logger log;
 
-  public LoggerProgressReport(Logger log) {
-    this.log = Objects.requireNonNull(log);
-    // TODO Auto-generated constructor stub
-  }
+    public SilentProgressReport(Logger log) {
+        this.log = log;
+    }
 
-  @Override
-  public void initiate(URI uri, long total) {
-    // TODO Auto-generated method stub
+    @Override
+    public void initiate(URI uri, long total) {
+    }
 
-  }
+    @Override
+    public void update(long bytesRead) {
+    }
 
-  @Override
-  public void update(long bytesRead) {
-    // TODO Auto-generated method stub
+    @Override
+    public void completed() {
+    }
 
-  }
-
-  @Override
-  public void completed() {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void error(Exception ex) {
-    log.error("Error", ex);
-  }
+    @Override
+    public void error(Exception ex) {
+        log.error("Error",ex);
+    }
 
 }

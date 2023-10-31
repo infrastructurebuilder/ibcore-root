@@ -19,7 +19,7 @@ package org.infrastructurebuilder.util.readdetect.impl;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
-import static org.apache.maven.shared.utils.StringUtils.isBlank;
+//import static org.apache.maven.shared.utils.StringUtils.isBlank;
 import static org.codehaus.plexus.util.StringUtils.isNotBlank;
 
 import java.io.File;
@@ -40,6 +40,9 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+//import javax.annotation.Nullable;
+
+import org.apache.commons.logging.Log;
 import org.apache.http.Header;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
@@ -48,8 +51,6 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.ssl.SSLContexts;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.wagon.proxy.ProxyInfo;
 import org.apache.maven.wagon.proxy.ProxyInfoProvider;
 import org.apache.maven.wagon.proxy.ProxyUtils;
@@ -69,15 +70,12 @@ import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
-import org.infrastructurebuilder.util.logging.LoggingMavenComponent;
 import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
 import org.slf4j.Logger;
 
-import com.googlecode.download.maven.plugin.internal.DownloadFailureException;
-import com.googlecode.download.maven.plugin.internal.FileNameUtils;
-import com.googlecode.download.maven.plugin.internal.HttpFileRequester;
+//import com.googlecode.download.maven.plugin.internal.FileNameUtils;
 
 /**
  * Will download a file from a web site using the standard HTTP protocol.
@@ -86,6 +84,30 @@ import com.googlecode.download.maven.plugin.internal.HttpFileRequester;
  * @author Mickael Istria (Red Hat Inc)
  */
 public final class WGet {
+  public static String getOutputFileName(URI uri) {
+    return uri.getPath().isEmpty() || uri.getPath().equals("/")
+            ? uri.getHost()
+            : uri.getPath().substring(uri.getPath().lastIndexOf('/') + 1);
+}
+
+  public static boolean isBlank(  String str )
+  {
+      int strLen;
+      // CHECKSTYLE_OFF: InnerAssignment
+      if ( str == null || ( strLen = str.length() ) == 0 )
+      // CHECKSTYLE_ON: InnerAssignment
+      {
+          return true;
+      }
+      for ( int i = 0; i < strLen; i++ )
+      {
+          if ( !Character.isWhitespace( str.charAt( i ) ) )
+          {
+              return false;
+          }
+      }
+      return true;
+  }
 
   public final static Function<ProxyInfo, Proxy> mapPIPToProxy = (pip) -> {
     Authentication a = new AuthenticationBuilder().addNtlm(pip.getNtlmHost(), pip.getNtlmDomain())
@@ -271,12 +293,11 @@ public final class WGet {
     return log;
   }
 
-  private Log getLogAsMavenLog() {
-    if (this.mavenLog == null)
-      this.mavenLog = new LoggingMavenComponent(getLog());
-    // TODO Auto-generated method stub
-    return mavenLog;
-  }
+//  private Log getLogAsMavenLog() {
+//    if (this.mavenLog == null)
+//      this.mavenLog = new LoggingMavenComponent(getLog());
+//    return this.mavenLog;
+//  }
 
 //  private void doGet2(final File outputFile) throws Exception {
 //    final RequestConfig requestConfig;
@@ -595,7 +616,7 @@ public final class WGet {
 
     // PREPARE
     if (this.outputFileName == null) {
-      this.outputFileName = FileNameUtils.getOutputFileName(this.uri);
+      this.outputFileName = getOutputFileName(this.uri);
     }
     if (!this.skipCache) {
       if (this.cacheDirectory == null) {
@@ -793,11 +814,11 @@ public final class WGet {
 
     try {
       final HttpFileRequester fileRequester = fileRequesterBuilder
-          .withProgressReport(new LoggerProgressReport(getLog())).withConnectTimeout(this.readTimeOut)
+          .withProgressReport(new LoggingProgressReport(getLog())).withConnectTimeout(this.readTimeOut)
           .withSocketTimeout(this.readTimeOut).withUri(this.uri).withUsername(this.username).withPassword(this.password)
           .withServerId(this.serverId).withPreemptiveAuth(this.preemptiveAuth)
 //              .withMavenSession(this.session)
-          .withRedirectsEnabled(this.followRedirects).withLog(this.getLogAsMavenLog()).build();
+          .withRedirectsEnabled(this.followRedirects).withLog(this.getLog()).build();
       fileRequester.download(outputFile, getAdditionalHeaders());
     } catch (Exception e) {
       throw new IOException(e);

@@ -17,41 +17,14 @@
  */
 package org.infrastructurebuilder.util.readdetect.impl;
 
-import java.net.URI;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-
-
-public class LoggerProgressReport implements ProgressReport {
-  private final Logger log;
-
-  public LoggerProgressReport(Logger log) {
-    this.log = Objects.requireNonNull(log);
-    // TODO Auto-generated constructor stub
-  }
-
-  @Override
-  public void initiate(URI uri, long total) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void update(long bytesRead) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void completed() {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void error(Exception ex) {
-    log.error("Error", ex);
-  }
-
+/**
+ * Thrown when {@link FileBackedIndex} fails to read an existing index.
+ * <p>
+ * This occurs when upgrading to a new version of the plugin with breaking changes in the index storage strategy
+ * (including Java serialization changes, or even moving to a different serialization mechanism (JSON, XML, etc.).
+ */
+class IncompatibleIndexException extends RuntimeException {
+    IncompatibleIndexException(Exception cause) {
+        super(cause);
+    }
 }
