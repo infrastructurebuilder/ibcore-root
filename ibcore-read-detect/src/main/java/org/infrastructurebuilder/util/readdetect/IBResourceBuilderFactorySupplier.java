@@ -19,29 +19,34 @@ package org.infrastructurebuilder.util.readdetect;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.function.Supplier;
+import java.io.InputStream;
+import java.util.Optional;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Provider;
+import javax.inject.Singleton;
 
-import org.infrastructurebuilder.util.core.PathSupplier;
-import org.infrastructurebuilder.util.readdetect.impl.IBResourceBuilderFactoryImpl;
+import org.infrastructurebuilder.util.core.RelativeRootFactory;
+import org.infrastructurebuilder.util.readdetect.impl.AbsolutePathIBResourceBuilderFactory;
 
 @Named(IBResourceBuilderFactorySupplier.NAME)
-public class IBResourceBuilderFactorySupplier
-    implements Supplier<IBResourceBuilderFactory>, Provider<IBResourceBuilderFactory> {
-  public final static String NAME = "IBResourceCacheFactorySupplier";
-  private final PathSupplier root;
+@Singleton
+public class IBResourceBuilderFactorySupplier {
+  public final static String NAME = "ibresource-builder-factory-supplier";
+  private final RelativeRootFactory root;
 
   @Inject
-  public IBResourceBuilderFactorySupplier(PathSupplier root) {
-    this.root = requireNonNull(root);
+  public IBResourceBuilderFactorySupplier(RelativeRootFactory rrf) {
+    this.root = requireNonNull(rrf);
   }
 
-  @Override
-  public IBResourceBuilderFactory get() {
-    return new IBResourceBuilderFactoryImpl(new PathBackedIBResourceRelativeRootSupplier(this.root.get()));
+  public Set<String> getAvailableIds() {
+    return this.root.getNames();
+  }
+
+  public Optional<IBResourceBuilderFactory<Optional<IBResource<InputStream>>>> get(String id) {
+    return this.root.get(id).map(AbsolutePathIBResourceBuilderFactory::new);
   }
 
 }

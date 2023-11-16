@@ -17,42 +17,36 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import static java.util.Objects.requireNonNull;
-import static java.util.Optional.ofNullable;
-import static org.infrastructurebuilder.exceptions.IBException.cet;
-
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import org.infrastructurebuilder.exceptions.IBException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * A RelativeRoot ("root") is an object that holds some base location as the base location of filesystem or
- * filesystem-like collection. Some persisted things, like ChecksumBuilder and JSONBuilder, accept a RelativeRoot and
- * strip off the prefix from an absolute value.
+ * filesystem-like collection.
  *
- * The RelativeRoot solves a problem of checksumming values that have paths baked into them. It allows us to manage any
- * number of filesystem objects as relative paths from some RelativeRoot, and thus as long as the root is set to the
- * same value those streams should be the same streams in the future. So if the path of an object is part of its
- * checksum, then we can just path everything off the RelativeRoot.
+ * Some persisted things, like ChecksumBuilder and JSONBuilder, accept a RelativeRoot and strip off the prefix from
+ * absolute paths so that the persisted values remain portable.
+ *
+ * The RelativeRoot helps to solve a problem of checksumming values that have paths baked into them. It allows us to
+ * manage any number of filesystem objects as relative paths from some RelativeRoot, and thus as long as the root is set
+ * to the same value those streams should be the same streams in the future. So if the path of an object is part of its
+ * checksum, then we can just relativize the path everything off the RelativeRoot.
  *
  * It is possible that at some point we will make RelativeRoot values into a Java FileSystem object, allowing us to
  * treat everything as 'absolute' within the root area.
  *
  * Requirements:
  * <ol>
- * <li>A root cannot be null. A null value is not applicable as a root.</li>
+ * <li>A root cannot be null. A null value is not applicable as a root. However, most RR is views as an Optional, in
+ * which case the consumer is expected to accept that there is no root</li>
  * <li>A root may be a <code>Path</code></li>
  * <ol>
- * <li>The Path must be absolute</li>
+ * <li>The Path must be an absolute path (i.e. <code>Path.toAbsolutePath()</code>)</li>
  * <li>Any relativization or resolution must be <b><i>within the path</i></b>. Relative links cannot travel outside the
  * root path.
  * </ol>
@@ -68,13 +62,14 @@ import org.slf4j.LoggerFactory;
  * runtime didn't have access to that <code>URLStreamHandler</code> for whatever reason, the underlying system's
  * integrity would not be damaged but access definitely would be.</li>
  * </ol>
- * <li>A root may be a URL-like string, such as an S3 url
+ * <li>A root may be a URL-like string, such as a cloud provider blobstore endpoint url
  * <ol>
  * <li>A "URL-like" means that the implementation of whatever IB-based code exists is going to handle the transfers for
  * us, much in the manner of a <code>URLStreamHandler</code>.</li>
- * <li>However, unlike above, there will be application logic that interprets the string so that configuration is
+ * <li>However, unlike above, there must be application logic that interprets the string so that configuration is
  * simpler.</li>
- * <li>Either way has advantages.</li>
+ * <li>Either way has advantages. It is expected that most RRs will be filesystem paths or paths to URLs that have
+ * stream handlers associated with them. Cloud provided blobstores are the most likely targets in that case</li>
  * </ol>
  * </ol>
  *
@@ -82,107 +77,25 @@ import org.slf4j.LoggerFactory;
  * always available.
  *
  */
-public class RelativeRoot implements JSONAndChecksumEnabled {
-  private static final String URL2 = "URL";
+public interface RelativeRoot extends JSONAndChecksumEnabled {
+  final static String RELATIVE_ROOT_URLLIKE = "URL";
+  final static Logger log = LoggerFactory.getLogger(RelativeRoot.class);
 
-  private static final String PATH = "PATH";
-
-  private static final String STRING_ROOT = "STRING_ROOT";
-
-  private final static Logger log = LoggerFactory.getLogger(RelativeRoot.class);
-
-  public final static Path checkRelative(Path p) {
-    if (requireNonNull(p).isAbsolute())
-      throw new IBException("must.be.absolute");
-    return p;
+  default boolean isPath() {
+    return getPath().isPresent();
   }
 
-  public final static Path checkAbsolute(Path p) {
-    if (!requireNonNull(p).isAbsolute())
-      throw new IBException("must.be.absolute");
-    return p;
+  default boolean isURL() {
+    return getUrl().isPresent();
   }
 
-  public final static Path pathFrom(Optional<RelativeRoot> r1, Path path) {
-    return (requireNonNull(path).isAbsolute()) ?
-    // If absolute
-        path
-        // If relative -- works quite poorly on OS's with crappy filesystems.
-        : requireNonNull(r1).map(r -> Path.of(r.toString(), path.toString()))
-            .orElse(Path.of(Path.of("").toAbsolutePath().toString(), path.toString()));
-  }
-
-  private final static URL fromString(String url) {
-    URL u = null;
-    if (url != null)
-      try {
-        u = requireNonNull(new URL(url));
-      } catch (MalformedURLException e) {
-        // return value already set to null
-      }
-    return u;
-  }
-
-  public final static RelativeRoot from(String s) {
-    return new RelativeRoot(s);
-  }
-
-  public final static RelativeRoot from(URL u) {
-    return from(requireNonNull(u).toExternalForm());
-  }
-
-  public final static RelativeRoot from(Path p) {
-    return from(cet.returns(() -> checkAbsolute(p).toUri().toURL().toExternalForm()));
-  }
-
-  public final static RelativeRoot from(JSONObject j) {
-    return new RelativeRoot(j.getString(STRING_ROOT));
-  }
-
-  private final String stringRoot; // Not nullable
-
-  private final Path path; // Nullable for certain cases
-  private final URL url; // Nullable (for certain cases)
-
-  private RelativeRoot(String u) {
-    this.stringRoot = (!requireNonNull(u).endsWith("/")) ? u + "/" : u;
-    this.url = fromString(requireNonNull(u));
-
-    this.path = (this.url != null)
-        ? (this.url.getProtocol().equals("file")) ? Paths.get(cet.returns(() -> this.url.toURI())) : null
-        : null;
-    getPath().ifPresent(p -> cet.translate(() -> Files.createDirectories(p)));
-  }
-
-  public boolean isPath() {
-    return this.path != null;
-  }
-
-  public boolean isURL() {
-    return this.url != null;
-  }
-
-  public boolean isURLLike() {
+  default boolean isURLLike() {
     return !(isPath() || isURL());
   }
 
-  public Optional<Path> getPath() {
-    return ofNullable(path);
-  }
+  Optional<Path> getPath();
 
-  public Optional<URL> getUrl() {
-    return ofNullable(url);
-  }
-
-  @Override
-  public String toString() {
-    return this.stringRoot;
-  }
-
-  public final Optional<Path> resolveAsPath(Path p) {
-    log.debug("Resolve {} from {}", p, getPath());
-    return (requireNonNull(p).isAbsolute()) ? Optional.of(p) : getPath().map(r -> r.resolve(p));
-  }
+  Optional<URL> getUrl();
 
   /**
    * Resolving a path always has a result, because stringroot always exists
@@ -190,50 +103,34 @@ public class RelativeRoot implements JSONAndChecksumEnabled {
    * @param p
    * @return
    */
-  public final String resolvePath(Path p) {
-    log.debug("Resolve {} from {}/{}/{}", p, getPath(), getUrl(), this.stringRoot);
-    return (requireNonNull(p).isAbsolute()) ? p.toString() : String.format("%s%s", this.stringRoot, p.toString());
+  String resolvePath(Path p);
+
+  default Optional<Path> resolvePath(String p) {
+    return getPath().flatMap(thisPath -> {
+      return Optional.ofNullable(p).flatMap(pStr -> {
+        Path v = null;
+        try {
+          Path resPath = Paths.get(pStr);
+          if (!resPath.isAbsolute())
+            v = thisPath.resolve(resPath);
+        } catch (Throwable t) {
+          // Do nothing
+          log.warn("{} not a path", pStr);
+        }
+        return Optional.ofNullable(v);
+      });
+
+    });
   }
 
-  public final Optional<Path> resolvePath(String p) {
-    log.debug("Resolve {} from {}", p, this.stringRoot);
-    try {
-      return Optional.of(Path.of(resolvePath(Path.of(p))));
-
-    } catch (InvalidPathException e) {
-      return Optional.empty();
-    }
+  default Checksum asChecksum() {
+    return getChecksumBuilder().asChecksum();
   }
 
-  public final Optional<Path> relativize(Path p) {
-    log.debug("Relativize {} from {}", p, getPath());
-    if (requireNonNull(p).isAbsolute())
-      return getPath().map(r -> r.relativize(p));
-    else
-      return Optional.of(p);
-  }
+  Optional<Path> relativize(Path p);
 
-  public final Optional<String> relativize(URL p) {
-    log.debug("Relativize URL {} from {}", p, this.url);
-    return ofNullable(isURL() ? relativize(requireNonNull(p).toExternalForm()) : null);
+  Optional<String> relativize(URL p);
 
-  }
-
-  public final String relativize(String pext) {
-    log.debug("Relativize String {} from {}", pext, this.stringRoot);
-    String r = pext.startsWith(stringRoot) ? pext.substring(stringRoot.length()) : pext;
-    return (r.startsWith("/")) ? r.substring(1) : r;
-  }
-
-  @Override
-  public JSONObject asJSON() {
-    return new JSONBuilder(Optional.empty()).addString(STRING_ROOT, this.stringRoot) // required
-        .asJSON();
-  }
-
-  @Override
-  public ChecksumBuilder getChecksumBuilder() {
-    return ChecksumBuilder.newInstance().addString(this.stringRoot); // Only the stringroot actually matters
-  }
+  String relativize(String pext);
 
 }

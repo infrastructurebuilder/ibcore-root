@@ -21,6 +21,9 @@ import java.util.UUID;
 
 import javax.inject.Named;
 
+/**
+ * Supplies a random UUID string each call
+ */
 @Named
 public class DefaultIdentifierSupplier implements IdentifierSupplier {
 

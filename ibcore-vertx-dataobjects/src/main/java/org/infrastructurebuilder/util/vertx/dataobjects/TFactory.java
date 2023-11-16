@@ -42,7 +42,7 @@ public interface TFactory<T extends Typed> extends Identified, Versioned {
 
   Future<T> duplicate(T i);
 
-  Future<Blobstore> getStore();
+  Future<Blobstore<T>> getStore();
 
   /**
    * Query an T from whatever cache this factory holds

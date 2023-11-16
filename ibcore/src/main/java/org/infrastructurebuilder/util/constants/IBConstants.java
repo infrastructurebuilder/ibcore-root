@@ -79,10 +79,10 @@ public interface IBConstants {
   String ORG_W3C_DOM_NODE = "org.w3c.dom.Node";
   String ORG_APACHE_AVRO_GENERIC_INDEXED_RECORD = "org.apache.avro.generic.IndexedRecord";
 
-  String DEFAULT_EXTENSION = ".bin";
   String AVI = ".avi";
   String AVRO = ".avro";
   String AVSC = ".avsc";
+  String BIN  = ".bin";
   String CBOR = ".cbor";
   String PDF = ".pdf";
   String PSV = ".psv";
@@ -110,6 +110,8 @@ public interface IBConstants {
 
   String _SHA512 = "sha512";
   String ASC_EXT = ".asc";
+  String DEFAULT_EXTENSION = BIN;
+
 
   JSONArray CHECKSUM_TYPES_DEFAULT = new JSONArray(Arrays.asList(_SHA512));
 

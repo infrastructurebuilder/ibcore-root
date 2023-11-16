@@ -17,8 +17,6 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import static org.infrastructurebuilder.util.config.IncrementingDatedStringSupplier.INCREMENTING_DATED_STRING_SUPPLIER;
-
 import java.util.HashMap;
 
 import javax.inject.Inject;
@@ -28,14 +26,14 @@ import javax.inject.Singleton;
 import org.infrastructurebuilder.util.core.IdentifierSupplier;
 import org.infrastructurebuilder.util.core.WorkingPathSupplier;
 
-@Named(IncrementingDatedWorkingPathSupplier.INCREMENTING_DATED_WPS)
+@Named(IncrementingDatedWorkingPathSupplier.NAME)
 @Singleton
 public class IncrementingDatedWorkingPathSupplier extends WorkingPathSupplier {
-  public static final String INCREMENTING_DATED_WPS = "incrementing-dated-wps";
+  public static final String NAME = "incrementing-dated-wps";
 
   @Inject
   public IncrementingDatedWorkingPathSupplier(
-      @Named(INCREMENTING_DATED_STRING_SUPPLIER) IdentifierSupplier idSupplier)
+      @Named(NAME) IdentifierSupplier idSupplier)
   {
     super(new HashMap<>(), idSupplier, false);
   }

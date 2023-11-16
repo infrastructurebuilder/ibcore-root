@@ -17,22 +17,17 @@
  */
 package org.infrastructurebuilder.util.vertx.base.impl;
 
+import static io.vertx.core.Future.failedFuture;
 import static io.vertx.core.Future.succeededFuture;
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
-import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
 import static org.infrastructurebuilder.util.constants.IBConstants.UTF_8;
 
 import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,23 +37,18 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.infrastructurebuilder.util.core.Checksum;
-import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.RelativeRoot;
+import org.infrastructurebuilder.util.core.RelativeRootSupplier;
 import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
-import org.infrastructurebuilder.util.extensionmapper.basic.DefaultTypeToExtensionMapper;
+import org.infrastructurebuilder.util.readdetect.AbstractIBResourceBuilderFactory;
+import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.IBResourceException;
-import org.infrastructurebuilder.util.readdetect.IBResourceRelativeRootSupplier;
-import org.infrastructurebuilder.util.readdetect.PathBackedIBResourceRelativeRootSupplier;
-import org.infrastructurebuilder.util.readdetect.model.IBResourceCache;
-import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
-import org.infrastructurebuilder.util.vertx.base.VertxIBResourceBuilder;
+import org.infrastructurebuilder.util.vertx.base.VertxIBResource;
 import org.infrastructurebuilder.util.vertx.base.VertxIBResourceBuilderFactory;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.file.AsyncFile;
@@ -66,87 +56,67 @@ import io.vertx.core.file.FileSystem;
 import io.vertx.core.file.OpenOptions;
 import io.vertx.core.streams.Pump;
 
-@Named
-public class VertxIBResourceBuilderFactoryImpl implements VertxIBResourceBuilderFactory {
+@Named(VertxIBResourceBuilderFactoryImpl.NAME)
+public class VertxIBResourceBuilderFactoryImpl extends AbstractIBResourceBuilderFactory<Future<VertxIBResource>>
+     {
+  static final String NAME = "vertx-ibresource-builder-factory";
+
+  private static final long serialVersionUID = 1159380327029586147L;
+
   private final static Logger log = LoggerFactory.getLogger(VertxIBResourceBuilderFactoryImpl.class);
 
-  private RelativeRoot root;
-  private final IBResourceCache cache;
-
-  private Supplier<VertxIBResourceBuilder> builder;
+  private Supplier<IBResourceBuilder<Future<VertxIBResource>>> builder;
 
   private final Vertx vertx;
 
   private final TypeToExtensionMapper typeMapper;
 
   @Inject
-  public VertxIBResourceBuilderFactoryImpl(Vertx vertx, IBResourceRelativeRootSupplier relRootSupplier,
+  public VertxIBResourceBuilderFactoryImpl(Vertx vertx, RelativeRootSupplier relRootSupplier,
       TypeToExtensionMapper typeMapper)
   {
+    super(requireNonNull(relRootSupplier).get().orElseThrow(() -> new IBResourceException("No root")));
     this.typeMapper = Objects.requireNonNull(typeMapper);
     this.vertx = Objects.requireNonNull(vertx);
-    this.root = requireNonNull(relRootSupplier).get();
     // Delivers a new builder from the relative root each time
-    this.builder = () -> new DefaultVertxIBResourceBuilder(this.vertx, relRootSupplier);
-    log.debug("Root is {}", this.root);
-    this.cache = new IBResourceCache();
-
-    cache.setModelEncoding(UTF_8);
-    cache.setRoot(this.root.getPath().map(Path::toAbsolutePath).map(Path::toString).orElse(null));
+    this.builder = () -> new DefaultVertxIBResourceBuilder(this.vertx, getRelativeRoot().get());
+    this.setRoot(this.getRelativeRoot().get().getPath().map(Path::toAbsolutePath).map(Path::toString).orElse(null));
   }
 
-  public VertxIBResourceBuilderFactoryImpl() {
-    this(Vertx.vertx(), () -> null, new DefaultTypeToExtensionMapper()); // No cache
-  }
-
-  public VertxIBResourceBuilderFactoryImpl(Path p) {
-    this(Vertx.vertx(), new PathBackedIBResourceRelativeRootSupplier(p), new DefaultTypeToExtensionMapper());
+  public String getName() {
+    return NAME;
   }
 
   @Override
-  public final Optional<RelativeRoot> getRoot() {
-    return ofNullable(this.root);
-  }
-
-  @Override
-  public Future<VertxIBResourceBuilder> fromPath(Path p, String type) {
+  public Optional<IBResourceBuilder<Future<VertxIBResource>>> fromPath(Path p, String type) {
     log.debug("Getting stream from {}", p);
-    return getRoot()
+
+    var c = getRelativeRoot()
 
         .map(rr -> cacheIt(p, type))
 
-        .orElseGet(() -> readIt(p, type)).compose(builder -> {
-          return getRoot().map(root -> {
-            return succeededFuture(builder);
-          }).orElseGet(() -> {
-            return succeededFuture(builder);
-          });
-        });
-    // FIXME the following doesn't follow the API, mykel!
-    // r.ifPresent(rr -> this.cache.addResource(rr.build().get().copyModel())); // FIXME? builds the model
+        .orElseGet(() -> readIt(p, type));
+
+    return Optional.ofNullable(c.result());
   }
 
-  private Optional<RelativeRoot> getRelativeRoot() {
-    return Optional.ofNullable(this.root);
-  }
-
-  private Future<VertxIBResourceBuilder> readIt(Path p, String type) {
+  private Future<IBResourceBuilder<Future<VertxIBResource>>> readIt(Path p, String type) {
     log.info("Reading from {}", p);
     return Checksum.ofPath.apply(p).map(checksum -> {
-      VertxIBResourceBuilder m = builderFromPathAndChecksum(p, checksum);
+      IBResourceBuilder<Future<VertxIBResource>> m = builderFromPathAndChecksum(p, checksum);
       Optional.ofNullable(type).ifPresent(t -> m.withType(t));
       return succeededFuture(m);
-    }).orElse(Future.failedFuture("Could not perform readIt"));
+    }).orElse(failedFuture("Could not perform readIt"));
   }
 
-  private Future<VertxIBResourceBuilder> cacheIt(Path p, String type) {
+  private Future<IBResourceBuilder<Future<VertxIBResource>>> cacheIt(Path p, String type) {
     log.info("Cacheing from {}", p);
-    var rootPath = getRoot().flatMap(RelativeRoot::getPath);
-
-    if (rootPath.isEmpty()) {
-      log.error("no.root.path");
-      return Future.failedFuture("no.root.path");
-    }
+    var rootPath = getRelativeRoot().flatMap(RelativeRoot::getPath);
+//
+//    if (rootPath.isEmpty()) {
+//      log.error("no.root.path");
+//      return Optional.empty();
+//    }
     var r = rootPath.get().toAbsolutePath().toString() + File.separatorChar + "vibrtf";
     FileSystem fs = this.vertx.fileSystem();
 
@@ -174,7 +144,8 @@ public class VertxIBResourceBuilderFactoryImpl implements VertxIBResourceBuilder
       Path target = Paths.get(copied.result()).toAbsolutePath();
       // Get path to copied file
       // File is copied?
-      VertxIBResourceBuilder builder = new DefaultVertxIBResourceBuilder(this.vertx, () -> getRelativeRoot().get())
+      IBResourceBuilder<Future<VertxIBResource>> builder = new DefaultVertxIBResourceBuilder(this.vertx,
+          this.getRelativeRoot().get())
           // From the file
           .from(target);
       return succeededFuture(builder);
@@ -209,20 +180,9 @@ public class VertxIBResourceBuilderFactoryImpl implements VertxIBResourceBuilder
 
   }
 
-  @Override
-  public Future<VertxIBResourceBuilder> fromJSON(JSONObject json) {
-    return succeededFuture(this.builder.get().fromJSON(json));
-  }
-
-  @Override
-  public Future<VertxIBResourceBuilder> fromURLLike(String u, String type) {
-    // TODO Auto-generated method stub
-    return Future.failedFuture("unimplemented");
-  }
-
   // Package private
   @Override
-  public VertxIBResourceBuilder builderFromPathAndChecksum(Path p, Checksum checksum) {
+  public IBResourceBuilder<Future<VertxIBResource>> builderFromPathAndChecksum(Path p, Checksum checksum) {
     // We have a checksum, so we can read it, etc.
     Optional<BasicFileAttributes> bfa = IBResourceBuilderFactory.getAttributes.apply(p);
     var m = this.builder.get()
@@ -247,11 +207,9 @@ public class VertxIBResourceBuilderFactoryImpl implements VertxIBResourceBuilder
   }
 
   @Override
-  public Future<VertxIBResourceBuilder> fromModel(IBResourceModel model) {
-//    var m = Objects.requireNonNull(model);
-    // TODO
-    return Future.failedFuture("unimplemented");
-
+  protected Supplier<IBResourceBuilder<Future<VertxIBResource>>> getBuilder() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

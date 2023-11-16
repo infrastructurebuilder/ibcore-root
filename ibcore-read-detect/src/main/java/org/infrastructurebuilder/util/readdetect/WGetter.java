@@ -17,6 +17,7 @@
  */
 package org.infrastructurebuilder.util.readdetect;
 
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +27,7 @@ import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
 
 public interface WGetter {
 
-  Optional<List<IBResource>> collectCacheAndCopyToChecksumNamedFile(boolean deleteExistingCacheIfPresent,
+  Optional<List<IBResource<InputStream>>> collectCacheAndCopyToChecksumNamedFile(boolean deleteExistingCacheIfPresent,
       Optional<BasicCredentials> creds, Path outputPath, String sourceString, Optional<Checksum> checksum,
       Optional<String> type, int retries, int readTimeOut, boolean skipCache, boolean expandArchives);
 
@@ -40,6 +41,6 @@ public interface WGetter {
    * @return List of expanded read, typed, and renamed files, not including the original.
    */
 
-  List<IBResource> expand(Path tempPath, IBResource source, Optional<String> oSource);
+  List<IBResource<InputStream>> expand(Path tempPath, IBResource<InputStream> source, Optional<String> oSource);
 
 }

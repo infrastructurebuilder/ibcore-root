@@ -25,6 +25,8 @@ import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
 import org.infrastructurebuilder.util.constants.IBConstants;
+import org.infrastructurebuilder.util.core.RelativeRootSetPathSupplier;
+import org.infrastructurebuilder.util.core.RelativeRootSupplier;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -38,7 +40,6 @@ import org.slf4j.LoggerFactory;
 
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonObject;
 import io.vertx.junit5.RunTestOnContext;
 import io.vertx.junit5.Timeout;
 import io.vertx.junit5.VertxExtension;
@@ -47,6 +48,7 @@ import io.vertx.junit5.VertxTestContext;
 @ExtendWith(VertxExtension.class)
 class FilesystemBlobstoreTest {
 
+  private static final String BFILENAME = "Bee dot xml";
   private static final String BFILE = "b.xml";
   private static TestingPathSupplier wps;
   private final Logger log = LoggerFactory.getLogger(FilesystemBlobstoreTest.class);
@@ -65,13 +67,13 @@ class FilesystemBlobstoreTest {
 
   private FilesystemBlobstore fsbs;
   private Vertx vertx;
+  private RelativeRootSupplier rrs;
 
   @BeforeEach
   void setUp(VertxTestContext testContext) throws Exception {
     Path root = wps.get();
-//    IBResourceFactory.setRelativeRoot(RelativeRoot.from(requireNonNull(root)));
-    this.fsbs = new FilesystemBlobstore(new JsonObject().put(IBConstants.BLOBSTORE_ROOT, root)
-        .put(IBConstants.BLOBSTORE_MAXBYTES, IBConstants.BLOBSTORE_NO_MAXBYTES));
+    rrs = new RelativeRootSetPathSupplier(root);
+    this.fsbs = new FilesystemBlobstore(rrs,IBConstants.BLOBSTORE_NO_MAXBYTES);
     vertx = rtoc.vertx();
     // Prepare something on a Vert.x event-loop thread
     // The thread changes with each test instance
@@ -91,7 +93,8 @@ class FilesystemBlobstoreTest {
   @Test
   @Timeout(value = 200, timeUnit = TimeUnit.SECONDS)
   void testPutBlobStringStringPath(VertxTestContext testContext) {
-    this.fsbs.putBlob(BFILE, "Bee dot xml", wps.getTestClasses().resolve(BFILE).toAbsolutePath())
+    Path testfile = wps.getTestClasses().resolve(BFILE).toAbsolutePath();
+    this.fsbs.putBlob(BFILE, BFILENAME, testfile )
 
         .compose(id -> this.fsbs.getMetadata(id))
 

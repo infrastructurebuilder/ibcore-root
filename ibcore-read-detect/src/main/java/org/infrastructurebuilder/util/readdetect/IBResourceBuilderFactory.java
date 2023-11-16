@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * local copy. An IBResourceCache is expected to be inviolate from the time a cache is created until it is no longer
  * needed. A cache has a serialized representation of all the IBResource elements within it, and thus can be persisted.
  */
-public interface IBResourceBuilderFactory {
+public interface IBResourceBuilderFactory<B> {
   final static Logger log = LoggerFactory.getLogger(IBResourceBuilderFactory.class.getName());
   final static Tika tika = new Tika();
 
@@ -95,6 +95,7 @@ public interface IBResourceBuilderFactory {
     try {
       return ofNullable(toType.apply(path));
     } catch (Throwable t2) {
+      log.warn("Unable to type " + path);
       return Optional.empty();
     }
   };
@@ -104,22 +105,16 @@ public interface IBResourceBuilderFactory {
     try {
       retVal = of(readAttributes(requireNonNull(i), BasicFileAttributes.class));
     } catch (IOException e) {
-      // TODO Log an error, maybe?
+      log.error("Error reading basic attributes " + i, e);
     }
     return retVal;
   };
 
-  default Optional<IBResourceBuilder> fromPath(Path p) {
-    return fromPath(p, null);
-  }
-
-  default Optional<IBResourceBuilder> fromURL(URL u) {
-    return fromURL(u, null);
-  }
-
-  default Optional<IBResourceBuilder> fromURLLike(String u) {
-    return fromURLLike(u, null);
-  }
+  /**
+   * The RelativeRoot is optional (for some reason)
+   * @return
+   */
+  Optional<RelativeRoot> getRelativeRoot();
 
   /**
    * Return method but force type
@@ -128,40 +123,51 @@ public interface IBResourceBuilderFactory {
    * @param type type to force. If null, type will be interpreted.
    * @return IBResource instance
    */
-  Optional<IBResourceBuilder> fromPath(Path p, String type);
+  Optional<IBResourceBuilder<B>> fromPath(Path p, String type);
 
-  default Optional<IBResourceBuilder> fromURL(URL u, String type) {
+  Optional<IBResourceBuilder<B>> fromURLLike(String u, String type);
+
+  Optional<IBResourceBuilder<B>> fromModel(IBResourceModel model);
+
+  Optional<IBResourceBuilder<B>> fromJSON(JSONObject json);
+
+  // TODO Why is this not Optional??!??!?
+  IBResourceBuilder<B> builderFromPathAndChecksum(Path p, Checksum checksum);
+
+  default Optional<IBResourceBuilder<B>> fromURL(URL u, String type) {
     return fromURLLike(u.toExternalForm(), type);
   }
 
-  Optional<IBResourceBuilder> fromURLLike(String u, String type);
+  default Optional<IBResourceBuilder<B>> fromPath(Path p) {
+    return fromPath(p, null);
+  }
 
-  Optional<IBResourceBuilder> fromModel(IBResourceModel model);
+  default Optional<IBResourceBuilder<B>> fromURL(URL u) {
+    return fromURL(u, null);
+  }
 
-  default IBResourceBuilder builderFromPath(Path p) {
+  default Optional<IBResourceBuilder<B>> fromURLLike(String u) {
+    return fromURLLike(u, null);
+  }
+  default IBResourceBuilder<B> builderFromPath(Path p) {
     return builderFromPathAndChecksum(p, new Checksum(p));
   }
 
   /**
-   * Dont (at) me bro. The string is a JSON string
+   * Dont (at) me bro. The string needs to be a JSON string
    *
    * @param json
    * @return
    */
-  default Optional<IBResourceBuilder> fromJSONString(String json) {
+  default Optional<IBResourceBuilder<B>> fromJSONString(String json) {
     try {
       return fromJSON(cet.returns(() -> new JSONObject(json)));
     } catch (IBException e) {
-      // TODO?
+      log.error("Could not generate from JSON " + json,e);
       return Optional.empty();
     }
 
   }
-
-  Optional<IBResourceBuilder> fromJSON(JSONObject json);
-
-  Optional<RelativeRoot> getRoot();
-
-  IBResourceBuilder builderFromPathAndChecksum(Path p, Checksum checksum);
-
 }
+
+

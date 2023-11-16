@@ -24,6 +24,7 @@ import static java.util.stream.Collectors.toMap;
 
 import java.net.URL;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
@@ -37,6 +38,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 
+import org.infrastructurebuilder.util.core.AbsolutePathRelativeRoot;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.ChecksumEnabled;
 import org.infrastructurebuilder.util.core.IBUtils;
@@ -111,10 +113,13 @@ public final class JsonBuilder implements JsonOutputEnabled {
     RelativeRoot rr = null;
     if (j.containsKey(RELATIVE_ROOT)) {
       json.remove(RELATIVE_ROOT);
-      rr = RelativeRoot.from(j.getString(RELATIVE_ROOT));
+      try {
+        rr = new AbsolutePathRelativeRoot(Paths.get(j.getString(RELATIVE_ROOT)));
+      } catch (Throwable t) {
+        log.warn("Unable to get path from JSON for RR (" + j.getString(RELATIVE_ROOT) + ")");
+      }
     }
-    rr = requireNonNull(relativeRoot).orElse(rr); // Overrides existing RR if supplied
-    this.relativeRoot = Optional.ofNullable(rr);
+    this.relativeRoot = Optional.ofNullable(requireNonNull(relativeRoot).orElse(rr)); // Overrides existing RR if supplied
   }
 
   public JsonBuilder(final Optional<RelativeRoot> root) {

@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibparent</artifactId>
-    <version>93</version>
+    <version>94</version>
   </parent>
 
   <artifactId>ibcore-root</artifactId>
@@ -52,6 +52,7 @@
     <module>ibcore-files</module>
     <module>ibcore-read-detect-model</module>
     <module>ibcore-read-detect</module>
+    <module>ibcore-read-detect-avro</module>
     <module>ibcore-default-extension-type-mapper</module>
   </modules>
 

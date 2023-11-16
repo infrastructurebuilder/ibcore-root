@@ -20,9 +20,9 @@ package org.infrastructurebuilder.util.config;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-@Named(SingletonIncrementingDatedStringSupplier.SINGLEDTON_INCREMENTING_DATED_STRING_SUPPLIER)
+@Named(SingletonIncrementingDatedStringSupplier.NAME)
 @Singleton
 public class SingletonIncrementingDatedStringSupplier extends IncrementingDatedStringSupplier {
-  static final String SINGLEDTON_INCREMENTING_DATED_STRING_SUPPLIER = "singledton-incrementing-dated-string-supplier";
+  static public final String NAME = "singleton-incrementing-dated-string-supplier";
 
 }

@@ -25,9 +25,9 @@ import javax.inject.Named;
 
 import org.infrastructurebuilder.util.core.IdentifierSupplier;
 
-@Named(IncrementingDatedStringSupplier.INCREMENTING_DATED_STRING_SUPPLIER)
+@Named(IncrementingDatedStringSupplier.NAME)
 public class IncrementingDatedStringSupplier implements IdentifierSupplier {
-  public static final String INCREMENTING_DATED_STRING_SUPPLIER = "incrementing-dated-string-supplier";
+  public static final String NAME = "incrementing-dated-string-supplier";
   public static final String DEFAULT_DATE_FORMAT = "yyyyMMddHHmm";
   private final AtomicInteger i = new AtomicInteger(0);
   private String format;
@@ -35,8 +35,8 @@ public class IncrementingDatedStringSupplier implements IdentifierSupplier {
   @Override
   public synchronized String get() {
     {
-      if (format == null)
-        format = new SimpleDateFormat(DEFAULT_DATE_FORMAT).format(new Date()) + "-%04d";
+      if (format == null) // TODO Currently always true
+        format = new SimpleDateFormat(DEFAULT_DATE_FORMAT).format(new Date()) + "-%05d";
     }
     return String.format(format, i.addAndGet(1));
   }

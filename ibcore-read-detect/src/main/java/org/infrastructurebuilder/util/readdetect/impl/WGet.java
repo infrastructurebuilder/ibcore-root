@@ -24,6 +24,7 @@ import static org.codehaus.plexus.util.StringUtils.isNotBlank;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -582,7 +583,7 @@ public final class WGet {
 
   private boolean preemptiveAuth;
 
-  private IBResourceBuilderFactory cf;
+  private IBResourceBuilderFactory<Optional<IBResource<InputStream>>> cf;
 
   /**
    * Method call when the mojo is executed for the first time.
@@ -592,7 +593,7 @@ public final class WGet {
    * @throws IBWGetException      if an error is occuring in this mojo.
    * @throws MojoFailureException if an error is occuring in this mojo.
    */
-  Optional<List<IBResource>> downloadIt() throws IBWGetException {
+  Optional<List<IBResource<InputStream>>> downloadIt() throws IBWGetException {
 
     if (this.proxyInfo == null) {
       this.proxyInfo = new ProxyInfo();
@@ -750,7 +751,7 @@ public final class WGet {
 
       Path outPath = newTarget;
 
-      final IBResourceBuilder b = cf.builderFromPathAndChecksum(outPath, finalChecksum)
+      final IBResourceBuilder<Optional<IBResource<InputStream>>> b = cf.builderFromPathAndChecksum(outPath, finalChecksum)
 
           .withSource(this.uri.toURL().toExternalForm())
 
@@ -869,8 +870,8 @@ public final class WGet {
         .collect(Collectors.toList());
   }
 
-  public void setCacheFactory(IBResourceBuilderFactory cf) {
-    this.cf = requireNonNull(cf);
+  public void setCacheFactory(IBResourceBuilderFactory<Optional<IBResource<InputStream>>> cf2) {
+    this.cf = requireNonNull(cf2);
 
   }
 

@@ -28,12 +28,15 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.util.core.AbsolutePathRelativeRoot;
 import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
-import org.infrastructurebuilder.util.readdetect.impl.IBResourceBuilderFactoryImpl;
+import org.infrastructurebuilder.util.readdetect.impl.AbsolutePathIBResourceBuilderFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -46,15 +49,17 @@ public class IBResourceTest {
   private TestingPathSupplier wps;
   private Path testFile;
 
-  private IBResourceBuilderFactory rcf;
+  private IBResourceBuilderFactory<Optional<IBResource<InputStream>>> rcf;
   private Path root;
+  private RelativeRoot rrs;
 
   @BeforeEach
   public void setUp() throws Exception {
     this.wps = new TestingPathSupplier();
     testFile = this.wps.getTestClasses().resolve(TFILE_TEST);
     this.root = this.wps.get();
-    this.rcf = new IBResourceBuilderFactoryImpl(this.root);
+    this.rrs = new AbsolutePathRelativeRoot(this.root);
+    this.rcf = new AbsolutePathIBResourceBuilderFactory(this.rrs);
   }
 
 //  @Test
@@ -115,13 +120,14 @@ public class IBResourceTest {
 //  @Test
 //  public void testSecondarConstructor() {
 //    Path f = this.wps.getTestClasses().resolve(TESTFILE_TEST);
-//    DefaultIBResource g = new DefaultIBResource(f, new Checksum(f), Optional.empty());
+//    AbsolutePathIBResource g = new AbsolutePathIBResource(f, new Checksum(f), Optional.empty());
 //    assertEquals(TEXT_PLAIN, g.getType());
 //  }
 
   @Test
   public void testFromPath() {
-    IBResource cset = this.rcf.fromPath(testFile).flatMap(IBResourceBuilder::build).get();
+    IBResource<InputStream> cset = this.rcf.fromPath(testFile)
+        .flatMap(IBResourceBuilder<Optional<IBResource<InputStream>>>::build).get();
     long d = new Date().toInstant().toEpochMilli();
     InputStream g = cset.get().get();
     cet.translate(() -> g.close());

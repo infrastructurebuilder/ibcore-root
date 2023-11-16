@@ -17,6 +17,9 @@
  */
 package org.infrastructurebuilder.util.maven.mavensupport;
 
+import static java.util.Objects.requireNonNull;
+
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -26,6 +29,10 @@ import org.infrastructurebuilder.util.core.TSupplier;
 
 @Named(IBConstants.MAVEN)
 @Singleton
-public class MavenProjectSupplier extends TSupplier<MavenProject> {
+public final class MavenProjectSupplier extends TSupplier<MavenProject> {
+  @Inject
+  public MavenProjectSupplier(MavenProject p) {
+    super(requireNonNull(p));
+  }
 
 }

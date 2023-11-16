@@ -70,7 +70,7 @@
 //import org.infrastructurebuilder.util.core.IBUtils;
 //import org.infrastructurebuilder.util.core.RelativeRoot;
 //import org.infrastructurebuilder.util.readdetect.IBResource;
-//import org.infrastructurebuilder.util.readdetect.impl.DefaultIBResource;
+//import org.infrastructurebuilder.util.readdetect.impl.AbsolutePathIBResource;
 //import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
 //import org.infrastructurebuilder.util.vertx.base.IBResourceVertx;
 //import org.slf4j.Logger;
@@ -131,7 +131,7 @@
 //    this(root, new IBResourceModel());
 //  }
 //
-////  public DefaultIBResource(
+////  public AbsolutePathIBResource(
 ////      // Path
 ////      java.nio.file.Path path
 ////      // Checksum
@@ -151,7 +151,7 @@
 ////    m.setMostRecentReadTime(readDate.orElse(null));
 ////  }
 //
-////  DefaultIBResource(String filePath, String checksum, String type, String source, String name, Date mostRecentRead) {
+////  AbsolutePathIBResource(String filePath, String checksum, String type, String source, String name, Date mostRecentRead) {
 ////    this.m = new IBResourceModel();
 ////    m.setFilePath(filePath);
 ////    m.setFileChecksum(checksum);
@@ -274,7 +274,7 @@
 //  }
 //
 //  public final static IBResource fromPath(Path path) {
-//    return new DefaultIBResource(Optional.empty(),path, new Checksum(path), empty(), empty());
+//    return new AbsolutePathIBResource(Optional.empty(),path, new Checksum(path), empty(), empty());
 //  }
 //
 //  @Override

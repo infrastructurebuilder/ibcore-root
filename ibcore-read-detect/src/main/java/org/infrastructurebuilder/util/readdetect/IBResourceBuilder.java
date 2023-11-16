@@ -25,54 +25,61 @@ import java.util.Properties;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.json.JSONObject;
 
-public interface IBResourceBuilder {
+public interface IBResourceBuilder<B> {
 
-  IBResourceBuilder fromJSON(JSONObject j);
+  IBResourceBuilder<B> fromJSON(JSONObject j);
 
-  IBResourceBuilder withChecksum(Checksum csum);
+  IBResourceBuilder<B> withChecksum(Checksum csum);
 
-  IBResourceBuilder from(Path path);
+  IBResourceBuilder<B> from(Path path);
 
-  IBResourceBuilder withFilePath(String path);
+  IBResourceBuilder<B> withFilePath(String path);
 
-  IBResourceBuilder cached(boolean cached);
+  IBResourceBuilder<B> cached(boolean cached);
 
-  IBResourceBuilder withName(String name);
+  IBResourceBuilder<B> withName(String name);
 
-  IBResourceBuilder withDescription(String desc);
+  IBResourceBuilder<B> withDescription(String desc);
 
-  IBResourceBuilder withType(String type);
+  IBResourceBuilder<B> withType(String type);
 
-  IBResourceBuilder withType(Optional<String> type);
+  IBResourceBuilder<B> withType(Optional<String> type);
 
-  IBResourceBuilder withAdditionalProperties(Properties p);
+  IBResourceBuilder<B> withAdditionalProperties(Properties p);
 
-  IBResourceBuilder withLastUpdated(Instant last);
+  IBResourceBuilder<B> withLastUpdated(Instant last);
 
-  IBResourceBuilder withSource(String source);
+  IBResourceBuilder<B> withSource(String source);
 
-  IBResourceBuilder withCreateDate(Instant create);
+  IBResourceBuilder<B> withCreateDate(Instant create);
 
-  IBResourceBuilder withSize(long size);
+  IBResourceBuilder<B> withSize(long size);
 
-  IBResourceBuilder withMostRecentAccess(Instant access);
-
-  IBResourceBuilder movedTo(Path path);
+  IBResourceBuilder<B> withMostRecentAccess(Instant access);
 
   /**
    * validate checks the values provided so far and throws IBResourceException if anything is off.
    *
-   * You can call validate whenever you set any value and if it returns your data is still possibly OK
+   * By contract, you should be able to call validate whenever you set any value and if it returns your data is still
+   * possibly OK
    *
    * @param hard if true, then assume nothing and re-validate the existence and checksums of the paths and sources
    * @throws IBResourceException if validation fails
    * @return this builder
    */
-  IBResourceBuilder validate(boolean hard);
+  IBResourceBuilder<B> validate(boolean hard);
 
-  Optional<IBResource> build(boolean hard);
+//  IBResourceBuilder<B> movedTo(Path path); // TODO Moved is for an IBResource
 
-  default Optional<IBResource> build() {
+  /**
+   * Performs a <code>validate(hard)</code> and then performs the build
+   *
+   * @param hard
+   * @return
+   */
+  B build(boolean hard);
+
+  default B build() {
     return build(false);
   }
 

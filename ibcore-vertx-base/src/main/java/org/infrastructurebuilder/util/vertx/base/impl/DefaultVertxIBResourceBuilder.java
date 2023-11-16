@@ -36,6 +36,7 @@ import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
@@ -43,13 +44,10 @@ import java.util.Properties;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.RelativeRoot;
-import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceException;
-import org.infrastructurebuilder.util.readdetect.IBResourceRelativeRootSupplier;
 import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
 import org.infrastructurebuilder.util.vertx.base.VertxIBResource;
-import org.infrastructurebuilder.util.vertx.base.VertxIBResourceBuilder;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +55,7 @@ import org.slf4j.LoggerFactory;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 
-public class DefaultVertxIBResourceBuilder implements VertxIBResourceBuilder {
+public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<VertxIBResource>> {
 
   private final static Logger log = LoggerFactory.getLogger(IBResourceBuilder.class);
   private IBResourceModel model = new IBResourceModel();
@@ -67,9 +65,9 @@ public class DefaultVertxIBResourceBuilder implements VertxIBResourceBuilder {
   private RelativeRoot root;
   private final Vertx vertx;
 
-  public DefaultVertxIBResourceBuilder(Vertx vertx, IBResourceRelativeRootSupplier root) {
+  public DefaultVertxIBResourceBuilder(Vertx vertx, RelativeRoot root) {
     this.vertx = requireNonNull(vertx);
-    this.root = requireNonNull(root).get();
+    this.root = requireNonNull(root);
   }
 
 //  private Optional<Path> getTargetDir() {
@@ -77,44 +75,26 @@ public class DefaultVertxIBResourceBuilder implements VertxIBResourceBuilder {
 //  }
 
   @Override
-  public VertxIBResourceBuilder fromJSON(JSONObject j) {
-    model = new IBResourceModel();
-    model.setFileChecksum(j.getString(CHECKSUM));
-    model.setSize(j.getLong(SIZE));
-    model.setSource(j.getString(SOURCE_URL));
-    model.setType(j.getString(MIME_TYPE));
-    model.setCreated(requireNonNull(j).optString(CREATE_DATE, null));
-    model.setFilePath(j.optString(PATH, null)); // Nope!
-    model.setLastUpdate(j.optString(UPDATE_DATE, null));
-    model.setMostRecentReadTime(j.optString(MOST_RECENT_READ_TIME, null));
-    model.setName(j.optString(NAME, null));
-    model.setDescription(j.optString(DESCRIPTION, null));
-    ofNullable(j.optJSONObject(ADDITIONAL_PROPERTIES)).ifPresent(jo -> {
-      jo.toMap().forEach((k, v) -> {
-        model.addAdditionalProperty(k, v.toString());
-      });
-    });
-
-    var p = ofNullable(model.getFilePath())
-        //
-        .map(extracted)
-        //
-        .orElseThrow(() -> new IBResourceException(NO_PATH_SUPPLIED));
-//    var originalPath = ofNullable(j.optString(ORIGINAL_PATH, null)).map(extracted).orElse(null);
-    return this;
-//    return this.fromModel(m).from(p).fromOriginalPath(originalPath);
-
-  }
+  public IBResourceBuilder<Future<VertxIBResource>> fromJSON(JSONObject j) {
+    model = IBResourceModel.modelFromJSON(j);
+    Path p = ofNullable(model.getFilePath())
+       //
+       .map(extracted)
+       //
+       .orElseThrow(() -> new IBResourceException(NO_PATH_SUPPLIED));
+    this.sourcePath = p;
+   return this;
+ }
 
   @Override
-  public VertxIBResourceBuilder withChecksum(Checksum csum) {
+  public IBResourceBuilder<Future<VertxIBResource>> withChecksum(Checksum csum) {
     this.targetChecksum = requireNonNull(csum);
     this.model.setFileChecksum(csum.toString());
     return this;
   }
 
   @Override
-  public VertxIBResourceBuilder from(Path path) {
+  public IBResourceBuilder<Future<VertxIBResource>> from(Path path) {
     this.sourcePath = requireNonNull(path);
 
     return this
@@ -127,42 +107,42 @@ public class DefaultVertxIBResourceBuilder implements VertxIBResourceBuilder {
   }
 
   @Override
-  public VertxIBResourceBuilder withFilePath(String path) {
+  public IBResourceBuilder<Future<VertxIBResource>> withFilePath(String path) {
     this.model.setFilePath(path);
     return this;
   }
 
   @Override
-  public VertxIBResourceBuilder cached(boolean cached) {
+  public IBResourceBuilder<Future<VertxIBResource>> cached(boolean cached) {
     this.model.setCached(cached);
     return this;
   }
 
   @Override
-  public VertxIBResourceBuilder withName(String name) {
+  public IBResourceBuilder<Future<VertxIBResource>> withName(String name) {
     this.model.setName(requireNonNull(name));
     return this;
   }
 
   @Override
-  public VertxIBResourceBuilder withDescription(String desc) {
+  public IBResourceBuilder<Future<VertxIBResource>> withDescription(String desc) {
     this.model.setDescription(requireNonNull(desc));
     return this;
   }
 
   @Override
-  public VertxIBResourceBuilder withType(String type) {
+  public IBResourceBuilder<Future<VertxIBResource>> withType(String type) {
     this.model.setType(requireNonNull(type));
     return this;
   }
 
   @Override
-  public VertxIBResourceBuilder withType(Optional<String> type) {
+  public IBResourceBuilder<Future<VertxIBResource>> withType(Optional<String> type) {
     return requireNonNull(type).map(t -> withType(t)).orElse(this);
   }
 
   @Override
-  public VertxIBResourceBuilder withAdditionalProperties(Properties p) {
+  public IBResourceBuilder<Future<VertxIBResource>> withAdditionalProperties(Properties p) {
     Properties p1 = new Properties();
     p1.putAll(p);
     this.model.setAdditionalProperties(p1);
@@ -170,31 +150,31 @@ public class DefaultVertxIBResourceBuilder implements VertxIBResourceBuilder {
   }
 
   @Override
-  public VertxIBResourceBuilder withLastUpdated(Instant last) {
+  public IBResourceBuilder<Future<VertxIBResource>> withLastUpdated(Instant last) {
     this.model.setLastUpdate(requireNonNull(last).toString());
     return this;
   }
 
   @Override
-  public VertxIBResourceBuilder withSource(String source) {
+  public IBResourceBuilder<Future<VertxIBResource>> withSource(String source) {
     this.model.setSource(requireNonNull(source));
     return this;
   }
 
   @Override
-  public VertxIBResourceBuilder withCreateDate(Instant create) {
+  public IBResourceBuilder<Future<VertxIBResource>> withCreateDate(Instant create) {
     this.model.setCreated(requireNonNull(create).toString());
     return this;
   }
 
   @Override
-  public VertxIBResourceBuilder withSize(long size) {
+  public IBResourceBuilder<Future<VertxIBResource>> withSize(long size) {
     this.model.setSize(size);
     return this;
   }
 
   @Override
-  public VertxIBResourceBuilder withMostRecentAccess(Instant access) {
+  public IBResourceBuilder<Future<VertxIBResource>> withMostRecentAccess(Instant access) {
     this.model.setMostRecentReadTime(requireNonNull(access).toString());
     return this;
   }
@@ -208,7 +188,7 @@ public class DefaultVertxIBResourceBuilder implements VertxIBResourceBuilder {
    * @return this builder
    */
   @Override
-  public VertxIBResourceBuilder validate(boolean hard) {
+  public IBResourceBuilder<Future<VertxIBResource>> validate(boolean hard) {
 //    getTargetDir().ifPresent(targetDir -> {
 //      // there is a targetDir, so the file we're referencing should be in that
 //      // directory
@@ -256,13 +236,12 @@ public class DefaultVertxIBResourceBuilder implements VertxIBResourceBuilder {
    * @param m model to replace existing model with
    * @return this builder.
    */
-  DefaultVertxIBResourceBuilder fromModel(IBResourceModel m) {
+  IBResourceBuilder<Future<VertxIBResource>> fromModel(IBResourceModel m) {
     this.model = m;
     return this;
   }
 
-  @Override
-  public VertxIBResourceBuilder movedTo(Path path) {
+  private IBResourceBuilder<Future<VertxIBResource>> movedTo(Path path) {
     this.finalRestingPath = path;
     return this;
   }

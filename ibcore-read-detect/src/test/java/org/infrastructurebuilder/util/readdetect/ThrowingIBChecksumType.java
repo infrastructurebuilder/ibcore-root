@@ -23,7 +23,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 import org.infrastructurebuilder.util.core.Checksum;
-import org.infrastructurebuilder.util.readdetect.impl.DefaultIBResource;
+import org.infrastructurebuilder.util.readdetect.impl.AbsolutePathIBResource;
 
 /**
  * Just a testing implementation that allows us to throw an excetion when get is called
@@ -31,7 +31,7 @@ import org.infrastructurebuilder.util.readdetect.impl.DefaultIBResource;
  * @author mykel.alvis
  *
  */
-public class ThrowingIBChecksumType extends DefaultIBResource {
+public class ThrowingIBChecksumType extends AbsolutePathIBResource {
 
   /**
    *

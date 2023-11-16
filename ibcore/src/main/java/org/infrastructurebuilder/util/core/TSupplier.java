@@ -17,6 +17,7 @@
  */
 package org.infrastructurebuilder.util.core;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class TSupplier<T> implements Supplier<T> {
@@ -25,6 +26,10 @@ public class TSupplier<T> implements Supplier<T> {
 
   public TSupplier() {
     this.t = null;
+  }
+
+  protected TSupplier(T t) {
+    this.t = t;
   }
 
   public TSupplier<T> setT(T t) {
@@ -36,6 +41,14 @@ public class TSupplier<T> implements Supplier<T> {
   @Override
   public T get() {
     return this.t;
+  }
+
+  public final static <G> Optional<TSupplier<G>> getNullableTSupplier(G t) {
+    return Optional.of(new TSupplier<G>(t));
+  }
+
+  public final static <G> Optional<TSupplier<G>> getOptTSupplier(G t) {
+    return Optional.ofNullable(t).map(TSupplier::new);
   }
 
 }

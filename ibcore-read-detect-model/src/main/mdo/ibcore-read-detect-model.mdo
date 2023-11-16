@@ -79,10 +79,7 @@
           <description>
           <![CDATA[Source URL-like.<BR/>
               This is where the stream ORIGINATED.<BR/>
-              It is only used for realization, if possible, and for reference otherwise.<BR/>
-              Values of ${server.SERVERID.username} and ${server.SERVERID.password} may be
-              present and can be used as credentials<BR/>
-              Such as https://${server.MyServerID.username}:${server.MyServerId.password}@www.example.com/somecoolfile]]>
+              It is only used for realization, if possible, and for reference otherwise.<BR/>]]>
           </description>
           <type>String</type>
         </field>
@@ -128,14 +125,14 @@
           <name>description</name>
           <version>0.0.1+</version>
           <required>false</required>
-          <description>Description of file</description>
+          <description>Description of resource</description>
           <type>String</type>
         </field>
         <field >
           <name>size</name>
           <version>0.0.1+</version>
           <required>true</required>
-          <description>size of file</description>
+          <description>Length in bytes of resource (-1 means unknown)</description>
           <type>long</type>
           <default>-1L</default>
         </field>
@@ -154,6 +151,26 @@
           <version>0.2.1+</version>
           <code>
             <![CDATA[
+  public final static IBResourceModel modelFromJSON(org.json.JSONObject j) {
+    IBResourceModel model = new IBResourceModel();
+    model.setCreated(java.util.Objects.requireNonNull(j).optString(org.infrastructurebuilder.util.constants.IBConstants.CREATE_DATE, null));
+    model.setFileChecksum(j.getString(org.infrastructurebuilder.util.core.ChecksumEnabled.CHECKSUM));
+    model.setSize(j.getLong(org.infrastructurebuilder.util.constants.IBConstants.SIZE));
+    model.setType(j.getString(org.infrastructurebuilder.util.constants.IBConstants.MIME_TYPE));
+    model.setFilePath(j.optString(org.infrastructurebuilder.util.constants.IBConstants.PATH, null));
+    model.setLastUpdate(j.optString(org.infrastructurebuilder.util.constants.IBConstants.UPDATE_DATE, null));
+    model.setMostRecentReadTime(j.optString(org.infrastructurebuilder.util.constants.IBConstants.MOST_RECENT_READ_TIME, null));
+    model.setName(j.optString(org.infrastructurebuilder.util.constants.IBConstants.SOURCE_NAME, null));
+    model.setSource(j.optString(org.infrastructurebuilder.util.constants.IBConstants.SOURCE_URL, null));
+    model.setDescription(j.optString(org.infrastructurebuilder.util.constants.IBConstants.DESCRIPTION, null));
+    java.util.Optional.ofNullable(j.optJSONObject(org.infrastructurebuilder.util.constants.IBConstants.ADDITIONAL_PROPERTIES)).ifPresent(jo -> {
+      jo.toMap().forEach((k, v) -> {
+        model.addAdditionalProperty(k, v.toString());
+      });
+    });
+    return model;
+  }
+
             ]]>
           </code>
         </codeSegment>

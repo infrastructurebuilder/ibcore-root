@@ -32,6 +32,7 @@ import static org.infrastructurebuilder.util.core.Checksum.ofPath;
 import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory.getAttributes;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -49,10 +50,14 @@ import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.RelativeRoot;
+import org.infrastructurebuilder.util.core.RelativeRootFactory;
+import org.infrastructurebuilder.util.core.RelativeRootSetPathSupplier;
+import org.infrastructurebuilder.util.core.RelativeRootSupplier;
 import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactorySupplier;
+import org.infrastructurebuilder.util.readdetect.IBResourceException;
 import org.infrastructurebuilder.util.vertx.blobstore.Blobstore;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -66,28 +71,25 @@ import io.vertx.core.file.FileSystem;
 import io.vertx.core.impl.ConcurrentHashSet;
 import io.vertx.core.json.JsonObject;
 
-public class FilesystemBlobstore implements Blobstore {
+public class FilesystemBlobstore implements Blobstore<InputStream> {
 
   private final static Logger log = LoggerFactory.getLogger(FilesystemBlobstore.class);
   private final static FileSystem fs = Vertx.vertx().fileSystem();
 
-  private final RelativeRoot root;
+  private final RelativeRootSupplier root;
   private final Path metadata;
 
   private final AtomicLong size = new AtomicLong(0);
   private final Set<String> blobs; // = new ConcurrentHashSet<>();
   private final long maxBytes;
-  private IBResourceBuilderFactory rcf;
+  private IBResourceBuilderFactory<Optional<IBResource<InputStream>>> rcf;
 
-  public FilesystemBlobstore(JsonObject config) {
-    this(Paths.get(config.getString(BLOBSTORE_ROOT)),
-        Optional.ofNullable(config.getLong(BLOBSTORE_MAXBYTES)).orElse(BLOBSTORE_NO_MAXBYTES));
-  }
-
-  public FilesystemBlobstore(Path root, Long size) {
-    this.root = RelativeRoot.from(requireNonNull(root));
-    this.rcf = new IBResourceBuilderFactorySupplier(() -> root).get();
-    this.metadata = root.resolve(METADATA_DIR_NAME).toAbsolutePath();
+  public FilesystemBlobstore(RelativeRootSupplier rrs, Long size) {
+    this.root = requireNonNull(rrs);
+    this.rcf = new IBResourceBuilderFactorySupplier(new RelativeRootFactory(Set.of(this.root))).get(rrs.getName())
+        .get();
+    this.metadata = getRelativeRoot().resolvePath(METADATA_DIR_NAME).map(Path::toAbsolutePath)
+        .orElseThrow(() -> new IBResourceException("No path"));
     try {
       Files.createDirectories(this.metadata);
     } catch (IOException e) {
@@ -103,7 +105,7 @@ public class FilesystemBlobstore implements Blobstore {
     cet.translate(() -> Files.newDirectoryStream(metadata).forEach(p -> {
       try {
         UUID u = UUID.fromString(p.getFileName().toString());
-        Optional<IBResource> res = this.rcf.fromJSONString(new JsonObject(readString(p)).toString())
+        Optional<IBResource<InputStream>> res = this.rcf.fromJSONString(new JsonObject(readString(p)).toString())
             .flatMap(IBResourceBuilder::build);
         res.ifPresent(r -> {
           resources.add(u.toString());
@@ -137,7 +139,7 @@ public class FilesystemBlobstore implements Blobstore {
   }
 
   public RelativeRoot getRelativeRoot() {
-    return this.root;
+    return this.root.get().orElseThrow(() -> new IBResourceException("No root"));
   }
 
   @Override
@@ -164,7 +166,10 @@ public class FilesystemBlobstore implements Blobstore {
     }
     try {
       // Not really a temp file
-      Path blobFile = Files.createTempFile(this.root.getPath().get(), "temp", ".blob").toAbsolutePath();
+      Path blobFile = Files
+          .createTempFile(this.getRelativeRoot().getPath().orElseThrow(() -> new IBResourceException("No path")),
+              "temp", ".blob")
+          .toAbsolutePath();
       return requireNonNull(b)
           // write the blob
           .compose(buffer -> writeFile(blobFile, buffer))
@@ -193,8 +198,8 @@ public class FilesystemBlobstore implements Blobstore {
 
   private Future<String> writeMetadata(Path blob, String originalName, Optional<String> description, Instant createDate,
       Instant lastUpdated, Optional<Properties> addlProps) {
-    getLog().error("writeMetadata {}, {}, desc {}, {}, {}, {}", root.relativize(blob).get(), originalName, description,
-        createDate, lastUpdated, addlProps);
+    getLog().error("writeMetadata {}, {}, desc {}, {}, {}, {}", getRelativeRoot().relativize(blob).get(), originalName,
+        description, createDate, lastUpdated, addlProps);
     return rcf.fromPath(blob, IBConstants.JSON_TYPE).map(builder -> {
 
       return builder
@@ -258,7 +263,7 @@ public class FilesystemBlobstore implements Blobstore {
     return getMetadata(id).compose(md -> succeededFuture(md.getDescription().orElse(null)));
   }
 
-  public final Future<IBResource> getMetadata(String id) {
+  public final Future<IBResource<InputStream>> getMetadata(String id) {
     return fs
 
         .readFile(getMetadataPath(id).toString())
@@ -283,14 +288,15 @@ public class FilesystemBlobstore implements Blobstore {
   }
 
   private Path getPath(String id) {
-    return root.resolvePath(requireNonNull(id)).map(Path::toAbsolutePath).orElseThrow(() -> new IBException());
+    return this.getRelativeRoot().resolvePath(requireNonNull(id)).map(Path::toAbsolutePath)
+        .orElseThrow(() -> new IBException());
   }
 
   @Override
   public Future<Void> removeBlob(String id) {
     blobs.remove(id);
     var mdPath = getMetadataPath(id);
-    this.rcf.fromJSON(new JSONObject(cet.returns(() -> Files.readString(mdPath))))
+    this.rcf.fromJSON(new JSONObject(cet.returns(() -> readString(mdPath))))
 
         .ifPresent(r2 -> {
           r2.build().ifPresent(r -> {

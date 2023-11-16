@@ -26,13 +26,12 @@ import java.util.Properties;
 
 import org.infrastructurebuilder.util.core.LoggerEnabled;
 import org.infrastructurebuilder.util.readdetect.IBResource;
-import org.slf4j.Logger;
 
 import io.vertx.codegen.annotations.Nullable;
 import io.vertx.core.Future;
 import io.vertx.core.buffer.Buffer;
 
-public interface Blobstore extends LoggerEnabled {
+public interface Blobstore<T> extends LoggerEnabled {
 
   Future<Buffer> getBlob(String id);
 
@@ -47,7 +46,7 @@ public interface Blobstore extends LoggerEnabled {
     return putBlob(blobname, description, p, Optional.empty());
   }
 
-  Future<IBResource> getMetadata(String id);
+  Future<IBResource<T>> getMetadata(String id);
 
   default Future<Instant> getCreateDate(String id) {
     return getMetadata(id).compose(md -> succeededFuture(md.getCreateDate()));

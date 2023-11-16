@@ -24,6 +24,7 @@ import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.util.constants.IBConstants.NOT_FOUND;
 
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
@@ -51,19 +52,19 @@ import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.file.FileSystem;
 
-public class InMemoryBlobstore implements Blobstore {
+public class InMemoryBlobstore implements Blobstore<InputStream> {
 
-  private static final String ERROR_GETTING_ATTRIBUTES = "error.getting.attributes";
+  public static final String ERROR_GETTING_ATTRIBUTES = "error.getting.attributes";
 
   private final static FileSystem fs = Vertx.vertx().fileSystem();
 
-  private final static Collector<Entry<String, IBResource>, ?, ImmutableSortedMap<Instant, String>> oldestCollector = ImmutableSortedMap
+  private final static Collector<Entry<String, IBResource<InputStream>>, ?, ImmutableSortedMap<Instant, String>> oldestCollector = ImmutableSortedMap
       .toImmutableSortedMap(Ordering.natural().reversed(), (e) -> {
-        return ((Entry<String, IBResource>) e).getValue().getLastUpdateDate();
+        return ((Entry<String, IBResource<InputStream>>) e).getValue().getLastUpdateDate();
       }, Entry::getKey);
 
   private final static Logger log = LoggerFactory.getLogger(InMemoryBlobstore.class);
-  private final Map<String, IBResource> resources = new ConcurrentHashMap<>();
+  private final Map<String, IBResource<InputStream>> resources = new ConcurrentHashMap<>();
   private final Map<String, byte[]> blobs = new ConcurrentHashMap<>();
 
   private long maxBytes;
@@ -97,7 +98,7 @@ public class InMemoryBlobstore implements Blobstore {
   }
 
   @Override
-  public Future<IBResource> getMetadata(String id) {
+  public Future<IBResource<InputStream>> getMetadata(String id) {
     return ofNullable(resources.get(id)).map(Future::succeededFuture).orElse(Future.failedFuture(NOT_FOUND));
   }
 
@@ -128,7 +129,7 @@ public class InMemoryBlobstore implements Blobstore {
 //    })
         .compose(bb -> {
           byte[] bytes = bb.getBytes();
-          IBResource r = new IMDelegatedIBResource(bytes, blobname, desc, createDate, lastUpdated, addlProps);
+          IBResource<InputStream> r = new IMDelegatedIBResource(bytes, blobname, desc, createDate, lastUpdated, addlProps);
           String id = r.getChecksum().asUUID().get().toString();
           this.blobs.putIfAbsent(id, bytes);
           this.resources.putIfAbsent(id, r);
@@ -142,10 +143,10 @@ public class InMemoryBlobstore implements Blobstore {
     BasicFileAttributes bfa = IBResourceBuilderFactory.getAttributes.apply(requireNonNull(p)).get();
     Future<Buffer> rf = fs.readFile(p.toAbsolutePath().toString());
 
-    var test = rf.result(); // FIXME Remove later
+//    var test = rf.result(); // FIXME Remove later
     return rf.compose(bb -> {
       byte[] bytes = bb.getBytes();
-      IBResource r = new IMDelegatedIBResource(bytes, blobname, description, bfa.creationTime().toInstant(),
+      IBResource<InputStream> r = new IMDelegatedIBResource(bytes, blobname, description, bfa.creationTime().toInstant(),
           bfa.lastModifiedTime().toInstant(), requireNonNull(addlProps));
       String id = r.getChecksum().asUUID().get().toString();
       this.blobs.putIfAbsent(id, bytes);

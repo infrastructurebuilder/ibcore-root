@@ -17,27 +17,14 @@
  */
 package org.infrastructurebuilder.util.vertx.base;
 
-import static java.nio.file.Files.readAttributes;
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Optional;
-import java.util.function.Function;
 
-import org.apache.tika.Tika;
-import org.apache.tika.metadata.TikaCoreProperties;
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
@@ -47,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.vertx.core.Future;
+import io.vertx.core.file.AsyncFile;
 
 /**
  * IBResourceCacheFactor is the part of ibcore-read-detect that actually copies files from some remote location to it's
@@ -56,25 +44,15 @@ import io.vertx.core.Future;
 public interface VertxIBResourceBuilderFactory {
   final static Logger log = LoggerFactory.getLogger(VertxIBResourceBuilderFactory.class.getName());
 
-  public final static Function<Path, Optional<BasicFileAttributes>> getAttributes = (i) -> {
-    Optional<BasicFileAttributes> retVal = empty();
-    try {
-      retVal = of(readAttributes(requireNonNull(i), BasicFileAttributes.class));
-    } catch (IOException e) {
-      // TODO Log an error, maybe?
-    }
-    return retVal;
-  };
-
-  default Future<VertxIBResourceBuilder> fromPath(Path p) {
+  default Future<IBResourceBuilder<Future<VertxIBResource>>> fromPath(Path p) {
     return fromPath(p, null);
   }
 
-  default Future<VertxIBResourceBuilder> fromURL(URL u) {
+  default Future<IBResourceBuilder<Future<VertxIBResource>>> fromURL(URL u) {
     return fromURL(u, null);
   }
 
-  default Future<VertxIBResourceBuilder> fromURLLike(String u) {
+  default Future<IBResourceBuilder<Future<VertxIBResource>>> fromURLLike(String u) {
     return fromURLLike(u, null);
   }
 
@@ -85,17 +63,17 @@ public interface VertxIBResourceBuilderFactory {
    * @param type type to force. If null, type will be interpreted.
    * @return IBResource instance
    */
-  Future<VertxIBResourceBuilder> fromPath(Path p, String type);
+  Future<IBResourceBuilder<Future<VertxIBResource>>> fromPath(Path p, String type);
 
-  default Future<VertxIBResourceBuilder> fromURL(URL u, String type) {
+  default Future<IBResourceBuilder<Future<VertxIBResource>>> fromURL(URL u, String type) {
     return fromURLLike(requireNonNull(u).toExternalForm(), type);
   }
 
-  Future<VertxIBResourceBuilder> fromURLLike(String u, String type);
+  Future<IBResourceBuilder<Future<VertxIBResource>>> fromURLLike(String u, String type);
 
-  Future<VertxIBResourceBuilder> fromModel(IBResourceModel model);
+  Future<IBResourceBuilder<Future<VertxIBResource>>> fromModel(IBResourceModel model);
 
-  default VertxIBResourceBuilder builderFromPath(Path p) {
+  default IBResourceBuilder<Future<VertxIBResource>> builderFromPath(Path p) {
     return builderFromPathAndChecksum(requireNonNull(p), new Checksum(p));
   }
 
@@ -105,20 +83,20 @@ public interface VertxIBResourceBuilderFactory {
    * @param json
    * @return
    */
-  default Future<VertxIBResourceBuilder> fromJSONString(String json) {
+  default Optional<IBResourceBuilder<Future<VertxIBResource>>> fromJSONString(String json) {
     try {
       return fromJSON(cet.returns(() -> new JSONObject(json)));
     } catch (IBException e) {
-      // TODO?
-      return Future.failedFuture("Could not build from JSONString");
+      log.error("Could not build from JSONString",e);
+      return Optional.empty();
     }
 
   }
 
-  Future<VertxIBResourceBuilder> fromJSON(JSONObject json);
+  Optional<IBResourceBuilder<Future<VertxIBResource>>> fromJSON(JSONObject json);
 
-  Optional<RelativeRoot> getRoot();
+  Optional<RelativeRoot> getRelativeRoot();
 
-  VertxIBResourceBuilder builderFromPathAndChecksum(Path p, Checksum checksum);
+  IBResourceBuilder<Future<VertxIBResource>> builderFromPathAndChecksum(Path p, Checksum checksum);
 
 }

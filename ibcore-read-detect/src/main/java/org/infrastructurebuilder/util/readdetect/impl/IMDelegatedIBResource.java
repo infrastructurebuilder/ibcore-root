@@ -40,6 +40,7 @@ import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.ChecksumBuilder;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.IBResource;
+import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -47,17 +48,17 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The IMDelegatedIBResource is NOT a general-purpose IBResource implementation, as it stores the resource data
- * in-memory. If you try to use this as a general resource, you will QUICKLY run out of memory.
+ * in-memory. If you try to use this as a general IBResource, you will QUICKLY run out of memory.
  *
  * @author mykel
  *
  */
-public class IMDelegatedIBResource implements IBResource {
+public class IMDelegatedIBResource implements IBResource<InputStream> {
   private final static Tika tika = new Tika();
 
   private final static Logger log = LoggerFactory.getLogger(IMDelegatedIBResource.class);
 
-  private final IBResource r;
+  private final IBResource<InputStream> r;
 
   private final byte[] ba;
 
@@ -85,7 +86,7 @@ public class IMDelegatedIBResource implements IBResource {
 
     requireNonNull(addlProps).ifPresent(p -> p.forEach((k, v) -> m.addAdditionalProperty(k.toString(), v.toString())));
 
-    r = new DefaultIBResourceBuilder(Optional.empty()).fromModel(m).build().get();
+    r = new AbsolutePathIBResourceBuilder(Optional.empty()).fromModel(m).build().get();
     log.debug("Built model {}", r.getChecksum().asUUID().get());
   }
 

@@ -17,16 +17,21 @@
  */
 package org.infrastructurebuilder.util.core;
 
+import static org.infrastructurebuilder.util.core.RelativeRootBasicPathPropertiesSupplier.NAME;
+import static org.infrastructurebuilder.util.core.RelativeRootBasicPathPropertiesSupplier.RR_BASIC_PATH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.json.JSONObject;
@@ -58,27 +63,27 @@ class RelativeRootTest {
     tps.finalize();
   }
 
-  private RelativeRootProvider rrp;
-  private RelativeRoot prr, hrr, s3r, s3r2;
+  private RelativeRootFactory rrp;
+  private RelativeRoot prr;
   private Path tp;
   private Path ssPath;
-  private Path r2;
   private String ss;
   private Path aPath;
-  private URL ssURL;
+  private RelativeRootBasicPathEnvSupplier i;
+  private RelativeRootSetPathSupplier j;
 
   @BeforeEach
   void setUp() throws Exception {
-    tp = tps.get();
-    rrp = new RelativeRootProvider(Collections.emptySet());
+    tp = tps.get().toAbsolutePath();
+    this.i = new RelativeRootBasicPathEnvSupplier("target_dir");
+    this.j = new RelativeRootSetPathSupplier(tps.getClasses());
+    rrp = new RelativeRootFactory(Set.of(new RelativeRootBasicPathPropertiesSupplier(), this.i, this.j));
 
-    prr = RelativeRoot.from(tp);
-    hrr = RelativeRoot.from(new URL(URLROOT));
-    s3r = RelativeRoot.from(URLLIKE);
-    s3r2 = RelativeRoot.from(new JSONObject(STRING_ROOT_S3_AMAZON_BUCKET));
+    System.setProperty(RR_BASIC_PATH, tp.toString());
+    prr = rrp.get(RelativeRootBasicPathPropertiesSupplier.NAME).get();
+    System.clearProperty(RR_BASIC_PATH);
     ss = UUID.randomUUID().toString();
     ssPath = Paths.get(ss);
-    ssURL = new URL(URLROOT + "/" + ss);
     aPath = tp.resolve(ssPath).toAbsolutePath();
   }
 
@@ -92,58 +97,56 @@ class RelativeRootTest {
     assertTrue(prr.isURL());
     assertFalse(prr.isURLLike());
     assertTrue(prr.getPath().isPresent());
-    assertFalse(hrr.getPath().isPresent());
   }
 
   @Test
   void testAbsolute() {
-    Optional<Path> q = hrr.relativize(aPath);
-    assertFalse(q.isPresent());
+
     Optional<Path> r = prr.relativize(aPath);
     assertTrue(r.isPresent());
+
     // Relativized paths are not the same as the original
     assertNotEquals(aPath, r.get());
     // Resolving an absolute path returns that path
-    assertEquals(aPath.toString(), prr.resolvePath(aPath));
+    Path qm = prr.resolvePath(r.get().toString()).get();
+    assertEquals(qm.toString(), prr.resolvePath(aPath));
   }
 
   @Test
-  void testURLStuff() {
-    assertFalse(hrr.isPath());
-    assertTrue(hrr.isURL());
-    assertFalse(hrr.isURLLike());
-    String v = hrr.relativize(ssURL).get();
-    assertEquals(ss, v);
-    Path rr = ssPath.toAbsolutePath();
-    assertTrue(hrr.relativize(rr).isEmpty());
+  void testRelativize() {
+    String s = ssPath.toString();
+    String pq = prr.relativize(s);
+    assertNotNull(pq);
+    // Relativized paths are not the same as the original
+    assertEquals(s, pq);
+    // Resolving an absolute path returns that path
+    assertEquals(aPath.toString(), prr.resolvePath(pq).get().toString());
+
   }
 
   @Test
-  void testURLLikeStuff() {
-    String ok = URLLIKE + "/" + ss;
-    String v = s3r.relativize(ok);
-    assertEquals(ss, v);
+  void testJsonChecksum() {
+    String s = prr.toString();
+    JSONObject j = prr.asJSON();
+    Checksum c = prr.asChecksum();
+    Checksum sb = ChecksumBuilder.newInstance().addString(s).asChecksum();
+    assertEquals(sb, c);
+    JSONObject j2 = new JSONObject().put(RelativeRoot.RELATIVE_ROOT_URLLIKE, s);
+    assertEquals(j.toString(), j2.toString());
 
-    String notOK = OTHLIKE + "/" + ss;
-    String w = s3r.relativize(notOK);
-    assertEquals(notOK, w);
-
-    assertEquals(ssPath, s3r.relativize(ssPath).get());
-    var s3rr = s3r.resolvePath(ssPath);
-    assertEquals(ok, s3rr);
-
-    assertTrue(s3r.relativize(ssPath.toAbsolutePath()).isEmpty());
   }
 
   @Test
-  void testChecksum() {
-    var sum = s3r2.asChecksum();
-    assertEquals(CSUMVAL, sum.toString());
+  void testGetPropertyBasicPathEnv() {
+    assertEquals(this.rrp.get(RelativeRootBasicPathEnvSupplier.NAME).get().getPath().get(), tps.getTestClasses().getParent());
+
   }
 
   @Test
-  void testJSON() {
-    var json = s3r.asJSON().toString();
-    assertEquals(STRING_ROOT_S3_AMAZON_BUCKET, json);
+  void testGetBasicSet() {
+    assertEquals(this.rrp.get(RelativeRootSetPathSupplier.NAME).get().getPath().get(), tps.getClasses());
   }
+
+
+
 }

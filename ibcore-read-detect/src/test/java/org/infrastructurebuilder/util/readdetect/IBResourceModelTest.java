@@ -17,26 +17,24 @@
  */
 package org.infrastructurebuilder.util.readdetect;
 
-import static java.util.Optional.of;
 import static org.infrastructurebuilder.util.constants.IBConstants.IMAGE_JPG;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.infrastructurebuilder.util.core.AbsolutePathRelativeRoot;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.IBUtilsTest;
+import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
-import org.infrastructurebuilder.util.readdetect.impl.DefaultIBResource;
-import org.infrastructurebuilder.util.readdetect.impl.IBResourceBuilderFactoryImpl;
+import org.infrastructurebuilder.util.readdetect.impl.AbsolutePathIBResourceBuilderFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,13 +42,14 @@ import org.junit.jupiter.api.Test;
 public class IBResourceModelTest {
 
   private TestingPathSupplier wps;
-  private IBResource c1, c2;
+  private IBResource<InputStream> c1, c2;
   private Path path;
   private Checksum checksum;
-  private IBResourceBuilderFactory f;
+  private IBResourceBuilderFactory<Optional<IBResource<InputStream>>> f;
   private Path root;
   private Path source;
   private Checksum lc;
+  private RelativeRoot rrs;
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -60,11 +59,12 @@ public class IBResourceModelTest {
     path = wps.get().resolve(UUID.randomUUID().toString());
     IBUtils.copy(source, path);
     lc = new Checksum(source);
-    f = new IBResourceBuilderFactoryImpl(root);
+    rrs = new AbsolutePathRelativeRoot(root);
+    f = new AbsolutePathIBResourceBuilderFactory(rrs);
     checksum = new Checksum(IBUtilsTest.TESTFILE_CHECKSUM);
-    c2 = f.fromPath(source, "ABC").flatMap(IBResourceBuilder::build).get();
-//    c2 = new DefaultIBResource(path, checksum);
-    c1 = f.fromPath(path).flatMap(IBResourceBuilder::build).get();
+    c2 = f.fromPath(source, "ABC").flatMap(IBResourceBuilder<Optional<IBResource<InputStream>>>::build).get();
+//    c2 = new AbsolutePathIBResource(path, checksum);
+    c1 = f.fromPath(path).flatMap(IBResourceBuilder<Optional<IBResource<InputStream>>>::build).get();
 
   }
 
@@ -117,7 +117,7 @@ public class IBResourceModelTest {
 
   @Test
   public void testEqualsHash() {
-//    DefaultIBResource c3 = new DefaultIBResource(path, checksum, of(IMAGE_JPG));
+//    AbsolutePathIBResource c3 = new AbsolutePathIBResource(path, checksum, of(IMAGE_JPG));
     c1.hashCode();
     c1.hashCode();
     c1.hashCode();

@@ -33,8 +33,7 @@ public class MavenProjectSupplierTest {
   @BeforeEach
   public void setUp() throws Exception {
     p = new MavenProjectStub();
-    mps = new MavenProjectSupplier();
-    mps.setT(p);
+    mps = new MavenProjectSupplier(p);
   }
 
   @Test

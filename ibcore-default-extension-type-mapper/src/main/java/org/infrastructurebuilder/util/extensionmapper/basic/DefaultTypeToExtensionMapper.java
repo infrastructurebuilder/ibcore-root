@@ -77,7 +77,7 @@ import static org.infrastructurebuilder.util.constants.IBConstants.TSV;
 import static org.infrastructurebuilder.util.constants.IBConstants.TXT;
 import static org.infrastructurebuilder.util.constants.IBConstants.VIDEO_AVI_1;
 import static org.infrastructurebuilder.util.constants.IBConstants.XLS;
-import static org.infrastructurebuilder.util.constants.IBConstants.XLSX;
+import static org.infrastructurebuilder.util.constants.IBConstants.*;
 import static org.infrastructurebuilder.util.constants.IBConstants.XML;
 import static org.infrastructurebuilder.util.constants.IBConstants.ZIP;
 
@@ -102,10 +102,14 @@ public class DefaultTypeToExtensionMapper implements TypeToExtensionMapper {
   @Inject
   public DefaultTypeToExtensionMapper() {
     this.defaultExtension = DEFAULT_EXTENSION;
-    list.addAll(Arrays.asList(new TypeMapTuple(IBDATA_SCHEMA, XML) //
+    list.addAll(Arrays.asList(
+
+        new TypeMapTuple(APPLICATION_OCTET_STREAM, BIN) // DEFAULT
+        , new TypeMapTuple(IBDATA_SCHEMA, XML) //
         , new TypeMapTuple(APPLICATION_XML, XML, ORG_W3C_DOM_NODE) //
-        , new TypeMapTuple(TEXT_HTML, HTM, JAVA_LANG_STRING), new TypeMapTuple(TEXT_HTML, HTML, JAVA_LANG_STRING),
-        new TypeMapTuple(TEXT_PLAIN, TXT, JAVA_LANG_STRING) //
+        , new TypeMapTuple(TEXT_HTML, HTM, JAVA_LANG_STRING) //
+        , new TypeMapTuple(TEXT_HTML, HTML, JAVA_LANG_STRING) //
+        , new TypeMapTuple(TEXT_PLAIN, TXT, JAVA_LANG_STRING) //
         , new TypeMapTuple(APPLICATION_ZIP, ZIP) //
         , new TypeMapTuple(TEXT_CSV, CSV, JAVA_LANG_STRING) //
         , new TypeMapTuple(TEXT_TSV, TSV, JAVA_LANG_STRING) //

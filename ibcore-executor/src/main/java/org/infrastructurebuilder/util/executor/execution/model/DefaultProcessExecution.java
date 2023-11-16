@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.infrastructurebuilder.util.core.AbsolutePathRelativeRoot;
 import org.infrastructurebuilder.util.core.ChecksumBuilder;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.RelativeRoot;
@@ -179,7 +180,7 @@ public class DefaultProcessExecution implements ProcessExecution {
   }
 
   public Optional<RelativeRoot> getRelativeRoot() {
-    return ofNullable(gpe.getRelativeRoot()).map(Paths::get).map(RelativeRoot::from);
+    return ofNullable(gpe.getRelativeRoot()).map(Paths::get).map(AbsolutePathRelativeRoot::new);
   }
 
   @Override
