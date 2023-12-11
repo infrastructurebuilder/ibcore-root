@@ -20,6 +20,7 @@ package org.infrastructurebuilder.util.core;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 import static org.infrastructurebuilder.util.core.IBUtils.deepCopy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -41,7 +42,6 @@ public class RoseTreeTest {
   public static class RoseTest extends AbstractRoseTree<X> {
 
     public static final String TREE_CHILDREN = "children";
-    private final ChecksumBuilder builder = ChecksumBuilder.newInstance();
 
     public RoseTest(final X value, final List<RoseTree<X>> children) {
       super(value, ofNullable(children).map(Collections::unmodifiableList)
@@ -62,7 +62,9 @@ public class RoseTreeTest {
 
     @Override
     public ChecksumBuilder getChecksumBuilder() {
-      return builder;
+      return ChecksumBuilder.newInstance().addChecksumEnabled(getValue())
+          // It's actually pretty irritating that this works ---vvv
+          .addListChecksumEnabled((getChildren().stream().collect(toList())));
     }
 
   }
@@ -70,11 +72,14 @@ public class RoseTreeTest {
   public static class X implements JSONAndChecksumEnabled {
     private final JSONObject a;
     private final JSONObject json;
-    private final ChecksumBuilder builder = ChecksumBuilder.newInstance();
 
     @Override
     public ChecksumBuilder getChecksumBuilder() {
-      return builder;
+      return ChecksumBuilder.newInstance()
+          
+          .addJSONObject(a)
+          
+          .addJSONObject(json);
     }
 
     public X(final JSONObject a) {
@@ -140,9 +145,9 @@ public class RoseTreeTest {
 
   @Test
   public void testAsChecksum() {
-    final String rose1checksum = "7523f188787ab3a1f5cc6eb85297762dfe423423e5a97017216d49916a3bc89c09351965c6c4264b359899612f7d310dc1fea3cf3e2b618b729993d0414a1abb";
+    final String rose1checksum = "6042297c1460176ec572094ba0abe6d7abf2a2f80ad70127117137a93ad688acbe1eb9a4aadbda7df16529ae272621a6b49d27ac23f97eecf4485ba5aec1cd90";
     assertEquals(rose1checksum, rose1.asChecksum().toString());
-    final String rose0Checksum = "e5409b387b7976482501188e9fa0b1ce18f359f0226d39afe546f82e5483a958cc514ef131be463d682dfdde3475e6e9f2bfc0d5af34b5d7c9c807abc53a0c51";
+    final String rose0Checksum = "041aa5306e3f6971814fa5141199044487a03378886ed43d922e4192b6e6c9da519368917746a7f60f835dcd865e12aba60eb14f4dce6b6903584d13ab8df058";
     assertEquals(rose0Checksum, rose0.asChecksum().toString());
   }
 

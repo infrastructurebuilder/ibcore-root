@@ -17,46 +17,24 @@
  */
 package org.infrastructurebuilder.util.readdetect.avro.impl;
 
-import static java.time.Instant.now;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
-import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
-import static org.infrastructurebuilder.util.constants.IBConstants.CREATE_DATE;
-import static org.infrastructurebuilder.util.constants.IBConstants.DESCRIPTION;
-import static org.infrastructurebuilder.util.constants.IBConstants.MIME_TYPE;
-import static org.infrastructurebuilder.util.constants.IBConstants.MOST_RECENT_READ_TIME;
-import static org.infrastructurebuilder.util.constants.IBConstants.NO_PATH_SUPPLIED;
-import static org.infrastructurebuilder.util.constants.IBConstants.PATH;
-import static org.infrastructurebuilder.util.constants.IBConstants.SIZE;
-import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_NAME;
-import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_URL;
-import static org.infrastructurebuilder.util.constants.IBConstants.UPDATE_DATE;
-import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory.extracted;
 
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 
 import org.apache.avro.file.SeekableFileInput;
-import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
-import org.infrastructurebuilder.util.core.ChecksumBuilder;
-import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.RelativeRoot;
-import org.infrastructurebuilder.util.readdetect.IBResource;
+import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.avro.IBResourceAvro;
 import org.infrastructurebuilder.util.readdetect.impl.AbsolutePathIBResource;
-import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
+import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +51,7 @@ public class DefaultIBResourceAvro extends AbsolutePathIBResource implements IBR
   }
 
   public DefaultIBResourceAvro(Optional<RelativeRoot> root, JSONObject j) {
-    this(Objects.requireNonNull(root), IBResourceModel.modelFromJSON(j));
+    this(Objects.requireNonNull(root), IBResourceBuilder.modelFromJSON.apply(j));
   }
 
   public DefaultIBResourceAvro(Optional<RelativeRoot> root, Path path, Checksum checksum, Optional<String> type,

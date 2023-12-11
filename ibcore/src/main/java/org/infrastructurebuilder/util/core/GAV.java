@@ -60,6 +60,16 @@ public interface GAV extends JSONAndChecksumEnabled, Comparable<GAV> {
   default JSONObject asJSON() {
     return getJSONBuilder().asJSON();
   }
+  
+  default ChecksumBuilder getDefaultChecksumBuilder() {
+    return ChecksumBuilder.newInstance() //
+        .addString(getGroupId()) //
+        .addString(getArtifactId()) //
+        .addString(getVersion()) //
+        .addString(getClassifier()) //
+        .addString(getExtension())
+        ;
+  }
 
   default Document asDom() {
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

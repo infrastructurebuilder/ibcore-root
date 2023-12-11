@@ -17,7 +17,13 @@
  */
 package org.infrastructurebuilder.util.readdetect.avro.impl;
 
+import java.io.InputStream;
+import java.util.Optional;
+import java.util.function.Supplier;
+
 import org.infrastructurebuilder.util.core.RelativeRoot;
+import org.infrastructurebuilder.util.readdetect.IBResource;
+import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.impl.AbsolutePathIBResourceBuilderFactory;
 
 public class AbsolutePathAvroIBResourceBuilderFactory extends AbsolutePathIBResourceBuilderFactory {
@@ -25,6 +31,11 @@ public class AbsolutePathAvroIBResourceBuilderFactory extends AbsolutePathIBReso
 
   public AbsolutePathAvroIBResourceBuilderFactory(RelativeRoot relRoot) {
     super(relRoot);
+  }
+  
+  @Override
+  protected Supplier<IBResourceBuilder<Optional<IBResource<InputStream>>>> getBuilder() {
+    return () -> new AbsolutePathAvroIBResourceBuilder(getRelativeRoot());
   }
 
 }

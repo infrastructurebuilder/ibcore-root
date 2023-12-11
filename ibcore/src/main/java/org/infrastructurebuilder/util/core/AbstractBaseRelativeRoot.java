@@ -24,12 +24,12 @@ import static org.infrastructurebuilder.exceptions.IBException.cet;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
-import org.infrastructurebuilder.exceptions.IBException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,20 +53,32 @@ abstract public class AbstractBaseRelativeRoot implements RelativeRoot {
     return u;
   }
 
-  private final String stringRoot; // Not nullable
+  private final String stringRoot; // Required
   private final Path path; // Nullable for certain cases
   private final URL url; // Nullable (for certain cases)
 
   protected AbstractBaseRelativeRoot(String u) {
-    this.stringRoot = (!requireNonNull(u).endsWith("/")) ? u + "/" : u;
-
+    AtomicReference<String> aref = new AtomicReference<>("/");
     this.url = fromString(requireNonNull(u));
 
     this.path = (this.url != null)
         ? (this.url.getProtocol().equals("file")) ? Paths.get(cet.returns(() -> this.url.toURI())) : null
         : null;
+
     // Actually ensures that the RR dirs are available for a "path"/"file"
-    getPath().ifPresent(p -> cet.translate(() -> Files.createDirectories(p)));
+    getPath().ifPresent(p -> {
+      boolean exists = Files.exists(p, LinkOption.NOFOLLOW_LINKS);
+      boolean dir = Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS);
+      if (exists) {
+        if (!dir) {
+          // This is a file, probably an archive of some sort.
+          aref.set("!");
+        }
+      } else
+        cet.translate(() -> Files.createDirectories(p));
+    });
+    this.stringRoot = (!requireNonNull(u).endsWith(aref.get())) ? u + aref.get() : u;
+
   }
 
   public Optional<Path> getPath() {

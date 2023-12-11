@@ -21,6 +21,8 @@ import static java.util.Optional.ofNullable;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+
 public abstract class AbstractTSupplierFactory<T, C> implements TSupplierFactory<T, C> {
   private C config;
   private String name;
@@ -28,6 +30,7 @@ public abstract class AbstractTSupplierFactory<T, C> implements TSupplierFactory
   private int weight = 0;
   private String hint;
   private String displayName;
+  private Logger logger;
 
   public AbstractTSupplierFactory() {
     super();
@@ -69,6 +72,10 @@ public abstract class AbstractTSupplierFactory<T, C> implements TSupplierFactory
     return this;
   }
 
+  protected C getConfig() {
+    return this.config;
+  }
+
   public AbstractTSupplierFactory<T, C> withHint(String hint) {
     this.hint = hint;
     return this;
@@ -89,8 +96,14 @@ public abstract class AbstractTSupplierFactory<T, C> implements TSupplierFactory
     return ofNullable(this.displayName);
   }
 
-  protected C getConfig() {
-    return this.config;
+  @SuppressWarnings("unchecked")
+  public AbstractTSupplierFactory<T, C> withLogger(Logger logger) {
+    this.logger = logger;
+    return this;
   }
 
+  @Override
+  public Logger getLog() {
+    return this.logger;
+  }
 }

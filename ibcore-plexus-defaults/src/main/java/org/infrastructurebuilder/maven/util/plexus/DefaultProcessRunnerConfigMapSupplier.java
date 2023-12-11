@@ -17,33 +17,42 @@
  */
 package org.infrastructurebuilder.maven.util.plexus;
 
-import static java.util.Collections.unmodifiableMap;
 import static java.util.stream.Collectors.toMap;
-import static org.infrastructurebuilder.util.executor.plexus.ProcessRunnerSupplier.PROCESS_NAMESPACE;
 
-import javax.inject.Named;
+import java.util.Map;
+import java.util.function.Function;
 
 import org.infrastructurebuilder.util.config.ConfigMap;
-import org.infrastructurebuilder.util.config.ConfigMapSupplier;
-import org.infrastructurebuilder.util.config.DefaultConfigMapSupplier;
+import org.infrastructurebuilder.util.config.ConfigMapBuilder;
+import org.infrastructurebuilder.util.config.ConfigMapBuilderSupplier;
+import org.infrastructurebuilder.util.config.impl.DefaultConfigMapBuilderSupplier;
+import org.infrastructurebuilder.util.executor.ProcessRunnerSupplier;
 
-@Named
-public class DefaultProcessRunnerConfigMapSupplier extends DefaultConfigMapSupplier {
+@Deprecated
+public class DefaultProcessRunnerConfigMapSupplier extends DefaultConfigMapBuilderSupplier {
 
   public static final String PROCESSRUNNERCONFIG = "processrunnerconfig";
-  private final ConfigMap configMap;
+  private final ConfigMapBuilder configMap;
 
-  public DefaultProcessRunnerConfigMapSupplier(final ConfigMapSupplier cms) {
-    final ConfigMap tempMap = cms.get();
-    configMap = new ConfigMap(unmodifiableMap(tempMap.entrySet().stream()
+  public DefaultProcessRunnerConfigMapSupplier(final ConfigMapBuilderSupplier cms) {
+    this.configMap = cms.get(); 
+    final ConfigMap tempMap = this.configMap.get(); // Interim values
 
-        .filter(e -> e.getKey().startsWith(PROCESS_NAMESPACE))
+    Map<String, String> q = tempMap.keySet().stream()
 
-        .collect(toMap(k -> k.getKey().toString(), v -> v.getValue()))));
+        .filter(e -> e.startsWith(ProcessRunnerSupplier.PROCESS_NAMESPACE))
+
+        .collect(toMap(Function.identity(), v -> tempMap.get(v).toString()));
+    this.configMap.withMapStringString(q);
   }
-
+  
   @Override
-  public ConfigMap get() {
+  public ConfigMapBuilder get() {
     return configMap;
+  }
+  
+  @Override
+  public String getName() {
+    return PROCESSRUNNERCONFIG;
   }
 }

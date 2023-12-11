@@ -93,9 +93,11 @@ public class ProcessExectionFactoryv1_0_0 implements ProcessExecutionFactory {
       if (!csum.equals(c))
         throw new ProcessException("Checksum of executable " + c + " does not match supplied " + csum);
     });
-    return new DefaultProcessExecution(this.id, this.executable, ofNullable(args).orElse(new ArrayList<>()),
-        ofNullable(timeout), ofNullable(stdIn), this.workDirectory, optional, ofNullable(env), ofNullable(relativeRoot),
-        ofNullable(exitCodes), parent.getAddl(), background);
+    return new DefaultProcessExecution(this.id, this.executable, //
+        ofNullable(args).orElse(new ArrayList<>()), ofNullable(timeout), //
+        ofNullable(stdIn), this.workDirectory, optional, ofNullable(env), //
+        ofNullable(relativeRoot), ofNullable(exitCodes), //
+        parent.getAddl(), background);
   }
 
   @Override

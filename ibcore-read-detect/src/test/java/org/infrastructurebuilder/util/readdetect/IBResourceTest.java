@@ -131,10 +131,10 @@ public class IBResourceTest {
     long d = new Date().toInstant().toEpochMilli();
     InputStream g = cset.get().get();
     cet.translate(() -> g.close());
-    assertTrue(cset.getMostRecentReadTime().toEpochMilli() - d < 3);
+    assertTrue(cset.getMostRecentReadTime().get().toEpochMilli() - d < 3);
 
     assertEquals(183, cset.getPath().get().toFile().length());
-    assertEquals(CHECKSUMVAL, cset.getPathChecksum().toString());
+    assertEquals(CHECKSUMVAL, cset.getTChecksum().toString());
     assertEquals(APPLICATION_ZIP, cset.getType());
     assertEquals(CHECKSUMVAL, new Checksum(cset.get().get()).toString());
 

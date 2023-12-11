@@ -17,26 +17,27 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import java.nio.file.Path;
-
-import org.infrastructurebuilder.util.core.PathSupplier;
-
-abstract public class AbstractPathSupplierHolder implements PathSupplier {
-
-  private Path path = null;
-
-  public AbstractPathSupplierHolder() {
-    super();
-  }
-
-  public void setPath(Path path) {
-    if (this.path == null) // Set it once
-      this.path = path;
-  }
-
-  @Override
-  public Path get() {
-    return this.path;
-  }
-
-}
+//import java.nio.file.Path;
+//
+//import org.infrastructurebuilder.util.core.PathSupplier;
+//
+//@Deprecated
+//abstract public class AbstractPathSupplierHolder implements PathSupplier {
+//
+//  private Path path = null;
+//
+//  public AbstractPathSupplierHolder() {
+//    super();
+//  }
+//
+//  public void setPath(Path path) {
+//    if (this.path == null) // Set it once
+//      this.path = path;
+//  }
+//
+//  @Override
+//  public Path get() {
+//    return this.path;
+//  }
+//
+//}

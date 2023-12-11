@@ -24,9 +24,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
-import static org.infrastructurebuilder.util.constants.IBConstants.BLOBSTORE_MAXBYTES;
 import static org.infrastructurebuilder.util.constants.IBConstants.BLOBSTORE_NO_MAXBYTES;
-import static org.infrastructurebuilder.util.constants.IBConstants.BLOBSTORE_ROOT;
 import static org.infrastructurebuilder.util.constants.IBConstants.METADATA_DIR_NAME;
 import static org.infrastructurebuilder.util.core.Checksum.ofPath;
 import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory.getAttributes;
@@ -35,7 +33,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
@@ -44,19 +41,17 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.core.RelativeRootFactory;
-import org.infrastructurebuilder.util.core.RelativeRootSetPathSupplier;
 import org.infrastructurebuilder.util.core.RelativeRootSupplier;
+import org.infrastructurebuilder.util.readdetect.DefaultIBResourceBuilderFactorySupplier;
 import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
-import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactorySupplier;
 import org.infrastructurebuilder.util.readdetect.IBResourceException;
 import org.infrastructurebuilder.util.vertx.blobstore.Blobstore;
 import org.json.JSONObject;
@@ -86,7 +81,7 @@ public class FilesystemBlobstore implements Blobstore<InputStream> {
 
   public FilesystemBlobstore(RelativeRootSupplier rrs, Long size) {
     this.root = requireNonNull(rrs);
-    this.rcf = new IBResourceBuilderFactorySupplier(new RelativeRootFactory(Set.of(this.root))).get(rrs.getName())
+    this.rcf = new DefaultIBResourceBuilderFactorySupplier(new RelativeRootFactory(Set.of(this.root))).get(rrs.getName())
         .get();
     this.metadata = getRelativeRoot().resolvePath(METADATA_DIR_NAME).map(Path::toAbsolutePath)
         .orElseThrow(() -> new IBResourceException("No path"));
@@ -149,12 +144,12 @@ public class FilesystemBlobstore implements Blobstore<InputStream> {
 
   @Override
   public Future<Instant> getCreateDate(String id) {
-    return getMetadata(id).compose(md -> succeededFuture(md.getCreateDate()));
+    return getMetadata(id).compose(md ->md.getCreateDate().map(Future::succeededFuture).orElse(Future.failedFuture("no create date")));
   }
 
   @Override
   public Future<Instant> getLastUpdated(String id) {
-    return getMetadata(id).compose(md -> succeededFuture(md.getLastUpdateDate()));
+    return getMetadata(id).compose(md -> md.getLastUpdateDate().map(Future::succeededFuture).orElse(Future.failedFuture("no last updated date")));
   }
 
   @Override
@@ -255,7 +250,7 @@ public class FilesystemBlobstore implements Blobstore<InputStream> {
 
   @Override
   public Future<String> getName(String id) {
-    return getMetadata(id).compose(md -> succeededFuture(md.getName().get()));
+    return getMetadata(id).compose(md -> succeededFuture(md.getName()));
   }
 
   @Override

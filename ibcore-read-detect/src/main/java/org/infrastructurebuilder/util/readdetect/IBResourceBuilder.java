@@ -17,15 +17,41 @@
  */
 package org.infrastructurebuilder.util.readdetect;
 
+import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
+import static org.infrastructurebuilder.util.constants.IBConstants.*;
+
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.function.Function;
 
 import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
 
 public interface IBResourceBuilder<B> {
+  public final static Function<JSONObject, IBResourceModel> modelFromJSON = (j) -> {
+    requireNonNull(j);
+    IBResourceModel model = new IBResourceModel();
+    model.setCreated(ofNullable(j.optString(CREATE_DATE, null)).map(Instant::parse).orElse(null));
+    model.setFileChecksum(j.getString(org.infrastructurebuilder.util.core.ChecksumEnabled.CHECKSUM));
+    model.setSize(j.getLong(SIZE));
+    model.setType(j.getString(MIME_TYPE));
+    model.setFilePath(j.optString(PATH, null));
+    model.setLastUpdate(ofNullable(j.optString(UPDATE_DATE, null)).map(Instant::parse).orElse(null));
+    model.setMostRecentReadTime(ofNullable(j.optString(MOST_RECENT_READ_TIME, null)).map(Instant::parse).orElse(null));
+    model.setName(j.optString(SOURCE_NAME, null));
+    model.setSource(j.optString(SOURCE_URL, null));
+    model.setDescription(j.optString(DESCRIPTION, null));
+    java.util.Optional.ofNullable(j.optJSONObject(ADDITIONAL_PROPERTIES)).ifPresent(jo -> {
+      jo.toMap().forEach((k, v) -> {
+        model.setAdditionalProperty(k, v.toString());
+      });
+    });
+    return model;
+  };
 
   IBResourceBuilder<B> fromJSON(JSONObject j);
 
@@ -67,7 +93,7 @@ public interface IBResourceBuilder<B> {
    * @throws IBResourceException if validation fails
    * @return this builder
    */
-  IBResourceBuilder<B> validate(boolean hard);
+  Optional<IBResourceBuilder<B>> validate(boolean hard);
 
 //  IBResourceBuilder<B> movedTo(Path path); // TODO Moved is for an IBResource
 

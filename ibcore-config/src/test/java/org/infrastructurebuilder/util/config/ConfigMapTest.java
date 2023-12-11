@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.util.config.old.OldConfigMap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,14 +37,14 @@ public class ConfigMapTest {
   private static final Object ABC = "ABC";
   private HashMap<String, Object> m;
   private Object o = UUID.randomUUID();
-  private ConfigMap m3;
+  private OldConfigMap m3;
 
   @BeforeEach
   public void setUp() throws Exception {
     m = new HashMap<>();
     m.put("A", o);
-    ConfigMap m2 = new ConfigMap(m);
-    m3 = new ConfigMap(m2);
+    OldConfigMap m2 = new OldConfigMap(m);
+    m3 = new OldConfigMap(m2);
   }
 
   @Test

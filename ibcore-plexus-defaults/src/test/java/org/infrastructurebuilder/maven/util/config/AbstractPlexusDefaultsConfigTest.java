@@ -99,6 +99,7 @@ abstract public class AbstractPlexusDefaultsConfigTest {
     mp.setArtifactId("A");
     mp.setVersion("1.0.0");
     mp.setArtifacts(artifacts);
+    mp.setDescription("x");
 
     ms = mock(MavenSession.class);
     me = mock(MojoExecution.class);
@@ -110,15 +111,15 @@ abstract public class AbstractPlexusDefaultsConfigTest {
 
   }
 
-  public MavenConfigMapSupplier getCms() {
-    return new MavenConfigMapSupplier(mp, ms, me);
+  public MavenConfigMapBuilderSupplier getCms() {
+    return new MavenConfigMapBuilderSupplier(mp, ms, me);
   }
 
   @Disabled
   @Test
   public void testSetMavenProject() {
-    final ConfigMap map = getCms().get();
-    assertTrue(map.size() >= properties.size());
+    final ConfigMap map = getCms().get().get();
+    assertTrue(map.keySet().size() >= properties.size());
     for (final String p : properties.stringPropertyNames()) {
       final String val = map.getString(p);
       final String pVal = properties.getProperty(p);

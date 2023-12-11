@@ -39,6 +39,8 @@ import org.apache.maven.wagon.proxy.ProxyInfo;
 import org.apache.maven.wagon.proxy.ProxyInfoProvider;
 import org.codehaus.plexus.components.io.filemappers.FileMapper;
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.util.config.ConfigMap;
+import org.infrastructurebuilder.util.config.ConfigMapBuilderSupplier;
 import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.HeadersSupplier;
@@ -99,6 +101,7 @@ public class DefaultWGetterSupplierTest {
     HeadersSupplier headerSupplier = () -> new HashMap<>();
     JSONObject config = new JSONObject().put(WORKINGDIR, WORKINGDIR).put(CACHEDIR, CACHEDIR).put(FILEMAPPERS,
         new JSONArray());
+    ConfigMap p1 = ConfigMapBuilderSupplier.defaultBuilder().withJSONObject(config).get();
     this.ws = new DefaultWGetterSupplier(
         // Logger
         ls,
@@ -118,7 +121,7 @@ public class DefaultWGetterSupplierTest {
           public ProxyInfo getProxyInfo(String arg0) {
             return null;
           }
-        }).configure(config);
+        }).withConfig(p1);
 
   }
 
@@ -143,7 +146,7 @@ public class DefaultWGetterSupplierTest {
         .map(l -> l.get(0));
     assertTrue(q.isPresent());
     IBResource<InputStream> qr = q.get();
-    assertEquals(CHECKSUM.get().toString(), qr.getPathChecksum().toString());
+    assertEquals(CHECKSUM.get().toString(), qr.getTChecksum().toString());
     assertEquals(IBConstants.TEXT_HTML, qr.getType());
     String v = IBUtils.readToString(qr.get().get());
     assertTrue(v.contains(WWW_IANA_ORG));
@@ -153,7 +156,7 @@ public class DefaultWGetterSupplierTest {
         false).map(l -> l.get(0));
     assertTrue(q.isPresent());
     qr = q.get();
-    assertEquals(CHECKSUM.get().toString(), qr.getPathChecksum().toString());
+    assertEquals(CHECKSUM.get().toString(), qr.getTChecksum().toString());
     assertEquals(IBConstants.TEXT_HTML, qr.getType());
     v = IBUtils.readToString(qr.get().get());
     assertTrue(v.contains(WWW_IANA_ORG));
@@ -172,7 +175,7 @@ public class DefaultWGetterSupplierTest {
         .collectCacheAndCopyToChecksumNamedFile(false, of(creds), outputPath, src, CHECKSUM, empty(), 5, 0, true, false)
         .map(l -> l.get(0));
     assertTrue(q.isPresent());
-    assertEquals(CHECKSUM.get().toString(), q.get().getPathChecksum().toString());
+    assertEquals(CHECKSUM.get().toString(), q.get().getTChecksum().toString());
     assertEquals(IBConstants.TEXT_HTML, q.get().getType());
     String v = IBUtils.readToString(q.get().get().get());
     assertTrue(v.contains(WWW_IANA_ORG));
@@ -181,7 +184,7 @@ public class DefaultWGetterSupplierTest {
     q = w.collectCacheAndCopyToChecksumNamedFile(true, empty(), outputPath, src, CHECKSUM, empty(), 5, 1000, false,
         false).map(l -> l.get(0));
     assertTrue(q.isPresent());
-    assertEquals(CHECKSUM.get().toString(), q.get().getPathChecksum().toString());
+    assertEquals(CHECKSUM.get().toString(), q.get().getTChecksum().toString());
     assertEquals(IBConstants.TEXT_HTML, q.get().getType());
     v = IBUtils.readToString(q.get().get().get());
     assertTrue(v.contains(WWW_IANA_ORG));
@@ -194,8 +197,8 @@ public class DefaultWGetterSupplierTest {
     Path outputPath = wps.get();
     String src = "https://releases.hashicorp.com/athena-cli/0.1.0/athena-cli_0.1.0_darwin_arm64.zip";
 //    String src = wps.getTestClasses().resolve("test.zip").toUri().toURL().toExternalForm();
-    Optional<List<IBResource<InputStream>>> v = w.collectCacheAndCopyToChecksumNamedFile(false, empty(), outputPath, src,
-        ZIP_CHECKSUM, empty(), 5, 0, true, true);
+    Optional<List<IBResource<InputStream>>> v = w.collectCacheAndCopyToChecksumNamedFile(false, empty(), outputPath,
+        src, ZIP_CHECKSUM, empty(), 5, 0, true, true);
     assertTrue(v.isPresent());
     List<IBResource<InputStream>> l = v.get();
     assertEquals(IBConstants.APPLICATION_ZIP, l.get(0).getType());

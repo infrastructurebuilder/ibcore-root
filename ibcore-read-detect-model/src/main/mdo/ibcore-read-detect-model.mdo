@@ -115,6 +115,13 @@
           <type>String</type>
         </field>
         <field >
+          <name>acquired</name>
+          <version>0.0.1+</version>
+          <required>false</required>
+          <description>Instant that [original] file was acquired, if possible.</description>
+          <type>String</type>
+        </field>
+        <field >
           <name>realized</name>
           <version>0.0.1+</version>
           <required>false</required>

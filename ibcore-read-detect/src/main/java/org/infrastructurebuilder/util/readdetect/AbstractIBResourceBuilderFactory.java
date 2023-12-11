@@ -22,7 +22,6 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
-import static org.infrastructurebuilder.util.constants.IBConstants.UTF_8;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,8 +38,8 @@ import org.infrastructurebuilder.util.core.AbsolutePathRelativeRoot;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.RelativeRoot;
-import org.infrastructurebuilder.util.readdetect.model.IBResourceCache;
-import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
+import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceCache;
+import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +54,7 @@ abstract public class AbstractIBResourceBuilderFactory<B> extends IBResourceCach
   public AbstractIBResourceBuilderFactory(RelativeRoot relRoot) {
     super();
     this._root = requireNonNull(relRoot);
-    this.setModelEncoding(UTF_8);
+//    this.setModelEncoding(UTF_8);
     this.setRoot(this._root.getPath().map(Path::toAbsolutePath).map(Path::toString).orElse(null));
     log.debug("Root is {}", this.getRoot());
   }

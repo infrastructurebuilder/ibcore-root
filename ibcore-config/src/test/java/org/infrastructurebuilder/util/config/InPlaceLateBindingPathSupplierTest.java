@@ -24,16 +24,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
+import org.infrastructurebuilder.util.config.old.OldSingletonLateBindingPathSupplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class InPlaceLateBindingPathSupplierTest {
 
-  private SingletonLateBindingPathSupplier ps;
+  private OldSingletonLateBindingPathSupplier ps;
 
   @BeforeEach
   public void setUp() throws Exception {
-    this.ps = new SingletonLateBindingPathSupplier();
+    this.ps = new OldSingletonLateBindingPathSupplier();
   }
 
   @Test

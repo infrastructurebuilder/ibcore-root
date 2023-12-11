@@ -42,7 +42,11 @@ public class RelativeRootBasicPathEnvSupplier extends RelativeRootBasicPathPrope
   }
   @Override
   public Optional<String> getProperty() {
-    return Optional.ofNullable(System.getenv()).map(m -> m.get(this.p));
+    return Optional.ofNullable(System.getenv()).map(m -> m.get(getPropertyName()));
+  }
+
+  public String getPropertyName() {
+    return p;
   }
   @Override
   protected Logger getLog() {

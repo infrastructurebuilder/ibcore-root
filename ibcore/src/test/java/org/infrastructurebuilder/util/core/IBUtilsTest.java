@@ -122,7 +122,6 @@ import java.util.Properties;
 import java.util.SortedSet;
 import java.util.StringJoiner;
 import java.util.StringTokenizer;
-import java.util.UUID;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -345,7 +344,7 @@ public class IBUtilsTest {
 
   @Test
   public void testCopyTree() throws IOException {
-    Path cl = this.wps.getTestClasses();
+    Path cl = wps.getTestClasses();
     var v = IBUtils.allFilesInTree(cl);
     Path cl2 = wps.get();
     IBUtils.copyTree(cl, cl2);

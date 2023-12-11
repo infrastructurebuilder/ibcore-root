@@ -17,12 +17,7 @@
  */
 package org.infrastructurebuilder.util.readdetect.impl;
 
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.http.annotation.Contract;
-import org.apache.http.annotation.ThreadingBehavior;
-import org.apache.http.client.cache.InputLimit;
-import org.apache.http.client.cache.Resource;
-import org.apache.http.client.cache.ResourceFactory;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,7 +26,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.http.annotation.Contract;
+import org.apache.http.annotation.ThreadingBehavior;
+import org.apache.http.client.cache.InputLimit;
+import org.apache.http.client.cache.Resource;
+import org.apache.http.client.cache.ResourceFactory;
 
 /**
  * Generates {@link Resource} instances whose body is stored in a temporary file.

@@ -100,7 +100,7 @@ class FilesystemBlobstoreTest {
 
         .compose(md -> {
           log.info("Logging {}", md.getChecksum().asUUID().get());
-          Instant i = md.getCreateDate();
+          Instant i = md.getCreateDate().get();
           assertTrue(Instant.now().isAfter(i));
           return Future.succeededFuture();
         }).onComplete(testContext.succeedingThenComplete());

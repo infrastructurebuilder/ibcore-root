@@ -20,6 +20,8 @@ package org.infrastructurebuilder.maven.util.config;
 import static java.util.stream.Collectors.toList;
 import static org.infrastructurebuilder.util.constants.IBConstants.MAVEN;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -27,8 +29,8 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.apache.maven.project.MavenProject;
-import org.infrastructurebuilder.util.config.DependenciesSupplier;
 import org.infrastructurebuilder.util.core.DefaultGAV;
+import org.infrastructurebuilder.util.core.DependenciesSupplier;
 import org.infrastructurebuilder.util.core.GAV;
 
 @Named(MAVEN)
@@ -39,10 +41,14 @@ public final class MavenDependenciesSupplier implements DependenciesSupplier {
   @Inject
   public MavenDependenciesSupplier(MavenProject p) {
     // FIXME type != extension
-    this.gav = p.getArtifacts().stream()
-        .map(d -> new DefaultGAV(d.getGroupId(), d.getArtifactId(), d.getClassifier(), d.getVersion(), d.getType())
-            .withFile(d.getFile().toPath().toAbsolutePath()))
-        .collect(toList());
+    this.gav = p.getArtifacts().stream().map(d -> {
+      Path f = d.getFile().toPath().toAbsolutePath();
+      GAV k = new DefaultGAV(d.getGroupId(), d.getArtifactId(), d.getClassifier(), d.getVersion(), d.getType())
+          ;
+      GAV l = k.withFile(f);
+      return l;
+    }).collect(toList());
+
   }
 
   @Override

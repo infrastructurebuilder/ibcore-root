@@ -21,18 +21,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.infrastructurebuilder.util.config.ConfigMap;
+import org.infrastructurebuilder.util.config.ConfigMapBuilderSupplier;
 import org.junit.jupiter.api.Test;
 
 public class MavenConfigMapSupplierTest extends AbstractPlexusDefaultsConfigTest {
 
-  public MavenConfigMapSupplier getCms() {
-    return new MavenConfigMapSupplier(mp, ms, me);
+  public MavenConfigMapBuilderSupplier getCms() {
+    return new MavenConfigMapBuilderSupplier(mp, ms, me);
   }
 
   @Test
   public void testSetMavenProject() {
-    final ConfigMap map = getCms().get();
-    assertTrue(map.size() >= properties.size());
+    MavenConfigMapBuilderSupplier m1 = getCms();
+    assertEquals(ConfigMapBuilderSupplier.MAVEN, m1.getName());
+    final ConfigMap map = m1.get().get();
+    assertTrue(map.keySet().size() >= properties.size());
     for (final String p : properties.stringPropertyNames()) {
       final String val = map.getString(p);
       final String pVal = properties.getProperty(p);
@@ -40,6 +43,7 @@ public class MavenConfigMapSupplierTest extends AbstractPlexusDefaultsConfigTest
     }
     assertTrue(map.containsKey("user.home"));
     assertTrue(map.containsKey("PATH"));
+    
   }
 
 }

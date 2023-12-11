@@ -233,6 +233,10 @@ public class IBUtils {
     return new String(ofNullable(l).orElse("")).trim().length() > 0 ? l : null;
   };
 
+  public final static Function<String, String> blankIfNull= l -> {
+    return ofNullable(l).orElse("");
+  };
+
   public final static Function<String, Date> parseISODateTime = s -> Date.from(Instant
       .from(java.time.OffsetDateTime.parse(requireNonNull(s), java.time.format.DateTimeFormatter.ISO_DATE_TIME)));
 

@@ -50,6 +50,7 @@ public class RelativeRootFactory {
   }
 
   public final Optional<RelativeRoot> get(String name) {
+    Set<String> ks = protocols.keySet();
     return Optional.ofNullable(this.protocols.get(name)) //
         .flatMap(p -> p.get());
   }

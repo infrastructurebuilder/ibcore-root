@@ -21,6 +21,7 @@ import static java.util.Objects.requireNonNull;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
 import static org.infrastructurebuilder.util.core.IBVersionException.ibt;
 
+import java.util.Comparator;
 import java.util.Objects;
 
 import org.infrastructurebuilder.exceptions.IBException;
@@ -74,6 +75,16 @@ public final class DefaultIBVersion implements IBVersion {
   public static class DefaultIBVersionBoundedRange implements IBVersionBoundedRange {
 
     private final IBVersionRange lower, upper;
+
+    @Override
+    public IBVersionRange getLower() {
+      return this.lower;
+    }
+
+    @Override
+    public IBVersionRange getUpper() {
+      return this.upper;
+    }
 
     public final static IBVersionBoundedRange versionBoundedRangeFrom(String lower, String upper) {
       return versionBoundedRangeFrom(new DefaultIBVersion(lower), new DefaultIBVersion(upper));

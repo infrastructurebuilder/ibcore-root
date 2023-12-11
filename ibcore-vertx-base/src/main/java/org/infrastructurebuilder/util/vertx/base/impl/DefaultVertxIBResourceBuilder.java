@@ -18,25 +18,13 @@
 package org.infrastructurebuilder.util.vertx.base.impl;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.ofNullable;
-import static org.infrastructurebuilder.util.constants.IBConstants.ADDITIONAL_PROPERTIES;
-import static org.infrastructurebuilder.util.constants.IBConstants.CREATE_DATE;
-import static org.infrastructurebuilder.util.constants.IBConstants.DESCRIPTION;
-import static org.infrastructurebuilder.util.constants.IBConstants.MIME_TYPE;
-import static org.infrastructurebuilder.util.constants.IBConstants.MOST_RECENT_READ_TIME;
-import static org.infrastructurebuilder.util.constants.IBConstants.NAME;
-import static org.infrastructurebuilder.util.constants.IBConstants.NO_PATH_SUPPLIED;
-import static org.infrastructurebuilder.util.constants.IBConstants.PATH;
-import static org.infrastructurebuilder.util.constants.IBConstants.SIZE;
-import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_URL;
-import static org.infrastructurebuilder.util.constants.IBConstants.UPDATE_DATE;
-import static org.infrastructurebuilder.util.core.ChecksumEnabled.CHECKSUM;
+import static java.util.Optional.empty;
+import static org.infrastructurebuilder.util.constants.IBConstants.*;
 import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory.extracted;
 import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory.toType;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
@@ -46,7 +34,7 @@ import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceException;
-import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
+import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.infrastructurebuilder.util.vertx.base.VertxIBResource;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -76,15 +64,11 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
 
   @Override
   public IBResourceBuilder<Future<VertxIBResource>> fromJSON(JSONObject j) {
-    model = IBResourceModel.modelFromJSON(j);
-    Path p = ofNullable(model.getFilePath())
-       //
-       .map(extracted)
-       //
-       .orElseThrow(() -> new IBResourceException(NO_PATH_SUPPLIED));
+    model = IBResourceBuilder.modelFromJSON.apply(j);
+    Path p = model.getFilePath().map(extracted).orElseThrow(() -> new IBResourceException(NO_PATH_SUPPLIED));
     this.sourcePath = p;
-   return this;
- }
+    return this;
+  }
 
   @Override
   public IBResourceBuilder<Future<VertxIBResource>> withChecksum(Checksum csum) {
@@ -143,15 +127,14 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
 
   @Override
   public IBResourceBuilder<Future<VertxIBResource>> withAdditionalProperties(Properties p) {
-    Properties p1 = new Properties();
-    p1.putAll(p);
-    this.model.setAdditionalProperties(p1);
+    Optional.ofNullable(p).ifPresent(pp -> pp.entrySet().stream()
+        .forEach(e -> this.model.setAdditionalProperty(e.getKey().toString(), e.getValue().toString())));
     return this;
   }
 
   @Override
   public IBResourceBuilder<Future<VertxIBResource>> withLastUpdated(Instant last) {
-    this.model.setLastUpdate(requireNonNull(last).toString());
+    this.model.setLastUpdate(requireNonNull(last));
     return this;
   }
 
@@ -163,7 +146,7 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
 
   @Override
   public IBResourceBuilder<Future<VertxIBResource>> withCreateDate(Instant create) {
-    this.model.setCreated(requireNonNull(create).toString());
+    this.model.setCreated(requireNonNull(create));
     return this;
   }
 
@@ -175,7 +158,7 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
 
   @Override
   public IBResourceBuilder<Future<VertxIBResource>> withMostRecentAccess(Instant access) {
-    this.model.setMostRecentReadTime(requireNonNull(access).toString());
+    this.model.setMostRecentReadTime(requireNonNull(access));
     return this;
   }
 
@@ -188,22 +171,27 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
    * @return this builder
    */
   @Override
-  public IBResourceBuilder<Future<VertxIBResource>> validate(boolean hard) {
-//    getTargetDir().ifPresent(targetDir -> {
-//      // there is a targetDir, so the file we're referencing should be in that
-//      // directory
-//      if (this.sourcePath != null)
-//        if (!IBUtils.isParent(targetDir, this.sourcePath)) {
-//          // We have a source, and a place it should be
-//        }
-//    });
-
+  public Optional<IBResourceBuilder<Future<VertxIBResource>>> validate(boolean hard) {
     if (this.sourcePath != null) {
-      if (!Files.exists(sourcePath))
-        throw new IBResourceException("unreadable.path");
-      if (this.targetChecksum == null) {
-        log.warn("Checksum not available");
-        this.targetChecksum = Checksum.ofPath.apply(this.sourcePath).get();
+      if (!Files.exists(sourcePath)) {
+        log.error("unreadable.path {}", this.sourcePath);
+        return empty();
+      }
+      if (hard) {
+        var aType = toType.apply(this.sourcePath);
+        if (!this.model.getType().equals(aType)) {
+          log.error("Expected type {} does not equal actual type {}", this.model.getType(), aType);
+          return empty();
+        }
+        if (this.targetChecksum == null) {
+          log.warn("target checksum not available.  Reading source path");
+          this.targetChecksum = Checksum.ofPath.apply(this.sourcePath).get();
+        }
+      }
+      if (!this.targetChecksum.equals(this.model.getFileChecksum())) {
+        log.error("Model checksum {} not equal to targeted checksum {}", this.model.getFileChecksum(),
+            this.targetChecksum);
+        return empty();
       }
       if (this.model.getType() == null) {
         log.warn("Type not available");
@@ -215,8 +203,36 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
       log.warn("No sourcePath set for resource");
       // TODO??
     }
-    return this;
+    return Optional.of(this);
   }
+////    getTargetDir().ifPresent(targetDir -> {
+////      // there is a targetDir, so the file we're referencing should be in that
+////      // directory
+////      if (this.sourcePath != null)
+////        if (!IBUtils.isParent(targetDir, this.sourcePath)) {
+////          // We have a source, and a place it should be
+////        }
+////    });
+//
+//    if (this.sourcePath != null) {
+//      if (!Files.exists(sourcePath))
+//        throw new IBResourceException("unreadable.path");
+//      if (this.targetChecksum == null) {
+//        log.warn("Checksum not available");
+//        this.targetChecksum = Checksum.ofPath.apply(this.sourcePath).get();
+//      }
+//      if (this.model.getType() == null) {
+//        log.warn("Type not available");
+//        this.model.setType(toType.apply(this.sourcePath));
+//      }
+//
+//      // There has been no source path set.
+//    } else {
+//      log.warn("No sourcePath set for resource");
+//      // TODO??
+//    }
+//    return this;
+//  }
 
   @Override
   public Future<VertxIBResource> build(boolean hard) {

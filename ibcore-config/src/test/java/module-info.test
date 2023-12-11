@@ -1,4 +1,5 @@
-/**
+/*
+ * @formatter:off
  * Copyright © 2019 admin (admin@infrastructurebuilder.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,21 +13,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * @formatter:on
  */
 open module test.org.infrastructurebuilder.ibcore.config {
   exports org.infrastructurebuilder.util.config;
-  exports org.infrastructurebuilder.util.config.factory;
+  exports org.infrastructurebuilder.util.config.old;
 
-  requires transitive org.infrastructurebuilder.ibcore;
+  requires transitive org.infrastructurebuilder.util.core;
 
   requires transitive com.vdurmont.semver4j;
   requires java.xml;
   requires javax.inject;
   requires org.infrastructurebuilder.exceptions;
   requires org.json;
-  requires  org.slf4j;
-  requires org.eclipse.sisu.inject;
+  requires org.slf4j;
 
   requires org.junit.jupiter.api;
-  opens org.infrastructurebuilder.util.dag;
 }

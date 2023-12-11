@@ -79,7 +79,7 @@ import org.slf4j.Logger;
 //import com.googlecode.download.maven.plugin.internal.FileNameUtils;
 
 /**
- * Will download a file from a web site using the standard HTTP protocol.
+ * Will download a file from a web site using HTTP protocols.
  *
  * @author Marc-Andre Houle
  * @author Mickael Istria (Red Hat Inc)

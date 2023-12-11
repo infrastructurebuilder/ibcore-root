@@ -23,15 +23,15 @@ import java.util.Objects;
 
 import org.codehaus.plexus.archiver.AbstractArchiveFinalizer;
 
-public class DefaultArchiveFinalizer<T> extends AbstractArchiveFinalizer {
-  private final T config;
+public class DefaultArchiveFinalizer<C> extends AbstractArchiveFinalizer {
+  private final C config;
 
-  public DefaultArchiveFinalizer(final T cffconfig) {
+  public DefaultArchiveFinalizer(final C cffconfig) {
     super();
     this.config = Objects.requireNonNull(cffconfig, "DefaultArchiveFinalizer Finalizer Config");
   }
 
-  public T getConfig() {
+  public C getConfig() {
     return this.config;
   }
 

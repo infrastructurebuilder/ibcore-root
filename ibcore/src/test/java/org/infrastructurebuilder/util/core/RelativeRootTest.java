@@ -17,7 +17,6 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import static org.infrastructurebuilder.util.core.RelativeRootBasicPathPropertiesSupplier.NAME;
 import static org.infrastructurebuilder.util.core.RelativeRootBasicPathPropertiesSupplier.RR_BASIC_PATH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -25,11 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -45,6 +41,7 @@ import org.slf4j.LoggerFactory;
 
 class RelativeRootTest {
 
+  private static final String MYFILE_XML = "myfile.xml";
   private static final String CSUMVAL = "03e15d9a12ac783c6b65bd5dc248bd2b03a6b9281c34f5e165336ebec7d1f48031f6d3232b2350b275fa2e722e8116afe9a48412561d20d559fe553d9a672f0b";
   private static final String STRING_ROOT_S3_AMAZON_BUCKET = "{\"STRING_ROOT\":\"s3://some.amazon.com/bucket/\"}";
   private static final String URLROOT = "https://someserver.com/somepath";
@@ -71,10 +68,17 @@ class RelativeRootTest {
   private Path aPath;
   private RelativeRootBasicPathEnvSupplier i;
   private RelativeRootSetPathSupplier j;
+  private RelativeRootUserHomeSupplier h;
+  private RelativeRootClasspathSupplier c;
+  private RelativeRootTestingPathSupplier rrtps;
+  private Optional<RelativeRoot> rpenv1;
+  private AbsoluteURLRelativeRoot absurl;
+  private String fileUrl;
 
   @BeforeEach
   void setUp() throws Exception {
     tp = tps.get().toAbsolutePath();
+    rrtps = new RelativeRootTestingPathSupplier(tps);
     this.i = new RelativeRootBasicPathEnvSupplier("target_dir");
     this.j = new RelativeRootSetPathSupplier(tps.getClasses());
     rrp = new RelativeRootFactory(Set.of(new RelativeRootBasicPathPropertiesSupplier(), this.i, this.j));
@@ -85,6 +89,12 @@ class RelativeRootTest {
     ss = UUID.randomUUID().toString();
     ssPath = Paths.get(ss);
     aPath = tp.resolve(ssPath).toAbsolutePath();
+    h = new RelativeRootUserHomeSupplier();
+    c = new RelativeRootClasspathSupplier();
+    rpenv1 = this.rrp.get(RelativeRootBasicPathEnvSupplier.NAME);
+    fileUrl = tp.toUri().toURL().toExternalForm();
+    
+    absurl = new AbsoluteURLRelativeRoot(fileUrl);
   }
 
   @AfterEach
@@ -138,7 +148,9 @@ class RelativeRootTest {
 
   @Test
   void testGetPropertyBasicPathEnv() {
-    assertEquals(this.rrp.get(RelativeRootBasicPathEnvSupplier.NAME).get().getPath().get(), tps.getTestClasses().getParent());
+    Path rp1 = rpenv1.get().getPath().get();
+    Path rp2 = tps.getTestClasses().getParent();
+    assertEquals(rp1, rp2);
 
   }
 
@@ -148,5 +160,35 @@ class RelativeRootTest {
   }
 
 
+  @Test
+  void testUserHome() {
+    Path p = Paths.get(System.getProperty("user.home"));
+    var y = h.get();
+    assertEquals(p,y.get().getPath().get());
+  }
+
+  @Test
+  void testClasspath() {
+    RelativeRoot cprr = c.get().get();
+    String k = cprr.relativize(RelativeRootClasspathSupplier.NAME + MYFILE_XML);
+    String q = cprr.getUrl().get().toExternalForm();
+    assertEquals(q, RelativeRootClasspathSupplier.NAME);
+    assertEquals(MYFILE_XML,k);
+  }
+
+  @Test
+  void testClasspathRRTPS() {
+    RelativeRoot cprr = rrtps.get().get();
+    Path temp = tps.get();
+    assertEquals(cprr.getPath().get().getParent(), temp.getParent());
+  }
+  
+  @Test
+  void testAbsoluteURLRR() {
+    assertNotNull(absurl);
+    String k = fileUrl.concat("/").concat(MYFILE_XML);
+    RelativeRoot v = absurl.extend(MYFILE_XML);
+    assertEquals(k,v.getUrl().get().toExternalForm());
+  }
 
 }

@@ -20,7 +20,7 @@ package org.apache.maven.project;
 import java.util.Properties;
 
 import org.apache.maven.model.Model;
-import org.infrastructurebuilder.util.executor.plexus.ProcessRunnerSupplier;
+import org.infrastructurebuilder.util.executor.ProcessRunnerSupplier;
 
 public class TestModel extends Model {
 

@@ -30,5 +30,10 @@ public class AbsolutePathRelativeRoot extends AbstractBaseRelativeRoot {
         .map(path -> IBException.cet.returns(() -> path.toUri().toURL().toExternalForm()))
         .orElseThrow(() -> new IBException("No path provided")));
   }
+  
+  @Override
+  public RelativeRoot extend(String newPath) {
+    return new AbsolutePathRelativeRoot(getPath().get().resolve(newPath));
+  }
 
 }

@@ -33,6 +33,7 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -109,7 +110,9 @@ public class ProcessRunnerTest {
 
         .withChecksum(packerCsum);
     runner = runner.add(e);
-    runner.lock(ofSeconds(15), empty()).lock(Duration.ZERO, empty());
+    runner //
+        .lock(ofSeconds(30), Optional.of(1L)) //
+        .lock(Duration.ZERO, empty());
     assertThrows(ProcessException.class, () -> runner.add(e));
 
   }
@@ -145,7 +148,7 @@ public class ProcessRunnerTest {
       assertFalse(newrunner.hasErrorResult(p.getResults()));
 
       final ProcessExecutionResult a = p.getExecutions().get(id);
-      final String x = String.join("\n", a.getStdOut());
+      final String x = String.join("\n", a.getStdOut().orElse(Collections.emptyList()));
       assertTrue(x.contains("SUCCESS"));
     } catch (final Exception e) {
       fail(e.getClass().getCanonicalName() + " " + e.getMessage());
@@ -248,7 +251,7 @@ public class ProcessRunnerTest {
     assertNotNull(p.getResults());
 
     final ProcessExecutionResult a = p.getExecutions().get(id);
-    final String x = String.join("\n", a.getStdOut());
+    final String x = String.join("\n", a.getStdOut().orElse(Collections.emptyList()));
     assertFalse(x.contains("FAILURE"));
   }
 
@@ -314,7 +317,7 @@ public class ProcessRunnerTest {
     assertNotNull(p.getResults());
 
     final ProcessExecutionResult a = p.getExecutions().get(id);
-    final String x = String.join("\n", a.getStdOut());
+    final String x = String.join("\n", a.getStdOut().orElse(Collections.emptyList()));
     assertTrue(x.contains("version-prelease"));
   }
 
@@ -345,7 +348,7 @@ public class ProcessRunnerTest {
     assertNotNull(p.getResults());
 
     final ProcessExecutionResult a = p.getExecution(id).get();
-    final String x = String.join("\n", a.getStdOut());
+    final String x = String.join("\n", a.getStdOut().orElse(Collections.emptyList()));
     assertTrue(x.contains("version-prelease"));
   }
 

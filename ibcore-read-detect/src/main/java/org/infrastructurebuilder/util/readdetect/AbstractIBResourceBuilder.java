@@ -18,20 +18,21 @@
 package org.infrastructurebuilder.util.readdetect;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.ofNullable;
-import static org.infrastructurebuilder.util.constants.IBConstants.NO_PATH_SUPPLIED;
+import static java.util.Optional.empty;
+import static org.infrastructurebuilder.util.constants.IBConstants.*;
 import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory.extracted;
 import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory.toType;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.RelativeRoot;
-import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
+import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,7 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
   private Checksum targetChecksum;
   protected Path sourcePath;
   private Path finalRestingPath;
-  private RelativeRoot root;
+  private final RelativeRoot root;
 
   public AbstractIBResourceBuilder(Optional<RelativeRoot> root) {
     this.root = requireNonNull(root).orElse(null);
@@ -51,11 +52,8 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
 
   @Override
   public IBResourceBuilder<B> fromJSON(JSONObject j) {
-    model = IBResourceModel.modelFromJSON(j);
-    Path p = ofNullable(model.getFilePath())
-        //
-        .map(extracted)
-        //
+    model = IBResourceBuilder.modelFromJSON.apply(j);
+    Path p = model.getFilePath().map(extracted)
         .orElseThrow(() -> new IBResourceException(NO_PATH_SUPPLIED));
     this.sourcePath = p;
     return this;
@@ -118,15 +116,13 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
 
   @Override
   public IBResourceBuilder<B> withAdditionalProperties(Properties p) {
-    Properties p1 = new Properties();
-    p1.putAll(p);
-    this.model.setAdditionalProperties(p1);
+    p.forEach((k, v) -> this.model.setAdditionalProperty(k.toString(), v));
     return this;
   }
 
   @Override
   public IBResourceBuilder<B> withLastUpdated(Instant last) {
-    this.model.setLastUpdate(requireNonNull(last).toString());
+    this.model.setLastUpdate(requireNonNull(last));
     return this;
   }
 
@@ -138,7 +134,7 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
 
   @Override
   public IBResourceBuilder<B> withCreateDate(Instant create) {
-    this.model.setCreated(requireNonNull(create).toString());
+    this.model.setCreated(requireNonNull(create));
     return this;
   }
 
@@ -150,7 +146,7 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
 
   @Override
   public IBResourceBuilder<B> withMostRecentAccess(Instant access) {
-    this.model.setMostRecentReadTime(requireNonNull(access).toString());
+    this.model.setMostRecentReadTime(requireNonNull(access));
     return this;
   }
 
@@ -163,13 +159,27 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
    * @return this builder
    */
   @Override
-  public IBResourceBuilder<B> validate(boolean hard) {
+  public Optional<IBResourceBuilder<B>> validate(boolean hard) {
     if (this.sourcePath != null) {
-      if (!Files.exists(sourcePath))
-        throw new IBResourceException("unreadable.path");
-      if (this.targetChecksum == null) {
-        log.warn("Checksum not available");
-        this.targetChecksum = Checksum.ofPath.apply(this.sourcePath).get();
+      if (!Files.exists(sourcePath)) {
+        log.error("unreadable.path {}", this.sourcePath);
+        return empty();
+      }
+      if (hard) {
+        var aType = toType.apply(this.sourcePath);
+        if (!this.model.getType().equals(aType)) {
+          log.error("Expected type {} does not equal actual type {}", this.model.getType(), aType);
+          return empty();
+        }
+        if (this.targetChecksum == null) {
+          log.warn("target checksum not available.  Reading source path");
+          this.targetChecksum = Checksum.ofPath.apply(this.sourcePath).get();
+        }
+      }
+      if (!Objects.equals(this.targetChecksum, this.model.getFileChecksum())) {
+        log.error("Model checksum {} not equal to targeted checksum {}", this.model.getFileChecksum(),
+            this.targetChecksum);
+        return empty();
       }
       if (this.model.getType() == null) {
         log.warn("Type not available");
@@ -181,14 +191,14 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
       log.warn("No sourcePath set for resource");
       // TODO??
     }
-    return this;
+    return Optional.of(this);
   }
 
   abstract public B build(boolean hard);
 
   /**
-   * For IMDelegatedIBResource. Do not use for general construction of a resource. This method is not available outside
-   * of this package.
+   * For IBResourceInMemoryDelegated. Do not use for general construction of a resource. This method is not available
+   * outside of this package.
    *
    * @param m model to replace existing model with
    * @return this builder.

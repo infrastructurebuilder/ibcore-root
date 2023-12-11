@@ -97,7 +97,10 @@ public class DefaultCryptoIdentifier implements CryptoIdentifier {
 
   @Override
   public ChecksumBuilder getChecksumBuilder() {
-    return this.checksumBuilder;
+    return this.checksumBuilder //
+        .addString(getType()) //
+        .addString(getValidationIdentifier()) //
+        .addSetString(getIdentifiers());
   }
 
 }

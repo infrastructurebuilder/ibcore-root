@@ -50,7 +50,7 @@ public interface ProcessExecution extends JSONAndChecksumEnabled, AutoCloseable 
   public static final String STD_OUT = "stdout";
   public final static Duration VERY_LONG = ofHours(2 * 24 * 365 + 12);
 
-  List<String> getArguments();
+  Optional<List<String>> getArguments();
 
   String getExecutable();
 
@@ -74,7 +74,7 @@ public interface ProcessExecution extends JSONAndChecksumEnabled, AutoCloseable 
 
   @Override
   default JSONObject asJSON() {
-    return JSONBuilder.newInstance(getRelativeRoot().flatMap(RelativeRoot::getPath))
+    return JSONBuilder.newInstance(this.getRelativeRoot().flatMap(RelativeRoot::getPath))
 
         .addString(ID, getId())
 
@@ -97,7 +97,7 @@ public interface ProcessExecution extends JSONAndChecksumEnabled, AutoCloseable 
 
   Path getWorkDirectory();
 
-  List<Integer> getExitValuesAsIntegers();
+  Optional<List<Integer>> getExitValuesAsIntegers();
 
   /**
    * One should override this and cache the value, if possible, so as to return the same executor
@@ -107,8 +107,8 @@ public interface ProcessExecution extends JSONAndChecksumEnabled, AutoCloseable 
   default ProcessExecutor getProcessExecutor() {
     final List<String> command = new ArrayList<>();
     command.add(getExecutable());
-    command.addAll(getArguments());
-    List<Integer> l = getExitValuesAsIntegers();
+    command.addAll(getArguments().orElseGet(() -> new ArrayList<>()));
+    List<Integer> l = getExitValuesAsIntegers().orElseGet(() -> new ArrayList<>());
     Integer[] exitValues = (Integer[]) l.toArray(new Integer[l.size()]);
     final ProcessExecutor pe = new ProcessExecutor()
 

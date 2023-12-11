@@ -21,7 +21,6 @@ import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static java.nio.file.StandardOpenOption.READ;
 import static java.util.Objects.hash;
 import static java.util.Optional.empty;
-import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.util.constants.IBConstants.ADDITIONAL_PROPERTIES;
 import static org.infrastructurebuilder.util.constants.IBConstants.CREATE_DATE;
 import static org.infrastructurebuilder.util.constants.IBConstants.DESCRIPTION;
@@ -34,6 +33,7 @@ import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_NAME;
 import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_URL;
 import static org.infrastructurebuilder.util.constants.IBConstants.UPDATE_DATE;
 
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
@@ -49,8 +49,9 @@ import org.infrastructurebuilder.util.core.ChecksumBuilder;
 import org.infrastructurebuilder.util.core.ChecksumEnabled;
 import org.infrastructurebuilder.util.core.JSONBuilder;
 import org.infrastructurebuilder.util.core.JSONOutputEnabled;
+import org.infrastructurebuilder.util.core.NameDescribed;
 import org.infrastructurebuilder.util.core.RelativeRoot;
-import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
+import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
 
 /**
@@ -123,7 +124,7 @@ import org.json.JSONObject;
 *
 */
 
-public interface IBResource<T> extends JSONOutputEnabled, ChecksumEnabled {
+public interface IBResource<T> extends JSONOutputEnabled, ChecksumEnabled, NameDescribed {
   public final static OpenOption[] ZIP_OPTIONS = {
       READ
   };
@@ -153,7 +154,7 @@ public interface IBResource<T> extends JSONOutputEnabled, ChecksumEnabled {
   /**
    * @return Non-null. By contract, this is the calculated Checksum of the contents of the InputStream supplied by get()
    */
-  Checksum getPathChecksum();
+  Checksum getTChecksum();
 
   /**
    * @return Non-null. This is the calculated Checksum of the model (not just the bytestream)
@@ -174,41 +175,42 @@ public interface IBResource<T> extends JSONOutputEnabled, ChecksumEnabled {
    *
    * @return most recent read time or null
    */
-  Instant getMostRecentReadTime();
+  Optional<Instant> getMostRecentReadTime();
 
   /**
-   * Nullable (but probably not) create date
+   * Create date.  If possible, this should be the create instant of the T item from
+   * {@link IBResource#get()} above.  For instance, if T is an {@link InputStream} that is 
+   * acquired from a {@link Path}, then this should be the create date of that original
+   * Path.  On the other hand, if the stream is from an SQL statements output, then 
+   * this value should be the same as {@link IBResource#getAcquireDate()} below.
+   * 
+   * If the values for these are not immediately obvious, or violate either of the
+   * examples above, then they should probably be explained in the Description of the
+   * IBResource.
    *
-   * @return create date or null
+   * @return create date
    */
-  Instant getCreateDate();
+  Optional<Instant> getCreateDate();
+  
+  /** 
+   * This is the moment at which the acquisition of the objects returned above are
+   * read.  Sometimes, this is the same as {@link IBResource#getCreateDate()} and
+   * other times it is the time at which a value was read from an outside source.
+   * 
+   * @return
+   */
+  Optional<Instant> getAcquireDate();
 
   /**
    * @return last file update or null
    */
-  Instant getLastUpdateDate();
-
-  default Optional<Instant> getOptionalCreateDate() {
-    return ofNullable(getCreateDate());
-  }
-
-  default Optional<Instant> getOptionalMostRecentReadTime() {
-    return ofNullable(getMostRecentReadTime());
-  }
-
-  default Optional<Instant> getOptionalLastUpdateDate() {
-    return ofNullable(getLastUpdateDate());
-  }
+  Optional<Instant> getLastUpdateDate();
 
   Optional<URL> getSourceURL();
 
   Optional<String> getSourceName();
 
   long size();
-
-  Optional<String> getName();
-
-  Optional<String> getDescription();
 
   default int defaultHashCode() {
     return hash(getChecksum(), getPath(), getSourceName(), getSourceURL(), getType());
@@ -234,7 +236,7 @@ public interface IBResource<T> extends JSONOutputEnabled, ChecksumEnabled {
 
   default String defaultToString() {
     StringJoiner sj = new StringJoiner("|") //
-        .add(getPathChecksum().asUUID().get().toString()) // Checksum
+        .add(getTChecksum().asUUID().get().toString()) // Checksum
         .add(getType()) // type
         .add(getPath().toString()); // Path
     getSourceURL().ifPresent(u -> sj.add(u.toExternalForm()));
@@ -245,7 +247,7 @@ public interface IBResource<T> extends JSONOutputEnabled, ChecksumEnabled {
   default JSONObject asJSON() {
     return new JSONBuilder(empty())
 
-        .addChecksum(PATH_CHECKSUM, getPathChecksum())
+        .addChecksum(PATH_CHECKSUM, getTChecksum())
 
         .addChecksum(CHECKSUM, getChecksum())
 
@@ -253,7 +255,7 @@ public interface IBResource<T> extends JSONOutputEnabled, ChecksumEnabled {
 
         .addInstant(UPDATE_DATE, getLastUpdateDate())
 
-        .addInstant(MOST_RECENT_READ_TIME, ofNullable(getMostRecentReadTime()))
+        .addInstant(MOST_RECENT_READ_TIME, getMostRecentReadTime())
 
         .addString(SOURCE_NAME, getSourceName())
 
@@ -310,7 +312,7 @@ public interface IBResource<T> extends JSONOutputEnabled, ChecksumEnabled {
   IBResourceModel copyModel();
 
   default ChecksumBuilder getChecksumBuilder() {
-    return ChecksumBuilder.newInstance(getRelativeRoot().flatMap(RelativeRoot::getPath))
+    return ChecksumBuilder.newInstance(this.getRelativeRoot().flatMap(RelativeRoot::getPath))
         .addChecksum(new Checksum(copyModel().getFileChecksum()));
   }
 

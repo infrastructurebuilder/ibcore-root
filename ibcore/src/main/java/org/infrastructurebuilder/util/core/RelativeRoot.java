@@ -132,5 +132,7 @@ public interface RelativeRoot extends JSONAndChecksumEnabled {
   Optional<String> relativize(URL p);
 
   String relativize(String pext);
+  
+  RelativeRoot extend(String newPath);
 
 }

@@ -23,7 +23,6 @@ import static java.util.stream.Collectors.toList;
 import static org.infrastructurebuilder.util.constants.IBConstants.CACHEDIR;
 import static org.infrastructurebuilder.util.constants.IBConstants.FILEMAPPERS;
 import static org.infrastructurebuilder.util.constants.IBConstants.WORKINGDIR;
-import static org.infrastructurebuilder.util.core.IBUtils.getJSONArrayAsListString;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -37,18 +36,19 @@ import org.apache.maven.wagon.proxy.ProxyInfoProvider;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.components.io.filemappers.FileMapper;
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.util.config.ConfigMap;
+import org.infrastructurebuilder.util.core.Configurable;
 import org.infrastructurebuilder.util.core.HeadersSupplier;
-import org.infrastructurebuilder.util.core.IBConfigurable;
+import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.LoggerSupplier;
 import org.infrastructurebuilder.util.core.PathSupplier;
 import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.readdetect.WGetter;
 import org.infrastructurebuilder.util.readdetect.WGetterSupplier;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 
 @Named
-public class DefaultWGetterSupplier implements WGetterSupplier, IBConfigurable<JSONObject> {
+public class DefaultWGetterSupplier implements WGetterSupplier, Configurable<ConfigMap, WGetterSupplier> {
 
   @Inject
   private final ArchiverManager archiverManager;
@@ -88,7 +88,6 @@ public class DefaultWGetterSupplier implements WGetterSupplier, IBConfigurable<J
     this.proxyInfoProvider = requireNonNull(pip);
   }
 
-  @Override
   public Logger getLog() {
     return this.log;
   }
@@ -99,19 +98,21 @@ public class DefaultWGetterSupplier implements WGetterSupplier, IBConfigurable<J
         ofNullable(this.proxyInfoProvider), ofNullable(mappers.get()));
   }
 
-  public void setProxyInfoProvider(ProxyInfoProvider proxyInfoProvider) {
+  public DefaultWGetterSupplier withProxyInfoProvider(ProxyInfoProvider proxyInfoProvider) {
     if (this.proxyInfoProvider == null)
       this.proxyInfoProvider = proxyInfoProvider;
+    else
+      log.warn("Cannot replace existing ProxyInfoProvider");
+    return this;
   }
 
-  @SuppressWarnings("unchecked")
   @Override
-  public WGetterSupplier configure(JSONObject config) {
+  public WGetterSupplier withConfig(ConfigMap config) {
     this.workingDirectory.compareAndSet(null,
         this.pathSuppliers.get(requireNonNull(config).getString(WORKINGDIR)).get());
     this.cacheDirectory.compareAndSet(null, this.pathSuppliers.get(requireNonNull(config).getString(CACHEDIR)).get());
 
-    List<FileMapper> ls = getJSONArrayAsListString(config, FILEMAPPERS).stream()
+    List<FileMapper> ls = IBUtils.asStringStream(config.getJSONArray(FILEMAPPERS))
         .map(key -> ofNullable(fileMappers.get(key))
             .orElseThrow(() -> new IBException(String.format("FileMapper {} not found", key))))
         .collect(toList());

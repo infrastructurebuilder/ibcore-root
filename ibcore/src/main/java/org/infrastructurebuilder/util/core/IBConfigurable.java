@@ -17,6 +17,11 @@
  */
 package org.infrastructurebuilder.util.core;
 
+/**
+ * Deprecated in favor of Configurable
+ * @param <C>
+ */
+@Deprecated
 public interface IBConfigurable<C> extends LoggerEnabled {
 
   <T> T configure(C config);

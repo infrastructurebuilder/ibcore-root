@@ -17,10 +17,7 @@
  */
 package org.infrastructurebuilder.util.vertx.base;
 
-import java.util.Optional;
-
 import org.infrastructurebuilder.util.core.DefaultGAV;
-import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -17,7 +17,7 @@
  */
 package org.infrastructurebuilder.maven.util.config;
 
-import static org.infrastructurebuilder.util.config.ConfigMapSupplier.MAVEN_SETTINGS_SERVER_NAMESPACE;
+import static org.infrastructurebuilder.util.config.ConfigMapBuilderSupplier.MAVEN_SETTINGS_SERVER_NAMESPACE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -65,7 +65,7 @@ public class MavenConfigWithServersMapSupplierTest extends MavenConfigMapSupplie
 
   @Test
   public void testNoSettings() {
-    final ConfigMap map = cms2.get();
+    final ConfigMap map = cms2.get().get();
     for (String key : map.keySet()) {
       assertFalse(key.startsWith(MAVEN_SETTINGS_SERVER_NAMESPACE));
     }
@@ -73,7 +73,7 @@ public class MavenConfigWithServersMapSupplierTest extends MavenConfigMapSupplie
 
   @Test
   public void testSetSettings() {
-    final ConfigMap map = cms.get();
+    final ConfigMap map = cms.get().get();
     assertEquals(map.getString(ns + USERNAME), USERNAME);
     assertEquals(map.getString(ns + PASSPHRASE), PASSPHRASE);
     assertEquals(map.getString(ns + PASSWORD), PASSWORD);

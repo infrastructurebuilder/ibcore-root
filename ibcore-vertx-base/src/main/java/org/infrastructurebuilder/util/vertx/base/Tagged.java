@@ -19,8 +19,6 @@ package org.infrastructurebuilder.util.vertx.base;
 
 import java.util.Optional;
 
-import org.slf4j.*;
-
 public interface Tagged {
   Optional<Tags> getTags();
 }

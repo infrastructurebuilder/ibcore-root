@@ -37,7 +37,9 @@ import java.util.Properties;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.IBResource;
-import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
+import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
+import org.infrastructurebuilder.util.readdetect.IBResourceException;
+import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,9 +48,9 @@ import org.slf4j.LoggerFactory;
  * The AbsolutePathIBResource is an <link>IBResource</link> that has the following propertie
  * <ol>
  * <li>The output must be backed by an <b><i>ABSOLUTE</i></b> <code>java.nio.file.Path</code></li>
- * <li>It's <code>get()</code> method returns an <code>Optional InputStream</code>, which will probably
- * be present based on the availability of the FileSystem that backs the Path.</li>
- * <li>It's <code>RelativeRoot</code> instance <i>may</i> be null, allowing for no relative paths.  This could affect any
+ * <li>It's <code>get()</code> method returns an <code>Optional InputStream</code>, which will probably be present based
+ * on the availability of the FileSystem that backs the Path.</li>
+ * <li>It's <code>RelativeRoot</code> instance <i>may</i> be null, allowing for no relative paths. This could affect any
  * ability to persist the metadata.</li>
  *
  * </ol>
@@ -58,15 +60,17 @@ public class AbsolutePathIBResource extends AbstractIBResource<InputStream> {
 
   public AbsolutePathIBResource(Optional<RelativeRoot> root, IBResourceModel m, Path sourcePath) {
     super(Objects.requireNonNull(root).orElse(null), m);
-    this.m.setFilePath(IBResource.requireAbsolutePath( sourcePath).toUri().toASCIIString());
+    this.m.setFilePath(IBResource.requireAbsolutePath(sourcePath).toUri().toASCIIString());
   }
 
   public AbsolutePathIBResource(Optional<RelativeRoot> root, IBResourceModel m) {
-    this(root, m, Paths.get(URI.create(m.getFilePath())));
+    this(root, m,
+        Paths.get(URI.create(m.getFilePath().orElseThrow(() -> new IBResourceException("No [required] file path")))));
   }
 
   public AbsolutePathIBResource(Optional<RelativeRoot> root, JSONObject j) {
-    super(Objects.requireNonNull(root).orElse(null), IBResourceModel.modelFromJSON(j)); // TODO Convert from older models?
+    super(Objects.requireNonNull(root).orElse(null), IBResourceBuilder.modelFromJSON.apply(j)); // TODO Convert from
+                                                                                                // older models?
   }
 
   public AbsolutePathIBResource(Optional<RelativeRoot> root, Path path, Checksum checksum, Optional<String> type,
@@ -76,9 +80,9 @@ public class AbsolutePathIBResource extends AbstractIBResource<InputStream> {
     m.setFilePath(requireNonNull(path).toAbsolutePath().toString());
     m.setFileChecksum(requireNonNull(checksum).toString());
     getAttributes.apply(path).ifPresent(bfa -> {
-      this.m.setCreated(bfa.creationTime().toInstant().toString());
-      this.m.setLastUpdate(bfa.lastModifiedTime().toInstant().toString());
-      this.m.setMostRecentReadTime(bfa.lastAccessTime().toInstant().toString());
+      this.m.setCreated(bfa.creationTime().toInstant());
+      this.m.setLastUpdate(bfa.lastModifiedTime().toInstant());
+      this.m.setMostRecentReadTime(bfa.lastAccessTime().toInstant());
       this.m.setSize(bfa.size());
     });
 
@@ -91,7 +95,7 @@ public class AbsolutePathIBResource extends AbstractIBResource<InputStream> {
 
   @Override
   public Optional<InputStream> get() {
-    m.setMostRecentReadTime(now().toString());
+    m.setMostRecentReadTime(now());
     return getPath().map(path -> {
       try {
         return newInputStream(path, (path.getClass().getCanonicalName().contains("Zip")) ? ZIP_OPTIONS : OPTIONS);
@@ -102,20 +106,17 @@ public class AbsolutePathIBResource extends AbstractIBResource<InputStream> {
     });
   }
 
-
-
   @Override
   public boolean validate(boolean hard) {
     return getPath().map(p -> {
       if (!Files.exists(p))
         return false;
       if (hard) {
-        Checksum s = this.getPathChecksum();
+        Checksum s = this.getTChecksum();
         Checksum n = new Checksum(p); // Calculate new checksum
         if (!s.equals(n))
           return false;
-        if (!this.m.getType()
-            .equals(toOptionalType.apply(p).orElse(APPLICATION_OCTET_STREAM)))
+        if (!this.m.getType().equals(toOptionalType.apply(p).orElse(APPLICATION_OCTET_STREAM)))
           return false;
       }
       return true;
@@ -123,7 +124,7 @@ public class AbsolutePathIBResource extends AbstractIBResource<InputStream> {
   }
 
   @Override
-  public Checksum getPathChecksum() {
+  public Checksum getTChecksum() {
     return new Checksum(m.getFileChecksum());
   }
 

@@ -36,7 +36,6 @@ import org.infrastructurebuilder.util.core.IBVersion.IBVersionBoundedRange;
 import org.infrastructurebuilder.util.core.IBVersion.IBVersionRequirement;
 import org.infrastructurebuilder.util.core.IBVersion.IBVersionType;
 import org.infrastructurebuilder.util.core.IBVersion.VersionDiff;
-import org.infrastructurebuilder.util.core.IBVersionException;
 import org.infrastructurebuilder.util.core.RangeOperator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

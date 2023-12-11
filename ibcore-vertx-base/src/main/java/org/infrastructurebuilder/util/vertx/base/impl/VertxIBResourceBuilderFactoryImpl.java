@@ -21,7 +21,6 @@ import static io.vertx.core.Future.failedFuture;
 import static io.vertx.core.Future.succeededFuture;
 import static java.util.Objects.requireNonNull;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
-import static org.infrastructurebuilder.util.constants.IBConstants.UTF_8;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -45,7 +44,6 @@ import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.IBResourceException;
 import org.infrastructurebuilder.util.vertx.base.VertxIBResource;
-import org.infrastructurebuilder.util.vertx.base.VertxIBResourceBuilderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

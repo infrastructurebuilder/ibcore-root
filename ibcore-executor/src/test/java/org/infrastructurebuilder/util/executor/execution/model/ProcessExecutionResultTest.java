@@ -62,12 +62,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zeroturnaround.exec.ProcessOutput;
 import org.zeroturnaround.exec.ProcessResult;
 
 public class ProcessExecutionResultTest {
-  public final static TestingPathSupplier wps = new TestingPathSupplier();
+  private static final Logger logger = LoggerFactory.getLogger(ProcessExecutionResultTest.class);
   private static final List<String> ARGS = Arrays.asList("-version");
+  public final static TestingPathSupplier wps = new TestingPathSupplier();
 
   private static final String EXEC = "java";
   private static final String ID = "default";
@@ -94,6 +97,7 @@ public class ProcessExecutionResultTest {
   private Path stdOutPth;
 
   private Path stdErrPth;
+  private DefaultProcessExecution pe2;
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -152,13 +156,30 @@ public class ProcessExecutionResultTest {
     JSONObject e = a.getJSONObject(EXECUTION);
     String se = e.getString("stderr");
     String so = e.getString("stdout");
-    final String t = "{\n" + " \"start\": \"1970-01-01T00:00:00.100Z\",\n" + "  \"execution\": {\n"
-        + "    \"arguments\": [\"-version\"],\n" + "    \"optional\": false,\n" + "    \"id\": \"default\",\n"
-        + "\"environment\": {}," + "    \"stdout\": \"" + so + "\",\n" + "    \"stderr\": \"" + se + "\",\n"
-        + "    \"executable\": \"java\"\n" + "  },\n" + "  \"result-code\": 0,\n" + "  \"runtime\": \"PT0.1S\",\n"
-        + "  \"std-out\": [\n" + "    \"hello\",\n" + "    \"gentlepersons\"\n" + "  ],\n" + "  \"std-err\": [\n"
-        + "    \"Hi\",\n" + "    \"there\"\n" + "  ]" + "\n}";
+    final String t ="{\n"
+        + "  \"execution\": {\n"
+        + "    \"environment\": {},\n"
+        + "    \"stdout\": \"extraStdOut\",\n"
+        + "    \"arguments\": [\"-version\"],\n"
+        + "    \"optional\": false,\n"
+        + "    \"id\": \"default\",\n"
+        + "    \"stderr\": \"extraStdErr\",\n"
+        + "    \"executable\": \"java\"\n"
+        + "  },\n"
+        + "  \"std-out\": [\n"
+        + "    \"hello\",\n"
+        + "    \"gentlepersons\"\n"
+        + "  ],\n"
+        + "  \"start\": \"1970-01-01T00:00:00.100Z\",\n"
+        + "  \"result-code\": 0,\n"
+        + "  \"runtime\": \"PT0.1S\",\n"
+        + "  \"std-err\": [\n"
+        + "    \"Hi\",\n"
+        + "    \"there\"\n"
+        + "  ]\n"
+        + "}" ;
     final JSONObject target = new JSONObject(t);
+    var q = a.toString(2);
     JSONAssert.assertEquals(target, a, true);
 
   }
@@ -189,9 +210,15 @@ public class ProcessExecutionResultTest {
 
   @Test
   public void testEqualsObject() {
-    final DefaultProcessExecution pe2 = new DefaultProcessExecution("abc", EXEC, ARGS, empty(), empty(), scratchDir,
+    pe2 = new DefaultProcessExecution("abc", EXEC, ARGS,
+
+        empty(), empty(), scratchDir,
+
         false, empty(), of(scratchDir), empty(), empty(), false);
-    assertNotEquals(res, new DefaultProcessExecutionResult(pe2, of(0), empty(), ofEpochMilli(100L), ofMillis(100L)));
+    DefaultProcessExecutionResult res2 = new DefaultProcessExecutionResult(pe2, of(0),
+
+        empty(), ofEpochMilli(100L), ofMillis(200L));
+    assertNotEquals(res, res2);
     assertEquals(res, res);
     assertNotEquals(res, "abc");
     assertNotEquals(res, null);
@@ -210,7 +237,7 @@ public class ProcessExecutionResultTest {
 
   @Test
   public void testGetId() {
-    assertEquals(ID, res.getId());
+    assertEquals(res.asChecksum().toString(), res.getId());
   }
 
   @Test

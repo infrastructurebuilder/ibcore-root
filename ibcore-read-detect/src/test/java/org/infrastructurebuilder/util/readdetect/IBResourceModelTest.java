@@ -86,8 +86,8 @@ public class IBResourceModelTest {
   @Test
   public void testGetChecksum() {
     assertEquals(c1.getChecksum(), c2.getChecksum());
-    assertEquals(checksum, c1.getPathChecksum());
-    assertEquals(checksum, c2.getPathChecksum());
+    assertEquals(checksum, c1.getTChecksum());
+    assertEquals(checksum, c2.getTChecksum());
   }
 
   @Test

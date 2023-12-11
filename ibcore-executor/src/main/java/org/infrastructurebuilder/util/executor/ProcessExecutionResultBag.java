@@ -18,6 +18,7 @@
 package org.infrastructurebuilder.util.executor;
 
 import static java.time.Duration.between;
+import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.function.Function.identity;
@@ -26,11 +27,13 @@ import static java.util.stream.Collectors.toMap;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Future;
+import java.util.stream.Stream;
 
 import org.infrastructurebuilder.util.core.JSONBuilder;
 import org.infrastructurebuilder.util.core.JSONOutputEnabled;
@@ -97,21 +100,33 @@ public interface ProcessExecutionResultBag extends JSONOutputEnabled {
   }
 
   default List<String> getStdErr() {
-    final Map<String, List<String>> l = getStdErrs();
-    return getExecutedIds().stream().map(l::get).flatMap(List::stream).collect(toList());
+//    final Map<String, Optional<List<String>>> l = getStdErrs();
+//    return getExecutedIds().stream().map(l::get).flatMap(Optional::stream).flatMap(List::stream).collect(toList());
+    var v = getStdErrs();
+    return  getExecutedIds().stream() //
+        .map(key -> v.get(key))
+        .map(v2 -> Optional.ofNullable(v2)).flatMap(Optional::stream)
+        .map(o -> (o.orElseGet(()->emptyList()).stream()))
+        .map(o -> o.toString()).collect(toList());
+
   }
 
-  default Map<String, List<String>> getStdErrs() {
+  default Map<String, Optional<List<String>>> getStdErrs() {
     return getExecutions().values().stream()
         .collect(toMap(ProcessExecutionResult::getId, ProcessExecutionResult::getStdErr));
 
   }
 
   default List<String> getStdOut() {
-    return getExecutedIds().stream().map(key -> getStdOuts().get(key)).flatMap(List::stream).collect(toList());
+    var v = getStdOuts();
+    return  getExecutedIds().stream() //
+        .map(key -> v.get(key))
+        .map(v2 -> Optional.ofNullable(v2)).flatMap(Optional::stream)
+        .map(o -> (o.orElseGet(()->emptyList()).stream()))
+        .map(o -> o.toString()).collect(toList());
   }
 
-  default Map<String, List<String>> getStdOuts() {
+  default Map<String, Optional<List<String>>> getStdOuts() {
     return getExecutions().values().stream()
         .collect(toMap(ProcessExecutionResult::getId, ProcessExecutionResult::getStdOut));
   }

@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
-import org.infrastructurebuilder.util.readdetect.impl.IMDelegatedIBResource;
+import org.infrastructurebuilder.util.readdetect.impl.IBResourceInMemoryDelegated;
 import org.infrastructurebuilder.util.vertx.blobstore.Blobstore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +60,7 @@ public class InMemoryBlobstore implements Blobstore<InputStream> {
 
   private final static Collector<Entry<String, IBResource<InputStream>>, ?, ImmutableSortedMap<Instant, String>> oldestCollector = ImmutableSortedMap
       .toImmutableSortedMap(Ordering.natural().reversed(), (e) -> {
-        return ((Entry<String, IBResource<InputStream>>) e).getValue().getLastUpdateDate();
+        return ((Entry<String, IBResource<InputStream>>) e).getValue().getLastUpdateDate().orElse(null);
       }, Entry::getKey);
 
   private final static Logger log = LoggerFactory.getLogger(InMemoryBlobstore.class);
@@ -110,13 +110,13 @@ public class InMemoryBlobstore implements Blobstore<InputStream> {
 
   @Override
   public Future<Instant> getCreateDate(String id) {
-    return ofNullable(resources.get(id)).map(IBResource::getCreateDate).map(Future::succeededFuture)
+    return ofNullable(resources.get(id)).flatMap(IBResource::getCreateDate).map(Future::succeededFuture)
         .orElse(failedFuture(NOT_FOUND));
   }
 
   @Override
   public Future<Instant> getLastUpdated(String id) {
-    return ofNullable(resources.get(id)).map(IBResource::getLastUpdateDate).map(Future::succeededFuture)
+    return ofNullable(resources.get(id)).flatMap(IBResource::getLastUpdateDate).map(Future::succeededFuture)
         .orElse(failedFuture(NOT_FOUND));
   }
 
@@ -129,7 +129,8 @@ public class InMemoryBlobstore implements Blobstore<InputStream> {
 //    })
         .compose(bb -> {
           byte[] bytes = bb.getBytes();
-          IBResource<InputStream> r = new IMDelegatedIBResource(bytes, blobname, desc, createDate, lastUpdated, addlProps);
+          IBResource<InputStream> r = new IBResourceInMemoryDelegated(bytes, blobname, desc, createDate, lastUpdated,
+              addlProps);
           String id = r.getChecksum().asUUID().get().toString();
           this.blobs.putIfAbsent(id, bytes);
           this.resources.putIfAbsent(id, r);
@@ -146,8 +147,8 @@ public class InMemoryBlobstore implements Blobstore<InputStream> {
 //    var test = rf.result(); // FIXME Remove later
     return rf.compose(bb -> {
       byte[] bytes = bb.getBytes();
-      IBResource<InputStream> r = new IMDelegatedIBResource(bytes, blobname, description, bfa.creationTime().toInstant(),
-          bfa.lastModifiedTime().toInstant(), requireNonNull(addlProps));
+      IBResource<InputStream> r = new IBResourceInMemoryDelegated(bytes, blobname, description,
+          bfa.creationTime().toInstant(), bfa.lastModifiedTime().toInstant(), requireNonNull(addlProps));
       String id = r.getChecksum().asUUID().get().toString();
       this.blobs.putIfAbsent(id, bytes);
       this.resources.putIfAbsent(id, r);
@@ -167,7 +168,7 @@ public class InMemoryBlobstore implements Blobstore<InputStream> {
 
   @Override
   public Future<String> getName(String id) {
-    return ofNullable(resources.get(id)).map(IBResource::getName).map(Optional::get).map(Future::succeededFuture)
+    return ofNullable(resources.get(id)).map(IBResource::getName).map(Future::succeededFuture)
         .orElse(failedFuture(NOT_FOUND));
   }
 

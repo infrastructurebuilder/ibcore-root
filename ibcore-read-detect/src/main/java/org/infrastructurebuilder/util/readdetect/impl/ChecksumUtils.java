@@ -18,11 +18,11 @@
 package org.infrastructurebuilder.util.readdetect.impl;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.security.MessageDigest;
+
 import org.apache.commons.codec.binary.Hex;
 import org.infrastructurebuilder.util.readdetect.IBResourceException;
 

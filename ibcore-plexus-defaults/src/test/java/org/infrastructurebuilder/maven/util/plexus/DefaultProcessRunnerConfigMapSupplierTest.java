@@ -17,30 +17,32 @@
  */
 package org.infrastructurebuilder.maven.util.plexus;
 
-import static org.infrastructurebuilder.util.executor.plexus.ProcessRunnerSupplier.PROCESS_NAMESPACE;
+import static org.infrastructurebuilder.util.executor.ProcessRunnerSupplier.PROCESS_NAMESPACE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.infrastructurebuilder.util.config.ConfigMap;
-import org.infrastructurebuilder.util.config.DefaultConfigMapSupplier;
+import org.infrastructurebuilder.util.config.ConfigMapBuilder;
+import org.infrastructurebuilder.util.config.ConfigMapBuilderSupplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class DefaultProcessRunnerConfigMapSupplierTest {
 
-  private DefaultConfigMapSupplier c;
+  private ConfigMapBuilder c;
   private DefaultProcessRunnerConfigMapSupplier d;
+  private ConfigMapBuilder j;
 
   @BeforeEach
   public void setUp() throws Exception {
-    c = new DefaultConfigMapSupplier();
-    c.addValue(PROCESS_NAMESPACE + "X", "B");
-    d = new DefaultProcessRunnerConfigMapSupplier(c);
+    j = ConfigMapBuilderSupplier.defaultBuilder();
+    c = j.withKeyValue(PROCESS_NAMESPACE + "X", "B");
+    d = new DefaultProcessRunnerConfigMapSupplier(() -> j);
   }
 
   @Test
   public void testGet() {
-    final ConfigMap g = d.get();
-    assertEquals(g.size(), 1);
+    final ConfigMap g = d.get().get();
+    assertEquals(g.keySet().size(), 1);
     assertEquals(g.getString(PROCESS_NAMESPACE + "X"), "B");
   }
 

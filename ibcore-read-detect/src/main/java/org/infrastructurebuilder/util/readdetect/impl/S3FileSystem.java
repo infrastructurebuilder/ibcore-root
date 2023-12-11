@@ -31,8 +31,11 @@ import java.util.function.Supplier;
 
 import javax.inject.Provider;
 
-public class S3FileSystem implements Supplier<Optional<FileSystem>>, Provider<Optional<FileSystem>> {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+public class S3FileSystem implements Supplier<Optional<FileSystem>>, Provider<Optional<FileSystem>> {
+  private static final Logger logger = LoggerFactory.getLogger(S3FileSystem.class);
   private String accessKey;
   private String secretKey;
   private String uri = "s3://s3.amazonaws.com/"; // s3:///
@@ -46,8 +49,7 @@ public class S3FileSystem implements Supplier<Optional<FileSystem>>, Provider<Op
       return Optional
           .of(FileSystems.newFileSystem(URI.create(this.uri), env, Thread.currentThread().getContextClassLoader()));
     } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      logger.error("Error getting filesystem with ACCESSKEY " + accessKey, e);
       return Optional.empty();
     }
 

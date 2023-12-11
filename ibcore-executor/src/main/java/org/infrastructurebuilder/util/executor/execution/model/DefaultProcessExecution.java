@@ -18,35 +18,52 @@
 package org.infrastructurebuilder.util.executor.execution.model;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static java.util.UUID.randomUUID;
 import static java.util.stream.Collectors.toList;
 
 import java.io.PrintStream;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.util.core.AbsolutePathRelativeRoot;
 import org.infrastructurebuilder.util.core.ChecksumBuilder;
-import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream;
+import org.infrastructurebuilder.util.executor.ModeledProcessExecution;
 import org.infrastructurebuilder.util.executor.ProcessException;
 import org.infrastructurebuilder.util.executor.ProcessExecution;
-import org.infrastructurebuilder.util.executor.execution.model.v1_0_0.GeneratedProcessExecution;
+import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.EnvEntry;
+import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.Environment;
+import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.GeneratedProcessExecution;
+import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.GeneratedProcessExecution.GeneratedProcessExecutionBuilder;
 import org.zeroturnaround.exec.ProcessExecutor;
 
 public class DefaultProcessExecution implements ProcessExecution {
 
-  private final GeneratedProcessExecution gpe;
+  public final static Function<Map<String, String>, Environment> toEnvironment = (m) -> {
+    return new Environment(
+        requireNonNull(m).entrySet().stream().map(e -> new EnvEntry(e.getKey(), e.getValue())).collect(toList()));
+  };
+  public final static Function<Environment, Map<String, String>> fromEnvironment = (e) -> {
+    return requireNonNull(e).getEnvEntry()
+        .map(l -> l.stream().collect(Collectors.toMap(k -> k.getKey(), v -> v.getValue())))
+        .orElseGet(Collections::emptyMap);
+  };
+  private final ModeledProcessExecution gpe;
   private final PrintStream addl;
   private ProcessExecutor executor;
-  private ListCapturingLogOutputStream stdErr;
-  private ListCapturingLogOutputStream stdOut;
+  private ListCapturingLogOutputStream stdErr;// = new ListCapturingLogOutputStream(empty(), empty());
+  private ListCapturingLogOutputStream stdOut;// = new ListCapturingLogOutputStream(empty(), empty());
   private final ChecksumBuilder builder = ChecksumBuilder.newInstance();
 
   public DefaultProcessExecution() {
@@ -55,12 +72,12 @@ public class DefaultProcessExecution implements ProcessExecution {
   }
 
   public DefaultProcessExecution(GeneratedProcessExecution e) {
-    this.gpe = requireNonNull(e);
+    this.gpe = new ModeledProcessExecution(requireNonNull(e));
     this.addl = null;
   }
 
   private DefaultProcessExecution(DefaultProcessExecution e) {
-    this.gpe = e.gpe.clone();
+    this.gpe = new ModeledProcessExecution(e.gpe);
     this.addl = e.addl;
     this.executor = e.executor;
     this.stdErr = e.stdErr;
@@ -72,19 +89,21 @@ public class DefaultProcessExecution implements ProcessExecution {
       final boolean optional, final Optional<Map<String, String>> environment, final Optional<Path> relativeRoot,
       final Optional<List<Integer>> exitValues, final Optional<java.io.PrintStream> addl, final boolean background)
   {
-    gpe = new GeneratedProcessExecution();
-    gpe.setId(id);
-    gpe.setExecutable(executable);
-    gpe.setArguments(arguments);
-    gpe.setTimeout(requireNonNull(timeout).map(Duration::toString).orElse(null));
-    gpe.setStdInPath(requireNonNull(stdIn).map(Path::toAbsolutePath).map(Path::toString).orElse(null));
-    gpe.setWorkDirectory(requireNonNull(workDirectory).toAbsolutePath().toString());
-    gpe.setOptional(optional);
-    gpe.setEnvironment(requireNonNull(environment).map(IBUtils.mapSS2Properties::apply).orElse(null));
+    this.gpe = new ModeledProcessExecution("1.0", id, executable, arguments,
+        timeout.map(Duration::toString).orElse(null), //
+        optional, background, workDirectory.toString(),
+        exitValues.map(x -> x.stream().map(i -> i.toString()).collect(toList())).orElse(null),
 
-    gpe.setRelativeRoot(requireNonNull(relativeRoot).map(Path::toAbsolutePath).map(Path::toString).orElse(null));
-    gpe.setExitValues(requireNonNull(exitValues).orElse(ProcessExecution.DEFAULT_EXIT).stream().map(String::valueOf)
-        .collect(toList()));
+        null, // Placeholders until we set the values below
+        null, //
+        null, //
+        relativeRoot.map(AbsolutePathRelativeRoot::new).flatMap(RelativeRoot::getUrl).map(URL::toExternalForm)
+            .orElse(null),
+        requireNonNull(environment).map(DefaultProcessExecution.toEnvironment::apply).map(Environment::new)
+            .orElseGet(() -> new Environment()));
+    this.gpe.setStdOutPath(getStdOut().getPath().map(Path::toString).orElse(null));
+    this.gpe.setStdErrPath(getStdErr().getPath().map(Path::toString).orElse(null));
+    this.gpe.setStdInPath(stdIn.map(Path::toString).orElse(null));
     this.addl = requireNonNull(addl).orElse(null);
     gpe.setBackground(background);
   }
@@ -124,7 +143,7 @@ public class DefaultProcessExecution implements ProcessExecution {
   }
 
   @Override
-  public List<String> getArguments() {
+  public Optional<List<String>> getArguments() {
     return gpe.getArguments();
   }
 
@@ -140,22 +159,22 @@ public class DefaultProcessExecution implements ProcessExecution {
 
   @Override
   public Optional<Path> getStdIn() {
-    return ofNullable(gpe.getStdInPath()).map(Paths::get);
+    return gpe.getStdInPath().map(Paths::get);
   }
 
   @Override
   public Optional<Duration> getTimeout() {
-    return ofNullable(gpe.getTimeout()).map(Duration::parse);
+    return gpe.getTimeout().map(Duration::parse);
   }
 
   @Override
   public boolean isBackground() {
-    return gpe.isBackground();
+    return gpe.getBackground().orElse(false);
   }
 
   @Override
   public boolean isOptional() {
-    return gpe.isOptional();
+    return gpe.getOptional().orElse(false);
   }
 
   @Override
@@ -165,22 +184,21 @@ public class DefaultProcessExecution implements ProcessExecution {
 
   @Override
   public Map<String, String> getExecutionEnvironment() {
-    return IBUtils.propertiesToMapSS.apply(gpe.getEnvironment());
+    return gpe.getEnvironment().map(DefaultProcessExecution.fromEnvironment).orElseGet(Collections::emptyMap);
   }
 
   @Override
   public Path getWorkDirectory() {
-    return ofNullable(gpe.getWorkDirectory()).map(Paths::get)
-        .orElseThrow(() -> new ProcessException("No work directory"));
+    return gpe.getWorkDirectory().map(Paths::get).orElseThrow(() -> new ProcessException("No work directory"));
   }
 
   @Override
-  public List<Integer> getExitValuesAsIntegers() {
-    return gpe.getExitValues().stream().map(Integer::parseInt).collect(toList());
+  public Optional<List<Integer>> getExitValuesAsIntegers() {
+    return gpe.getExitValues().map(ev -> ev.stream().map(Integer::parseInt).collect(toList()));
   }
 
   public Optional<RelativeRoot> getRelativeRoot() {
-    return ofNullable(gpe.getRelativeRoot()).map(Paths::get).map(AbsolutePathRelativeRoot::new);
+    return gpe.getRelativeRoot();
   }
 
   @Override

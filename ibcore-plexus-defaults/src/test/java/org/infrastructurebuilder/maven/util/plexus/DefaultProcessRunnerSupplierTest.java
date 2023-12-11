@@ -23,16 +23,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.UUID;
 
 import org.codehaus.plexus.logging.console.ConsoleLogger;
-import org.infrastructurebuilder.util.config.DefaultStringListSupplier;
-import org.infrastructurebuilder.util.config.ExtendedListSupplier;
-import org.infrastructurebuilder.util.config.PropertiesInjectedConfigMapSupplier;
+import org.infrastructurebuilder.util.config.ConfigMapBuilder;
+import org.infrastructurebuilder.util.config.ConfigMapBuilderSupplier;
+import org.infrastructurebuilder.util.config.impl.DefaultConfigMapBuilderSupplier;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.executor.ProcessException;
 import org.infrastructurebuilder.util.logging.SLF4JFromMavenLogger;
@@ -64,22 +62,20 @@ public class DefaultProcessRunnerSupplierTest {
     IBUtils.deletePath(random_target);
   }
 
-  private PropertiesInjectedConfigMapSupplier cms;
+  private ConfigMapBuilder cms, cms2;
   private List<String> list;
   private Logger logger;
   private DefaultProcessRunnerSupplier prs;
-  private List<ExtendedListSupplier> suppliers;
+  private ConfigMapBuilderSupplier v;
 
   @BeforeEach
   public void setUp() throws Exception {
-    list = Arrays.asList(DefaultStringListSupplier.ISOVERRIDE, "/c1.properties");
-    suppliers = Arrays.asList(new DefaultStringListSupplier(list));
-    cms = new PropertiesInjectedConfigMapSupplier(suppliers);
-    final Properties p = new Properties();
-    p.load(getClass().getResourceAsStream("/c1.properties"));
-    cms.addConfiguration(p);
+    var q = new DefaultConfigMapBuilderSupplier();
+    cms = q.get().withPropertiesResource("/c1.properties", false);
     logger = new SLF4JFromMavenLogger(new ConsoleLogger(org.codehaus.plexus.logging.Logger.LEVEL_DEBUG, "name"));
-    prs = new DefaultProcessRunnerSupplier(cms, logger);
+    prs = new DefaultProcessRunnerSupplier(q, logger);
+    v = new DefaultConfigMapBuilderSupplier();
+    cms2 = v.get().withPropertiesResource("/c4.properties", false);
   }
 
   @Test
@@ -89,8 +85,6 @@ public class DefaultProcessRunnerSupplierTest {
 
   @Test
   public void testNonexistent() {
-    final PropertiesInjectedConfigMapSupplier cms4 = new PropertiesInjectedConfigMapSupplier(Arrays
-        .asList(new DefaultStringListSupplier(Arrays.asList(DefaultStringListSupplier.ISOVERRIDE, "/c4.properties"))));
-    assertThrows(ProcessException.class, () -> new DefaultProcessRunnerSupplier(cms4, logger));
+    assertThrows(ProcessException.class, () -> new DefaultProcessRunnerSupplier(v, logger));
   }
 }

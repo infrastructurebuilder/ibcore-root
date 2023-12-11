@@ -17,36 +17,18 @@
  */
 package org.infrastructurebuilder.util.readdetect;
 
-import static java.util.Objects.requireNonNull;
-
-import java.io.InputStream;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
+import org.infrastructurebuilder.util.core.NameDescribed;
+import org.infrastructurebuilder.util.core.RelativeRoot;
 
-import org.infrastructurebuilder.util.core.RelativeRootFactory;
-import org.infrastructurebuilder.util.readdetect.impl.AbsolutePathIBResourceBuilderFactory;
+public interface IBResourceBuilderFactorySupplier<T> extends NameDescribed {
 
-@Named(IBResourceBuilderFactorySupplier.NAME)
-@Singleton
-public class IBResourceBuilderFactorySupplier {
-  public final static String NAME = "ibresource-builder-factory-supplier";
-  private final RelativeRootFactory root;
+  Set<String> getAvailableIds();
 
-  @Inject
-  public IBResourceBuilderFactorySupplier(RelativeRootFactory rrf) {
-    this.root = requireNonNull(rrf);
-  }
+  Optional<RelativeRoot> getRoot(String id);
 
-  public Set<String> getAvailableIds() {
-    return this.root.getNames();
-  }
-
-  public Optional<IBResourceBuilderFactory<Optional<IBResource<InputStream>>>> get(String id) {
-    return this.root.get(id).map(AbsolutePathIBResourceBuilderFactory::new);
-  }
+  Optional<IBResourceBuilderFactory<T>> get(String id);
 
 }

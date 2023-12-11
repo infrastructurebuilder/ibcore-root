@@ -17,7 +17,6 @@
  */
 module org.infrastructurebuilder.util.config {
   exports org.infrastructurebuilder.util.config;
-  exports org.infrastructurebuilder.util.config.factory;
 
   requires transitive org.infrastructurebuilder.util.core;
 

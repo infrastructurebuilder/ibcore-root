@@ -256,6 +256,6 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
 
   @Override
   public ChecksumBuilder getChecksumBuilder() {
-    return this.builder;
+    return getDefaultChecksumBuilder();
   }
 }

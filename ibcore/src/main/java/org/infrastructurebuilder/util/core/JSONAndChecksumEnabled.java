@@ -18,10 +18,10 @@
 package org.infrastructurebuilder.util.core;
 
 public interface JSONAndChecksumEnabled extends JSONOutputEnabled, ChecksumEnabled {
-  /**
-   * Warning! This only works if the checksum of an object is not included as part of the asJSON output
-   */
-  default Checksum asChecksum() {
-    return new Checksum(asJSON());
-  }
+//  /**
+//   * Warning! This basically never works.
+//   */
+//  default Checksum asChecksum() {
+//    return new Checksum(asJSON());
+//  }
 }

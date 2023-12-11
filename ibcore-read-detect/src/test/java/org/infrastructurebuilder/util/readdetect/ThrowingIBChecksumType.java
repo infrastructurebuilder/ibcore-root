@@ -33,11 +33,6 @@ import org.infrastructurebuilder.util.readdetect.impl.AbsolutePathIBResource;
  */
 public class ThrowingIBChecksumType extends AbsolutePathIBResource {
 
-  /**
-   *
-   */
-  private static final long serialVersionUID = 5376806798385645619L;
-
   public ThrowingIBChecksumType() throws IOException {
     super(Optional.empty(), Paths.get("."), new Checksum(), Optional.of("doesnt/matter"));
   }

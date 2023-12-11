@@ -49,7 +49,7 @@ public interface ProcessExecutionResult extends JSONAndChecksumEnabled {
 
   Instant getStartTime();
 
-  Optional<Throwable> getException();
+  Optional<JSONObject> getException();
 
   Optional<ProcessExecution> getExecution();
 
@@ -59,9 +59,9 @@ public interface ProcessExecutionResult extends JSONAndChecksumEnabled {
 
   Duration getRunningtime();
 
-  List<String> getStdErr();
+  Optional<List<String>> getStdErr();
 
-  List<String> getStdOut();
+  Optional<List<String>> getStdOut();
 
   default Instant getEndTime() {
     return getStartTime().plus(getRunningtime());
@@ -77,7 +77,7 @@ public interface ProcessExecutionResult extends JSONAndChecksumEnabled {
 
         .addInteger(RESULT_CODE, getResultCode())
 
-        .addThrowable(EXCEPTION, getException())
+        .addJSONObject(EXCEPTION, getException())
 
         .addInstant(START, getStartTime())
 
@@ -93,7 +93,8 @@ public interface ProcessExecutionResult extends JSONAndChecksumEnabled {
   }
 
   default boolean isTimedOut() {
-    return getException().map(e -> e instanceof TimeoutException).orElse(false);
+    return getException().map(e -> e.getString("klass").contains("java.util.concurrent.TimeoutException"))
+        .orElse(false);
   }
 
 }

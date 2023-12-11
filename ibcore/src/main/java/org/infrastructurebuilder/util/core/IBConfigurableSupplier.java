@@ -19,6 +19,7 @@ package org.infrastructurebuilder.util.core;
 
 import java.util.function.Supplier;
 
+@Deprecated
 public interface IBConfigurableSupplier<T, C> extends IBConfigurable<C>, Supplier<T> {
 
 }

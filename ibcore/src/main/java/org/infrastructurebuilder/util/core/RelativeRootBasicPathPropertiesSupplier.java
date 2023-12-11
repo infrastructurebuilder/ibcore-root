@@ -17,6 +17,9 @@
  */
 package org.infrastructurebuilder.util.core;
 
+import static java.lang.System.getProperties;
+import static java.util.Optional.ofNullable;
+
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.Properties;
@@ -26,12 +29,13 @@ import javax.inject.Singleton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
- * Returns a RelativeRoot instance if System.getProperties(RR_BASIC_PATH) (see below)
- * contains a string representation of an absolute path.
+ * Returns a RelativeRoot instance if System.getProperties(RR_BASIC_PATH) (see below) contains a string representation
+ * of an absolute path.
  *
- * As System.getProperties is mutable, and as this item returns a new RR instance each
- * time, the results of the get() call are not fixed.
+ * As System.getProperties is mutable, and as this item returns a new RR instance each time, the results of the get()
+ * call are not fixed.
  *
  */
 @Singleton
@@ -51,8 +55,7 @@ public class RelativeRootBasicPathPropertiesSupplier implements RelativeRootSupp
   public Optional<RelativeRoot> get() {
     return getProperty().flatMap(pStr -> {
       try {
-        return AbstractBaseRelativeRoot.checkAbsolute(Paths.get(pStr))
-            .map(ap -> new AbsolutePathRelativeRoot(ap));
+        return AbstractBaseRelativeRoot.checkAbsolute(Paths.get(pStr)).map(ap -> new AbsolutePathRelativeRoot(ap));
       } catch (Throwable t) {
         getLog().warn("No RR created due to path failure of {}", pStr);
         return Optional.empty();
@@ -65,8 +68,10 @@ public class RelativeRootBasicPathPropertiesSupplier implements RelativeRootSupp
   }
 
   public Optional<String> getProperty() {
-    Properties p = System.getProperties();
-    return Optional.ofNullable(p.getProperty(RR_BASIC_PATH));
+    return ofNullable(getProperties().getProperty(getPropertyName()));
   }
 
+  public String getPropertyName() {
+    return RR_BASIC_PATH;
+  }
 }

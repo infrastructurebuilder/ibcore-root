@@ -35,7 +35,7 @@ import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
-import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
+import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,28 +87,33 @@ abstract public class AbstractIBResource<T> implements IBResource<T> {
   }
 
   @Override
-  public Instant getMostRecentReadTime() {
-    return ofNullable(this.m.getMostRecentReadTime()).map(Instant::parse).orElse(null);
+  public Optional<Instant> getMostRecentReadTime() {
+    return this.m.getMostRecentReadTime();
   }
 
   @Override
-  public Instant getCreateDate() {
-    return ofNullable(this.m.getCreated()).map(Instant::parse).orElse(null);
+  public Optional<Instant> getCreateDate() {
+    return this.m.getCreated();
   }
 
   @Override
-  public Instant getLastUpdateDate() {
-    return ofNullable(this.m.getLastUpdate()).map(Instant::parse).orElse(null);
+  public Optional<Instant> getAcquireDate() {
+    return this.m.getAcquired();
   }
 
   @Override
-  public Optional<String> getName() {
-    return ofNullable(this.m.getName());
+  public Optional<Instant> getLastUpdateDate() {
+    return this.m.getLastUpdate();
+  }
+
+  @Override
+  public String getName() {
+    return this.m.getName();
   }
 
   @Override
   public Optional<String> getDescription() {
-    return ofNullable(this.m.getDescription());
+    return this.m.getDescription();
   }
 
   @Override
@@ -118,7 +123,9 @@ abstract public class AbstractIBResource<T> implements IBResource<T> {
 
   @Override
   public Optional<Properties> getAdditionalProperties() {
-    var p = m.getAdditionalProperties();
+    var p2 = m.getAdditionalProperties();
+    Properties p = new Properties();
+    m.getAdditionalProperties().forEach((k,v) -> p.setProperty(k,v.toString()));
     return (p.size() == 0) ? empty() : of(p);
   }
 
@@ -136,7 +143,7 @@ abstract public class AbstractIBResource<T> implements IBResource<T> {
 
   @Override
   public IBResourceModel copyModel() {
-    return this.m.clone();
+    return new IBResourceModel(this.m);
   }
 
   @Override
@@ -157,13 +164,11 @@ abstract public class AbstractIBResource<T> implements IBResource<T> {
   @Override
   public Optional<Path> getPath() {
     try {
-      return Optional.of(Paths.get(URI.create(m.getFilePath())));
+      return m.getFilePath().map(URI::create).map(Paths::get);
     } catch (Throwable e) {
       log.error("Failed to get path " + m.getFilePath());
       return Optional.empty();
     }
   }
-
-
 
 }

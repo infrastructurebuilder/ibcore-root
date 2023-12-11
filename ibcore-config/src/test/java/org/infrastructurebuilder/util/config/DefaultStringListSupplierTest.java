@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.infrastructurebuilder.util.config.old.OldDefaultStringListSupplier;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,9 +46,9 @@ public class DefaultStringListSupplierTest {
 
   private List<String> list;
   private final List<String> list2 = Arrays.asList("/a.properties", "/b.xml");
-  private final List<String> list2a = Arrays.asList(DefaultStringListSupplier.ISFILE,
-      DefaultStringListSupplier.ISOVERRIDE, "/a.properties", "/b.xml");
-  private DefaultStringListSupplier s1, s2, s3;
+  private final List<String> list2a = Arrays.asList(OldDefaultStringListSupplier.ISFILE,
+      OldDefaultStringListSupplier.ISOVERRIDE, "/a.properties", "/b.xml");
+  private OldDefaultStringListSupplier s1, s2, s3;
 
   @Test
   public void noSet() {
@@ -57,9 +58,9 @@ public class DefaultStringListSupplierTest {
   @BeforeEach
   public void setUp() throws Exception {
     list = Arrays.asList(testClasses.resolve("a.properties").toString(), testClasses.resolve("b.xml").toString());
-    s2 = new DefaultStringListSupplier(list2a);
-    s3 = new DefaultStringListSupplier(list);
-    s1 = new DefaultStringListSupplier(Collections.emptyList());
+    s2 = new OldDefaultStringListSupplier(list2a);
+    s3 = new OldDefaultStringListSupplier(list);
+    s1 = new OldDefaultStringListSupplier(Collections.emptyList());
   }
 
   @Test

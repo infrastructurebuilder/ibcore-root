@@ -27,7 +27,7 @@ import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 
 public class AbsolutePathIBResourceBuilderFactory
-    extends AbstractIBResourceBuilderFactory< Optional<IBResource<InputStream>>> {
+    extends AbstractIBResourceBuilderFactory<Optional<IBResource<InputStream>>> {
 
   private static final long serialVersionUID = -8847933754124713375L;
 

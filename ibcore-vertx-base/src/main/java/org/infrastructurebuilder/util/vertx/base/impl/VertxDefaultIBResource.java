@@ -22,17 +22,7 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
-import static org.infrastructurebuilder.util.constants.IBConstants.CREATE_DATE;
-import static org.infrastructurebuilder.util.constants.IBConstants.DESCRIPTION;
-import static org.infrastructurebuilder.util.constants.IBConstants.MIME_TYPE;
-import static org.infrastructurebuilder.util.constants.IBConstants.MOST_RECENT_READ_TIME;
 import static org.infrastructurebuilder.util.constants.IBConstants.NO_PATH_SUPPLIED;
-import static org.infrastructurebuilder.util.constants.IBConstants.PATH;
-import static org.infrastructurebuilder.util.constants.IBConstants.SIZE;
-import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_NAME;
-import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_URL;
-import static org.infrastructurebuilder.util.constants.IBConstants.UPDATE_DATE;
-import static org.infrastructurebuilder.util.core.ChecksumEnabled.CHECKSUM;
 import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory.extracted;
 
 import java.net.URL;
@@ -50,8 +40,9 @@ import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.ChecksumBuilder;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.RelativeRoot;
+import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
-import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
+import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.infrastructurebuilder.util.vertx.base.VertxIBResource;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -76,15 +67,16 @@ public class VertxDefaultIBResource implements VertxIBResource {
     this.root = Objects.requireNonNull(root).orElse(null);
     this.cachedPath = sourcePath;
     this.m = requireNonNull(m);
-    String ps = m.getFilePath();
-    Path path = null;
-    try {
-      path = Paths.get(ps);
-      log.debug("{} path {}", path.isAbsolute() ? "Absolute" : "Relative", path);
-    } catch (Throwable t) {
-      log.error("Path was unavailable from {}", ps);
-    } finally {
-    }
+    m.getFilePath().ifPresent(ps -> {
+      Path path = null;
+      try {
+        path = Paths.get(ps);
+        log.debug("{} path {}", path.isAbsolute() ? "Absolute" : "Relative", path);
+      } catch (Throwable t) {
+        log.error("Path was unavailable from {}", ps);
+      } finally {
+      }
+    });
   }
 
   public VertxDefaultIBResource(Vertx vertx, Optional<RelativeRoot> root, IBResourceModel m) {
@@ -94,22 +86,7 @@ public class VertxDefaultIBResource implements VertxIBResource {
   public VertxDefaultIBResource(Vertx vertx, Optional<RelativeRoot> root, JSONObject j) {
     this.vertx = Objects.requireNonNull(vertx);
     this.root = Objects.requireNonNull(root).orElse(null);
-    m = new IBResourceModel();
-    m.setCreated(requireNonNull(j).optString(CREATE_DATE, null));
-    m.setFileChecksum(j.getString(CHECKSUM));
-    m.setSize(j.getLong(SIZE));
-    m.setType(j.getString(MIME_TYPE));
-    m.setFilePath(j.optString(PATH, null));
-    m.setLastUpdate(j.optString(UPDATE_DATE, null));
-    m.setMostRecentReadTime(j.optString(MOST_RECENT_READ_TIME, null));
-    m.setName(j.optString(SOURCE_NAME, null));
-    m.setSource(j.optString(SOURCE_URL, null));
-    m.setDescription(j.optString(DESCRIPTION, null));
-    ofNullable(j.optJSONObject(IBConstants.ADDITIONAL_PROPERTIES)).ifPresent(jo -> {
-      jo.toMap().forEach((k, v) -> {
-        m.addAdditionalProperty(k, v.toString());
-      });
-    });
+    m = IBResourceBuilder.modelFromJSON.apply(j);
 
     this.cachedPath = ofNullable(j.optString(IBConstants.PATH, null)).map(extracted)
         .orElseThrow(() -> new IBException(NO_PATH_SUPPLIED));
@@ -127,9 +104,9 @@ public class VertxDefaultIBResource implements VertxIBResource {
     m.setFilePath(requireNonNull(path).toAbsolutePath().toString());
     m.setFileChecksum(requireNonNull(checksum).toString());
     IBResourceBuilderFactory.getAttributes.apply(path).ifPresent(bfa -> {
-      this.m.setCreated(bfa.creationTime().toInstant().toString());
-      this.m.setLastUpdate(bfa.lastModifiedTime().toInstant().toString());
-      this.m.setMostRecentReadTime(bfa.lastAccessTime().toInstant().toString());
+      this.m.setCreated(bfa.creationTime().toInstant());
+      this.m.setLastUpdate(bfa.lastModifiedTime().toInstant());
+      this.m.setMostRecentReadTime(bfa.lastAccessTime().toInstant());
       this.m.setSize(bfa.size());
     });
 
@@ -170,7 +147,7 @@ public class VertxDefaultIBResource implements VertxIBResource {
   }
 
   @Override
-  public Checksum getPathChecksum() {
+  public Checksum getTChecksum() {
     return new Checksum(m.getFileChecksum());
   }
 
@@ -221,28 +198,32 @@ public class VertxDefaultIBResource implements VertxIBResource {
   }
 
   @Override
-  public Instant getMostRecentReadTime() {
-    return ofNullable(this.m.getMostRecentReadTime()).map(Instant::parse).orElse(null);
+  public Optional<Instant> getMostRecentReadTime() {
+    return this.m.getMostRecentReadTime();
   }
 
   @Override
-  public Instant getCreateDate() {
-    return ofNullable(this.m.getCreated()).map(Instant::parse).orElse(null);
+  public Optional<Instant> getCreateDate() {
+    return this.m.getCreated();
+  }
+  @Override
+  public Optional<Instant> getAcquireDate() {
+ return this.m.getAcquired();
   }
 
   @Override
-  public Instant getLastUpdateDate() {
-    return ofNullable(this.m.getLastUpdate()).map(Instant::parse).orElse(null);
+  public Optional<Instant> getLastUpdateDate() {
+    return this.m.getLastUpdate();
   }
 
   @Override
-  public Optional<String> getName() {
-    return ofNullable(this.m.getName());
+  public String getName() {
+    return this.m.getName();
   }
 
   @Override
   public Optional<String> getDescription() {
-    return ofNullable(this.m.getDescription());
+    return this.m.getDescription();
   }
 
   @Override
@@ -252,13 +233,14 @@ public class VertxDefaultIBResource implements VertxIBResource {
 
   @Override
   public Optional<Properties> getAdditionalProperties() {
-    var p = m.getAdditionalProperties();
+    var p = new Properties();
+    m.getAdditionalProperties().forEach((k,v) -> p.setProperty(k, v.toString()));
     return (p.size() == 0) ? empty() : of(p);
   }
 
   @Override
   public IBResourceModel copyModel() {
-    return this.m.clone();
+    return new IBResourceModel(this.m);
   }
 
   @Override
@@ -282,7 +264,7 @@ public class VertxDefaultIBResource implements VertxIBResource {
 
   @Override
   public ChecksumBuilder getChecksumBuilder() {
-    return ChecksumBuilder.newInstance(getRelativeRoot().flatMap(RelativeRoot::getPath))
+    return ChecksumBuilder.newInstance(this.getRelativeRoot().flatMap(RelativeRoot::getPath))
         .addChecksum(new Checksum(m.getFileChecksum()));
   }
 }

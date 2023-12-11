@@ -1,0 +1,114 @@
+{
+  "$schema" : "https://json-schema.org/draft/2020-12/schema",
+  "$id" : "https://infrastructurebuilder.org/model/read-detect/ibcore-read-detect-model",
+  "title" : "IBResourceCache",
+  "description" : "A cache, holding a relative root and modeled resources.",
+  "javaType" : "${project.groupId}.util.readdetect.model.v${apiVersionSafe}.IBResourceCache",
+  "type" : "object",
+  "required" : [ "modelVersion", "root", "name", "gav", "sha512", "creationDate" ],
+  "additionalProperties" : { },
+  "properties" : {
+    "modelVersion" : {
+      "type" : "string",
+      "default" : "${apiVersion}",
+      "exclusiveMinimum" : 0,
+      "readOnly" : true,
+      "description" : "Declares to which version of descriptor this configuration conforms.\nThis value is the api version (major.minor) for transportable schemas and conforms to semantic versioning"
+    },
+    "root" : {
+      "type" : "string",
+      "exclusiveMinimum" : 0,
+      "description" : "A URL-like for the RelativeRoot of the cache."
+    },
+    "name" : {
+      "type" : "string",
+      "exclusiveMinimum" : 0,
+      "description" : "Queryable name for the cache."
+    },
+    "description" : {
+      "type" : "string",
+      "description" : "Description for the cache."
+    },
+    "resources" : {
+      "type" : "array",
+      "items" : {
+        "type" : "object",
+        "javaType" : "${project.groupId}.util.readdetect.model.v${apiVersionSafe}.IBResourceModel",
+        "additionalProperties" : { },
+        "required" : [ "fileChecksum", "type", "source", "name", "size" ],
+        "properties" : {
+          "filePath" : {
+            "type" : "string",
+            "exclusiveMinimum" : 0,
+            "description" : "Path to the described file.  <b><i>Cached</i></b> IBResources require this be non-null, but the persistence model does not, because the source can be the means for acquiring the data."
+          },
+          "cached" : {
+            "type" : "boolean",
+            "description" : "Transient field (not persisted) to indicate that this is a cached value."
+          },
+          "subPath" : {
+            "type" : "string",
+            "description" : "The path of the item relative to whatever RelativeRoot existed at read time."
+          },
+          "fileChecksum" : {
+            "type" : "string",
+            "exclusiveMinimum" : 0,
+            "minLength" : 128,
+            "maxLength" : 128,
+            "readOnly" : true,
+            "description" : "calculated SHA-512 of the other values in the schema.\nThis value is used to produce the uuid."
+          },
+          "type" : {
+            "type" : "string",
+            "exclusiveMinimum" : 0,
+            "default" : "application/octet-stream",
+            "description" : "Stringified version of a MIME type for the datastream that is represented in the schema."
+          },
+          "source" : {
+            "type" : "string",
+            "exclusiveMinimum" : 0,
+            "description" : "Source URL-like.\nThis is where the stream ORIGINATED.\nIt is only used for realization, if possible, and for reference otherwise."
+          },
+          "name" : {
+            "type" : "string",
+            "exclusiveMinimum" : 0,
+            "description" : "'Original' name of the resource."
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "A detailed description of the resource."
+          },
+          "mostRecentReadTime" : {
+            "type" : "string",
+            "format" : "date-time",
+            "description" : "Most recent read time for the file, per the OS attributes.\nThis may not be valid on some filesystems."
+          },
+          "lastUpdate" : {
+            "type" : "string",
+            "format" : "date-time",
+            "description" : "The instant that this resource was last updated, if possible."
+          },
+          "created" : {
+            "type" : "string",
+            "format" : "date-time",
+            "description" : "The instant that the [ original ] file was created."
+          },
+          "acquired" : {
+            "type" : "string",
+            "format" : "date-time",
+            "description" : "The instant that the [ original ] file was acquired, if possible."
+          },
+          "realized" : {
+            "type" : "string",
+            "format" : "date-time",
+            "description" : "The instant that the [ original ] file was cached to the relative root."
+          },
+          "size" : {
+            "type" : "integer",
+            "description" : "Length in bytes of the resource, if known."
+          }
+        }
+      }
+    }
+  }
+}

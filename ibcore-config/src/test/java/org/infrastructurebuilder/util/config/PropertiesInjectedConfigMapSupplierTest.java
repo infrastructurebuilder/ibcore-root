@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.infrastructurebuilder.util.config.old.OldDefaultStringListSupplier;
+import org.infrastructurebuilder.util.config.old.OldPropertiesInjectedConfigMapSupplier;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
 import org.infrastructurebuilder.util.core.WorkingPathSupplier;
 import org.junit.jupiter.api.BeforeAll;
@@ -40,18 +42,18 @@ public class PropertiesInjectedConfigMapSupplierTest {
     target = new WorkingPathSupplier().getRoot();
   }
 
-  private PropertiesInjectedConfigMapSupplier k;
+  private OldPropertiesInjectedConfigMapSupplier k;
   private List<String> list;
-  private DefaultStringListSupplier single;
+  private OldDefaultStringListSupplier single;
 
   @BeforeEach
   public void setUp() throws Exception {
     list = new ArrayList<>();
     list.add(wps.getTestClasses().resolve("c1.properties").toAbsolutePath().toString());
     list.add(wps.getTestClasses().resolve("b.xml").toAbsolutePath().toString());
-    list.add(DefaultStringListSupplier.ISFILE);
-    single = new DefaultStringListSupplier(list);
-    k = new PropertiesInjectedConfigMapSupplier(Arrays.asList(single));
+    list.add(OldDefaultStringListSupplier.ISFILE);
+    single = new OldDefaultStringListSupplier(list);
+    k = new OldPropertiesInjectedConfigMapSupplier(Arrays.asList(single));
   }
 
   @Test

@@ -20,6 +20,7 @@ package org.infrastructurebuilder.util.core;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
+import static org.infrastructurebuilder.exceptions.IBException.cet;
 import static org.infrastructurebuilder.util.core.IBUtils.getBytes;
 
 import java.nio.file.Path;
@@ -45,15 +46,31 @@ import org.json.JSONObject;
 public final class ChecksumBuilder implements ChecksumEnabled {
 
   public static ChecksumBuilder newAlternateInstance(final String t) {
-    return IBException.cet.returns(() -> {
+    return cet.returns(() -> {
       return new ChecksumBuilder(t, MessageDigest.getInstance(requireNonNull(t)), empty());
     });
   }
 
   public static ChecksumBuilder newAlternateInstance(final String t, final Optional<Path> relativeRoot) {
-    return IBException.cet.returns(() -> {
+    return cet.returns(() -> {
       return new ChecksumBuilder(t, MessageDigest.getInstance(requireNonNull(t)), relativeRoot);
     });
+  }
+
+  public static ChecksumBuilder newAlternateInstanceWithRelativeRoot(final String t,
+      final Optional<RelativeRoot> relativeRoot) {
+    return cet.returns(() -> {
+      return new ChecksumBuilder(t, relativeRoot, MessageDigest.getInstance(requireNonNull(t)));
+    });
+
+  }
+
+  public static ChecksumBuilder newAlternateInstanceWithRelativeRoot(final Optional<RelativeRoot> relativeRoot) {
+    return cet.returns(() -> {
+      return new ChecksumBuilder(IBConstants.DIGEST_TYPE, relativeRoot,
+          MessageDigest.getInstance(requireNonNull(IBConstants.DIGEST_TYPE)));
+    });
+
   }
 
   public static ChecksumBuilder newInstance() {
@@ -70,20 +87,24 @@ public final class ChecksumBuilder implements ChecksumEnabled {
 
   private final AtomicReference<Checksum> checksum = new AtomicReference<>(null);
   private final MessageDigest md;
-  private final Optional<Path> relativeRoot;
+  private final Optional<RelativeRoot> relativeRoot;
   private final String type;
 
-  private ChecksumBuilder(final String t, final MessageDigest digestType, final Optional<Path> relativeRoot) {
+  private ChecksumBuilder(final String t, final Optional<RelativeRoot> rr, final MessageDigest digestType) {
     type = requireNonNull(t);
     md = requireNonNull(digestType);
-    final Optional<Path> rr = requireNonNull(relativeRoot);
-    this.relativeRoot = rr.map(r -> r.toAbsolutePath());
+    this.relativeRoot = requireNonNull(rr);
+
+  }
+
+  private ChecksumBuilder(final String t, final MessageDigest digestType, final Optional<Path> relativeRoot) {
+    this(t, requireNonNull(relativeRoot).map(Path::toAbsolutePath).map(AbsolutePathRelativeRoot::new), digestType);
   }
 
   public ChecksumBuilder(Checksum csum) {
     this.checksum.set(csum);
     this.type = IBConstants.DIGEST_TYPE;
-    this.md = IBException.cet.returns(() -> MessageDigest.getInstance(requireNonNull(this.type)));
+    this.md = cet.returns(() -> MessageDigest.getInstance(requireNonNull(this.type)));
     this.relativeRoot = Optional.empty();
   }
 
@@ -116,7 +137,7 @@ public final class ChecksumBuilder implements ChecksumEnabled {
     return this;
   }
 
-  public ChecksumBuilder addChecksumEnabled(final Optional<ChecksumEnabled> s) {
+  public ChecksumBuilder addChecksumEnabled(final Optional<? extends ChecksumEnabled> s) {
     lockCheck();
     requireNonNull(s).ifPresent(this::addChecksumEnabled);
     return this;
@@ -186,7 +207,7 @@ public final class ChecksumBuilder implements ChecksumEnabled {
   }
 
   public ChecksumBuilder addJSONArray(final JSONArray j) {
-    final ChecksumBuilder jBuilder = ChecksumBuilder.newAlternateInstance(type, relativeRoot);
+    final ChecksumBuilder jBuilder = ChecksumBuilder.newAlternateInstanceWithRelativeRoot(type, relativeRoot);
     jBuilder.addString("[");
     requireNonNull(j).forEach(o -> {
       addJObjectToBuilder(this, o);
@@ -196,7 +217,7 @@ public final class ChecksumBuilder implements ChecksumEnabled {
 
   public ChecksumBuilder addJSONObject(final JSONObject j) {
 
-    final ChecksumBuilder jBuilder = ChecksumBuilder.newAlternateInstance(type, relativeRoot);
+    final ChecksumBuilder jBuilder = ChecksumBuilder.newAlternateInstanceWithRelativeRoot(type, relativeRoot);
     jBuilder.addString("{");
     final List<String> keys = requireNonNull(j).keySet().stream().sorted().collect(Collectors.toList());
     for (final String key : keys) {
@@ -205,6 +226,12 @@ public final class ChecksumBuilder implements ChecksumEnabled {
       addJObjectToBuilder(this, o);
     }
     return this.addChecksumEnabled(jBuilder.addString("}"));
+  }
+
+  public ChecksumBuilder addJSONObject(final Optional<JSONObject> j) {
+    lockCheck();
+    requireNonNull(j).ifPresent(this::addJSONObject);
+    return this;
   }
 
   public ChecksumBuilder addListChecksumEnabled(final List<ChecksumEnabled> value) {
@@ -287,9 +314,26 @@ public final class ChecksumBuilder implements ChecksumEnabled {
   }
 
   public ChecksumBuilder addPath(final Path s) {
+
+    return requireNonNull(s).isAbsolute() ? this.addPathAsString(cet.returns(() -> s.toUri().toURL().toExternalForm()))
+        : this.addPathAsString(s.toString());
+//    lockCheck();
+//     Optional<Path> j = relativeRoot.flatMap(rel -> rel.relativize(requireNonNull(s).toAbsolutePath()));
+////    final Optional<Path> j = relativeRoot.map(rel -> rel.relativize(requireNonNull(s).toAbsolutePath()));
+//    return this.addString(requireNonNull(j.orElse(s.toAbsolutePath())).toString());
+  }
+
+  public ChecksumBuilder addPathAsString(final String s) {
+    var str = relativeRoot.map(rel -> rel.relativize(requireNonNull(s))).orElse(s);
+    if (str.endsWith("/"))
+      str = str.substring(0, str.length() - 1);
+    return this.addString(str);
+  }
+
+  public ChecksumBuilder addPathAsString(final Optional<String> s) {
     lockCheck();
-    final Optional<Path> j = relativeRoot.map(rel -> rel.relativize(requireNonNull(s).toAbsolutePath()));
-    return this.addString(requireNonNull(j.orElse(s.toAbsolutePath())).toString());
+    requireNonNull(s).ifPresent(this::addPathAsString);
+    return this;
   }
 
   public ChecksumBuilder addSetString(final Optional<Set<String>> s) {
@@ -334,8 +378,8 @@ public final class ChecksumBuilder implements ChecksumEnabled {
     }
   }
 
-  public Optional<Path> getRelativeRoot() {
-    return relativeRoot;
+  public Optional<RelativeRoot> getRelativeRoot() {
+    return this.relativeRoot;
   }
 
   private ChecksumBuilder addJObjectToBuilder(final ChecksumBuilder b, final Object o) {

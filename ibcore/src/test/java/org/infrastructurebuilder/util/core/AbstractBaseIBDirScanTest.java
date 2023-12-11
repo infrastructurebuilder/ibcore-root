@@ -17,10 +17,13 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -29,6 +32,7 @@ import org.junit.jupiter.api.Test;
 
 class AbstractBaseIBDirScanTest {
 
+  private final static TestingPathSupplier tps = new TestingPathSupplier();
   @BeforeAll
   static void setUpBeforeClass() throws Exception {
   }
@@ -71,8 +75,11 @@ class AbstractBaseIBDirScanTest {
   }
 
   @Test
-  void testAddPath() {
-//    fail("Not yet implemented");
+  void testAddPath() throws IOException {
+    Path p = tps.get();
+    BasicFileAttributes a = Files.readAttributes(p, BasicFileAttributes.class);
+    this.scan.addPath(p, a, Optional.empty());
+    assertEquals(0, this.scan.getErroredPaths().size());
   }
 
   @Test

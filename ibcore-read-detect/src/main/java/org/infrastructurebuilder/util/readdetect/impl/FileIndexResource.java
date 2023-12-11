@@ -17,14 +17,14 @@
  */
 package org.infrastructurebuilder.util.readdetect.impl;
 
-import org.apache.http.annotation.Contract;
-import org.apache.http.annotation.ThreadingBehavior;
-import org.apache.http.client.cache.Resource;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import org.apache.http.annotation.Contract;
+import org.apache.http.annotation.ThreadingBehavior;
+import org.apache.http.client.cache.Resource;
 
 @Contract(threading = ThreadingBehavior.IMMUTABLE)
 public final class FileIndexResource implements Resource {
