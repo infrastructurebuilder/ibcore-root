@@ -29,8 +29,9 @@ public class FakeModeled implements Modeled, JSONOutputEnabled {
 
   public FakeModeled(JSONObject j) {
     this.json = j;
-    
+
   }
+
   @Override
   public JSONObject asJSON() {
     return this.json;

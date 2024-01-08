@@ -17,17 +17,16 @@
  */
 package org.infrastructurebuilder.util.config.impl;
 
+import javax.inject.Named;
+
 import org.infrastructurebuilder.util.config.ConfigMapBuilder;
 import org.infrastructurebuilder.util.config.ConfigMapBuilderSupplier;
 import org.infrastructurebuilder.util.constants.IBConstants;
 
+@Named(IBConstants.DEFAULT) // FIXME Maybe? Dunno if this is a component or not
 public class DefaultConfigMapBuilderSupplier implements ConfigMapBuilderSupplier {
 
-  private final ConfigMapBuilder builder;
-
-  public DefaultConfigMapBuilderSupplier() {
-    this.builder = new DefaultConfigMapBuilder();
-  }
+  private final ConfigMapBuilder builder = new DefaultConfigMapBuilder();
 
   @Override
   public ConfigMapBuilder get() {

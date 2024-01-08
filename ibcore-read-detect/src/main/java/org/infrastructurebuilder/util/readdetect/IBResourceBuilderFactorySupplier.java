@@ -22,13 +22,31 @@ import java.util.Set;
 
 import org.infrastructurebuilder.util.core.NameDescribed;
 import org.infrastructurebuilder.util.core.RelativeRoot;
+import org.infrastructurebuilder.util.core.RelativeRootFactory;
 
+/**
+ * An IBResourceBuilderFactorySupplier is used to map {@link RelativeRoot} identifiers supplied by a
+ * {@link RelativeRootFactory} to instances of an {@link IBResourceBuilderFactory}
+ *
+ * This may seem unnecessarily complex as a means to obtain a factory-of-builders, but being able to indicate the actual
+ * location of a {@link RelativeRoot} by its identifier rather than its path allows us to fit in between an immovable
+ * location and an unknown identifier when attempting to validate values later.
+ *
+ *
+ * @param <T> The type of {@link IBResourceBuilderFactory} being supplied
+ */
 public interface IBResourceBuilderFactorySupplier<T> extends NameDescribed {
 
-  Set<String> getAvailableIds();
+  Set<String> getAvailableNames();
 
   Optional<RelativeRoot> getRoot(String id);
 
-  Optional<IBResourceBuilderFactory<T>> get(String id);
+  /**
+   * Get a builder with this relative root
+   *
+   * @param id
+   * @return
+   */
+  Optional<IBResourceBuilderFactory<T>> get(String relativeRootName);
 
 }

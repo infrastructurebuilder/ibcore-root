@@ -17,14 +17,19 @@
  */
 package org.infrastructurebuilder.maven.util.config;
 
+import static org.infrastructurebuilder.util.constants.IBConstants.MAVEN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Set;
+
 import org.infrastructurebuilder.util.config.ConfigMap;
-import org.infrastructurebuilder.util.config.ConfigMapBuilderSupplier;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MavenConfigMapSupplierTest extends AbstractPlexusDefaultsConfigTest {
+  private final static Logger log = LoggerFactory.getLogger(MavenConfigMapSupplierTest.class);
 
   public MavenConfigMapBuilderSupplier getCms() {
     return new MavenConfigMapBuilderSupplier(mp, ms, me);
@@ -33,17 +38,23 @@ public class MavenConfigMapSupplierTest extends AbstractPlexusDefaultsConfigTest
   @Test
   public void testSetMavenProject() {
     MavenConfigMapBuilderSupplier m1 = getCms();
-    assertEquals(ConfigMapBuilderSupplier.MAVEN, m1.getName());
-    final ConfigMap map = m1.get().get();
+
+    assertEquals(MAVEN, m1.getName());
+    final var cmv = m1.get().withProperties(properties);
+    final ConfigMap map = cmv.get();
     assertTrue(map.keySet().size() >= properties.size());
-    for (final String p : properties.stringPropertyNames()) {
+    Set<String> set = properties.stringPropertyNames();
+    var json = map.asJSON();
+    log.info("Map as JSON\n" + json.toString(2));
+    for (final String p : set) {
       final String val = map.getString(p);
       final String pVal = properties.getProperty(p);
       assertEquals(val, pVal);
     }
     assertTrue(map.containsKey("user.home"));
+
     assertTrue(map.containsKey("PATH"));
-    
+
   }
 
 }

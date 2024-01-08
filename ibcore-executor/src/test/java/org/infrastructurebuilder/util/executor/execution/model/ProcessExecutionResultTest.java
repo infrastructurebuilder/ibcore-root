@@ -156,28 +156,12 @@ public class ProcessExecutionResultTest {
     JSONObject e = a.getJSONObject(EXECUTION);
     String se = e.getString("stderr");
     String so = e.getString("stdout");
-    final String t ="{\n"
-        + "  \"execution\": {\n"
-        + "    \"environment\": {},\n"
-        + "    \"stdout\": \"extraStdOut\",\n"
-        + "    \"arguments\": [\"-version\"],\n"
-        + "    \"optional\": false,\n"
-        + "    \"id\": \"default\",\n"
-        + "    \"stderr\": \"extraStdErr\",\n"
-        + "    \"executable\": \"java\"\n"
-        + "  },\n"
-        + "  \"std-out\": [\n"
-        + "    \"hello\",\n"
-        + "    \"gentlepersons\"\n"
-        + "  ],\n"
-        + "  \"start\": \"1970-01-01T00:00:00.100Z\",\n"
-        + "  \"result-code\": 0,\n"
-        + "  \"runtime\": \"PT0.1S\",\n"
-        + "  \"std-err\": [\n"
-        + "    \"Hi\",\n"
-        + "    \"there\"\n"
-        + "  ]\n"
-        + "}" ;
+    final String t = "{\n" + "  \"execution\": {\n" + "    \"environment\": {},\n"
+        + "    \"stdout\": \"extraStdOut\",\n" + "    \"arguments\": [\"-version\"],\n" + "    \"optional\": false,\n"
+        + "    \"id\": \"default\",\n" + "    \"stderr\": \"extraStdErr\",\n" + "    \"executable\": \"java\"\n"
+        + "  },\n" + "  \"std-out\": [\n" + "    \"hello\",\n" + "    \"gentlepersons\"\n" + "  ],\n"
+        + "  \"start\": \"1970-01-01T00:00:00.100000000Z\",\n" + "  \"result-code\": 0,\n"
+        + "  \"runtime\": \"PT0.1S\",\n" + "  \"std-err\": [\n" + "    \"Hi\",\n" + "    \"there\"\n" + "  ]\n" + "}";
     final JSONObject target = new JSONObject(t);
     var q = a.toString(2);
     JSONAssert.assertEquals(target, a, true);

@@ -17,30 +17,30 @@
  */
 package org.infrastructurebuilder.util.readdetect.impl;
 
-import java.io.InputStream;
 import java.util.Optional;
 
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.AbstractIBResourceBuilder;
-import org.infrastructurebuilder.util.readdetect.IBResource;
+import org.infrastructurebuilder.util.readdetect.IBResourceIS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AbsolutePathIBResourceBuilder extends AbstractIBResourceBuilder<Optional<IBResource<InputStream>>> {
+public class AbsolutePathIBResourceBuilder extends AbstractIBResourceBuilder<Optional<IBResourceIS>> {
   private final static Logger log = LoggerFactory.getLogger(AbsolutePathIBResourceBuilder.class);
+
   public AbsolutePathIBResourceBuilder(Optional<RelativeRoot> root) {
     super(root);
   }
 
   @Override
-  public Optional<IBResource<InputStream>> build(boolean hard) {
+  public Optional<IBResourceIS> build(boolean hard) {
     try {
       validate(hard);
       var k = getRoot();
       return Optional.of(new AbsolutePathIBResource(k, this.model, this.sourcePath));
     } catch (IBException e) {
-      log.error("Error building IBResource",e);
+      log.error("Error building IBResource", e);
       return Optional.empty();
     }
   }

@@ -17,6 +17,7 @@
  */
 package org.infrastructurebuilder.util.readdetect.impl;
 
+import static java.lang.String.format;
 import static java.nio.file.Files.newInputStream;
 import static java.time.Instant.now;
 import static java.util.Objects.requireNonNull;
@@ -39,6 +40,7 @@ import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceException;
+import org.infrastructurebuilder.util.readdetect.IBResourceIS;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -55,38 +57,39 @@ import org.slf4j.LoggerFactory;
  *
  * </ol>
  */
-public class AbsolutePathIBResource extends AbstractIBResource<InputStream> {
+public class AbsolutePathIBResource extends AbstractIBResourceIS implements IBResourceIS {
   private final static Logger log = LoggerFactory.getLogger(AbsolutePathIBResource.class);
 
   public AbsolutePathIBResource(Optional<RelativeRoot> root, IBResourceModel m, Path sourcePath) {
     super(Objects.requireNonNull(root).orElse(null), m);
-    this.m.setFilePath(IBResource.requireAbsolutePath(sourcePath).toUri().toASCIIString());
+    this.m.setPath(IBResource.requireAbsolutePath(sourcePath).toUri().toASCIIString());
   }
 
   public AbsolutePathIBResource(Optional<RelativeRoot> root, IBResourceModel m) {
     this(root, m,
-        Paths.get(URI.create(m.getFilePath().orElseThrow(() -> new IBResourceException("No [required] file path")))));
+        Paths.get(URI.create(m.getPath().orElseThrow(() -> new IBResourceException("No [required] file path")))));
   }
 
   public AbsolutePathIBResource(Optional<RelativeRoot> root, JSONObject j) {
-    super(Objects.requireNonNull(root).orElse(null), IBResourceBuilder.modelFromJSON.apply(j)); // TODO Convert from
-                                                                                                // older models?
+    super(Objects.requireNonNull(root).orElse(null), IBResourceBuilder.modelFromJSON.apply(j).get()); // TODO Convert
+                                                                                                      // from
+    // older models?
   }
 
   public AbsolutePathIBResource(Optional<RelativeRoot> root, Path path, Checksum checksum, Optional<String> type,
       Optional<Properties> addlProps)
   {
     this(Objects.requireNonNull(root), new IBResourceModel());
-    m.setFilePath(requireNonNull(path).toAbsolutePath().toString());
-    m.setFileChecksum(requireNonNull(checksum).toString());
+    m.setPath(requireNonNull(path).toAbsolutePath().toString());
+    m.setStreamChecksum(requireNonNull(checksum).toString());
     getAttributes.apply(path).ifPresent(bfa -> {
       this.m.setCreated(bfa.creationTime().toInstant());
       this.m.setLastUpdate(bfa.lastModifiedTime().toInstant());
       this.m.setMostRecentReadTime(bfa.lastAccessTime().toInstant());
-      this.m.setSize(bfa.size());
+      this.m.setStreamSize(bfa.size());
     });
 
-    requireNonNull(type).ifPresent(t -> m.setType(t));
+    requireNonNull(type).ifPresent(t -> m.setStreamType(t));
   }
 
   public AbsolutePathIBResource(Optional<RelativeRoot> root, Path path, Checksum checksum, Optional<String> type) {
@@ -109,23 +112,33 @@ public class AbsolutePathIBResource extends AbstractIBResource<InputStream> {
   @Override
   public boolean validate(boolean hard) {
     return getPath().map(p -> {
-      if (!Files.exists(p))
+      if (!Files.exists(p)) {
+        log.warn("validation: File %p does not exist", p.toString());
         return false;
+      }
       if (hard) {
         Checksum s = this.getTChecksum();
         Checksum n = new Checksum(p); // Calculate new checksum
-        if (!s.equals(n))
+        if (!s.equals(n)) {
+          log.warn(format("validation: expected checksum %s != actual checksum %s", s, n));
           return false;
-        if (!this.m.getType().equals(toOptionalType.apply(p).orElse(APPLICATION_OCTET_STREAM)))
+        }
+        var actualType = toOptionalType.apply(p).orElse(APPLICATION_OCTET_STREAM);
+        if (!this.m.getStreamType().equals(actualType)) {
+          log.warn(format("validation: expected type %s != actual type %", this.m.getStreamType(), actualType));
           return false;
+        }
       }
       return true;
-    }).orElse(false);
+    }).orElseGet(() -> {
+      log.warn("validate: path not present in model");
+      return false;
+    });
   }
 
   @Override
   public Checksum getTChecksum() {
-    return new Checksum(m.getFileChecksum());
+    return new Checksum(m.getStreamChecksum());
   }
 
 }

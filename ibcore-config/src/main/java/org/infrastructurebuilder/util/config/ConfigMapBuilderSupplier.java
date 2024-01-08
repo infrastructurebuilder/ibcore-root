@@ -20,15 +20,23 @@ package org.infrastructurebuilder.util.config;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.util.config.impl.DefaultConfigMapBuilderSupplier;
+import org.json.JSONObject;
 
 public interface ConfigMapBuilderSupplier extends Supplier<ConfigMapBuilder> {
-  public static final String MAVEN = "maven"; // This one is implemented in ibcore-plexus
   public static final String IB_DATA_WORKING_DIR = "IBDataWorkingDir"; // This is also in ibcore-plexus
   public static final String MAVEN_WITH_SERVERS = "maven-with-servers";
   public static final String MAVEN_SETTINGS_SERVER_NAMESPACE = "maven.settings.server.";
 
+  public static ConfigMapBuilderSupplier defaultSupplier() {
+    return new DefaultConfigMapBuilderSupplier();
+  }
+
   public static ConfigMapBuilder defaultBuilder() {
-    return new DefaultConfigMapBuilderSupplier().get();
+    return defaultSupplier().get();
+  }
+
+  public static ConfigMapBuilder defaultBuilder(JSONObject j) {
+    return defaultBuilder().withJSONObject(j);
   }
 
 }

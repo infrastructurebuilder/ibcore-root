@@ -55,8 +55,7 @@ import io.vertx.core.file.OpenOptions;
 import io.vertx.core.streams.Pump;
 
 @Named(VertxIBResourceBuilderFactoryImpl.NAME)
-public class VertxIBResourceBuilderFactoryImpl extends AbstractIBResourceBuilderFactory<Future<VertxIBResource>>
-     {
+public class VertxIBResourceBuilderFactoryImpl extends AbstractIBResourceBuilderFactory<Future<VertxIBResource>> {
   static final String NAME = "vertx-ibresource-builder-factory";
 
   private static final long serialVersionUID = 1159380327029586147L;
@@ -101,7 +100,9 @@ public class VertxIBResourceBuilderFactoryImpl extends AbstractIBResourceBuilder
   private Future<IBResourceBuilder<Future<VertxIBResource>>> readIt(Path p, String type) {
     log.info("Reading from {}", p);
     return Checksum.ofPath.apply(p).map(checksum -> {
-      IBResourceBuilder<Future<VertxIBResource>> m = builderFromPathAndChecksum(p, checksum);
+      var qq = builderFromPathAndChecksum(p, checksum).get(); // FIXME this might fail!
+
+      IBResourceBuilder<Future<VertxIBResource>> m = qq;
       Optional.ofNullable(type).ifPresent(t -> m.withType(t));
       return succeededFuture(m);
     }).orElse(failedFuture("Could not perform readIt"));
@@ -121,7 +122,7 @@ public class VertxIBResourceBuilderFactoryImpl extends AbstractIBResourceBuilder
     var tempopts = new OpenOptions().setCreate(true).setWrite(true);
     var readopts = new OpenOptions().setCreate(false).setWrite(false).setRead(true);
     Future<AsyncFile> inbound = fs.open(p.toAbsolutePath().toString(), readopts);
-    Future<String> copied = fs.createTempFile(r, this.typeMapper.getExtensionForType(type))
+    Future<String> copied = fs.createTempFile(r, "." + this.typeMapper.getExtensionForType(type))
         // Set temp file to deleteOnExit
         .compose(tempfilename -> {
           Path f = Paths.get(tempfilename);
@@ -180,7 +181,7 @@ public class VertxIBResourceBuilderFactoryImpl extends AbstractIBResourceBuilder
 
   // Package private
   @Override
-  public IBResourceBuilder<Future<VertxIBResource>> builderFromPathAndChecksum(Path p, Checksum checksum) {
+  public Optional<IBResourceBuilder<Future<VertxIBResource>>> builderFromPathAndChecksum(Path p, Checksum checksum) {
     // We have a checksum, so we can read it, etc.
     Optional<BasicFileAttributes> bfa = IBResourceBuilderFactory.getAttributes.apply(p);
     var m = this.builder.get()
@@ -201,7 +202,7 @@ public class VertxIBResourceBuilderFactoryImpl extends AbstractIBResourceBuilder
 
     ;
 
-    return m;
+    return Optional.of(m);
   }
 
   @Override

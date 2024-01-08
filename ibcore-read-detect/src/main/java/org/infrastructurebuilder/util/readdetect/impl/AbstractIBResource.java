@@ -30,6 +30,7 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
 
+import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.RelativeRoot;
@@ -70,20 +71,21 @@ abstract public class AbstractIBResource<T> implements IBResource<T> {
 
   @Override
   public String getType() {
-    if (m.getType() == null) {
-      getPath().ifPresent(path -> m.setType(IBResourceBuilderFactory.toType.apply(path)));
+    // The only way type would be null is if the code setType(null)
+    if (m.getStreamType() == null) {
+      getPath().ifPresent(path -> m.setStreamType(IBResourceBuilderFactory.toType.apply(path)));
     }
-    return m.getType();
+    return Optional.ofNullable(m.getStreamType()).orElse(IBConstants.APPLICATION_OCTET_STREAM);
   }
 
   @Override
   public Optional<URL> getSourceURL() {
-    return ofNullable(m.getSource()).map(u -> IBUtils.translateToWorkableArchiveURL(u));
+    return ofNullable(m.getStreamSource()).map(u -> IBUtils.translateToWorkableArchiveURL(u));
   }
 
   @Override
   public Optional<String> getSourceName() {
-    return ofNullable(m.getName());
+    return ofNullable(m.getStreamName());
   }
 
   @Override
@@ -108,7 +110,7 @@ abstract public class AbstractIBResource<T> implements IBResource<T> {
 
   @Override
   public String getName() {
-    return this.m.getName();
+    return this.m.getStreamName();
   }
 
   @Override
@@ -118,19 +120,24 @@ abstract public class AbstractIBResource<T> implements IBResource<T> {
 
   @Override
   public long size() {
-    return this.m.getSize();
+    return this.m.getStreamSize();
+  }
+
+  @Override
+  public String getModelVersion() {
+    return this.m.getModelVersion();
   }
 
   @Override
   public Optional<Properties> getAdditionalProperties() {
     var p2 = m.getAdditionalProperties();
     Properties p = new Properties();
-    m.getAdditionalProperties().forEach((k,v) -> p.setProperty(k,v.toString()));
+    m.getAdditionalProperties().forEach((k, v) -> p.setProperty(k, v.toString()));
     return (p.size() == 0) ? empty() : of(p);
   }
 
   protected void setName(String name) {
-    this.m.setName(name);
+    this.m.setStreamName(name);
   }
 
   protected void setDescription(String desc) {
@@ -138,7 +145,7 @@ abstract public class AbstractIBResource<T> implements IBResource<T> {
   }
 
   public void setSource(String source) {
-    this.m.setSource(requireNonNull(source));
+    this.m.setStreamSource(requireNonNull(source));
   }
 
   @Override
@@ -164,9 +171,9 @@ abstract public class AbstractIBResource<T> implements IBResource<T> {
   @Override
   public Optional<Path> getPath() {
     try {
-      return m.getFilePath().map(URI::create).map(Paths::get);
+      return m.getPath().map(URI::create).map(Paths::get);
     } catch (Throwable e) {
-      log.error("Failed to get path " + m.getFilePath());
+      log.error("Failed to get path " + m.getPath());
       return Optional.empty();
     }
   }

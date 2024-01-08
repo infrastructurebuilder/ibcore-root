@@ -21,7 +21,9 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
+import static org.infrastructurebuilder.exceptions.IBException.cet;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
+import static org.infrastructurebuilder.util.constants.IBConstants.UNKNOWN_SIZE;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,6 +36,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.AbsolutePathRelativeRoot;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.IBUtils;
@@ -44,7 +47,9 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-abstract public class AbstractIBResourceBuilderFactory<B> extends IBResourceCache implements IBResourceBuilderFactory<B> {
+abstract public class AbstractIBResourceBuilderFactory<B> extends IBResourceCache
+    implements IBResourceBuilderFactory<B> {
+
   private static final long serialVersionUID = 1200177361527373141L;
 
   private final static Logger log = LoggerFactory.getLogger(AbstractIBResourceBuilderFactory.class);
@@ -83,25 +88,24 @@ abstract public class AbstractIBResourceBuilderFactory<B> extends IBResourceCach
 
   private Optional<IBResourceBuilder<B>> readIt(Path p, String type) {
     log.info("Reading from {}", p);
-    return Checksum.ofPath.apply(p).map(checksum -> {
+    return Checksum.ofPath.apply(p).flatMap(checksum -> {
       var m = builderFromPathAndChecksum(p, checksum);
-      ofNullable(type).ifPresent(t -> m.withType(t));
+      m.ifPresent(mm -> ofNullable(type).ifPresent(t -> mm.withType(t)));
       return m;
     });
   }
 
   private Optional<IBResourceBuilder<B>> cacheIt(Path p, String type) {
     log.info("Cacheing from {}", p);
-    var rootPath = getRelativeRoot().flatMap(RelativeRoot::getPath);
 
     if (getRelativeRoot().isEmpty()) {
       log.error("no.root.path");
       return empty();
     }
-
-    var r = rootPath.get();
-    var f = IBResourceException.cet.returns(() -> Files.createTempFile(r, "temp", ".bin"));
-    f.toFile().deleteOnExit(); // Deletes file if things fail
+    var rr = getRelativeRoot().get();
+    var f1 = rr.getTemporaryPath("temp", ".bin").orElseThrow(() -> new IBException("Could not create temp file"));
+    var f = rr.getPath().map(pa -> pa.resolve(f1)).get();
+    log.debug("Got temporary path {}", f);
     try (
         // File to read
         InputStream ins = Files.newInputStream(p);
@@ -109,17 +113,18 @@ abstract public class AbstractIBResourceBuilderFactory<B> extends IBResourceCach
         OutputStream out = Files.newOutputStream(f)) {
       // Copy the file and get it's Checksum at the same time. Slightly efficient.
       Checksum d = IBUtils.copyAndDigest(ins, out);
+      ins.close();
+      out.close(); // OutputStream must close before we move file
+      return rr.relativize(cet.returns(() -> IBUtils.moveFileToNewIdPath(f, d))).flatMap(landing -> {
+        return builderFromPathAndChecksum(p, d).map(bb -> {
+          bb.withFilePath(landing.toString());
+          ofNullable(type).ifPresent(t -> bb.withType(t));
+          return bb;
+        });
+      });
 
-      Path landing = r.relativize(IBUtils.moveFileToNewIdPath(f, d));
-
-      var builder = builderFromPathAndChecksum(p, d)
-
-          .withFilePath(landing.toString())
-
-          .cached(true);
-      ofNullable(type).ifPresent(t -> builder.withType(t));
-      return of(builder);
     } catch (IOException | NoSuchAlgorithmException e) {
+      log.error("Error in cacheIt", e);
       return empty();
     }
   }
@@ -137,35 +142,37 @@ abstract public class AbstractIBResourceBuilderFactory<B> extends IBResourceCach
 
   // Package private
   @Override
-  public IBResourceBuilder<B> builderFromPathAndChecksum(Path p, Checksum checksum) {
-    // We have a checksum, so we can read it, etc.
-    Optional<BasicFileAttributes> bfa = IBResourceBuilderFactory.getAttributes.apply(p);
-    var m = getBuilder().get();
-    m = m.from(p) // sets filepath and name (and source?)
+  public Optional<IBResourceBuilder<B>> builderFromPathAndChecksum(Path p, Checksum checksum) {
+    try {
+      // We have a checksum, so we can read it, etc.
+      Optional<BasicFileAttributes> bfa = IBResourceBuilderFactory.getAttributes.apply(p);
+      var m = getBuilder().get();
+      m = m.from(p) // sets filepath and name (and source?)
 
-        .withChecksum(checksum)
+          .withChecksum(checksum)
 
-        .withType(IBResourceBuilderFactory.toOptionalType.apply(p).orElse(APPLICATION_OCTET_STREAM))
+          .withType(IBResourceBuilderFactory.toOptionalType.apply(p).orElse(APPLICATION_OCTET_STREAM))
 
-        .withCreateDate(bfa.map(attrib -> attrib.creationTime()).map(FileTime::toInstant).orElse(null))
+          .withCreateDate(bfa.map(attrib -> attrib.creationTime()).map(FileTime::toInstant).orElse(null))
 
-        .withLastUpdated(bfa.map(attrib -> attrib.lastModifiedTime()).map(FileTime::toInstant).orElse(null))
+          .withLastUpdated(bfa.map(attrib -> attrib.lastModifiedTime()).map(FileTime::toInstant).orElse(null))
 
-        .withSize(bfa.map(attrib -> attrib.size()).orElse(-1L))
+          .withSize(bfa.map(attrib -> attrib.size()).orElse(UNKNOWN_SIZE))
 
-        .withMostRecentAccess(bfa.map(attrib -> attrib.lastAccessTime()).map(FileTime::toInstant).orElse(null))
+          .withMostRecentAccess(bfa.map(attrib -> attrib.lastAccessTime()).map(FileTime::toInstant).orElse(null))
 
-    ;
+      ;
 
-    return m;
+      return Optional.of(m);
+    } catch (Throwable t) {
+      log.error("Error getting builder from " + p + " / " + checksum, t);
+      return Optional.empty();
+    }
   }
 
   @Override
   public Optional<IBResourceBuilder<B>> fromModel(IBResourceModel model) {
-//    var m = Objects.requireNonNull(model);
-    // TODO
-    return empty();
-
+    return Optional.empty();
   }
 
 }

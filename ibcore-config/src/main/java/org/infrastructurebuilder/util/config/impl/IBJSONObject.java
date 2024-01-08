@@ -47,6 +47,7 @@ import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.ConfigMapBuilder;
 import org.infrastructurebuilder.util.core.IBUtils;
+import org.infrastructurebuilder.util.core.JSONOutputEnabled;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,12 +60,32 @@ public class IBJSONObject implements ConfigMap, ConfigMapBuilder {
   private static final Logger log = LoggerFactory.getLogger(IBJSONObject.class);
   private final Stack<JSONObject> s = new Stack<JSONObject>();
 
+  private IBJSONObject(Stack<JSONObject> h, JSONOutputEnabled g) {
+    this(h);
+    this.s.add(g.asJSON());
+  }
+
+  private IBJSONObject(Stack<JSONObject> j) {
+    ofNullable(j).ifPresent(j1 -> {
+      this.s.addAll(j1);
+    });
+  }
+
   public IBJSONObject() {
     this(new JSONObject());
   }
 
   public IBJSONObject(JSONObject j) {
     withJSONObject(j);
+  }
+
+  public IBJSONObject(Map<String, Object> m) {
+    withJSONObject(new JSONObject(m));
+  }
+
+  @Override
+  public ConfigMapBuilder copy() {
+    return new IBJSONObject(s);
   }
 
   @Override
@@ -105,12 +126,31 @@ public class IBJSONObject implements ConfigMap, ConfigMapBuilder {
     return withProperties(p);
   }
 
+  private ConfigMapBuilder withStack(Stack<JSONObject> newStack) {
+    var b = new IBJSONObject(this.s);
+    b.s.addAll(newStack);
+    return b;
+  }
+
+  private ConfigMapBuilder withCopiedStack(JSONObject j) {
+    var b = new IBJSONObject(this.s);
+    b.s.add(Objects.requireNonNull(j));
+    return b;
+  }
+
+  @Override
+  public ConfigMapBuilder withConfigMapBuilder(ConfigMapBuilder c) {
+    if (c instanceof IBJSONObject j) {
+      return withStack(j.s);
+    } else
+      return withJSONObjectFacade(c.get());
+  }
+
   @Override
   public ConfigMapBuilder withJSONFile(Path file, boolean optional) {
-
     try {
       String r = Files.readString(file);
-      return withJSONObject(new JSONObject(r));
+      return withCopiedStack(new JSONObject(r));
     } catch (IOException e) {
       if (optional) {
         log.error("Unable to load JSON file " + file, e);
@@ -124,7 +164,7 @@ public class IBJSONObject implements ConfigMap, ConfigMapBuilder {
   public ConfigMapBuilder withJSONResource(String file, boolean optional) {
 
     try (InputStream ins = getClass().getResourceAsStream(file)) {
-      return withJSONObject(new JSONObject(IBUtils.readToString(ins)));
+      return withCopiedStack(new JSONObject(IBUtils.readToString(ins)));
     } catch (IOException e) {
       if (optional) {
         log.error("Unable to load JSON resource " + file, e);
@@ -136,25 +176,29 @@ public class IBJSONObject implements ConfigMap, ConfigMapBuilder {
 
   @Override
   public ConfigMapBuilder withJSONObject(JSONObject j) {
-    s.push(new JSONObject(requireNonNullElseGet(j, () -> new JSONObject()).toString()));
-    return this;
+    return withCopiedStack(j);
   }
 
   @Override
   public ConfigMapBuilder withJSONObjectFacade(ConfigMap j) {
-    return withJSONObject(Objects.requireNonNullElseGet(j, new IBJSONObject()).asJSON());
+    return withCopiedStack(Objects.requireNonNullElseGet(j, new IBJSONObject()).asJSON());
   }
 
   @Override
   public ConfigMapBuilder withMapStringString(Map<String, String> m) {
     var j = new JSONObject();
     requireNonNullElseGet(m, () -> new HashMap<String, String>()).forEach((k, v) -> j.put(k, v));
-    return withJSONObject(j);
+    return withCopiedStack(j);
+  }
+
+  @Override
+  public ConfigMapBuilder withMapStringObject(Map<String, Object> m) {
+    return withCopiedStack(new JSONObject(requireNonNullElseGet(m, () -> new HashMap<String, Object>())));
   }
 
   @Override
   public ConfigMapBuilder withKeyValue(String key, Object value) {
-    return withJSONObject(new JSONObject()
+    return withCopiedStack(new JSONObject()
 
         .put(requireNonNull(key), requireNonNullElseGet(value, () -> JSONObject.NULL)));
   }
@@ -197,7 +241,7 @@ public class IBJSONObject implements ConfigMap, ConfigMapBuilder {
 
   /**
    * For a prospective number, remove the leading zeros
-   * 
+   *
    * @param value prospective number
    * @return number without leading zeros
    */
@@ -667,7 +711,7 @@ public class IBJSONObject implements ConfigMap, ConfigMapBuilder {
 
   @Override
   public Optional<String> optString(String key) {
-    return Optional.ofNullable(this.optString(key, null));
+    return ofNullable(this.optString(key, null));
   }
 
   @Override

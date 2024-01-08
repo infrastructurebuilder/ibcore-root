@@ -19,6 +19,7 @@ package org.infrastructurebuilder.util.core;
 
 /**
  * Deprecated in favor of Configurable
+ *
  * @param <C>
  */
 @Deprecated

@@ -27,35 +27,25 @@ import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.infrastructurebuilder.util.versions.DefaultGAVBasic;
 import org.infrastructurebuilder.util.versions.IBVersionsSupplier;
 import org.json.JSONObject;
 
-public class DefaultGAV implements GAV, Comparable<GAV> {
+public class DefaultGAV extends DefaultGAVBasic implements GAV {
 
   public static DefaultGAV copyFromSpec(final GAV hs) {
     return (DefaultGAV) new DefaultGAV(hs.getGroupId(), hs.getArtifactId(), hs.getClassifier().orElse(null),
         hs.getVersion().orElse(null), hs.getExtension()).withFile(hs.getFile().orElse(null));
   }
 
-  private String artifactId;
-
-  private Optional<String> classifier = empty();
-
-  private String extension;
-  private String groupId;
-
-  private String stringVersion = null;
-
   private final Optional<Path> path;
 
   private final ChecksumBuilder builder;
 
   public DefaultGAV(final JSONObject json) {
-    setGroupId(requireNonNull(json).getString(GAV_GROUPID));
-    setArtifactId(json.getString(GAV_ARTIFACTID));
-    setVersion(json.optString(GAV_VERSION, null));
-    setClassifier(json.optString(GAV_CLASSIFIER, null));
-    setExtension(json.optString(GAV_EXTENSION, json.optString(GAV_TYPE, json.optString(GAV_PACKAGING, null))));
+    super(requireNonNull(json).getString(GAV_GROUPID), json.getString(GAV_ARTIFACTID),
+        json.optString(GAV_CLASSIFIER, null), json.optString(GAV_VERSION, null),
+        json.optString(GAV_EXTENSION, json.optString(GAV_TYPE, json.optString(GAV_PACKAGING, null))));
     path = ofNullable(json.optString(GAV_PATH, null)).map(Paths::get);
     this.builder = ChecksumBuilder.newInstance(this.path);
   }
@@ -70,28 +60,9 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
   }
 
   public DefaultGAV(final String from) {
-    this();
-    final String[] l = copyOf(from.split(":"), 5);
-
-    for (int i = 0; i < 5; ++i) {
-      switch (i) {
-      case 0:
-        setGroupId(l[i]);
-        break;
-      case 1:
-        setArtifactId(l[i]);
-        break;
-      case 2:
-        setVersion(l[i]);
-        break;
-      case 3:
-        setExtension(l[i]);
-        break;
-      case 4:
-        setClassifier(l[i]);
-        break;
-      }
-    }
+    super(from);
+    this.path = Optional.empty();
+    this.builder = ChecksumBuilder.newInstance(this.path);
   }
 
   public DefaultGAV(final String groupId, final String artifactId, final String version) {
@@ -152,7 +123,7 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
 
   @Override
   public int hashCode() {
-    return Objects.hash(artifactId, extension, groupId, stringVersion, classifier);
+    return Objects.hash(getArtifactId(), getExtension(), getGroupId(), getVersion(), getClassifier());
   }
 
   @Override
@@ -164,78 +135,37 @@ public class DefaultGAV implements GAV, Comparable<GAV> {
     if (getClass() != obj.getClass())
       return false;
     DefaultGAV other = (DefaultGAV) obj;
-    return Objects.equals(artifactId, other.artifactId) && Objects.equals(extension, other.extension)
-        && Objects.equals(groupId, other.groupId) && Objects.equals(stringVersion, other.stringVersion)
-        && Objects.equals(classifier, other.classifier);
-  }
-
-  @Override
-  public String getArtifactId() {
-    return artifactId;
-  }
-
-  @Override
-  public Optional<String> getClassifier() {
-    return classifier;
-  }
-
-  @Override
-  public String getExtension() {
-    return extension;
-  }
-
-  @Override
-  public String getGroupId() {
-    return groupId;
+    return Objects.equals(getArtifactId(), other.getArtifactId())
+        && Objects.equals(getExtension(), other.getExtension()) && Objects.equals(getGroupId(), other.getGroupId())
+        && Objects.equals(getVersion(), other.getVersion()) && Objects.equals(getClassifier(), other.getClassifier());
   }
 
   public String getResourceType() {
     return this.getClass().getCanonicalName();
   }
 
-  @Override
-  public Optional<String> getVersion() {
-    return ofNullable(stringVersion);
-  }
-
-//  @Override
-//  public int hashCode() {
-//    final int prime = 31;
-//    int result = 1;
-//    result = prime * result + artifactId.hashCode();
-//    result = prime * result + classifier.hashCode();
-//    result = prime * result + groupId.hashCode();
-//    result = prime * result + extension.hashCode();
-//    result = prime * result + getVersion().map(x -> x.hashCode()).orElse(0);
-//    return result;
-//  }
-
   public DefaultGAV setArtifactId(final String artifactId) {
-    this.artifactId = requireNonNull(artifactId);
+    super.setArtifactId(requireNonNull(artifactId));
     return this;
   }
 
   public DefaultGAV setClassifier(final String classifier) {
-    if (classifier != null && "".equals(classifier.trim())) {
-      this.classifier = empty();
-    } else {
-      this.classifier = ofNullable(classifier);
-    }
+    super.setClassifier(classifier);
     return this;
   }
 
   public DefaultGAV setExtension(final String extension) {
-    this.extension = ofNullable(extension).orElse(BASIC_PACKAGING);
+    super.setExtension(extension);
     return this;
   }
 
   public DefaultGAV setGroupId(final String groupId) {
-    this.groupId = requireNonNull(groupId);
+    super.setGroupId(requireNonNull(groupId));
     return this;
   }
 
   public DefaultGAV setVersion(final String stringVersion) {
-    this.stringVersion = stringVersion;
+    super.setVersion(stringVersion);
     return this;
   }
 

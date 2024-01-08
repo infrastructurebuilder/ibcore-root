@@ -45,6 +45,4 @@ public class RelativeRootClasspathSupplier implements RelativeRootSupplier {
     });
   }
 
-
-
 }

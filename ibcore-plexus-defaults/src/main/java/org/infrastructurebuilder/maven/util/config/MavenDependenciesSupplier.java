@@ -43,8 +43,7 @@ public final class MavenDependenciesSupplier implements DependenciesSupplier {
     // FIXME type != extension
     this.gav = p.getArtifacts().stream().map(d -> {
       Path f = d.getFile().toPath().toAbsolutePath();
-      GAV k = new DefaultGAV(d.getGroupId(), d.getArtifactId(), d.getClassifier(), d.getVersion(), d.getType())
-          ;
+      GAV k = new DefaultGAV(d.getGroupId(), d.getArtifactId(), d.getClassifier(), d.getVersion(), d.getType());
       GAV l = k.withFile(f);
       return l;
     }).collect(toList());

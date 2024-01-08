@@ -67,7 +67,7 @@ public class VertxDefaultIBResource implements VertxIBResource {
     this.root = Objects.requireNonNull(root).orElse(null);
     this.cachedPath = sourcePath;
     this.m = requireNonNull(m);
-    m.getFilePath().ifPresent(ps -> {
+    m.getPath().ifPresent(ps -> {
       Path path = null;
       try {
         path = Paths.get(ps);
@@ -86,7 +86,7 @@ public class VertxDefaultIBResource implements VertxIBResource {
   public VertxDefaultIBResource(Vertx vertx, Optional<RelativeRoot> root, JSONObject j) {
     this.vertx = Objects.requireNonNull(vertx);
     this.root = Objects.requireNonNull(root).orElse(null);
-    m = IBResourceBuilder.modelFromJSON.apply(j);
+    m = IBResourceBuilder.modelFromJSON.apply(j).get();
 
     this.cachedPath = ofNullable(j.optString(IBConstants.PATH, null)).map(extracted)
         .orElseThrow(() -> new IBException(NO_PATH_SUPPLIED));
@@ -101,17 +101,17 @@ public class VertxDefaultIBResource implements VertxIBResource {
     this.m = new IBResourceModel();
 //    this.originalPath = requireNonNull(path);
 //    m.setFilePath(this.originalPath.toAbsolutePath().toString());
-    m.setFilePath(requireNonNull(path).toAbsolutePath().toString());
-    m.setFileChecksum(requireNonNull(checksum).toString());
+    m.setPath(requireNonNull(path).toAbsolutePath().toString());
+    m.setStreamChecksum(requireNonNull(checksum).toString());
     IBResourceBuilderFactory.getAttributes.apply(path).ifPresent(bfa -> {
       this.m.setCreated(bfa.creationTime().toInstant());
       this.m.setLastUpdate(bfa.lastModifiedTime().toInstant());
       this.m.setMostRecentReadTime(bfa.lastAccessTime().toInstant());
-      this.m.setSize(bfa.size());
+      this.m.setStreamSize(bfa.size());
     });
 
     this.cachedPath = null;
-    requireNonNull(type).ifPresent(t -> m.setType(t));
+    requireNonNull(type).ifPresent(t -> m.setStreamType(t));
   }
 
   public VertxDefaultIBResource(Vertx vertx, Optional<RelativeRoot> root, Path path, Checksum checksum) {
@@ -122,7 +122,7 @@ public class VertxDefaultIBResource implements VertxIBResource {
       Optional<String> desc, Checksum checksum, Optional<Properties> addlProps)
   {
     this(vertx, root, p2, checksum, of(IBResourceBuilderFactory.toType.apply(p2)), addlProps);
-    this.m.setName(requireNonNull(name).orElse(null));
+    this.m.setStreamName(requireNonNull(name).orElse(null));
     this.m.setDescription(requireNonNull(desc).orElse(null));
   }
 
@@ -143,27 +143,27 @@ public class VertxDefaultIBResource implements VertxIBResource {
   }
 
   public void setSource(String source) {
-    this.m.setSource(requireNonNull(source));
+    this.m.setStreamSource(requireNonNull(source));
   }
 
   @Override
   public Checksum getTChecksum() {
-    return new Checksum(m.getFileChecksum());
+    return new Checksum(m.getStreamChecksum());
   }
 
   @Override
   public Checksum getChecksum() {
     if (this.checksum == null)
-      this.checksum = new Checksum(m.getFileChecksum());
+      this.checksum = new Checksum(m.getStreamChecksum());
     return this.checksum;
   }
 
   @Override
   public String getType() {
-    if (m.getType() == null) {
-      getPath().ifPresent(path -> m.setType(IBResourceBuilderFactory.toType.apply(path)));
+    if (m.getStreamType() == null) {
+      getPath().ifPresent(path -> m.setStreamType(IBResourceBuilderFactory.toType.apply(path)));
     }
-    return m.getType();
+    return m.getStreamType();
   }
 
   @Override
@@ -183,7 +183,7 @@ public class VertxDefaultIBResource implements VertxIBResource {
 
   @Override
   public Optional<URL> getSourceURL() {
-    return ofNullable(m.getSource()).map(u -> IBUtils.translateToWorkableArchiveURL(u));
+    return ofNullable(m.getStreamSource()).map(u -> IBUtils.translateToWorkableArchiveURL(u));
   }
 
   @Override
@@ -193,8 +193,13 @@ public class VertxDefaultIBResource implements VertxIBResource {
   }
 
   @Override
+  public String getModelVersion() {
+    return m.getModelVersion();
+  }
+
+  @Override
   public Optional<String> getSourceName() {
-    return ofNullable(m.getName());
+    return ofNullable(m.getStreamName());
   }
 
   @Override
@@ -206,9 +211,10 @@ public class VertxDefaultIBResource implements VertxIBResource {
   public Optional<Instant> getCreateDate() {
     return this.m.getCreated();
   }
+
   @Override
   public Optional<Instant> getAcquireDate() {
- return this.m.getAcquired();
+    return this.m.getAcquired();
   }
 
   @Override
@@ -218,7 +224,7 @@ public class VertxDefaultIBResource implements VertxIBResource {
 
   @Override
   public String getName() {
-    return this.m.getName();
+    return this.m.getStreamName();
   }
 
   @Override
@@ -228,13 +234,13 @@ public class VertxDefaultIBResource implements VertxIBResource {
 
   @Override
   public long size() {
-    return this.m.getSize();
+    return this.m.getStreamSize();
   }
 
   @Override
   public Optional<Properties> getAdditionalProperties() {
     var p = new Properties();
-    m.getAdditionalProperties().forEach((k,v) -> p.setProperty(k, v.toString()));
+    m.getAdditionalProperties().forEach((k, v) -> p.setProperty(k, v.toString()));
     return (p.size() == 0) ? empty() : of(p);
   }
 
@@ -249,13 +255,13 @@ public class VertxDefaultIBResource implements VertxIBResource {
       return false;
     Checksum s = this.getChecksum();
     IBResourceModel model = this.m;
-    if (!s.equals(new Checksum(model.getFileChecksum())))
+    if (!s.equals(new Checksum(model.getStreamChecksum())))
       return false;
     if (hard) {
       Checksum n = new Checksum(this.cachedPath);
       if (!s.equals(n))
         return false;
-      if (!model.getType()
+      if (!model.getStreamType()
           .equals(IBResourceBuilderFactory.toOptionalType.apply(this.cachedPath).orElse(APPLICATION_OCTET_STREAM)))
         return false;
     }
@@ -264,7 +270,7 @@ public class VertxDefaultIBResource implements VertxIBResource {
 
   @Override
   public ChecksumBuilder getChecksumBuilder() {
-    return ChecksumBuilder.newInstance(this.getRelativeRoot().flatMap(RelativeRoot::getPath))
-        .addChecksum(new Checksum(m.getFileChecksum()));
+    return ChecksumBuilder.newAlternateInstanceWithRelativeRoot(this.getRelativeRoot())
+        .addChecksum(new Checksum(m.getStreamChecksum()));
   }
 }

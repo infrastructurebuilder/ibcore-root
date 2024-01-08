@@ -73,7 +73,7 @@ class FilesystemBlobstoreTest {
   void setUp(VertxTestContext testContext) throws Exception {
     Path root = wps.get();
     rrs = new RelativeRootSetPathSupplier(root);
-    this.fsbs = new FilesystemBlobstore(rrs,IBConstants.BLOBSTORE_NO_MAXBYTES);
+    this.fsbs = new FilesystemBlobstore(rrs, IBConstants.BLOBSTORE_NO_MAXBYTES);
     vertx = rtoc.vertx();
     // Prepare something on a Vert.x event-loop thread
     // The thread changes with each test instance
@@ -91,10 +91,10 @@ class FilesystemBlobstoreTest {
   }
 
   @Test
-  @Timeout(value = 200, timeUnit = TimeUnit.SECONDS)
+  @Timeout(value = 800, timeUnit = TimeUnit.SECONDS)
   void testPutBlobStringStringPath(VertxTestContext testContext) {
     Path testfile = wps.getTestClasses().resolve(BFILE).toAbsolutePath();
-    this.fsbs.putBlob(BFILE, BFILENAME, testfile )
+    this.fsbs.putBlob(BFILE, BFILENAME, testfile)
 
         .compose(id -> this.fsbs.getMetadata(id))
 

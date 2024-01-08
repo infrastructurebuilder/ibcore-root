@@ -119,7 +119,8 @@ public final class JsonBuilder implements JsonOutputEnabled {
         log.warn("Unable to get path from JSON for RR (" + j.getString(RELATIVE_ROOT) + ")");
       }
     }
-    this.relativeRoot = Optional.ofNullable(requireNonNull(relativeRoot).orElse(rr)); // Overrides existing RR if supplied
+    this.relativeRoot = Optional.ofNullable(requireNonNull(relativeRoot).orElse(rr)); // Overrides existing RR if
+                                                                                      // supplied
   }
 
   public JsonBuilder(final Optional<RelativeRoot> root) {

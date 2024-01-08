@@ -22,19 +22,28 @@ import static java.util.Objects.requireNonNull;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class JSONBuilder implements JSONOutputEnabled {
+  public static final String TIMESTAMP = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS'Z'";
+  private final static Logger log = LoggerFactory.getLogger(JSONBuilder.class);
+  private final static AtomicReference<DateTimeFormatter> dts = new AtomicReference<>();
 
   public final static Function<List<JSONOutputEnabled>, JSONArray> jsonOutputToJSONArray = oe -> {
     return new JSONArray(requireNonNull(oe).stream().map(JSONOutputEnabled::asJSON).collect(Collectors.toList()));
@@ -53,7 +62,7 @@ public final class JSONBuilder implements JSONOutputEnabled {
   }
 
   public static Function<String, Optional<Instant>> instantFromJSON = s -> {
-    return Optional.ofNullable(s).map(Instant::parse); // mebbe?
+    return Optional.ofNullable(s).map(str -> getDateFormat().parse(str)).map(t -> Instant.from(t)); // mebbe?
   };
 
   private final JSONObject json;
@@ -68,6 +77,24 @@ public final class JSONBuilder implements JSONOutputEnabled {
   public JSONBuilder(final Optional<Path> root) {
     json = new JSONObject();
     relativeRoot = requireNonNull(root);
+  }
+
+  public JSONBuilder withDateTimeFormat(String format) {
+    synchronized (dts) {
+      if (!dts.compareAndSet(null, DateTimeFormatter.ofPattern(format).withZone(ZoneId.from(ZoneOffset.UTC)))) {
+        // TODO Warn?
+      }
+      return this;
+    }
+  }
+
+  public static DateTimeFormatter getDateFormat() {
+    synchronized (dts) {
+      if (dts.get() == null) {
+        dts.set(DateTimeFormatter.ofPattern(TIMESTAMP).withZone(ZoneId.from(ZoneOffset.UTC)));
+      }
+    }
+    return dts.get();
   }
 
   public JSONBuilder addAbsolutePath(final String key, final Optional<Path> s) {
@@ -152,7 +179,9 @@ public final class JSONBuilder implements JSONOutputEnabled {
   }
 
   public JSONBuilder addInstant(final String key, final Instant s) {
-    json.put(key, requireNonNull(s).toString());
+    var string = getDateFormat().format(requireNonNull(s));
+    log.info("Adding instant {} as '{}'", s, string);
+    json.put(key, string);
     return this;
   }
 

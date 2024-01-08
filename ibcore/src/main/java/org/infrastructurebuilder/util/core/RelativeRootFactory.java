@@ -18,41 +18,49 @@
 package org.infrastructurebuilder.util.core;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * The RelativeRootFactory provides injected instances of RelativeRootSuppliers, allowing
- * a consumer to select the instance desired by name using the get(String) method.
+ * The RelativeRootFactory provides injected instances of {@link RelativeRootSupplier}s, allowing a consumer to select
+ * the instance desired by name using the get(String) method.
  *
- * Note that the key for obtaining the RelativeRootSupplier desired is by the getName() function
- * on the supplier, not necessarily the Named value.
+ * Note that the key for obtaining the RelativeRootSupplier desired is by the getName() function on the supplier, not
+ * necessarily the Named value.
  */
 @Named
 public class RelativeRootFactory {
+  private final static Logger log = LoggerFactory.getLogger(RelativeRootFactory.class);
 
-  private Map<String, RelativeRootSupplier> protocols;
+  private Map<String, RelativeRootSupplier> suppliers;
 
   @Inject
-  public RelativeRootFactory(Set<RelativeRootSupplier> protocols) {
-    this.protocols = requireNonNull(protocols).stream() //
+  public RelativeRootFactory(Set<RelativeRootSupplier> s) {
+    this.suppliers = requireNonNull(s).stream() //
         .collect(toMap(k -> k.getName(), identity()));
+    log.info("Injected the following names: %s", this.suppliers.keySet().toString());
   }
 
-  public final Set<String> getNames() {
-    return protocols.keySet();
+  public final Set<String> getAvailableNames() {
+    return suppliers.keySet();
   }
 
   public final Optional<RelativeRoot> get(String name) {
-    Set<String> ks = protocols.keySet();
-    return Optional.ofNullable(this.protocols.get(name)) //
-        .flatMap(p -> p.get());
+    if (!suppliers.keySet().contains(name))
+      log.warn("RelativeRootSupplier %s not available", name);
+    return ofNullable(this.suppliers.get(name)).flatMap(Supplier::get);
   }
 
 }

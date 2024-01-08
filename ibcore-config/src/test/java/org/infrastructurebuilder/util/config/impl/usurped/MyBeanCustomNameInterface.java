@@ -21,8 +21,9 @@ import org.json.JSONPropertyIgnore;
 import org.json.JSONPropertyName;
 
 public interface MyBeanCustomNameInterface {
-    @JSONPropertyName("InterfaceField")
-    float getSomeFloat();
-    @JSONPropertyIgnore
-    int getIgnoredInt();
+  @JSONPropertyName("InterfaceField")
+  float getSomeFloat();
+
+  @JSONPropertyIgnore
+  int getIgnoredInt();
 }

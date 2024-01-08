@@ -59,7 +59,7 @@ public class MavenConfigWithServersMapSupplier extends MavenConfigMapBuilderSupp
         .ifPresent(v -> p.setProperty(ConfigMapBuilderSupplier.MAVEN_SETTINGS_SERVER_NAMESPACE + "servers", v));
     super.get().withProperties(p);
   }
-  
+
   @Override
   public String getName() {
     return ConfigMapBuilderSupplier.MAVEN_WITH_SERVERS;

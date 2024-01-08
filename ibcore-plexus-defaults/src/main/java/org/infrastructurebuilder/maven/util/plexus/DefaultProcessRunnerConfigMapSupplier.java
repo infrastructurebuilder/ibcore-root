@@ -35,7 +35,7 @@ public class DefaultProcessRunnerConfigMapSupplier extends DefaultConfigMapBuild
   private final ConfigMapBuilder configMap;
 
   public DefaultProcessRunnerConfigMapSupplier(final ConfigMapBuilderSupplier cms) {
-    this.configMap = cms.get(); 
+    this.configMap = cms.get();
     final ConfigMap tempMap = this.configMap.get(); // Interim values
 
     Map<String, String> q = tempMap.keySet().stream()
@@ -45,12 +45,12 @@ public class DefaultProcessRunnerConfigMapSupplier extends DefaultConfigMapBuild
         .collect(toMap(Function.identity(), v -> tempMap.get(v).toString()));
     this.configMap.withMapStringString(q);
   }
-  
+
   @Override
   public ConfigMapBuilder get() {
     return configMap;
   }
-  
+
   @Override
   public String getName() {
     return PROCESSRUNNERCONFIG;

@@ -20,6 +20,7 @@ package org.infrastructurebuilder.util.executor.execution.model;
 import org.infrastructurebuilder.util.core.VersionedPersistenceProvider;
 import org.infrastructurebuilder.util.executor.ModeledProcessExecution;
 
-public interface ProcessExecutionVersionedPersistenceProvider extends VersionedPersistenceProvider<ModeledProcessExecution> {
+public interface ProcessExecutionVersionedPersistenceProvider
+    extends VersionedPersistenceProvider<ModeledProcessExecution> {
 
 }

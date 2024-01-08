@@ -49,7 +49,7 @@ public class IBResourceTest {
   private TestingPathSupplier wps;
   private Path testFile;
 
-  private IBResourceBuilderFactory<Optional<IBResource<InputStream>>> rcf;
+  private IBResourceBuilderFactory<Optional<IBResourceIS>> rcf;
   private Path root;
   private RelativeRoot rrs;
 
@@ -126,8 +126,7 @@ public class IBResourceTest {
 
   @Test
   public void testFromPath() {
-    IBResource<InputStream> cset = this.rcf.fromPath(testFile)
-        .flatMap(IBResourceBuilder<Optional<IBResource<InputStream>>>::build).get();
+    IBResourceIS cset = this.rcf.fromPath(testFile).flatMap(IBResourceBuilder<Optional<IBResourceIS>>::build).get();
     long d = new Date().toInstant().toEpochMilli();
     InputStream g = cset.get().get();
     cet.translate(() -> g.close());

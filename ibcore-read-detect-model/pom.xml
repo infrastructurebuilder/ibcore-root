@@ -151,7 +151,6 @@
 					<includeConstructorPropertiesAnnotation>true</includeConstructorPropertiesAnnotation>
 					<!--					<annotationStyle>moshi1</annotationStyle>-->
 					<removeOldOutput>true</removeOldOutput>
-					<targetVersion>11</targetVersion>
 					<!-- Possibly problematic -->
 					<useLongIntegers>true</useLongIntegers>
 					<useBigDecimals>true</useBigDecimals>

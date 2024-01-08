@@ -17,6 +17,10 @@
  */
 package org.infrastructurebuilder.util.core;
 
+import static java.util.Objects.requireNonNull;
+import static org.infrastructurebuilder.util.core.IBUtils.stripTrailingSlash;
+
+import java.io.BufferedWriter;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -97,13 +101,22 @@ public interface RelativeRoot extends JSONAndChecksumEnabled {
 
   Optional<URL> getUrl();
 
+  default boolean isParentOf(RelativeRoot otherRoot) {
+
+    var sr = stripTrailingSlash.apply(getStringRoot());
+    var or = stripTrailingSlash.apply(requireNonNull(otherRoot).getStringRoot());
+
+    return or.startsWith(sr) && !(or.equals(sr));
+  }
+
   /**
-   * Resolving a path always has a result, because stringroot always exists
+   * Resolving a path may not always has a result, because although stringroot always exists, some RelativeRoot
+   * implementations may return empty for absolute paths because they always expect relative paths.
    *
    * @param p
    * @return
    */
-  String resolvePath(Path p);
+  Optional<String> resolvePath(Path p);
 
   default Optional<Path> resolvePath(String p) {
     return getPath().flatMap(thisPath -> {
@@ -132,7 +145,49 @@ public interface RelativeRoot extends JSONAndChecksumEnabled {
   Optional<String> relativize(URL p);
 
   String relativize(String pext);
-  
+
   RelativeRoot extend(String newPath);
+
+  String getStringRoot();
+
+  /**
+   * Creates a temp file (that can then be opened) that will be deleted upon jvm exit. This is a relative path to the
+   * root.
+   *
+   * @param prefix
+   * @param suffix
+   * @return
+   */
+  Optional<Path> getTemporaryPath(String prefix, String suffix);
+
+  /**
+   * Creates a temp file (that can then be opened) that will be deleted upon jvm exit This is a relative path to the
+   * root.
+   *
+   * @param relativePath
+   * @param prefix
+   * @param suffix
+   * @return
+   */
+  Optional<Path> getTemporaryPath(Path relativePath, String prefix, String suffix);
+
+  /**
+   * Creates a file that will not be deleted on exit This is a relative path to the root.
+   *
+   * @param prefix
+   * @param suffix
+   * @return
+   */
+  Optional<Path> getPermanantPath(String prefix, String suffix);
+
+  /**
+   * Creates a file that will not be deleted on exit This is a relative path to the root.
+   *
+   * @param relativePath
+   * @param prefix
+   * @param suffix
+   * @return
+   */
+  Optional<Path> getPermanantPath(Path relativePath, String prefix, String suffix);
 
 }

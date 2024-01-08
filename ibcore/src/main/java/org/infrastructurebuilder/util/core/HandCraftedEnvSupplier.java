@@ -25,6 +25,14 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+/**
+ * Don't use this class as part of an artifact.
+ *
+ * This is primarily for ease in generating working test cases.
+ *
+ * It should probably be separated out into some other module.
+ *
+ */
 public class HandCraftedEnvSupplier implements EnvSupplier {
 
   private Map<String, String> map;

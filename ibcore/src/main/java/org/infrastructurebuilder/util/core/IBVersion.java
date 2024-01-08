@@ -29,14 +29,15 @@ public interface IBVersion extends Comparable<IBVersion> {
     public IBVersionRange apiVersion();
   }
 
-  public interface IBVersionBoundedRange  {
+  public interface IBVersionBoundedRange {
     public boolean isSatisfiedBy(IBVersion version);
 
     public boolean isSatisfiedBy(String version);
 
     IBVersionBoundedRange apiRange();
-    
+
     public IBVersionRange getLower();
+
     public IBVersionRange getUpper();
   }
 

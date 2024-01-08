@@ -81,10 +81,10 @@ public class AbstractIBRuntimeUtilsTest {
     ar2 = new AbstractIBRuntimeUtils(wps, () -> log, gavSupplier, cf, avm, new FakeTypeToExtensionMapper()) {
     };
     ar = new AbstractIBRuntimeUtils(ar2) {
-      
+
     };
   }
-  
+
   @Test
   public void testGetExtensionForType() {
     assertEquals(".bin", ar.getExtensionForType(IBConstants.AVRO_BINARY)); // Obviously false, but Fake mapper

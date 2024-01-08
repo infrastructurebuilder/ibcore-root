@@ -27,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -37,6 +36,7 @@ import java.util.Optional;
 
 import org.apache.maven.wagon.proxy.ProxyInfo;
 import org.apache.maven.wagon.proxy.ProxyInfoProvider;
+import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.components.io.filemappers.FileMapper;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.config.ConfigMap;
@@ -51,7 +51,7 @@ import org.infrastructurebuilder.util.core.TestingPathSupplier;
 import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
 import org.infrastructurebuilder.util.credentials.basic.DefaultBasicCredentials;
 import org.infrastructurebuilder.util.extensionmapper.basic.DefaultTypeToExtensionMapper;
-import org.infrastructurebuilder.util.readdetect.IBResource;
+import org.infrastructurebuilder.util.readdetect.IBResourceIS;
 import org.infrastructurebuilder.util.readdetect.WGetter;
 import org.infrastructurebuilder.util.readdetect.WGetterSupplier;
 import org.json.JSONArray;
@@ -102,6 +102,8 @@ public class DefaultWGetterSupplierTest {
     JSONObject config = new JSONObject().put(WORKINGDIR, WORKINGDIR).put(CACHEDIR, CACHEDIR).put(FILEMAPPERS,
         new JSONArray());
     ConfigMap p1 = ConfigMapBuilderSupplier.defaultBuilder().withJSONObject(config).get();
+    ArchiverManager am = new FakeArchiverManager();
+    ;
     this.ws = new DefaultWGetterSupplier(
         // Logger
         ls,
@@ -114,7 +116,7 @@ public class DefaultWGetterSupplierTest {
         // Headers supplier
         headerSupplier,
         // Archive manager
-        new FakeArchiverManager(),
+        am,
         // ProxyInfoProvider (returns no proxy)
         new ProxyInfoProvider() {
           @Override
@@ -131,7 +133,7 @@ public class DefaultWGetterSupplierTest {
 
   @Test
   public void testRetries() {
-    assertThrows(IBException.class, () -> this.ws.get().collectCacheAndCopyToChecksumNamedFile(true, empty(), wps.get(),
+    assertThrows(IBException.class, () -> this.ws.get().collectCachedIBResources(true, empty(), wps.get(),
         HTTP_WWW_EXAMPLE_COM_INDEX_HTML, CHECKSUM, empty(), 0, 1000, true, false));
   }
 
@@ -141,19 +143,19 @@ public class DefaultWGetterSupplierTest {
     Path outputPath = wps.get();
 
     String src = HTTP_WWW_EXAMPLE_COM_INDEX_HTML; // wps.getTestClasses().resolve("rick.jpg").toUri().toURL().toExternalForm();
-    Optional<IBResource<InputStream>> q = w
-        .collectCacheAndCopyToChecksumNamedFile(true, empty(), outputPath, src, CHECKSUM, empty(), 5, 1000, true, false)
+    Optional<IBResourceIS> q = w
+        .collectCachedIBResources(true, empty(), outputPath, src, CHECKSUM, empty(), 5, 1000, true, false)
         .map(l -> l.get(0));
     assertTrue(q.isPresent());
-    IBResource<InputStream> qr = q.get();
+    IBResourceIS qr = q.get();
     assertEquals(CHECKSUM.get().toString(), qr.getTChecksum().toString());
     assertEquals(IBConstants.TEXT_HTML, qr.getType());
     String v = IBUtils.readToString(qr.get().get());
     assertTrue(v.contains(WWW_IANA_ORG));
 
     // Do it again
-    q = w.collectCacheAndCopyToChecksumNamedFile(false, empty(), outputPath, src, CHECKSUM, empty(), 5, 1000, false,
-        false).map(l -> l.get(0));
+    q = w.collectCachedIBResources(false, empty(), outputPath, src, CHECKSUM, empty(), 5, 1000, false, false)
+        .map(l -> l.get(0));
     assertTrue(q.isPresent());
     qr = q.get();
     assertEquals(CHECKSUM.get().toString(), qr.getTChecksum().toString());
@@ -170,9 +172,8 @@ public class DefaultWGetterSupplierTest {
 
     String src = HTTP_WWW_EXAMPLE_COM_INDEX_HTML; // wps.getTestClasses().resolve("rick.jpg").toUri().toURL().toExternalForm();
     BasicCredentials creds = new DefaultBasicCredentials("A", of("B"));
-    Optional<IBResource<InputStream>> q;
-    q = w
-        .collectCacheAndCopyToChecksumNamedFile(false, of(creds), outputPath, src, CHECKSUM, empty(), 5, 0, true, false)
+    Optional<IBResourceIS> q;
+    q = w.collectCachedIBResources(false, of(creds), outputPath, src, CHECKSUM, empty(), 5, 0, true, false)
         .map(l -> l.get(0));
     assertTrue(q.isPresent());
     assertEquals(CHECKSUM.get().toString(), q.get().getTChecksum().toString());
@@ -181,8 +182,8 @@ public class DefaultWGetterSupplierTest {
     assertTrue(v.contains(WWW_IANA_ORG));
 
     // Do it again
-    q = w.collectCacheAndCopyToChecksumNamedFile(true, empty(), outputPath, src, CHECKSUM, empty(), 5, 1000, false,
-        false).map(l -> l.get(0));
+    q = w.collectCachedIBResources(true, empty(), outputPath, src, CHECKSUM, empty(), 5, 1000, false, false)
+        .map(l -> l.get(0));
     assertTrue(q.isPresent());
     assertEquals(CHECKSUM.get().toString(), q.get().getTChecksum().toString());
     assertEquals(IBConstants.TEXT_HTML, q.get().getType());
@@ -197,10 +198,10 @@ public class DefaultWGetterSupplierTest {
     Path outputPath = wps.get();
     String src = "https://releases.hashicorp.com/athena-cli/0.1.0/athena-cli_0.1.0_darwin_arm64.zip";
 //    String src = wps.getTestClasses().resolve("test.zip").toUri().toURL().toExternalForm();
-    Optional<List<IBResource<InputStream>>> v = w.collectCacheAndCopyToChecksumNamedFile(false, empty(), outputPath,
-        src, ZIP_CHECKSUM, empty(), 5, 0, true, true);
+    Optional<List<IBResourceIS>> v = w.collectCachedIBResources(false, empty(), outputPath, src, ZIP_CHECKSUM, empty(),
+        5, 0, true, true);
     assertTrue(v.isPresent());
-    List<IBResource<InputStream>> l = v.get();
+    List<IBResourceIS> l = v.get();
     assertEquals(IBConstants.APPLICATION_ZIP, l.get(0).getType());
     assertEquals(IBConstants.APPLICATION_X_MAC, l.get(1).getType());
     assertEquals(17117024, Files.size(l.get(1).getPath().get()));

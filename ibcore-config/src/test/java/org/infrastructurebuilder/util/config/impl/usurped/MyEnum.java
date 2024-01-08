@@ -21,7 +21,5 @@ package org.infrastructurebuilder.util.config.impl.usurped;
  * An enum with no methods or data
  */
 public enum MyEnum {
-    VAL1,
-    VAL2,
-    VAL3;
+  VAL1, VAL2, VAL3;
 }

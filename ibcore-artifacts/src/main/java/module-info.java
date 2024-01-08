@@ -26,4 +26,5 @@ module org.infrastructurebuilder.util.artifacts {
   requires transitive java.xml;
   requires javax.inject;
   requires org.eclipse.sisu.inject;
+  requires org.slf4j;
 }

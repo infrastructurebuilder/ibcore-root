@@ -25,9 +25,9 @@ import org.infrastructurebuilder.util.core.LoggerSupplier;
 import org.infrastructurebuilder.util.logging.SLF4JFromMavenLogger;
 import org.slf4j.Logger;
 
-@Named(InjectedSLF4JFromMavenLoggerSupplier.LOG)
+@Named(InjectedSLF4JFromMavenLoggerSupplier.MAVENLOG)
 public class InjectedSLF4JFromMavenLoggerSupplier implements LoggerSupplier {
-  public static final String LOG = "maven-log";
+  public static final String MAVENLOG = "maven-log";
   private final Log mavenLog;
 
   @Inject

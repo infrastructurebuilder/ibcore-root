@@ -17,17 +17,16 @@
  */
 package org.infrastructurebuilder.util.readdetect.impl;
 
-import java.io.InputStream;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.util.core.RelativeRoot;
-import org.infrastructurebuilder.util.readdetect.AbstractIBResourceBuilderFactory;
-import org.infrastructurebuilder.util.readdetect.IBResource;
+import org.infrastructurebuilder.util.readdetect.AbstractIBResourceISBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
+import org.infrastructurebuilder.util.readdetect.IBResourceIS;
+import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 
-public class AbsolutePathIBResourceBuilderFactory
-    extends AbstractIBResourceBuilderFactory<Optional<IBResource<InputStream>>> {
+public class AbsolutePathIBResourceBuilderFactory extends AbstractIBResourceISBuilderFactory {
 
   private static final long serialVersionUID = -8847933754124713375L;
 
@@ -36,9 +35,13 @@ public class AbsolutePathIBResourceBuilderFactory
   }
 
   @Override
-  protected Supplier<IBResourceBuilder<Optional<IBResource<InputStream>>>> getBuilder() {
+  protected Supplier<IBResourceBuilder<Optional<IBResourceIS>>> getBuilder() {
     // Delivers a new builder from the relative root each time
     return () -> new AbsolutePathIBResourceBuilder(getRelativeRoot());
   }
 
+  @Override
+  public Optional<IBResourceBuilder<Optional<IBResourceIS>>> fromModel(IBResourceModel model) {
+    return Optional.empty();
+  }
 }

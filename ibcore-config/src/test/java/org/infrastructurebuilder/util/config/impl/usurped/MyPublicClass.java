@@ -22,6 +22,6 @@ package org.infrastructurebuilder.util.config.impl.usurped;
  */
 @SuppressWarnings("boxing")
 public class MyPublicClass {
-    public Integer publicInt = 42;
-    public String publicString = "abc";
+  public Integer publicInt = 42;
+  public String publicString = "abc";
 }

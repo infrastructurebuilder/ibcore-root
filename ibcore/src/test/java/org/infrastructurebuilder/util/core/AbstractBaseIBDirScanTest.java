@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Test;
 class AbstractBaseIBDirScanTest {
 
   private final static TestingPathSupplier tps = new TestingPathSupplier();
+
   @BeforeAll
   static void setUpBeforeClass() throws Exception {
   }

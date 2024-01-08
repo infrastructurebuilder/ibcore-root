@@ -18,9 +18,12 @@
 package org.infrastructurebuilder.util.core;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -39,27 +42,28 @@ abstract public class AbstractBaseRelativeRoot implements RelativeRoot {
   private final static Logger log = LoggerFactory.getLogger(AbstractBaseRelativeRoot.class);
 
   public final static Optional<Path> checkAbsolute(Path p) {
-    return Optional.ofNullable(requireNonNull(p).isAbsolute() ? p : null);
+    return ofNullable(requireNonNull(p).isAbsolute() ? p : null);
   }
 
-  public final static URL fromString(String url) {
+  public final static Optional<URL> fromString(String url) {
     URL u = null;
     if (url != null)
       try {
         u = requireNonNull(new URL(url));
       } catch (MalformedURLException e) {
+        log.warn(String.format("Tried fromString with %s", url), e);
         // return value already set to null
       }
-    return u;
+    return Optional.ofNullable(u);
   }
 
   private final String stringRoot; // Required
-  private final Path path; // Nullable for certain cases
-  private final URL url; // Nullable (for certain cases)
+  private transient final Path path; // Nullable for certain cases
+  private transient final URL url; // Nullable (for certain cases)
 
   protected AbstractBaseRelativeRoot(String u) {
     AtomicReference<String> aref = new AtomicReference<>("/");
-    this.url = fromString(requireNonNull(u));
+    this.url = fromString(requireNonNull(u)).orElse(null);
 
     this.path = (this.url != null)
         ? (this.url.getProtocol().equals("file")) ? Paths.get(cet.returns(() -> this.url.toURI())) : null
@@ -90,24 +94,36 @@ abstract public class AbstractBaseRelativeRoot implements RelativeRoot {
   }
 
   @Override
+  public boolean isParentOf(RelativeRoot otherRoot) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public String getStringRoot() {
+    return stringRoot;
+  }
+
+  @Override
   public String toString() {
     return this.stringRoot;
   }
 
   public final Optional<Path> resolve(Path p) {
     log.debug("Resolve {} from {}", p, getPath());
-    return (requireNonNull(p).isAbsolute()) ? Optional.of(p) : getPath().map(r -> r.resolve(p));
+    return (requireNonNull(p).isAbsolute()) ? of(p) : getPath().map(r -> r.resolve(p));
   }
 
   /**
-   * Resolving a path always has a result, because stringroot always exists
+   * Resolving a path usually always has a result, because stringroot always exists But some implemenatins may not allow
+   * absolute paths to be passed in and return empty when doing so, rather than throwing a runtime exception
    *
    * @param p
    * @return
    */
-  public final String resolvePath(Path p) {
+  public final Optional<String> resolvePath(Path p) {
     log.debug("Resolve {} from {}/{}/{}", p, getPath(), getUrl(), this.stringRoot);
-    return (requireNonNull(p).isAbsolute()) ? p.toString() : String.format("%s%s", this.stringRoot, p.toString());
+    return of((requireNonNull(p).isAbsolute()) ? p.toString() : String.format("%s%s", this.stringRoot, p.toString()));
   }
 
   public final Optional<Path> relativize(Path p) {
@@ -115,7 +131,7 @@ abstract public class AbstractBaseRelativeRoot implements RelativeRoot {
     if (requireNonNull(p).isAbsolute())
       return getPath().map(r -> r.relativize(p));
     else
-      return Optional.of(p);
+      return of(p);
   }
 
   public final Optional<String> relativize(URL p) {
@@ -132,13 +148,50 @@ abstract public class AbstractBaseRelativeRoot implements RelativeRoot {
 
   @Override
   public JSONObject asJSON() {
-    return new JSONBuilder(Optional.empty()).addString(RelativeRoot.RELATIVE_ROOT_URLLIKE, this.stringRoot) // required
+    return new JSONBuilder(empty()).addString(RelativeRoot.RELATIVE_ROOT_URLLIKE, this.stringRoot) // required
         .asJSON();
   }
 
   @Override
   public ChecksumBuilder getChecksumBuilder() {
     return ChecksumBuilder.newInstance().addString(this.stringRoot); // Only the stringroot actually matters
+  }
+
+  private Optional<Path> makeAFile(Path relativePath, String prefix, String suffix, boolean temp) {
+    if (relativePath != null && relativePath.isAbsolute())
+      return Optional.empty();
+    Optional<Path> thePath = (relativePath == null) ? getPath() : getPath().map(p -> p.resolve(relativePath));
+    return thePath.map(location -> {
+      Path f;
+      try {
+        Files.createDirectories(location);
+        f = Files.createTempFile(location, prefix, suffix);
+        f.toFile().deleteOnExit();
+        return relativize(f).get();
+      } catch (IOException e) {
+        return null;
+      }
+    });
+  }
+
+  @Override
+  public Optional<Path> getTemporaryPath(String prefix, String suffix) {
+    return makeAFile(null, prefix, suffix, true);
+  }
+
+  @Override
+  public Optional<Path> getPermanantPath(String prefix, String suffix) {
+    return makeAFile(null, prefix, suffix, false);
+  }
+
+  @Override
+  public Optional<Path> getTemporaryPath(Path relativePath, String prefix, String suffix) {
+    return makeAFile(relativePath, prefix, suffix, true);
+  }
+
+  @Override
+  public Optional<Path> getPermanantPath(Path relativePath, String prefix, String suffix) {
+    return makeAFile(relativePath, prefix, suffix, false);
   }
 
 }

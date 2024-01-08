@@ -40,19 +40,17 @@ public interface VersionedPersistenceProvider<T extends Modeled> extends Compara
   }
 
   /**
-   * 
+   *
    * The version of the T that THIS provider will produce
-   * 
+   *
    */
   IBVersion getVersion();
 
   /**
-   * The range of versions that THIS provider can accept to produce a version of T of version
-   * <code>getVersion()</code>.
-   * 
-   * ALL provider instances must read AT LEAST one API version below their own to allow for upward
-   * migration of models.
-   * 
+   * The range of versions that THIS provider can accept to produce a version of T of version <code>getVersion()</code>.
+   *
+   * ALL provider instances must read AT LEAST one API version below their own to allow for upward migration of models.
+   *
    * @return
    */
   IBVersionBoundedRange getVersionRange();

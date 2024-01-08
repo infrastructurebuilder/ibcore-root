@@ -32,8 +32,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class ConfigMapBuilderSupplierTest {
+  private final static Logger log = LoggerFactory.getLogger(ConfigMapBuilderSupplierTest.class);
 
   @BeforeAll
   static void setUpBeforeClass() throws Exception {
@@ -44,11 +47,15 @@ class ConfigMapBuilderSupplierTest {
   }
 
   private ConfigMapBuilder cmb, cmb1, cmb2, cmb3, cmb4, cmb5;
+  private JSONObject obj1;
+  final String string1 = "HasSameRef";
+  final String string2 = "HasDifferentRef";
 
   @BeforeEach
   void setUp() throws Exception {
-    cmb = ConfigMapBuilderSupplier.defaultBuilder();
-    cmb1 = ConfigMapBuilderSupplier.defaultBuilder();
+    obj1 = new JSONObject().put("key1", "abc").put("key2", 2).put("key3", string1);
+    cmb = ConfigMapBuilderSupplier.defaultBuilder(obj1);
+    cmb1 = ConfigMapBuilderSupplier.defaultBuilder().withJSONObject(obj1);
     cmb2 = ConfigMapBuilderSupplier.defaultBuilder();
     cmb3 = ConfigMapBuilderSupplier.defaultBuilder();
     cmb4 = ConfigMapBuilderSupplier.defaultBuilder();
@@ -66,14 +73,10 @@ class ConfigMapBuilderSupplierTest {
 
   @Test
   void testSimilarReplica() {
-    final String string1 = "HasSameRef";
-    final String string2 = "HasDifferentRef";
-    JSONObject obj1 = new JSONObject().put("key1", "abc").put("key2", 2).put("key3", string1);
-    cmb1 = cmb1.withJSONObject(obj1);
-
     JSONObject obj2 = new JSONObject().put("key1", "abc").put("key2", 3).put("key3", string1);
     cmb2 = cmb2.withJSONObject(obj2);
 
+    log.info("obj1 = \n" + cmb1.get().asJSON().toString(4));
     JSONObject obj3 = new JSONObject().put("key1", "abc").put("key2", 2).put("key3", new String(string1));
     cmb3 = cmb3.withJSONObject(obj3);
 
@@ -84,6 +87,8 @@ class ConfigMapBuilderSupplierTest {
     cmb5 = cmb5.withJSONObject(obj5);
 
     assertFalse("obj1-obj2 Should eval to false", cmb1.get().similar(cmb2.get()));
+    log.info("obj1 = \n" + cmb1.get().asJSON().toString(4));
+    log.info("obj3 = \n" + cmb3.get().asJSON().toString(4));
     assertTrue("obj1-obj3 Should eval to true", cmb1.get().similar(cmb3.get()));
     assertTrue("obj1-obj4 Should eval to true", cmb1.get().similar(cmb4.get()));
     assertFalse("obj1-obj5 Should eval to false", cmb1.get().similar(cmb5.get()));

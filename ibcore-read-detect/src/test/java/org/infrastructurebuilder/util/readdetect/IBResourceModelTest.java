@@ -31,7 +31,6 @@ import java.util.UUID;
 import org.infrastructurebuilder.util.core.AbsolutePathRelativeRoot;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.core.IBUtilsTest;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
 import org.infrastructurebuilder.util.readdetect.impl.AbsolutePathIBResourceBuilderFactory;
@@ -42,10 +41,10 @@ import org.junit.jupiter.api.Test;
 public class IBResourceModelTest {
 
   private TestingPathSupplier wps;
-  private IBResource<InputStream> c1, c2;
+  private IBResourceIS c1, c2;
   private Path path;
   private Checksum checksum;
-  private IBResourceBuilderFactory<Optional<IBResource<InputStream>>> f;
+  private IBResourceBuilderFactory<Optional<IBResourceIS>> f;
   private Path root;
   private Path source;
   private Checksum lc;
@@ -54,17 +53,17 @@ public class IBResourceModelTest {
   @BeforeEach
   public void setUp() throws Exception {
     wps = new TestingPathSupplier();
-    source = wps.getTestClasses().resolve(IBUtilsTest.TESTFILE);
+    source = wps.getTestClasses().resolve("rick.jpg");
     root = wps.get();
     path = wps.get().resolve(UUID.randomUUID().toString());
     IBUtils.copy(source, path);
     lc = new Checksum(source);
     rrs = new AbsolutePathRelativeRoot(root);
     f = new AbsolutePathIBResourceBuilderFactory(rrs);
-    checksum = new Checksum(IBUtilsTest.TESTFILE_CHECKSUM);
-    c2 = f.fromPath(source, "ABC").flatMap(IBResourceBuilder<Optional<IBResource<InputStream>>>::build).get();
+    checksum = new Checksum(source);
+    c2 = f.fromPath(source, "ABC").flatMap(IBResourceBuilder<Optional<IBResourceIS>>::build).get();
 //    c2 = new AbsolutePathIBResource(path, checksum);
-    c1 = f.fromPath(path).flatMap(IBResourceBuilder<Optional<IBResource<InputStream>>>::build).get();
+    c1 = f.fromPath(path).flatMap(IBResourceBuilder<Optional<IBResourceIS>>::build).get();
 
   }
 

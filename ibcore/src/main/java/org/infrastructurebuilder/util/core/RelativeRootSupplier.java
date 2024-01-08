@@ -21,9 +21,8 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
- * Provides an (Optional) RelativeRoot instance.  The Optional part is for the case where
- * the RR cannot be configured/created, such as if the RR pointed to a remote blobstore that
- * was inaccessible for whatever reason.
+ * Provides an (Optional) RelativeRoot instance. The Optional part is for the case where the RR cannot be
+ * configured/created, such as if the RR pointed to a remote blobstore that was inaccessible for whatever reason.
  */
 public interface RelativeRootSupplier extends NameDescribed, Supplier<Optional<RelativeRoot>> {
 }

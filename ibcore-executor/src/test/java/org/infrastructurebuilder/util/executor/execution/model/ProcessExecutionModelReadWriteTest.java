@@ -72,7 +72,7 @@ class ProcessExecutionModelReadWriteTest {
     this.m.setExecutionException(null);
     this.m.setResultCode("0");
     this.m.setRunTime(Duration.ofMinutes(1L).toString());
-    this.m.setStart(Instant.now().toString());
+    this.m.setStart(Instant.now());
     this.m.setStdErr(this.stdErr);
     this.m.setStdOut(this.stdOut);
     this.w = new ProcessExecutionResultModelXpp3WriterEx();

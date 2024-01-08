@@ -17,7 +17,8 @@
  */
 package org.infrastructurebuilder.util.readdetect;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
+
 import java.util.Optional;
 import java.util.Set;
 
@@ -29,21 +30,20 @@ abstract public class AbstractIBResourceBuilderFactorySupplier<T> implements IBR
 
   public AbstractIBResourceBuilderFactorySupplier(RelativeRootFactory rrf) {
     super();
-    this.root = Objects.requireNonNull(rrf);
+    this.root = requireNonNull(rrf);
   }
 
   @Override
-  public Set<String> getAvailableIds() {
-    return this.root.getNames();
+  public Set<String> getAvailableNames() {
+    return this.root.getAvailableNames();
   }
 
   @Override
-  public Optional<RelativeRoot> getRoot(String id) {
-    return root.get(id);
+  public Optional<RelativeRoot> getRoot(String name) {
+    return root.get(name);
   }
 
   @Override
-  abstract public Optional<IBResourceBuilderFactory<T>> get(String id);
-
+  abstract public Optional<IBResourceBuilderFactory<T>> get(String name);
 
 }

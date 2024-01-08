@@ -78,5 +78,4 @@ public abstract class AbstractRoseTree<A extends JSONAndChecksumEnabled>
     return result;
   }
 
-
 }

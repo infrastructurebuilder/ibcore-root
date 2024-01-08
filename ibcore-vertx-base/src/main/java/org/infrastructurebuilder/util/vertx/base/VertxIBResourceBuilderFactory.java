@@ -86,7 +86,7 @@ public interface VertxIBResourceBuilderFactory {
     try {
       return fromJSON(cet.returns(() -> new JSONObject(json)));
     } catch (IBException e) {
-      log.error("Could not build from JSONString",e);
+      log.error("Could not build from JSONString", e);
       return Optional.empty();
     }
 

@@ -76,9 +76,9 @@ public class RoseTreeTest {
     @Override
     public ChecksumBuilder getChecksumBuilder() {
       return ChecksumBuilder.newInstance()
-          
+
           .addJSONObject(a)
-          
+
           .addJSONObject(json);
     }
 

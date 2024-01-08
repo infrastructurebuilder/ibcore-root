@@ -29,9 +29,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * The OldPropertiesInjectedConfigMapSupplier takes a list of ExtendedListSuppliers. These can be files or a resource. The
- * target is expected to be loadable as a Properties objects, which is then added or overridden based on the type of the
- * OldExtendedListSupplier.
+ * The OldPropertiesInjectedConfigMapSupplier takes a list of ExtendedListSuppliers. These can be files or a resource.
+ * The target is expected to be loadable as a Properties objects, which is then added or overridden based on the type of
+ * the OldExtendedListSupplier.
  *
  * Any number of OldExtendedListSupplier items can be supplied, and they are applied in-order
  *

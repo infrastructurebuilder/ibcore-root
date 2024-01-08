@@ -22,8 +22,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * This is (mostly) a testing instance of RelativeRootSupplier, allowing for the creation
- * of RelativeRootSupplier instances in the same manner as the Named instances
+ * This is (mostly) a testing instance of RelativeRootSupplier, allowing for the creation of RelativeRootSupplier
+ * instances in the same manner as the Named instances
  */
 public class RelativeRootSetPathSupplier extends RelativeRootBasicPathPropertiesSupplier {
   public static final String NAME = "set-path";

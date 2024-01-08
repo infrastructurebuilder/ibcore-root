@@ -19,6 +19,10 @@ package org.infrastructurebuilder.util.core;
 
 import java.util.Optional;
 
+/**
+ * This is primarily for testing purposes, as its source is a {@link TestingPathSupplier} and those are very IB
+ * specific.
+ */
 public class RelativeRootTestingPathSupplier implements RelativeRootSupplier {
   public final static String NAME = RelativeRootTestingPathSupplier.class.getCanonicalName();
   private final TestingPathSupplier tps;

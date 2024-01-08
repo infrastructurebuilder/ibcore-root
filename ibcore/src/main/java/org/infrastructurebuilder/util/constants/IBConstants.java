@@ -39,6 +39,8 @@ public interface IBConstants {
   String APPLICATION_MSWORD = "application/msword";
   String APPLICATION_MSWORDX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
   String APPLICATION_OCTET_STREAM = "application/octet-stream";
+  String APPLICATION_JAR = "application/java-archive";
+  String APPLICATION_IBDATA = "application/ibdata-archive";
   String APPLICATION_X_MAC = "application/x-mach-o";
   String APPLICATION_PDF = "application/pdf";
   String APPLICATION_PPTX = "application/vnd.ms-powerpoint";
@@ -79,39 +81,40 @@ public interface IBConstants {
   String ORG_W3C_DOM_NODE = "org.w3c.dom.Node";
   String ORG_APACHE_AVRO_GENERIC_INDEXED_RECORD = "org.apache.avro.generic.IndexedRecord";
 
-  String AVI = ".avi";
-  String AVRO = ".avro";
-  String AVSC = ".avsc";
-  String BIN  = ".bin";
-  String CBOR = ".cbor";
-  String PDF = ".pdf";
-  String PSV = ".psv";
-  String DOCX = ".docx";
-  String DOC = ".doc";
-  String MDB = ".mdb";
-  String XLSX = ".xlsx";
-  String XLS = ".xls";
-  String TSV = ".tsv";
-  String CSV = ".csv";
-  String ZIP = ".zip";
-  String TXT = ".txt";
-  String HTML = ".html";
-  String HTM = ".htm";
-  String XML = ".xml";
-  String ODS = ".ods";
-  String PPT = ".ppt";
-  String PROTO = ".proto";
-  String THRIFT = ".thrift";
-  String DTD = ".dtd";
-  String JSON_EXT = ".json";
-  String JPG = ".jpg";
-  String JPEG = ".jpeg";
-  String NLD_JSON_EXT = ".nldjson";
+  String AVI = "avi";
+  String AVRO = "avro";
+  String AVSC = "avsc";
+  String BIN = "bin";
+  String CBOR = "cbor";
+  String PDF = "pdf";
+  String PSV = "psv";
+  String DOCX = "docx";
+  String DOC = "doc";
+  String MDB = "mdb";
+  String XLSX = "xlsx";
+  String XLS = "xls";
+  String TSV = "tsv";
+  String CSV = "csv";
+  String ZIP = "zip";
+  String TXT = "txt";
+  String HTML = "html";
+  String HTM = "htm";
+  String XML = "xml";
+  String IBDATAARCHIVE = "ibdata";
+  String JARARCHIVE = "jar";
+  String ODS = "ods";
+  String PPT = "ppt";
+  String PROTO = "proto";
+  String THRIFT = "thrift";
+  String DTD = "dtd";
+  String JSON_EXT = "json";
+  String JPG = "jpg";
+  String JPEG = "jpeg";
+  String NLD_JSON_EXT = "nldjson";
 
   String _SHA512 = "sha512";
-  String ASC_EXT = ".asc";
+  String ASC_EXT = "asc";
   String DEFAULT_EXTENSION = BIN;
-
 
   JSONArray CHECKSUM_TYPES_DEFAULT = new JSONArray(Arrays.asList(_SHA512));
 
@@ -196,6 +199,8 @@ public interface IBConstants {
   String BLOBSTORE_ROOT = "blobstoreRoot";
   String BLOBSTORE_MAXBYTES = "blobstoreMaxBytes";
   Long BLOBSTORE_NO_MAXBYTES = -1L;
+  long UNKNOWN_SIZE = -1L;
+
   String NO_PATH_SUPPLIED = "no.path.supplied";
   String METADATA = "metadata";
   String NOT_FOUND = "not.found";

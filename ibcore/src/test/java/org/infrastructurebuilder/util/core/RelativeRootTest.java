@@ -24,6 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -41,6 +44,9 @@ import org.slf4j.LoggerFactory;
 
 class RelativeRootTest {
 
+  private static final String ABC = "abc";
+  private static final String XML = ".xml";
+  private static final String BOB2 = "bob";
   private static final String MYFILE_XML = "myfile.xml";
   private static final String CSUMVAL = "03e15d9a12ac783c6b65bd5dc248bd2b03a6b9281c34f5e165336ebec7d1f48031f6d3232b2350b275fa2e722e8116afe9a48412561d20d559fe553d9a672f0b";
   private static final String STRING_ROOT_S3_AMAZON_BUCKET = "{\"STRING_ROOT\":\"s3://some.amazon.com/bucket/\"}";
@@ -92,9 +98,10 @@ class RelativeRootTest {
     h = new RelativeRootUserHomeSupplier();
     c = new RelativeRootClasspathSupplier();
     rpenv1 = this.rrp.get(RelativeRootBasicPathEnvSupplier.NAME);
-    fileUrl = tp.toUri().toURL().toExternalForm();
-    
-    absurl = new AbsoluteURLRelativeRoot(fileUrl);
+    URL u = tp.toUri().toURL();
+    fileUrl = u.toExternalForm();
+
+    absurl = new AbsoluteURLRelativeRoot(u);
   }
 
   @AfterEach
@@ -119,7 +126,7 @@ class RelativeRootTest {
     assertNotEquals(aPath, r.get());
     // Resolving an absolute path returns that path
     Path qm = prr.resolvePath(r.get().toString()).get();
-    assertEquals(qm.toString(), prr.resolvePath(aPath));
+    assertEquals(qm.toString(), prr.resolvePath(aPath).get());
   }
 
   @Test
@@ -159,12 +166,11 @@ class RelativeRootTest {
     assertEquals(this.rrp.get(RelativeRootSetPathSupplier.NAME).get().getPath().get(), tps.getClasses());
   }
 
-
   @Test
   void testUserHome() {
     Path p = Paths.get(System.getProperty("user.home"));
     var y = h.get();
-    assertEquals(p,y.get().getPath().get());
+    assertEquals(p, y.get().getPath().get());
   }
 
   @Test
@@ -173,7 +179,7 @@ class RelativeRootTest {
     String k = cprr.relativize(RelativeRootClasspathSupplier.NAME + MYFILE_XML);
     String q = cprr.getUrl().get().toExternalForm();
     assertEquals(q, RelativeRootClasspathSupplier.NAME);
-    assertEquals(MYFILE_XML,k);
+    assertEquals(MYFILE_XML, k);
   }
 
   @Test
@@ -182,13 +188,66 @@ class RelativeRootTest {
     Path temp = tps.get();
     assertEquals(cprr.getPath().get().getParent(), temp.getParent());
   }
-  
+
   @Test
   void testAbsoluteURLRR() {
     assertNotNull(absurl);
-    String k = fileUrl.concat("/").concat(MYFILE_XML);
+    String k = fileUrl.concat(MYFILE_XML);
     RelativeRoot v = absurl.extend(MYFILE_XML);
-    assertEquals(k,v.getUrl().get().toExternalForm());
+    assertEquals(k, v.getUrl().get().toExternalForm());
+  }
+
+  @Test
+  void testTempFile() {
+    Path fileRel = absurl.getTemporaryPath(ABC, XML).get();
+    Path file = absurl.extendAsAbsolutePath(fileRel).get();
+    assertTrue(Files.isRegularFile(file));
+    String name = file.toString();
+    assertTrue(name.endsWith(XML));
+    assertTrue(file.getFileName().toString().startsWith(ABC));
+  }
+
+  @Test
+  void testTempFileWithPath() {
+    Path bob = Paths.get(BOB2);
+    Path rel = absurl.getTemporaryPath(bob, ABC, XML).get();
+    Path file = absurl.extendAsAbsolutePath(rel).get();
+    assertTrue(Files.isRegularFile(file));
+    String name = file.toString();
+    assertTrue(name.endsWith(XML));
+    assertTrue(file.getFileName().toString().startsWith(ABC));
+    Optional<Path> file2 = absurl.getTemporaryPath(bob.toAbsolutePath(), ABC, XML);
+    assertFalse(file2.isPresent());
+  }
+
+  @Test
+  void testPermFile() throws IOException {
+    Path rel = absurl.getPermanantPath(ABC, XML).get();
+    Path file = absurl.extendAsAbsolutePath(rel).get();
+    assertTrue(Files.isRegularFile(file));
+    String name = file.toString();
+    assertTrue(name.endsWith(XML));
+    assertTrue(file.getFileName().toString().startsWith(ABC));
+    Files.delete(file);
+  }
+
+  @Test
+  void testPermFileWithPath() throws IOException {
+    Path bob = Paths.get(BOB2);
+    Path fileR = absurl.getPermanantPath(bob, ABC, XML).get();
+    assertFalse(fileR.isAbsolute());
+    Path file = absurl.extendAsAbsolutePath(fileR).get();
+    assertTrue(Files.isRegularFile(file));
+    String name = file.toString();
+    assertTrue(name.endsWith(XML));
+    assertTrue(file.getFileName().toString().startsWith(ABC));
+    Files.delete(file);
+  }
+
+  public void testThatFilesMustBeWithinTree() {
+    Path bob = Paths.get(BOB2);
+    Optional<Path> file2 = absurl.getPermanantPath(bob.toAbsolutePath(), ABC, XML);
+    assertFalse(file2.isPresent());
   }
 
 }

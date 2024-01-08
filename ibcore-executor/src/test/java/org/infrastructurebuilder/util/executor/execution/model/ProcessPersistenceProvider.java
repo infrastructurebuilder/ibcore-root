@@ -31,7 +31,7 @@ import org.infrastructurebuilder.util.executor.ModeledProcessExecution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ProcessPersistenceProvider implements ProcessExecutionVersionedPersistenceProvider{
+public class ProcessPersistenceProvider implements ProcessExecutionVersionedPersistenceProvider {
 
   public static final String VERSION = "1.0";
   private final static Logger log = LoggerFactory.getLogger(ProcessPersistenceProvider.class);
@@ -50,7 +50,7 @@ public class ProcessPersistenceProvider implements ProcessExecutionVersionedPers
   @Override
   public void write(Writer w, ModeledProcessExecution s) throws IOException {
     // TODO Auto-generated method stub
-    
+
   }
 
   @Override

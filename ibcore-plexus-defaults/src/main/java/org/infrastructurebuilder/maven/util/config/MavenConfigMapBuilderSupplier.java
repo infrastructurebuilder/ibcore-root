@@ -20,8 +20,7 @@ package org.infrastructurebuilder.maven.util.config;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
-import static org.infrastructurebuilder.util.constants.IBConstants.dateFormatter;
-
+import static org.infrastructurebuilder.util.constants.IBConstants.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -42,7 +41,7 @@ import org.infrastructurebuilder.util.config.ConfigMapBuilderSupplier;
 import org.infrastructurebuilder.util.config.impl.DefaultConfigMapBuilderSupplier;
 import org.json.JSONObject;
 
-@Named(ConfigMapBuilderSupplier.MAVEN)
+@Named(MAVEN)
 @Singleton
 public class MavenConfigMapBuilderSupplier extends DefaultConfigMapBuilderSupplier {
 
@@ -50,20 +49,12 @@ public class MavenConfigMapBuilderSupplier extends DefaultConfigMapBuilderSuppli
     j.put(requireNonNull(key), ofNullable(o).orElse(""));
   }
 
-  
-  private MavenProject mavenProject;
-  private final MavenSession mavenSession;
-  private final MojoExecution execution;
-
   @Inject
   public MavenConfigMapBuilderSupplier(final MavenProject mavenProject, @Nullable MavenSession session,
       @Nullable MojoExecution execution)
   {
     super();
-    this.mavenProject = requireNonNull(mavenProject);
-    this.mavenSession = session;
-    this.execution = execution;
-    final Build build = this.mavenProject.getBuild();
+    final Build build = requireNonNull(mavenProject).getBuild();
     JSONObject proj = new JSONObject();
     JSONObject sess = new JSONObject();
     JSONObject exec = new JSONObject();
@@ -82,7 +73,7 @@ public class MavenConfigMapBuilderSupplier extends DefaultConfigMapBuilderSuppli
     overrideValueDefaultBlank(proj, "project.groupId", mavenProject.getGroupId());
     overrideValueDefaultBlank(proj, "project.version", mavenProject.getVersion());
 
-    ofNullable(mavenSession).ifPresent(s -> {
+    ofNullable(session).ifPresent(s -> {
       overrideValueDefaultBlank(sess, "maven.session.goals.list", s.getGoals().stream().collect(joining()));
       overrideValueDefaultBlank(sess, "maven.session.start", dateFormatter.format(s.getStartTime().toInstant()));
     });
@@ -104,14 +95,18 @@ public class MavenConfigMapBuilderSupplier extends DefaultConfigMapBuilderSuppli
 
         .withProperties(System.getProperties())
 
+        // FIXME Probably not doing this
         .withMapStringString(Map.of(ConfigMapBuilderSupplier.IB_DATA_WORKING_DIR, workingDir.toString()))
 
-        .withProperties(mavenProject.getProperties());
+    // TODO The order and priority of these is important
+//        .withProperties(mavenProject.getProperties())
+
+    ;
   }
 
   @Override
   public String getName() {
-    return ConfigMapBuilderSupplier.MAVEN;
+    return MAVEN;
   }
 
 }

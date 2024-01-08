@@ -38,7 +38,8 @@ import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
-import org.infrastructurebuilder.util.readdetect.impl.IBResourceInMemoryDelegated;
+import org.infrastructurebuilder.util.readdetect.IBResourceIS;
+import org.infrastructurebuilder.util.readdetect.IBResourceInMemoryDelegated;
 import org.infrastructurebuilder.util.vertx.blobstore.Blobstore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,13 +59,13 @@ public class InMemoryBlobstore implements Blobstore<InputStream> {
 
   private final static FileSystem fs = Vertx.vertx().fileSystem();
 
-  private final static Collector<Entry<String, IBResource<InputStream>>, ?, ImmutableSortedMap<Instant, String>> oldestCollector = ImmutableSortedMap
+  private final static Collector<Entry<String, IBResourceIS>, ?, ImmutableSortedMap<Instant, String>> oldestCollector = ImmutableSortedMap
       .toImmutableSortedMap(Ordering.natural().reversed(), (e) -> {
-        return ((Entry<String, IBResource<InputStream>>) e).getValue().getLastUpdateDate().orElse(null);
+        return ((Entry<String, IBResourceIS>) e).getValue().getLastUpdateDate().orElse(null);
       }, Entry::getKey);
 
   private final static Logger log = LoggerFactory.getLogger(InMemoryBlobstore.class);
-  private final Map<String, IBResource<InputStream>> resources = new ConcurrentHashMap<>();
+  private final Map<String, IBResourceIS> resources = new ConcurrentHashMap<>();
   private final Map<String, byte[]> blobs = new ConcurrentHashMap<>();
 
   private long maxBytes;
@@ -99,7 +100,8 @@ public class InMemoryBlobstore implements Blobstore<InputStream> {
 
   @Override
   public Future<IBResource<InputStream>> getMetadata(String id) {
-    return ofNullable(resources.get(id)).map(Future::succeededFuture).orElse(Future.failedFuture(NOT_FOUND));
+    return ofNullable(resources.get(id)).map(i -> (IBResource<InputStream>) i).map(Future::succeededFuture)
+        .orElse(Future.failedFuture(NOT_FOUND));
   }
 
   @Override
@@ -129,8 +131,7 @@ public class InMemoryBlobstore implements Blobstore<InputStream> {
 //    })
         .compose(bb -> {
           byte[] bytes = bb.getBytes();
-          IBResource<InputStream> r = new IBResourceInMemoryDelegated(bytes, blobname, desc, createDate, lastUpdated,
-              addlProps);
+          IBResourceIS r = new IBResourceInMemoryDelegated(bytes, blobname, desc, createDate, lastUpdated, addlProps);
           String id = r.getChecksum().asUUID().get().toString();
           this.blobs.putIfAbsent(id, bytes);
           this.resources.putIfAbsent(id, r);
@@ -147,8 +148,8 @@ public class InMemoryBlobstore implements Blobstore<InputStream> {
 //    var test = rf.result(); // FIXME Remove later
     return rf.compose(bb -> {
       byte[] bytes = bb.getBytes();
-      IBResource<InputStream> r = new IBResourceInMemoryDelegated(bytes, blobname, description,
-          bfa.creationTime().toInstant(), bfa.lastModifiedTime().toInstant(), requireNonNull(addlProps));
+      IBResourceIS r = new IBResourceInMemoryDelegated(bytes, blobname, description, bfa.creationTime().toInstant(),
+          bfa.lastModifiedTime().toInstant(), requireNonNull(addlProps));
       String id = r.getChecksum().asUUID().get().toString();
       this.blobs.putIfAbsent(id, bytes);
       this.resources.putIfAbsent(id, r);

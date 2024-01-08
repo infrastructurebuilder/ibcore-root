@@ -46,6 +46,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * An IBResourceBuilderFactory returns allows for the production of {@link IBResourceBuilder} instances from various
+ * source locations, such as {@link Path}s, {@link URL}s, and URL-like strings (given appropriate processors within a
+ * given builder).
+ *
+ * A given IBResourceBuilderFactory may or may not have a {@link RelativeRoot}. If it does not, then all values are
+ * considered to be purely reference values
+ *
+ * @param <B>
+ */
+
+/*
  * IBResourceCacheFactor is the part of ibcore-read-detect that actually copies files from some remote location to it's
  * local copy. An IBResourceCache is expected to be inviolate from the time a cache is created until it is no longer
  * needed. A cache has a serialized representation of all the IBResource elements within it, and thus can be persisted.
@@ -112,6 +123,7 @@ public interface IBResourceBuilderFactory<B> {
 
   /**
    * The RelativeRoot is optional (for some reason)
+   *
    * @return
    */
   Optional<RelativeRoot> getRelativeRoot();
@@ -131,8 +143,7 @@ public interface IBResourceBuilderFactory<B> {
 
   Optional<IBResourceBuilder<B>> fromJSON(JSONObject json);
 
-  // TODO Why is this not Optional??!??!?
-  IBResourceBuilder<B> builderFromPathAndChecksum(Path p, Checksum checksum);
+  Optional<IBResourceBuilder<B>> builderFromPathAndChecksum(Path p, Checksum checksum);
 
   default Optional<IBResourceBuilder<B>> fromURL(URL u, String type) {
     return fromURLLike(u.toExternalForm(), type);
@@ -149,7 +160,8 @@ public interface IBResourceBuilderFactory<B> {
   default Optional<IBResourceBuilder<B>> fromURLLike(String u) {
     return fromURLLike(u, null);
   }
-  default IBResourceBuilder<B> builderFromPath(Path p) {
+
+  default Optional<IBResourceBuilder<B>> builderFromPath(Path p) {
     return builderFromPathAndChecksum(p, new Checksum(p));
   }
 
@@ -160,14 +172,14 @@ public interface IBResourceBuilderFactory<B> {
    * @return
    */
   default Optional<IBResourceBuilder<B>> fromJSONString(String json) {
+    JSONObject j;
     try {
-      return fromJSON(cet.returns(() -> new JSONObject(json)));
-    } catch (IBException e) {
-      log.error("Could not generate from JSON " + json,e);
+      j = new JSONObject(json);
+    } catch (Throwable e) {
+      log.error("Could not parse json from " + json, e);
       return Optional.empty();
     }
+    return fromJSON(j);
 
   }
 }
-
-

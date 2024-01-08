@@ -19,7 +19,7 @@ package org.infrastructurebuilder.util.readdetect;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
-import static org.infrastructurebuilder.util.constants.IBConstants.*;
+import static org.infrastructurebuilder.util.constants.IBConstants.NO_PATH_SUPPLIED;
 import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory.extracted;
 import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory.toType;
 
@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 
+import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
@@ -52,9 +53,11 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
 
   @Override
   public IBResourceBuilder<B> fromJSON(JSONObject j) {
-    model = IBResourceBuilder.modelFromJSON.apply(j);
-    Path p = model.getFilePath().map(extracted)
-        .orElseThrow(() -> new IBResourceException(NO_PATH_SUPPLIED));
+    model = IBResourceBuilder.modelFromJSON.apply(j)
+        .orElseThrow(() -> new IBException("Unable to acquire model from json"));
+    String fp = model.getPath().orElseThrow(() -> new IBResourceException(NO_PATH_SUPPLIED));
+    log.debug("Got %s from model", fp);
+    Path p = extracted.apply(fp);
     this.sourcePath = p;
     return this;
   }
@@ -62,13 +65,16 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
   @Override
   public IBResourceBuilder<B> withChecksum(Checksum csum) {
     this.targetChecksum = requireNonNull(csum);
-    this.model.setFileChecksum(csum.toString());
+    this.model.setStreamChecksum(csum.toString());
     return this;
   }
 
   @Override
   public IBResourceBuilder<B> from(Path path) {
     this.sourcePath = requireNonNull(path);
+    Path op = path.isAbsolute() ? path
+        : this.getRoot().flatMap(rr -> rr.resolvePath(path.toString()))
+            .orElseThrow(() -> new IBException("Path " + path + " is invalid with current root"));
 
     return this
 
@@ -76,24 +82,24 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
 
         .withName(path.getFileName().toString())
 
-        .withSource(path.toUri().toASCIIString());
+        .withSource(op.toUri().toASCIIString());
   }
 
   @Override
   public IBResourceBuilder<B> withFilePath(String path) {
-    this.model.setFilePath(path);
+    this.model.setPath(path);
     return this;
   }
 
   @Override
-  public IBResourceBuilder<B> cached(boolean cached) {
-    this.model.setCached(cached);
+  public IBResourceBuilder<B> withAcquired(Instant acquired) {
+    this.model.setAcquired(acquired);
     return this;
   }
 
   @Override
   public IBResourceBuilder<B> withName(String name) {
-    this.model.setName(requireNonNull(name));
+    this.model.setStreamName(requireNonNull(name));
     return this;
   }
 
@@ -105,13 +111,8 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
 
   @Override
   public IBResourceBuilder<B> withType(String type) {
-    this.model.setType(requireNonNull(type));
+    this.model.setStreamType(requireNonNull(type));
     return this;
-  }
-
-  @Override
-  public IBResourceBuilder<B> withType(Optional<String> type) {
-    return requireNonNull(type).map(t -> withType(t)).orElse(this);
   }
 
   @Override
@@ -128,7 +129,7 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
 
   @Override
   public IBResourceBuilder<B> withSource(String source) {
-    this.model.setSource(requireNonNull(source));
+    this.model.setStreamSource(requireNonNull(source));
     return this;
   }
 
@@ -140,7 +141,7 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
 
   @Override
   public IBResourceBuilder<B> withSize(long size) {
-    this.model.setSize(size);
+    this.model.setStreamSize(size);
     return this;
   }
 
@@ -167,8 +168,8 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
       }
       if (hard) {
         var aType = toType.apply(this.sourcePath);
-        if (!this.model.getType().equals(aType)) {
-          log.error("Expected type {} does not equal actual type {}", this.model.getType(), aType);
+        if (!this.model.getStreamType().equals(aType)) {
+          log.error("Expected type {} does not equal actual type {}", this.model.getStreamType(), aType);
           return empty();
         }
         if (this.targetChecksum == null) {
@@ -176,14 +177,14 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
           this.targetChecksum = Checksum.ofPath.apply(this.sourcePath).get();
         }
       }
-      if (!Objects.equals(this.targetChecksum, this.model.getFileChecksum())) {
-        log.error("Model checksum {} not equal to targeted checksum {}", this.model.getFileChecksum(),
+      if (!Objects.equals(this.targetChecksum, this.model.getStreamChecksum())) {
+        log.error("Model checksum {} not equal to targeted checksum {}", this.model.getStreamChecksum(),
             this.targetChecksum);
         return empty();
       }
-      if (this.model.getType() == null) {
+      if (this.model.getStreamType() == null) {
         log.warn("Type not available");
-        this.model.setType(toType.apply(this.sourcePath));
+        this.model.setStreamType(toType.apply(this.sourcePath));
       }
 
       // There has been no source path set.
@@ -197,8 +198,7 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
   abstract public B build(boolean hard);
 
   /**
-   * For IBResourceInMemoryDelegated. Do not use for general construction of a resource. This method is not available
-   * outside of this package.
+   * For IBResourceInMemoryDelegated. Do not use for general construction of a resource.
    *
    * @param m model to replace existing model with
    * @return this builder.

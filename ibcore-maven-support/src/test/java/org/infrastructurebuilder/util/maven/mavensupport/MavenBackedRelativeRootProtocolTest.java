@@ -32,10 +32,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 class MavenBackedRelativeRootProtocolTest {
 
   public final static TestingPathSupplier tps = new TestingPathSupplier();
+
   @BeforeAll
   static void setUpBeforeClass() throws Exception {
   }
@@ -45,7 +45,7 @@ class MavenBackedRelativeRootProtocolTest {
     tps.finalize();
   }
 
-  MavenProject project ;
+  MavenProject project;
   MavenBackedRelativeRootSupplier p;
   MavenBackedTempRelativeRootSupplier t;
   Path target;

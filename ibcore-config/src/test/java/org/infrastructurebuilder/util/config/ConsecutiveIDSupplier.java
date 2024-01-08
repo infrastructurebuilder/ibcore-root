@@ -24,7 +24,7 @@ import java.util.UUID;
 import org.infrastructurebuilder.util.core.IdentifierSupplier;
 
 /**
- * TODO This isn't correct.  I think I forgot to implement this properly
+ * TODO This isn't correct. I think I forgot to implement this properly
  *
  * @author mykel.alvis
  *

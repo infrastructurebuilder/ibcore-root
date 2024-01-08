@@ -31,6 +31,7 @@ import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.util.Comparator.nullsFirst;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static java.util.Spliterator.ORDERED;
 import static java.util.stream.Collectors.toMap;
@@ -52,6 +53,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -141,6 +144,22 @@ public class IBUtils {
     if (!isJar && !isZip)
       throw new IBException("THIS JVM CANNOT HANDLE ARCHIVES.  IBDATA WILL NOT WORK");
   }
+
+  public final static Function<String, Optional<BigInteger>> getIntValue = (s) -> {
+    try {
+      return ofNullable(s).map(BigInteger::new);
+    } catch (NumberFormatException e) {
+      return empty();
+    }
+  };
+
+  public final static Function<String, Optional<BigDecimal>> getDecimalValue = (s) -> {
+    try {
+      return ofNullable(s).map(BigDecimal::new);
+    } catch (NumberFormatException e) {
+      return empty();
+    }
+  };
 
   public final static Function<Properties, Map<String, String>> propertiesToMapSS = (p) -> {
     final Map<String, String> m = new HashMap<>();
@@ -233,7 +252,7 @@ public class IBUtils {
     return new String(ofNullable(l).orElse("")).trim().length() > 0 ? l : null;
   };
 
-  public final static Function<String, String> blankIfNull= l -> {
+  public final static Function<String, String> blankIfNull = l -> {
     return ofNullable(l).orElse("");
   };
 
@@ -908,6 +927,15 @@ public class IBUtils {
     return json.toMap().entrySet().stream().collect(toMap(k -> k.getKey(), v -> v.getValue().toString()));
   }
 
+  public static Function<String, String> stripTrailingSlash = (s) -> {
+    if (s == null)
+      return s;
+    String k = s;
+    while (k.endsWith("/") && k.length() > 0)
+      k = k.substring(0, k.length() - 1);
+    return k;
+  };
+
   public static void unzip(final Path zipFilePath, final Path destDirectory) throws IOException {
     Files.createDirectories(destDirectory);
     try (InputStream ins = Files.newInputStream(zipFilePath)) {
@@ -1065,22 +1093,20 @@ public class IBUtils {
   }
 
   public final static Path getRootFromURL(String[] uA) {
-    try {
+    return IBException.cet.returns(() -> {
       final FileSystem fs = FileSystems.newFileSystem(URI.create(uA[0]), new HashMap<String, String>());
       return fs.getPath(uA[1]);
-    } catch (IOException e) {
-      throw new IBException(e);
-    }
+    });
   }
 
-  public final static String stringFromDOM(Document d) {
-    Transformer transformer;
-    transformer = cet.returns(() -> tf.newTransformer());
-    transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-    StringWriter outStream = new StringWriter();
-    cet.translate(() -> transformer.transform(new DOMSource(d), new StreamResult(outStream)));
-    return outStream.toString();
-  }
+//  public final static String stringFromDOM(Document d) {
+//    Transformer transformer;
+//    transformer = cet.returns(() -> tf.newTransformer());
+//    transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+//    StringWriter outStream = new StringWriter();
+//    cet.translate(() -> transformer.transform(new DOMSource(d), new StreamResult(outStream)));
+//    return outStream.toString();
+//  }
 
   public final static String removeXMLPrefix(String s) {
     return (s.startsWith(XML_PREFIX)) ? s.replace(XML_PREFIX, "").trim() : s;

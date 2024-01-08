@@ -17,13 +17,38 @@
  */
 package org.infrastructurebuilder.util.readdetect.avro;
 
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static org.infrastructurebuilder.exceptions.IBException.cet;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-import org.apache.avro.file.SeekableFileInput;
-import org.infrastructurebuilder.util.readdetect.IBResource;
+import org.apache.avro.file.DataFileStream;
+import org.apache.avro.file.SeekableInput;
+import org.apache.avro.generic.GenericDatumReader;
+import org.apache.avro.generic.GenericRecord;
+import org.infrastructurebuilder.util.readdetect.IBResourceIS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public interface IBResourceAvro extends IBResource<InputStream> {
+public interface IBResourceAvro extends IBResourceIS {
+  final static Logger log = LoggerFactory.getLogger(IBResourceAvro.class);
+  public final static Function<InputStream, Optional<Stream<GenericRecord>>> genericStreamFromInputStream = (ins) -> {
+    try (DataFileStream<GenericRecord> s = new DataFileStream<GenericRecord>(ins,
+        new GenericDatumReader<GenericRecord>())) {
+      return of(StreamSupport.stream(s.spliterator(), false));
+    } catch (IOException e) {
+      log.warn("Exception getting generic record stream", e);
+      return empty();
+    } finally {
+      cet.translate(() -> ins.close());
+    }
+  };
 
-  Optional<SeekableFileInput> getSeekableFile();
+  Optional<SeekableInput> getSeekableFile();
 }

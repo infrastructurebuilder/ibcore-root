@@ -24,8 +24,8 @@ import org.json.JSONString;
  */
 public class MyJsonString implements JSONString {
 
-    @Override
-    public String toJSONString() {
-        return "my string";
-    }
+  @Override
+  public String toJSONString() {
+    return "my string";
+  }
 }

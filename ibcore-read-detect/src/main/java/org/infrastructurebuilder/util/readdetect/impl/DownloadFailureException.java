@@ -22,6 +22,8 @@ package org.infrastructurebuilder.util.readdetect.impl;
  */
 public final class DownloadFailureException extends RuntimeException {
 
+  private static final long serialVersionUID = 9188784105763259184L;
+
   private final int statusCode;
 
   private final String statusLine;

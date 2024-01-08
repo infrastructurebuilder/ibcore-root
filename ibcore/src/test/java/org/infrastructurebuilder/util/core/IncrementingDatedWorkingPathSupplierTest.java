@@ -31,8 +31,8 @@ import org.junit.jupiter.api.Test;
 class IncrementingDatedWorkingPathSupplierTest {
 
   IncrementingDatedStringSupplier ids = new IncrementingDatedStringSupplier();
-  WorkingPathSupplier wps ;
-  
+  WorkingPathSupplier wps;
+
   @BeforeAll
   static void setUpBeforeClass() throws Exception {
   }
@@ -54,7 +54,7 @@ class IncrementingDatedWorkingPathSupplierTest {
   void testIncrementingDatedWorkingPathSupplier() {
     Path p = wps.get();
     assertTrue(Files.isDirectory(p));
-    
+
   }
 
 }

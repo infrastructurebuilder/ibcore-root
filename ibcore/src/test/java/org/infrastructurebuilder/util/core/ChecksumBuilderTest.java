@@ -243,12 +243,12 @@ public class ChecksumBuilderTest {
     assertEquals(pp, optionalPath.get().toAbsolutePath()); // RR path remains constant
     final Path p = optionalPath.map(ppp -> ppp.resolve("generated-sources")).get();
     final Path rel = optionalPath.get().relativize(p);
-    
-    assertNotEquals(p,rel);
-    
+
+    assertNotEquals(p, rel);
+
     Checksum c2 = sha512.addPath(Optional.of(p)).asChecksum();
     Checksum c3 = ChecksumBuilder.newInstance().addPath(rel).asChecksum();
-    
+
     assertEquals(c2.toString(), c3.toString());
 
     assertNotEquals(c2.toString(), ChecksumBuilder.newInstance().addPath(p).asChecksum().toString());

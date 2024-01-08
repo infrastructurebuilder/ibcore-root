@@ -104,14 +104,14 @@ class VersionedPersistenceMapperTest {
     VersionedPersistenceProvider<FakeModeled> wr = m.writerFor(VERSION).get();
     VersionedPersistenceProvider<FakeModeled> rr = m.readerFor(VERSION).get();
     assertEquals(wr, rr); // in this particular case../
-    
+
     StringWriter sw = new StringWriter();
     FakeModeled fake = new FakeModeled();
     wr.write(sw, fake);
     StringReader sr = new StringReader(sw.toString());
     FakeModeled fake2 = rr.read(sr);
     assertEquals(fake2.asJSON().get("type"), fake.asJSON().get("type"));
-    
+
   }
 
   @Test

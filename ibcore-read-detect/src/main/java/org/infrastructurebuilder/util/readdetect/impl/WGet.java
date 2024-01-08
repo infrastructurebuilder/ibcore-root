@@ -24,7 +24,6 @@ import static org.codehaus.plexus.util.StringUtils.isNotBlank;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -43,7 +42,6 @@ import java.util.stream.Collectors;
 
 //import javax.annotation.Nullable;
 
-import org.apache.commons.logging.Log;
 import org.apache.http.Header;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
@@ -56,12 +54,8 @@ import org.apache.maven.wagon.proxy.ProxyInfo;
 import org.apache.maven.wagon.proxy.ProxyInfoProvider;
 import org.apache.maven.wagon.proxy.ProxyUtils;
 import org.codehaus.plexus.archiver.UnArchiver;
-import org.codehaus.plexus.archiver.bzip2.BZip2UnArchiver;
-import org.codehaus.plexus.archiver.gzip.GZipUnArchiver;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
-import org.codehaus.plexus.archiver.snappy.SnappyUnArchiver;
-import org.codehaus.plexus.archiver.xz.XZUnArchiver;
 import org.codehaus.plexus.components.io.filemappers.FileMapper;
 import org.eclipse.aether.repository.Authentication;
 import org.eclipse.aether.repository.Proxy;
@@ -71,9 +65,10 @@ import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
-import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
+import org.infrastructurebuilder.util.readdetect.IBResourceIS;
+import org.infrastructurebuilder.util.readdetect.WGetter;
 import org.slf4j.Logger;
 
 //import com.googlecode.download.maven.plugin.internal.FileNameUtils;
@@ -265,8 +260,6 @@ public final class WGet {
    */
 //  @Parameter(property = "download.fileMappers")
   private FileMapper[] fileMappers;
-
-  private Log mavenLog;
 
   private String ntlmDomain;
 
@@ -583,7 +576,7 @@ public final class WGet {
 
   private boolean preemptiveAuth;
 
-  private IBResourceBuilderFactory<Optional<IBResource<InputStream>>> cf;
+  private IBResourceBuilderFactory<Optional<IBResourceIS>> cf;
 
   /**
    * Method call when the mojo is executed for the first time.
@@ -593,7 +586,7 @@ public final class WGet {
    * @throws IBWGetException      if an error is occuring in this mojo.
    * @throws MojoFailureException if an error is occuring in this mojo.
    */
-  Optional<List<IBResource<InputStream>>> downloadIt() throws IBWGetException {
+  Optional<List<IBResourceIS>> downloadIt() throws IBWGetException {
 
     if (this.proxyInfo == null) {
       this.proxyInfo = new ProxyInfo();
@@ -738,7 +731,7 @@ public final class WGet {
 //      /* Get the "final name" */
 
       getLog().error("OutputPath {}", outputPath.toString());
-      String finalFileName = finalChecksum.asUUID().get().toString() + t2e.getExtensionForType(this.mimeType);
+      String finalFileName = finalChecksum.asUUID().get().toString() + "." + t2e.getExtensionForType(this.mimeType);
       getLog().info("Final file name {}", finalFileName);
       Path newTarget = outputPath.getParent().resolve(finalFileName);
       getLog().info("new Target is {}", newTarget.toString());
@@ -751,20 +744,23 @@ public final class WGet {
 
       Path outPath = newTarget;
 
-      final IBResourceBuilder<Optional<IBResource<InputStream>>> b = cf.builderFromPathAndChecksum(outPath, finalChecksum)
+      String externalForm = this.uri.toURL().toExternalForm();
+      return cf.builderFromPathAndChecksum(outPath, finalChecksum).map(vq -> {
+        final IBResourceBuilder<Optional<IBResourceIS>> b = vq
 
-          .withSource(this.uri.toURL().toExternalForm())
+            .withSource(externalForm)
 
-          .withType(ofNullable(this.mimeType));
+            .withType(ofNullable(this.mimeType));
 
-      return Optional.of(List.of(b.build().get())); // FIXME!!!!!
+        return List.of(b.build().get()); // FIXME!!!!!
+      });
     });
   }
 
   private void unpack(File outputFile) throws NoSuchArchiverException {
     UnArchiver unarchiver = this.archiverManager.getUnArchiver(outputFile);
     unarchiver.setSourceFile(outputFile);
-    if (isFileUnArchiver(unarchiver)) {
+    if (WGetter.isFileUnArchiver(unarchiver)) {
       unarchiver.setDestFile(
           new File(this.outputPath.toFile(), this.outputFileName.substring(0, this.outputFileName.lastIndexOf('.'))));
     } else {
@@ -775,10 +771,9 @@ public final class WGet {
     outputFile.delete();
   }
 
-  private boolean isFileUnArchiver(final UnArchiver unarchiver) {
-    return unarchiver instanceof BZip2UnArchiver || unarchiver instanceof GZipUnArchiver
-        || unarchiver instanceof SnappyUnArchiver || unarchiver instanceof XZUnArchiver;
-  }
+//  private boolean isFileUnArchiver(final UnArchiver unarchiver) {
+//    return unarchiver.isFileUnarchiver();
+//  }
 
   private static RemoteRepository createRemoteRepository(String serverId, URI uri) {
     return new RemoteRepository.Builder(isBlank(serverId) ? null : serverId, isBlank(serverId) ? uri.getScheme() : null,
@@ -870,7 +865,7 @@ public final class WGet {
         .collect(Collectors.toList());
   }
 
-  public void setCacheFactory(IBResourceBuilderFactory<Optional<IBResource<InputStream>>> cf2) {
+  public void setCacheFactory(IBResourceBuilderFactory<Optional<IBResourceIS>> cf2) {
     this.cf = requireNonNull(cf2);
 
   }

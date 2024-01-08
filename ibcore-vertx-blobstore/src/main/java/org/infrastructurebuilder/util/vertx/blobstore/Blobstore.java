@@ -54,7 +54,8 @@ public interface Blobstore<T> extends LoggerEnabled {
   }
 
   default Future<Instant> getLastUpdated(String id) {
-    return getMetadata(id).compose(md -> md.getLastUpdateDate().map(Future::succeededFuture).orElse(Future.failedFuture("no last update date")));
+    return getMetadata(id).compose(
+        md -> md.getLastUpdateDate().map(Future::succeededFuture).orElse(Future.failedFuture("no last update date")));
   }
 
   default Future<String> getName(String id) {

@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.file.Paths;
 import java.util.Optional;
 
 import org.infrastructurebuilder.exceptions.IBException;
@@ -62,6 +63,7 @@ public class GAVTest {
 //    gavNoC2 = new DefaultGAV(X, Y, "", null, BASIC_PACKAGING);
     gav2NoC = new DefaultGAV(gav.asJSON(), "");
     gav3 = DefaultGAV.copyFromSpec(gav2);
+
     j = new JSONObject("{\n" + "  \"extension\": \"" + BASIC_PACKAGING + "\",\n" + "  \"groupId\": \"" + X + "\",\n"
         + "  \"classifier\": \"" + ACLASSIFIER + "\",\n" + "  \"artifactId\": \"" + Y + "\",\n" + "  \"version\": \""
         + V_1_0_0 + "\"\n" + "}");
@@ -220,6 +222,14 @@ public class GAVTest {
     assertFalse(gav.isSnapshot());
     assertFalse(gavNoV.isSnapshot());
     assertTrue(gavs.isSnapshot());
+  }
+
+  @Test
+  public void testDefaultWithFile() {
+    assertTrue(gav.getFile().isEmpty());
+    GAV withFile = gav.withFile(Paths.get("."));
+    assertEquals(gav, withFile);
+    assertFalse(withFile.getFile().isEmpty());
   }
 
 //  @Test

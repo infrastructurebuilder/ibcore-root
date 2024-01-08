@@ -17,6 +17,6 @@
  */
 package org.infrastructurebuilder.util.core;
 
-public interface Configurable<C,T> {
+public interface Configurable<C, T> {
   T withConfig(C c);
 }

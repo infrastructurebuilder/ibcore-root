@@ -20,8 +20,9 @@ package org.infrastructurebuilder.util.config.old;
 import java.util.Map;
 import java.util.Properties;
 import java.util.function.Supplier;
+
 /**
- * ConfigMaps have been deprecated in favor of either: 
+ * ConfigMaps have been deprecated in favor of either:
  * <ol>
  * <li>explicit DAO objects that are keyed specifically to the config consumer</li>
  * <li><code>JSONObject</code> instances</li>

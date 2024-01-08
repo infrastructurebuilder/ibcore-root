@@ -23,7 +23,6 @@ import static java.util.Objects.hash;
 import static java.util.Optional.empty;
 import static org.infrastructurebuilder.util.constants.IBConstants.ADDITIONAL_PROPERTIES;
 import static org.infrastructurebuilder.util.constants.IBConstants.CREATE_DATE;
-import static org.infrastructurebuilder.util.constants.IBConstants.DESCRIPTION;
 import static org.infrastructurebuilder.util.constants.IBConstants.MIME_TYPE;
 import static org.infrastructurebuilder.util.constants.IBConstants.MOST_RECENT_READ_TIME;
 import static org.infrastructurebuilder.util.constants.IBConstants.PATH;
@@ -49,82 +48,83 @@ import org.infrastructurebuilder.util.core.ChecksumBuilder;
 import org.infrastructurebuilder.util.core.ChecksumEnabled;
 import org.infrastructurebuilder.util.core.JSONBuilder;
 import org.infrastructurebuilder.util.core.JSONOutputEnabled;
+import org.infrastructurebuilder.util.core.Modeled;
 import org.infrastructurebuilder.util.core.NameDescribed;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
 
 /**
-*
-* An IBResource is a representation of a stream of bytes on some bytestream source somewhere.
-*
-* It may be possible for a consumer to read that stream, if the IBResource is "realized". It may be possible to acquire
-* the stream from a URL if the type of the URL has a protocol that can be read from the running JVM.
-*
-* Realized IBResource instances are <u>always</u> stored under a RelativeRoot (hereafter "the relroot") on the local
-* filesystem.
-*
-* All IBResource instances must have a source that is expected to be the location from which the stream would or did
-* originate.
-*
-* A valid IBResource has a bytestream whose SHA-512 checksum matches that of the IBResource.getChecksum(). Any other
-* situation, included a resource that cannot be validated because it has no local representation, is considered
-* invalid.
-*
-* The values of IBResource items are considered to be fairly constant. However, by default, local files in the relroot
-* are NOT considered immutable. Cached-object persistence, cached-object stability, immutability, and implied
-* immutability through SLAs and assurances, is outside the scope of the ibcore-root/ibcore-read-detect module. These
-* attributes can be managed through infrastructure and process, but IB projects themselves are (like essentially all
-* software) intrinsically unable to provide those assurances.
-*
-* For these elements, look at the IBData projects and their infrastructure requirements.
-*
-* There are multiple ways to acquire an IBResource:
-* <ol>
-* <li>From a file on the filesystem
-* <ul>
-* <li>This original file may be copied to the relroot if it exists</li>
-* <li>The size is read from the original file</li>
-* <li>The checksum is computed from the original file. This is used to identify the file inside the relroot.</li>
-* <li>The MIME type of the file is computed from the original file unless supplied at creation time.</li>
-* <li>If the MIME type is supplied, the model assumes that the type is correct and does no validation.</li>
-* <li>The properties/attributes of the original file are placed in the IBResource model, if they can be read.</li>
-* <li>The properties are never updated unless the IBResource value is recreated</li>
-* </ul>
-* <li>From a remote resource at the end of some URL-like. If realized, this will be copied to an available relroot like
-* above, or not cached and read to a temp file to be deleted on exit
-* <ul>
-* <li>This stream is copied to the relroot, if present.</li>
-* <li>If the stream is not or cannot be copied, this is considered a "reference" resource.</li>
-* <li>The file size is read from the copied file.</li>
-* <li>The checksum is computed from the copied file.</li>
-* <li>The MIME type is read from headers, if available, unless supplied (as above). If not available, the type is
-* considered to be <code>application/octet-stream</code>.</li>
-* <li>The <code>Last-Modified</code> header is used as the lastUpdateDate, if available. <code>null</code>
-* otherwise.</li>
-* <li>Other properties/attributes of the original file are NOT placed in the IBResource model.</li>
-* <li>As above, the properties are not updated unless the IBResource value is recreated</li>
-* </ul>
-* </li>
-* <li>As a reference to a known remote value, also at the end of some URL-like. This will not be realized, thus not
-* readable, and will only be useful as a reference. Validation of a strict reference is not necessarily possible.</li>
-* <ul>
-* <li>Reference resources are only created when the remote resource is not copied, either due to inability to read the
-* remote bytestream or with a no-copy flag being set at IBResource creation time.</li>
-* <li>Reference resources can be used to recreate another resource.</li>
-* </ul>
-* </ol>
-*
-* As changes allow, IBResource implementations will attempt to expand on the model information available to them.
-*
-* If an IBResource exists pointing to a Path on the filesystem and that entire filesystem is moved elsewhere,
-* theoretically only the relroot value needs to be changed to point to its new location.
-*
-* @author mykelalvis
-*
-*/
+ *
+ * An IBResource is a representation of a stream of bytes on some bytestream source somewhere.
+ *
+ * It may be possible for a consumer to read that stream, if the IBResource is "realized". It may be possible to acquire
+ * the stream from a URL if the type of the URL has a protocol that can be read from the running JVM.
+ *
+ * Realized IBResource instances are <u>always</u> stored under a RelativeRoot (hereafter "the relroot") on the local
+ * filesystem.
+ *
+ * All IBResource instances must have a source that is expected to be the location from which the stream would or did
+ * originate.
+ *
+ * A valid IBResource has a bytestream whose SHA-512 checksum matches that of the IBResource.getChecksum(). Any other
+ * situation, included a resource that cannot be validated because it has no local representation, is considered
+ * invalid.
+ *
+ * The values of IBResource items are considered to be fairly constant. However, by default, local files in the relroot
+ * are NOT considered immutable. Cached-object persistence, cached-object stability, immutability, and implied
+ * immutability through SLAs and assurances, is outside the scope of the ibcore-root/ibcore-read-detect module. These
+ * attributes can be managed through infrastructure and process, but IB projects themselves are (like essentially all
+ * software) intrinsically unable to provide those assurances.
+ *
+ * For these elements, look at the IBData projects and their infrastructure requirements.
+ *
+ * There are multiple ways to acquire an IBResource:
+ * <ol>
+ * <li>From a file on the filesystem
+ * <ul>
+ * <li>This original file may be copied to the relroot if it exists</li>
+ * <li>The size is read from the original file</li>
+ * <li>The checksum is computed from the original file. This is used to identify the file inside the relroot.</li>
+ * <li>The MIME type of the file is computed from the original file unless supplied at creation time.</li>
+ * <li>If the MIME type is supplied, the model assumes that the type is correct and does no validation.</li>
+ * <li>The properties/attributes of the original file are placed in the IBResource model, if they can be read.</li>
+ * <li>The properties are never updated unless the IBResource value is recreated</li>
+ * </ul>
+ * <li>From a remote resource at the end of some URL-like. If realized, this will be copied to an available relroot like
+ * above, or not cached and read to a temp file to be deleted on exit
+ * <ul>
+ * <li>This stream is copied to the relroot, if present.</li>
+ * <li>If the stream is not or cannot be copied, this is considered a "reference" resource.</li>
+ * <li>The file size is read from the copied file.</li>
+ * <li>The checksum is computed from the copied file.</li>
+ * <li>The MIME type is read from headers, if available, unless supplied (as above). If not available, the type is
+ * considered to be <code>application/octet-stream</code>.</li>
+ * <li>The <code>Last-Modified</code> header is used as the lastUpdateDate, if available. <code>null</code>
+ * otherwise.</li>
+ * <li>Other properties/attributes of the original file are NOT placed in the IBResource model.</li>
+ * <li>As above, the properties are not updated unless the IBResource value is recreated</li>
+ * </ul>
+ * </li>
+ * <li>As a reference to a known remote value, also at the end of some URL-like. This will not be realized, thus not
+ * readable, and will only be useful as a reference. Validation of a strict reference is not necessarily possible.</li>
+ * <ul>
+ * <li>Reference resources are only created when the remote resource is not copied, either due to inability to read the
+ * remote bytestream or with a no-copy flag being set at IBResource creation time.</li>
+ * <li>Reference resources can be used to recreate another resource.</li>
+ * </ul>
+ * </ol>
+ *
+ * As changes allow, IBResource implementations will attempt to expand on the model information available to them.
+ *
+ * If an IBResource exists pointing to a Path on the filesystem and that entire filesystem is moved elsewhere,
+ * theoretically only the relroot value needs to be changed to point to its new location.
+ *
+ * @author mykelalvis
+ *
+ */
 
-public interface IBResource<T> extends JSONOutputEnabled, ChecksumEnabled, NameDescribed {
+public interface IBResource<T> extends JSONOutputEnabled, ChecksumEnabled, NameDescribed, Modeled {
   public final static OpenOption[] ZIP_OPTIONS = {
       READ
   };
@@ -157,13 +157,14 @@ public interface IBResource<T> extends JSONOutputEnabled, ChecksumEnabled, NameD
   Checksum getTChecksum();
 
   /**
-   * @return Non-null. This is the calculated Checksum of the model (not just the bytestream)
+   * @return Non-null. This is the calculated Checksum of the entire model (not just the bytestream)
    */
   Checksum getChecksum();
 
   /**
-   * By contract, an unknown or unknowable type should be 'application/octet-stream'
-   * Otherwise, it should be assumed that this type is a valid MIME type for the byte stream
+   * By contract, an unknown or unknowable type should be 'application/octet-stream' Otherwise, it should be assumed
+   * that this type is a valid MIME type for the byte stream
+   *
    * @return Non-null MIME type for the byte stream (i.e. the file at getPath())
    */
   String getType();
@@ -178,25 +179,22 @@ public interface IBResource<T> extends JSONOutputEnabled, ChecksumEnabled, NameD
   Optional<Instant> getMostRecentReadTime();
 
   /**
-   * Create date.  If possible, this should be the create instant of the T item from
-   * {@link IBResource#get()} above.  For instance, if T is an {@link InputStream} that is 
-   * acquired from a {@link Path}, then this should be the create date of that original
-   * Path.  On the other hand, if the stream is from an SQL statements output, then 
-   * this value should be the same as {@link IBResource#getAcquireDate()} below.
-   * 
-   * If the values for these are not immediately obvious, or violate either of the
-   * examples above, then they should probably be explained in the Description of the
-   * IBResource.
+   * Create date. If possible, this should be the create instant of the T item from {@link IBResource#get()} above. For
+   * instance, if T is an {@link InputStream} that is acquired from a {@link Path}, then this should be the create date
+   * of that original Path. On the other hand, if the stream is from an SQL statements output, then this value should be
+   * the same as {@link IBResource#getAcquireDate()} below.
+   *
+   * If the values for these are not immediately obvious, or violate either of the examples above, then they should
+   * probably be explained in the Description of the IBResource.
    *
    * @return create date
    */
   Optional<Instant> getCreateDate();
-  
-  /** 
-   * This is the moment at which the acquisition of the objects returned above are
-   * read.  Sometimes, this is the same as {@link IBResource#getCreateDate()} and
-   * other times it is the time at which a value was read from an outside source.
-   * 
+
+  /**
+   * This is the moment at which the acquisition of the objects returned above are read. Sometimes, this is the same as
+   * {@link IBResource#getCreateDate()} and other times it is the time at which a value was read from an outside source.
+   *
    * @return
    */
   Optional<Instant> getAcquireDate();
@@ -313,7 +311,7 @@ public interface IBResource<T> extends JSONOutputEnabled, ChecksumEnabled, NameD
 
   default ChecksumBuilder getChecksumBuilder() {
     return ChecksumBuilder.newInstance(this.getRelativeRoot().flatMap(RelativeRoot::getPath))
-        .addChecksum(new Checksum(copyModel().getFileChecksum()));
+        .addChecksum(new Checksum(copyModel().getStreamChecksum()));
   }
 
 //  Optional<Path> getLocal();

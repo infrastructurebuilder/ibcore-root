@@ -23,7 +23,6 @@ import static org.infrastructurebuilder.util.constants.IBConstants.IBDATA_PREFIX
 import static org.infrastructurebuilder.util.core.IBUtils.copy;
 
 import java.io.File;
-import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,12 +34,8 @@ import java.util.Optional;
 
 import org.apache.maven.wagon.proxy.ProxyInfoProvider;
 import org.codehaus.plexus.archiver.UnArchiver;
-import org.codehaus.plexus.archiver.bzip2.BZip2UnArchiver;
-import org.codehaus.plexus.archiver.gzip.GZipUnArchiver;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
-import org.codehaus.plexus.archiver.snappy.SnappyUnArchiver;
-import org.codehaus.plexus.archiver.xz.XZUnArchiver;
 import org.codehaus.plexus.components.io.filemappers.FileMapper;
 import org.infrastructurebuilder.util.core.AbsolutePathRelativeRoot;
 //import org.codehaus.plexus.logging.console.ConsoleLogger;
@@ -48,10 +43,10 @@ import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
-import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.IBResourceException;
+import org.infrastructurebuilder.util.readdetect.IBResourceIS;
 import org.infrastructurebuilder.util.readdetect.WGetter;
 import org.slf4j.Logger;
 
@@ -62,7 +57,7 @@ public class DefaultWGetter implements WGetter {
   private final ArchiverManager am;
   private final Path workingDir;
   private final TypeToExtensionMapper t2e;
-  private IBResourceBuilderFactory<Optional<IBResource<InputStream>>> cf;
+  private IBResourceBuilderFactory<Optional<IBResourceIS>> cf;
 
   public DefaultWGetter(Logger log, TypeToExtensionMapper t2e, Map<String, String> headers, Path cacheDir,
       Path workingDir, ArchiverManager archiverManager, Optional<ProxyInfoProvider> pi, Optional<FileMapper[]> mappers)
@@ -90,10 +85,9 @@ public class DefaultWGetter implements WGetter {
   }
 
   @Override
-  synchronized public final Optional<List<IBResource<InputStream>>> collectCacheAndCopyToChecksumNamedFile(
-      boolean deleteExistingCacheIfPresent, Optional<BasicCredentials> creds, Path outputPath, String sourceString,
-      Optional<Checksum> checksum, Optional<String> type, int retries, int readTimeOut, boolean skipCache,
-      boolean expandArchives) {
+  synchronized public final Optional<List<IBResourceIS>> collectCachedIBResources(boolean deleteExistingCacheIfPresent,
+      Optional<BasicCredentials> creds, Path outputPath, String sourceString, Optional<Checksum> checksum,
+      Optional<String> type, int retries, int readTimeOut, boolean skipCache, boolean expandArchives) {
 
 //    wget.setDeleteIfPresent(deleteExistingCacheIfPresent);
     requireNonNull(creds).ifPresent(bc -> {
@@ -110,13 +104,14 @@ public class DefaultWGetter implements WGetter {
     wget.setReadTimeOut(readTimeOut);
     wget.setSkipCache(skipCache);
     wget.setMimeType(type.orElse(null));
-    Optional<List<IBResource<InputStream>>> o = cet.returns(() -> this.wget.downloadIt());
+    Optional<List<IBResourceIS>> o = cet.returns(() -> this.wget.downloadIt());
 
     if (expandArchives) {
       o = o.map(c -> {
-        List<IBResource<InputStream>> b = new ArrayList<>(c);
-        IBResource<InputStream> src = c.get(0);
-        List<IBResource<InputStream>> l = expand(workingDir, src, src.getSourceURL().map(URL::toExternalForm).map(n -> "zip:" + n));
+        List<IBResourceIS> b = new ArrayList<>(c);
+        IBResourceIS src = c.get(0);
+        List<IBResourceIS> l = expand(workingDir, src,
+            src.getSourceURL().map(URL::toExternalForm).map(n -> "zip:" + n));
         b.addAll(l);
         return b;
       });
@@ -125,10 +120,10 @@ public class DefaultWGetter implements WGetter {
   }
 
   @Override
-  public List<IBResource<InputStream>> expand(Path tempPath, IBResource<InputStream> src, Optional<String> oSource) {
+  public List<IBResourceIS> expand(Path tempPath, IBResourceIS src, Optional<String> oSource) {
 
     Path source = requireNonNull(src).getPath().orElseThrow(() -> new IBResourceException("no.path"));
-    List<IBResource<InputStream>> l = new ArrayList<>();
+    List<IBResourceIS> l = new ArrayList<>();
     Path targetDir = cet.returns(() -> Files.createTempDirectory(IBDATA_PREFIX)).toAbsolutePath();
     File outputFile = source.toFile();
     File outputDirectory = targetDir.toFile();
@@ -138,7 +133,7 @@ public class DefaultWGetter implements WGetter {
       UnArchiver unarchiver = this.am.getUnArchiver(type);
       log.debug("Unarchiver type is " + type + " " + unarchiver.toString());
       unarchiver.setSourceFile(outputFile);
-      if (isFileUnArchiver(unarchiver)) {
+      if (WGetter.isFileUnArchiver(unarchiver)) {
         unarchiver.setDestFile(new File(outputDirectory, outputFileName.substring(0, outputFileName.lastIndexOf('.'))));
       } else {
         unarchiver.setDestDirectory(outputDirectory);
@@ -149,9 +144,9 @@ public class DefaultWGetter implements WGetter {
         String tPath = cet.returns(() -> p.toUri().toURL().toExternalForm()).substring(rPath.length());
 // FIXME?
 //        IBResource q = cet.returns(() -> copyToTempChecksumAndPath(tempPath, p, oSource, tPath));
-        final var v = relocateChecksumNamedToTargetDir(tempPath, p);
+        relocateChecksumNamedToTargetDir(tempPath, p).ifPresent(v ->
         // FIXME????
-        l.add(oSource.map(o -> v.withSource(o + "!/" + tPath)).orElse(v).build().get());
+        l.add(oSource.map(o -> v.withSource(o + "!/" + tPath)).orElse(v).build().get()));
       }
 
       IBUtils.deletePath(targetDir);
@@ -162,17 +157,13 @@ public class DefaultWGetter implements WGetter {
     return l;
   }
 
-  private final IBResourceBuilder<Optional<IBResource<InputStream>>> relocateChecksumNamedToTargetDir(Path targetDir, Path source) {
+  private final Optional<IBResourceBuilder<Optional<IBResourceIS>>> relocateChecksumNamedToTargetDir(Path targetDir,
+      Path source) {
 
     Checksum cSum = new Checksum(source);
     Path newTarget = targetDir.resolve(cSum.asUUID().get().toString());
     cet.returns(() -> copy(source, newTarget));
     return cf.builderFromPathAndChecksum(newTarget, cSum);
-  }
-
-  private boolean isFileUnArchiver(final UnArchiver unarchiver) {
-    return unarchiver instanceof BZip2UnArchiver || unarchiver instanceof GZipUnArchiver
-        || unarchiver instanceof SnappyUnArchiver || unarchiver instanceof XZUnArchiver;
   }
 
 }

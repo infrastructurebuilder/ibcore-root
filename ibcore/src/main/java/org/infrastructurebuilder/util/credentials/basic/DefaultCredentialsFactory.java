@@ -41,13 +41,7 @@ public class DefaultCredentialsFactory implements CredentialsFactory {
 
   @Override
   public Optional<BasicCredentials> getCredentialsFor(String query) {
-    // TODO Clean this up!
-    for (CredentialsSupplier s : ss) {
-      Optional<BasicCredentials> b = s.getCredentialsFor(query);
-      if (b.isPresent())
-        return b;
-    }
-    return empty();
+    return ss.stream().map(cs -> cs.getCredentialsFor(query)).flatMap(Optional::stream).findFirst();
   }
 
 }

@@ -19,25 +19,30 @@ package org.infrastructurebuilder.util.readdetect.impl;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 //import javax.annotation.Nonnull;
 
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.UnArchiver;
-import org.codehaus.plexus.archiver.manager.ArchiverManager;
+import org.codehaus.plexus.archiver.manager.DefaultArchiverManager;
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
-import org.codehaus.plexus.archiver.zip.PlexusIoZipFileResourceCollection;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 import org.codehaus.plexus.archiver.zip.ZipUnArchiver;
-import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
 
-public class FakeArchiverManager implements ArchiverManager {
+public class FakeArchiverManager extends DefaultArchiverManager {
 
-  private static String getFileExtention(final File file) {
+  public FakeArchiverManager() {
+    super(Map.of("zip", () -> new ZipArchiver()), Map.of("zip", () -> new ZipUnArchiver()), Collections.emptyMap());
+    // TODO Auto-generated constructor stub
+  }
+
+  private static String getFileExtension(final File file) {
     final String path = file.getAbsolutePath();
 
     String archiveExt = FileUtils.getExtension(path).toLowerCase(Locale.ENGLISH);
@@ -57,7 +62,7 @@ public class FakeArchiverManager implements ArchiverManager {
   @Override
 
   public Archiver getArchiver(final File file) throws NoSuchArchiverException {
-    return getArchiver(getFileExtention(file));
+    return getArchiver(getFileExtension(file));
   }
 
   @Override
@@ -68,20 +73,8 @@ public class FakeArchiverManager implements ArchiverManager {
 
   @Override
 
-  public PlexusIoResourceCollection getResourceCollection(final File file) throws NoSuchArchiverException {
-    return getResourceCollection(getFileExtention(file));
-  }
-
-  @Override
-  public PlexusIoResourceCollection getResourceCollection(final String resourceCollectionName)
-      throws NoSuchArchiverException {
-    return new PlexusIoZipFileResourceCollection();
-  }
-
-  @Override
-
   public UnArchiver getUnArchiver(final File file) throws NoSuchArchiverException {
-    return getUnArchiver(getFileExtention(file));
+    return getUnArchiver(getFileExtension(file));
   }
 
   @Override

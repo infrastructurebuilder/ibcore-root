@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
+import io.vertx.core.file.AsyncFile;
 
 public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<VertxIBResource>> {
 
@@ -64,8 +65,8 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
 
   @Override
   public IBResourceBuilder<Future<VertxIBResource>> fromJSON(JSONObject j) {
-    model = IBResourceBuilder.modelFromJSON.apply(j);
-    Path p = model.getFilePath().map(extracted).orElseThrow(() -> new IBResourceException(NO_PATH_SUPPLIED));
+    model = IBResourceBuilder.modelFromJSON.apply(j).get();
+    Path p = model.getPath().map(extracted).orElseThrow(() -> new IBResourceException(NO_PATH_SUPPLIED));
     this.sourcePath = p;
     return this;
   }
@@ -73,7 +74,7 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
   @Override
   public IBResourceBuilder<Future<VertxIBResource>> withChecksum(Checksum csum) {
     this.targetChecksum = requireNonNull(csum);
-    this.model.setFileChecksum(csum.toString());
+    this.model.setStreamChecksum(csum.toString());
     return this;
   }
 
@@ -92,19 +93,19 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
 
   @Override
   public IBResourceBuilder<Future<VertxIBResource>> withFilePath(String path) {
-    this.model.setFilePath(path);
+    this.model.setPath(path);
     return this;
   }
 
   @Override
-  public IBResourceBuilder<Future<VertxIBResource>> cached(boolean cached) {
-    this.model.setCached(cached);
+  public IBResourceBuilder<Future<VertxIBResource>> withAcquired(Instant acquired) {
+    this.model.setAcquired(acquired);
     return this;
   }
 
   @Override
   public IBResourceBuilder<Future<VertxIBResource>> withName(String name) {
-    this.model.setName(requireNonNull(name));
+    this.model.setStreamName(requireNonNull(name));
     return this;
   }
 
@@ -116,7 +117,7 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
 
   @Override
   public IBResourceBuilder<Future<VertxIBResource>> withType(String type) {
-    this.model.setType(requireNonNull(type));
+    this.model.setStreamType(requireNonNull(type));
     return this;
   }
 
@@ -140,7 +141,7 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
 
   @Override
   public IBResourceBuilder<Future<VertxIBResource>> withSource(String source) {
-    this.model.setSource(requireNonNull(source));
+    this.model.setStreamSource(requireNonNull(source));
     return this;
   }
 
@@ -152,7 +153,7 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
 
   @Override
   public IBResourceBuilder<Future<VertxIBResource>> withSize(long size) {
-    this.model.setSize(size);
+    this.model.setStreamSize(size);
     return this;
   }
 
@@ -179,8 +180,8 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
       }
       if (hard) {
         var aType = toType.apply(this.sourcePath);
-        if (!this.model.getType().equals(aType)) {
-          log.error("Expected type {} does not equal actual type {}", this.model.getType(), aType);
+        if (!this.model.getStreamType().equals(aType)) {
+          log.error("Expected type {} does not equal actual type {}", this.model.getStreamType(), aType);
           return empty();
         }
         if (this.targetChecksum == null) {
@@ -188,14 +189,14 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
           this.targetChecksum = Checksum.ofPath.apply(this.sourcePath).get();
         }
       }
-      if (!this.targetChecksum.equals(this.model.getFileChecksum())) {
-        log.error("Model checksum {} not equal to targeted checksum {}", this.model.getFileChecksum(),
+      if (!this.targetChecksum.equals(this.model.getStreamChecksum())) {
+        log.error("Model checksum {} not equal to targeted checksum {}", this.model.getStreamChecksum(),
             this.targetChecksum);
         return empty();
       }
-      if (this.model.getType() == null) {
+      if (this.model.getStreamType() == null) {
         log.warn("Type not available");
-        this.model.setType(toType.apply(this.sourcePath));
+        this.model.setStreamType(toType.apply(this.sourcePath));
       }
 
       // There has been no source path set.

@@ -1394,4 +1394,28 @@ public class IBUtilsTest {
     assertNotNull(new IBUtils());
   }
 
+  @Test
+  public void testStripTrailingSlash() {
+    var f1 = "file://mylocation/bobo";
+    assertNull(IBUtils.stripTrailingSlash.apply(null));
+    assertEquals("", IBUtils.stripTrailingSlash.apply("/"));
+    assertEquals(".", IBUtils.stripTrailingSlash.apply("./"));
+    assertEquals(f1, IBUtils.stripTrailingSlash.apply(f1 + "/"));
+    assertEquals(f1, IBUtils.stripTrailingSlash.apply(f1));
+  }
+
+  @Test
+  public void testDeepMaptoOrderedString() {
+    String x = """
+            { "a" : "B",
+            "z" : 1,
+            "y" : 3
+            }
+        """.trim();
+    JSONObject j = new JSONObject(x);
+    var expected = """
+        a:"B",y:3,z:1
+        """.trim();
+    assertEquals(expected, IBUtils.deepMapJSONtoOrderedString.apply(j));
+  }
 }

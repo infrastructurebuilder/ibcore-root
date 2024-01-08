@@ -37,9 +37,11 @@ public class RelativeRootBasicPathEnvSupplier extends RelativeRootBasicPathPrope
   public RelativeRootBasicPathEnvSupplier() {
     this(ENV_VAR);
   }
+
   public RelativeRootBasicPathEnvSupplier(String envVar) {
     this.p = Objects.requireNonNull(envVar);
   }
+
   @Override
   public Optional<String> getProperty() {
     return Optional.ofNullable(System.getenv()).map(m -> m.get(getPropertyName()));
@@ -48,10 +50,12 @@ public class RelativeRootBasicPathEnvSupplier extends RelativeRootBasicPathPrope
   public String getPropertyName() {
     return p;
   }
+
   @Override
   protected Logger getLog() {
     return log;
   }
+
   @Override
   public String getName() {
     return NAME;

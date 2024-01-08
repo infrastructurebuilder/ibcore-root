@@ -33,15 +33,17 @@ import org.infrastructurebuilder.util.core.ChecksumBuilder;
 import org.infrastructurebuilder.util.core.JSONAndChecksumEnabled;
 import org.infrastructurebuilder.util.core.Modeled;
 import org.infrastructurebuilder.util.core.RelativeRoot;
+import org.infrastructurebuilder.util.executor.model.executor.model.utils.IBCoreExecutorModelUtils;
 import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.Environment;
 import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.GeneratedProcessExecution;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class ModeledProcessExecution extends GeneratedProcessExecution implements Modeled, JSONAndChecksumEnabled {
-
+  private final static Logger log = LoggerFactory.getLogger(ModeledProcessExecution.class);
   public final static Function<Environment, Optional<SortedMap<String, String>>> envToMapSS = (e) -> {
     return requireNonNull(e).getEnvEntry().map(es -> es.stream().collect(toMap(k -> k.getKey(), v -> v.getValue(), //
         (v1, v2) -> {
@@ -80,10 +82,14 @@ public class ModeledProcessExecution extends GeneratedProcessExecution implement
 
   @Override
   public JSONObject asJSON() {
-    Moshi moshi = new Moshi.Builder().build();
-    JsonAdapter<GeneratedProcessExecution> jsonAdapter = moshi.adapter(GeneratedProcessExecution.class);
-    String json = jsonAdapter.toJson(this);
-    return new JSONObject(json);
+    String json = null;
+    try {
+      json = IBCoreExecutorModelUtils.getObjectMapper().writeValueAsString(this);
+      return new JSONObject(json);
+    } catch (JsonProcessingException e1) {
+      log.error("Error processinging asJSON()", e1);
+      throw new ProcessException("Cannot convert modeled process to JSON", e1);
+    }
   }
 
   @Override

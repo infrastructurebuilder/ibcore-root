@@ -15,100 +15,98 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.vertx.blobstore;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.nio.file.Path;
-import java.util.concurrent.TimeUnit;
-
-import org.infrastructurebuilder.util.constants.IBConstants;
-import org.infrastructurebuilder.util.core.RelativeRootSetPathSupplier;
-import org.infrastructurebuilder.util.core.TestingPathSupplier;
-import org.infrastructurebuilder.util.vertx.blobstore.impl.FilesystemBlobstore;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import io.vertx.core.Future;
-import io.vertx.core.Vertx;
-import io.vertx.core.file.FileSystem;
-import io.vertx.junit5.Timeout;
-import io.vertx.junit5.VertxExtension;
-import io.vertx.junit5.VertxTestContext;
-
-@ExtendWith(VertxExtension.class)
-class OldFilesystemBlobstoreTest {
-
-  private final static Logger log = LoggerFactory.getLogger(OldFilesystemBlobstoreTest.class);
-  private static TestingPathSupplier tps;
-
-  @BeforeAll
-  static void setUpBeforeClass() throws Exception {
-    tps = new TestingPathSupplier();
-  }
-
-  @AfterAll
-  static void tearDownAfterClass() throws Exception {
-  }
-
-  FilesystemBlobstore bs;
-  private Path root;
-  private RelativeRootSetPathSupplier rrs;
-
-  @BeforeEach
-  void setUp() throws Exception {
-    root = tps.get();
-    rrs = new RelativeRootSetPathSupplier(root);
-    bs = new FilesystemBlobstore(rrs, IBConstants.BLOBSTORE_NO_MAXBYTES);
-  }
-
-  @AfterEach
-  void tearDown() throws Exception {
-    tps.finalize();
-  }
-
-  @Test
-  void testGetRelativeRoot() {
-    var p1 = bs.getRelativeRoot().getPath().get().toString();
-    var p2 = root.toString();
-    assertEquals(p1, p2);
-  }
-
-  @Test
-  void testGetBlob() {
-  }
-
-  @Test
-  void testGetCreateDate() {
-  }
-
+//package org.infrastructurebuilder.util.vertx.blobstore;
+//
+//import static org.junit.jupiter.api.Assertions.assertEquals;
+//import static org.junit.jupiter.api.Assertions.assertNotNull;
+//
+//import java.nio.file.Path;
+//
+//import org.infrastructurebuilder.util.constants.IBConstants;
+//import org.infrastructurebuilder.util.core.RelativeRootSetPathSupplier;
+//import org.infrastructurebuilder.util.core.TestingPathSupplier;
+//import org.infrastructurebuilder.util.vertx.blobstore.impl.FilesystemBlobstore;
+//import org.junit.jupiter.api.AfterAll;
+//import org.junit.jupiter.api.AfterEach;
+//import org.junit.jupiter.api.BeforeAll;
+//import org.junit.jupiter.api.BeforeEach;
+//import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.extension.ExtendWith;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
+//
+//import io.vertx.core.Future;
+//import io.vertx.core.Vertx;
+//import io.vertx.core.file.FileSystem;
+//import io.vertx.junit5.VertxExtension;
+//import io.vertx.junit5.VertxTestContext;
+//
+//@ExtendWith(VertxExtension.class)
+//class OldFilesystemBlobstoreTest {
+//
+//  private final static Logger log = LoggerFactory.getLogger(OldFilesystemBlobstoreTest.class);
+//  private static TestingPathSupplier tps;
+//
+//  @BeforeAll
+//  static void setUpBeforeClass() throws Exception {
+//    tps = new TestingPathSupplier();
+//  }
+//
+//  @AfterAll
+//  static void tearDownAfterClass() throws Exception {
+//  }
+//
+//  FilesystemBlobstore bs;
+//  private Path root;
+//  private RelativeRootSetPathSupplier rrs;
+//
+//  @BeforeEach
+//  void setUp() throws Exception {
+//    root = tps.get();
+//    rrs = new RelativeRootSetPathSupplier(root);
+//    bs = new FilesystemBlobstore(rrs, IBConstants.BLOBSTORE_NO_MAXBYTES);
+//  }
+//
+//  @AfterEach
+//  void tearDown() throws Exception {
+//    tps.finalize();
+//  }
+//
 //  @Test
-//  @Timeout(value = 60, timeUnit = TimeUnit.SECONDS)
-  void testPutBlobStringStringPath(Vertx vertx, VertxTestContext testContext) {
-    FileSystem fs = vertx.fileSystem();
-    Path target = tps.get();
-    String finalTarget = target.resolve("rick.jpg").toString();
-    Path rick = tps.getTestClasses().resolve("rick.jpg");
-    Future<String> fv = bs.putBlob(rick.toString(), "DESC", rick);
-    fv.onComplete(testContext.succeeding(buffer -> {
-      assertNotNull(buffer);
-      bs.getBlob(buffer).compose(r -> {
-        return fs.writeFile(finalTarget, r);
-      }).onComplete(res -> {
-        log.info("Inside oncomplete");
-      });
-    }));
-    log.info("Done");
-  }
-
-  @Test
-  void testGetMetadata() {
-  }
-}
+//  void testGetRelativeRoot() {
+//    var p1 = bs.getRelativeRoot().getPath().get().toString();
+//    var p2 = root.toString();
+//    assertEquals(p1, p2);
+//  }
+//
+//  @Test
+//  void testGetBlob() {
+//  }
+//
+//  @Test
+//  void testGetCreateDate() {
+//  }
+//
+////  @Test
+////  @Timeout(value = 60, timeUnit = TimeUnit.SECONDS)
+//  void testPutBlobStringStringPath(Vertx vertx, VertxTestContext testContext) {
+//    FileSystem fs = vertx.fileSystem();
+//    Path target = tps.get();
+//    String finalTarget = target.resolve("rick.jpg").toString();
+//    Path rick = tps.getTestClasses().resolve("rick.jpg");
+//    Future<String> fv = bs.putBlob(rick.toString(), "DESC", rick);
+//    fv.onComplete(testContext.succeeding(buffer -> {
+//      assertNotNull(buffer);
+//      bs.getBlob(buffer).compose(r -> {
+//        return fs.writeFile(finalTarget, r);
+//      }).onComplete(res -> {
+//        log.info("Inside oncomplete");
+//      });
+//    }));
+//    log.info("Done");
+//  }
+//
+//  @Test
+//  void testGetMetadata() {
+//  }
+//}

@@ -26,11 +26,15 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import javax.inject.Provider;
 
+import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
+import org.infrastructurebuilder.util.settings.ServerProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +43,20 @@ public class S3FileSystem implements Supplier<Optional<FileSystem>>, Provider<Op
   private String accessKey;
   private String secretKey;
   private String uri = "s3://s3.amazonaws.com/"; // s3:///
+
+  public final S3FileSystem withBasicCredentials(BasicCredentials b) {
+    this.accessKey = Objects.requireNonNull(b).getKeyId();
+    this.secretKey = b.getSecret().orElseThrow(() -> new IBException("No available secret for S3FileSystem"));
+    return this;
+  }
+
+  public final S3FileSystem withServerProxy(ServerProxy p) {
+    this.accessKey = Objects.requireNonNull(p).getPrincipal()
+        .orElseThrow(() -> new IBException("No available access key as principal for S3FileSystem"));
+    this.secretKey = p.getSecret()
+        .orElseThrow(() -> new IBException("No available secret key as secret for S3FileSystem"));
+    return this;
+  }
 
   public Optional<FileSystem> get() {
     Map<String, String> env = new HashMap<>();

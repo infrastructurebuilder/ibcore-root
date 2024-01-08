@@ -19,11 +19,11 @@ package org.infrastructurebuilder.util.config.old;
 
 import org.infrastructurebuilder.util.core.ResponsiveTo;
 
-public interface IBConfigurableParamIOFactory<T, P, C> extends IBConfigurableParamFactory<T, P, C> , ResponsiveTo<P>{
+public interface IBConfigurableParamIOFactory<T, P, C> extends IBConfigurableParamFactory<T, P, C>, ResponsiveTo<P> {
 
   /**
    * Additional "respondsTo" for direction
-   * 
+   *
    */
   boolean respondsTo(P param, boolean inbound);
 

@@ -27,6 +27,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -56,12 +59,20 @@ public class JSONBuilderTest {
   }
 
   @Test
+  public void testMinorStringParse() {
+    DateTimeFormatter dtf = JSONBuilder.getDateFormat();
+    var q = dtf.parse("2023-12-28T19:39:38.000000000Z");
+
+    assertNotNull(Instant.from(q));
+  }
+
+  @Test
   public void testInstantParser() {
     Instant i = Instant.now();
 
     final JSONObject k = JSONBuilder.newInstance().addInstant("X", i).asJSON();
     assertTrue(JSONBuilder.instantFromJSON.apply(null).isEmpty());
-    assertEquals(JSONBuilder.instantFromJSON.apply(k.getString("X")).get(), i);
+    assertTrue(JSONBuilder.instantFromJSON.apply(k.getString("X")).get().compareTo(i) == 0);
   }
 
   @Test
@@ -120,8 +131,9 @@ public class JSONBuilderTest {
 
   @Test
   public void testAddInstantStringInstant() {
+    var f = DateTimeFormatter.ofPattern(JSONBuilder.TIMESTAMP).withZone(ZoneId.from(ZoneOffset.UTC));
     final Instant now = Instant.now();
-    final JSONObject j = new JSONObject().put("X", now.toString());
+    final JSONObject j = new JSONObject().put("X", f.format(now));
     final JSONObject k = jb.addInstant("X", Optional.of(now)).asJSON();
     JSONAssert.assertEquals(j, k, true);
   }

@@ -35,35 +35,28 @@ import org.infrastructurebuilder.util.core.ChecksumBuilder;
 import org.infrastructurebuilder.util.executor.ProcessException;
 import org.infrastructurebuilder.util.executor.ProcessExecution;
 import org.infrastructurebuilder.util.executor.ProcessExecutionResult;
+import org.infrastructurebuilder.util.executor.model.executor.model.utils.IBCoreExecutorModelUtils;
 import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.Environment;
 import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.ExecutionException;
 import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.GeneratedProcessExecutionResult;
 import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.Stack;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class DefaultProcessExecutionResult implements ProcessExecutionResult {
+  private final static Logger log = LoggerFactory.getLogger(DefaultProcessExecutionResult.class);
 
-  private final static Moshi moshi = new Moshi.Builder().build();
-  private final static JsonAdapter<ExecutionException> eeAdapter = moshi.adapter(ExecutionException.class);
-  private static Function<ExecutionException, Throwable> toThrowable = (e) -> {
-    try {
-      return (Throwable) DefaultProcessExecutionResult.class.getClassLoader().loadClass(e.getKlass())
-          .getDeclaredConstructor().newInstance();
-    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-        | NoSuchMethodException | SecurityException | ClassNotFoundException e1) {
-      throw new ProcessException(e1);
-    }
-  };
   public final static Function<StackTraceElement[], List<Stack>> toNullableStack = (elements) -> {
     if (elements == null)
       return null;
     List<Stack> l = new ArrayList<>();
     for (StackTraceElement e : elements) {
       var b = Stack.builder().withDeclaringClass(e.getClassName()) //
-          .withFileName(e.getFileName()).withLineNumber(e.getLineNumber()) //
+          .withFileName(e.getFileName()) //
+          .withLineNumber((long) e.getLineNumber()) //
           .withMethodName(e.getMethodName()) //
           .withClassLoaderName(e.getClassLoaderName()) //
           .withModuleName(e.getModuleName()) //
@@ -99,12 +92,11 @@ public class DefaultProcessExecutionResult implements ProcessExecutionResult {
     ;
     this.gper = GeneratedProcessExecutionResult.builder() //
         .withEnvironment(new Environment()) //
-        .withStart(startTime.toString()) //
+        .withStart(startTime) //
         .withRunTime(between.toString()) //
         .withExecutionException(toNullableExecutionException.apply(exception)) //
         .withResultCode((exitCode.orElse(0)).toString()) //
-        .withStdOut(pe.getStdOut().get())
-        .withStdErr(pe.getStdErr().get())
+        .withStdOut(pe.getStdOut().get()).withStdErr(pe.getStdErr().get())
 
         .build();
     this.gper.setId(asChecksum().toString());
@@ -124,12 +116,20 @@ public class DefaultProcessExecutionResult implements ProcessExecutionResult {
 
   @Override
   public Instant getStartTime() {
-    return Instant.parse(this.gper.getStart());
+    return this.gper.getStart();
   }
 
   @Override
   public Optional<JSONObject> getException() {
-    return this.gper.getExecutionException().map(eeAdapter::toJson).map(JSONObject::new);
+    var o = IBCoreExecutorModelUtils.getObjectMapper();
+    return this.gper.getExecutionException().map(e -> {
+      try {
+        return o.writeValueAsString(e);
+      } catch (JsonProcessingException e1) {
+        log.error("Error processinging getException()", e1);
+        return null;
+      }
+    }).map(JSONObject::new);
   }
 
   @Override

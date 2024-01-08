@@ -103,11 +103,9 @@ public interface ProcessExecutionResultBag extends JSONOutputEnabled {
 //    final Map<String, Optional<List<String>>> l = getStdErrs();
 //    return getExecutedIds().stream().map(l::get).flatMap(Optional::stream).flatMap(List::stream).collect(toList());
     var v = getStdErrs();
-    return  getExecutedIds().stream() //
-        .map(key -> v.get(key))
-        .map(v2 -> Optional.ofNullable(v2)).flatMap(Optional::stream)
-        .map(o -> (o.orElseGet(()->emptyList()).stream()))
-        .map(o -> o.toString()).collect(toList());
+    return getExecutedIds().stream() //
+        .map(key -> v.get(key)).map(v2 -> Optional.ofNullable(v2)).flatMap(Optional::stream)
+        .map(o -> (o.orElseGet(() -> emptyList()).stream())).map(o -> o.toString()).collect(toList());
 
   }
 
@@ -119,11 +117,9 @@ public interface ProcessExecutionResultBag extends JSONOutputEnabled {
 
   default List<String> getStdOut() {
     var v = getStdOuts();
-    return  getExecutedIds().stream() //
-        .map(key -> v.get(key))
-        .map(v2 -> Optional.ofNullable(v2)).flatMap(Optional::stream)
-        .map(o -> (o.orElseGet(()->emptyList()).stream()))
-        .map(o -> o.toString()).collect(toList());
+    return getExecutedIds().stream() //
+        .map(key -> v.get(key)).map(v2 -> Optional.ofNullable(v2)).flatMap(Optional::stream)
+        .map(o -> (o.orElseGet(() -> emptyList()).stream())).map(o -> o.toString()).collect(toList());
   }
 
   default Map<String, Optional<List<String>>> getStdOuts() {

@@ -17,23 +17,25 @@
  */
 package org.infrastructurebuilder.util.core;
 
+import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
+import static org.infrastructurebuilder.exceptions.IBException.cet;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.infrastructurebuilder.exceptions.IBException;
 
 public class AbsolutePathRelativeRoot extends AbstractBaseRelativeRoot {
 
   public AbsolutePathRelativeRoot(Path p) {
-    super(requireNonNull(checkAbsolute(p))
-        .map(path -> IBException.cet.returns(() -> path.toUri().toURL().toExternalForm()))
-        .orElseThrow(() -> new IBException("No path provided")));
+    super(requireNonNull(checkAbsolute(p)).map(path -> cet.returns(() -> path.toUri().toURL().toExternalForm()))
+        .orElseThrow(() -> new IBException("Path provided is not valid: " + p)));
   }
-  
+
   @Override
   public RelativeRoot extend(String newPath) {
-    return new AbsolutePathRelativeRoot(getPath().get().resolve(newPath));
+    return new AbsolutePathRelativeRoot(Paths.get(format("%s%s%s", getStringRoot(), "/", requireNonNull(newPath))));
   }
 
 }

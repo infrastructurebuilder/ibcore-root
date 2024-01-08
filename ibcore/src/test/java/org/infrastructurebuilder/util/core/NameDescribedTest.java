@@ -89,7 +89,7 @@ class NameDescribedTest {
   @Test
   void testGetDisplayName() {
     assertFalse(n.getDisplayName().isEmpty());
-    assertEquals(DISP2,n.getDisplayName().get());
+    assertEquals(DISP2, n.getDisplayName().get());
     assertEquals(DISP2, m.getDisplayName().get());
   }
 

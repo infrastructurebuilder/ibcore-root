@@ -224,7 +224,7 @@ public interface ConfigMap extends JSONOutputEnabled {
    * @return An object which is the value, or null if there is no value.
    */
   Object opt(String key);
-  
+
   Optional<Object> optional(String key);
 
   /**
@@ -541,19 +541,19 @@ public interface ConfigMap extends JSONOutputEnabled {
   /**
    * Creates a JSONPointer using an initialization string and tries to match it to an item within this JSONObject. For
    * example, given a JSONObject initialized with this document:
-   * 
+   *
    * <pre>
    * {
    *     "a":{"b":"c"}
    * }
    * </pre>
-   * 
+   *
    * and this JSONPointer string:
-   * 
+   *
    * <pre>
    * "/a/b"
    * </pre>
-   * 
+   *
    * Then this method will return the String "c". A JSONPointerException may be thrown from code called by this method.
    *
    * @param jsonPointer string that can be used to create a JSONPointer
@@ -564,19 +564,19 @@ public interface ConfigMap extends JSONOutputEnabled {
   /**
    * Uses a user initialized JSONPointer and tries to match it to an item within this JSONObject. For example, given a
    * JSONObject initialized with this document:
-   * 
+   *
    * <pre>
    * {
    *     "a":{"b":"c"}
    * }
    * </pre>
-   * 
+   *
    * and this JSONPointer:
-   * 
+   *
    * <pre>
    * "/a/b"
    * </pre>
-   * 
+   *
    * Then this method will return the String "c". A JSONPointerException may be thrown from code called by this method.
    *
    * @param jsonPointer string that can be used to create a JSONPointer
@@ -640,18 +640,18 @@ public interface ConfigMap extends JSONOutputEnabled {
    *
    * <p>
    * If
-   * 
+   *
    * <pre>{@code
    * indentFactor > 0
    * }</pre>
-   * 
+   *
    * and the {@link JSONObject} has only one key, then the object will be output on a single line:
-   * 
+   *
    * <pre>{@code {"key": 1}}</pre>
    *
    * <p>
    * If an object has 2 or more keys, then it will be output across multiple lines:
-   * 
+   *
    * <pre>{@code {
    *  "key1": 1,
    *  "key2": "value 2",
@@ -672,7 +672,7 @@ public interface ConfigMap extends JSONOutputEnabled {
    * Write the contents of the JSONObject as JSON text to a writer. For compactness, no whitespace is added.
    * <p>
    * <b> Warning: This method assumes that the data structure is acyclical. </b>
-   * 
+   *
    * @param writer the writer object
    * @return The writer.
    * @throws IBException if a called function has an error
@@ -684,18 +684,18 @@ public interface ConfigMap extends JSONOutputEnabled {
    *
    * <p>
    * If
-   * 
+   *
    * <pre>{@code
    * indentFactor > 0
    * }</pre>
-   * 
+   *
    * and the {@link JSONObject} has only one key, then the object will be output on a single line:
-   * 
+   *
    * <pre>{@code {"key": 1}}</pre>
    *
    * <p>
    * If an object has 2 or more keys, then it will be output across multiple lines:
-   * 
+   *
    * <pre>{@code {
    *  "key1": 1,
    *  "key2": "value 2",

@@ -15,7 +15,7 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.readdetect.impl;
+package org.infrastructurebuilder.util.readdetect;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
@@ -39,7 +39,7 @@ import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.ChecksumBuilder;
 import org.infrastructurebuilder.util.core.RelativeRoot;
-import org.infrastructurebuilder.util.readdetect.IBResource;
+import org.infrastructurebuilder.util.readdetect.impl.AbsolutePathIBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -52,12 +52,12 @@ import org.slf4j.LoggerFactory;
  * @author mykel
  *
  */
-public class IBResourceInMemoryDelegated implements IBResource<InputStream> {
+public class IBResourceInMemoryDelegated implements IBResourceIS {
   private final static Tika tika = new Tika();
 
   private final static Logger log = LoggerFactory.getLogger(IBResourceInMemoryDelegated.class);
 
-  private final IBResource<InputStream> r;
+  private final IBResourceIS r;
 
   private final byte[] ba;
 
@@ -71,17 +71,17 @@ public class IBResourceInMemoryDelegated implements IBResource<InputStream> {
   {
     this.ba = bb.clone();
     IBResourceModel m = new IBResourceModel();
-    m.setFileChecksum(new Checksum(get().get()).toString());
-    m.setName(blobname);
+    m.setStreamChecksum(new Checksum(get().get()).toString());
+    m.setStreamName(blobname);
     m.setDescription(desc);
     m.setLastUpdate(requireNonNull(updated));
     m.setCreated(requireNonNull(create));
-    m.setFilePath("." + UUID.randomUUID());
+    m.setPath("." + UUID.randomUUID());
 
     try {
-      m.setType(tika.detect(get().get()));
+      m.setStreamType(tika.detect(get().get()));
     } catch (IOException e) {
-      m.setType(APPLICATION_OCTET_STREAM);
+      m.setStreamType(APPLICATION_OCTET_STREAM);
     }
 
     requireNonNull(addlProps).ifPresent(p -> p.forEach((k, v) -> m.setAdditionalProperty(k.toString(), v.toString())));
@@ -114,7 +114,7 @@ public class IBResourceInMemoryDelegated implements IBResource<InputStream> {
   public Optional<Instant> getCreateDate() {
     return r.getCreateDate();
   }
-  
+
   @Override
   public Optional<Instant> getAcquireDate() {
     return r.getAcquireDate();
@@ -174,7 +174,7 @@ public class IBResourceInMemoryDelegated implements IBResource<InputStream> {
   public boolean validate(boolean hard) {
     Checksum s = this.getChecksum();
     IBResourceModel model = this.r.copyModel();
-    if (!s.equals(new Checksum(model.getFileChecksum())))
+    if (!s.equals(new Checksum(model.getStreamChecksum())))
       return false;
     if (hard) {
       Checksum n = new Checksum(this.ba);
@@ -186,6 +186,12 @@ public class IBResourceInMemoryDelegated implements IBResource<InputStream> {
 
   @Override
   public ChecksumBuilder getChecksumBuilder() {
-    return ChecksumBuilder.newInstance(this.getRelativeRoot().flatMap(RelativeRoot::getPath)).addChecksum(r.getChecksum());
+    return ChecksumBuilder.newInstance(this.getRelativeRoot().flatMap(RelativeRoot::getPath))
+        .addChecksum(r.getChecksum());
+  }
+
+  @Override
+  public String getModelVersion() {
+    return r.getModelVersion();
   }
 }

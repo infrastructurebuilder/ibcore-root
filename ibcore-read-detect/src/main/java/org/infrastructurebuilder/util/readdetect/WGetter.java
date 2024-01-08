@@ -17,17 +17,17 @@
  */
 package org.infrastructurebuilder.util.readdetect;
 
-import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
+import org.codehaus.plexus.archiver.UnArchiver;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
 
 public interface WGetter {
 
-  Optional<List<IBResource<InputStream>>> collectCacheAndCopyToChecksumNamedFile(boolean deleteExistingCacheIfPresent,
+  Optional<List<IBResourceIS>> collectCachedIBResources(boolean deleteExistingCacheIfPresent,
       Optional<BasicCredentials> creds, Path outputPath, String sourceString, Optional<Checksum> checksum,
       Optional<String> type, int retries, int readTimeOut, boolean skipCache, boolean expandArchives);
 
@@ -41,6 +41,14 @@ public interface WGetter {
    * @return List of expanded read, typed, and renamed files, not including the original.
    */
 
-  List<IBResource<InputStream>> expand(Path tempPath, IBResource<InputStream> source, Optional<String> oSource);
+  List<IBResourceIS> expand(Path tempPath, IBResourceIS source, Optional<String> oSource);
+
+  final static List<String> FILEUNARCHNAMES = List.of("BZip2UnArchiver", "GZipUnarchiver", "SnappyUnArchiver",
+      "XZUnArchiver");
+
+  static boolean isFileUnArchiver(final UnArchiver unarchiver) {
+    var name = unarchiver.getClass().getCanonicalName();
+    return FILEUNARCHNAMES.stream().filter(n -> name.contains(n)).findAny().isPresent();
+  }
 
 }

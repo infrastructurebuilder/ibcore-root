@@ -91,6 +91,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.infrastructurebuilder.util.core.IdentifiedAndWeighted;
+import org.infrastructurebuilder.util.core.TypeMapTuple;
 import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
 
 @Named
@@ -105,8 +106,9 @@ public class DefaultTypeToExtensionMapper implements TypeToExtensionMapper {
     list.addAll(Arrays.asList(
 
         new TypeMapTuple(APPLICATION_OCTET_STREAM, BIN) // DEFAULT
-        , new TypeMapTuple(IBDATA_SCHEMA, XML) //
-        , new TypeMapTuple(APPLICATION_XML, XML, ORG_W3C_DOM_NODE) //
+        , new TypeMapTuple(IBDATA_SCHEMA, JSON_EXT) //
+        , new TypeMapTuple(APPLICATION_IBDATA, IBDATAARCHIVE), new TypeMapTuple(APPLICATION_JAR, JARARCHIVE),
+        new TypeMapTuple(APPLICATION_XML, XML, ORG_W3C_DOM_NODE) //
         , new TypeMapTuple(TEXT_HTML, HTM, JAVA_LANG_STRING) //
         , new TypeMapTuple(TEXT_HTML, HTML, JAVA_LANG_STRING) //
         , new TypeMapTuple(TEXT_PLAIN, TXT, JAVA_LANG_STRING) //

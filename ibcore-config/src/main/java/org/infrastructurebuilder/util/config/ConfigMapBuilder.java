@@ -30,7 +30,7 @@ public interface ConfigMapBuilder extends Supplier<ConfigMap> {
 
   /**
    * Loads file of properties. If optional, then missing/unloadable file is not a failure.
-   * 
+   *
    * @param file
    * @param optional
    * @return
@@ -42,6 +42,8 @@ public interface ConfigMapBuilder extends Supplier<ConfigMap> {
 
   ConfigMapBuilder withMapStringString(Map<String, String> m);
 
+  ConfigMapBuilder withMapStringObject(Map<String, Object> m);
+
   ConfigMapBuilder withJSONObject(JSONObject j);
 
   ConfigMapBuilder withJSONFile(Path j, boolean optional);
@@ -51,5 +53,14 @@ public interface ConfigMapBuilder extends Supplier<ConfigMap> {
   ConfigMapBuilder withKeyValue(String key, Object value);
 
   ConfigMapBuilder withJSONObjectFacade(ConfigMap j);
+
+  ConfigMapBuilder withConfigMapBuilder(ConfigMapBuilder c);
+
+  /**
+   * Obtain a new ConfigMapBuilder that is an operationally effective clone of this one
+   *
+   * @return
+   */
+  ConfigMapBuilder copy();
 
 }
