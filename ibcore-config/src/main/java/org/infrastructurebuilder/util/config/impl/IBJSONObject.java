@@ -40,6 +40,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.Stack;
+import java.util.StringJoiner;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -58,7 +59,7 @@ import org.slf4j.LoggerFactory;
 
 public class IBJSONObject implements ConfigMap, ConfigMapBuilder {
   private static final Logger log = LoggerFactory.getLogger(IBJSONObject.class);
-  private final Stack<JSONObject> s = new Stack<JSONObject>();
+  protected final Stack<JSONObject> s = new Stack<JSONObject>();
 
   private IBJSONObject(Stack<JSONObject> h, JSONOutputEnabled g) {
     this(h);
@@ -802,6 +803,16 @@ public class IBJSONObject implements ConfigMap, ConfigMapBuilder {
   @Override
   public String toString(int indentFactor) throws IBException {
     return collapse().toString(indentFactor);
+  }
+
+  @Override
+  public String toString() {
+    StringJoiner sj = new StringJoiner("\n", "[", "]");
+
+    this.s.forEach(j -> {
+      sj.add(j.toString(2));
+    });
+    return sj.toString();
   }
 
   @Override

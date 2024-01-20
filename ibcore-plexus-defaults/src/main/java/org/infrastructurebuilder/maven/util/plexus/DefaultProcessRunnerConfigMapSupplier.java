@@ -15,44 +15,44 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.maven.util.plexus;
-
-import static java.util.stream.Collectors.toMap;
-
-import java.util.Map;
-import java.util.function.Function;
-
-import org.infrastructurebuilder.util.config.ConfigMap;
-import org.infrastructurebuilder.util.config.ConfigMapBuilder;
-import org.infrastructurebuilder.util.config.ConfigMapBuilderSupplier;
-import org.infrastructurebuilder.util.config.impl.DefaultConfigMapBuilderSupplier;
-import org.infrastructurebuilder.util.executor.ProcessRunnerSupplier;
-
-@Deprecated
-public class DefaultProcessRunnerConfigMapSupplier extends DefaultConfigMapBuilderSupplier {
-
-  public static final String PROCESSRUNNERCONFIG = "processrunnerconfig";
-  private final ConfigMapBuilder configMap;
-
-  public DefaultProcessRunnerConfigMapSupplier(final ConfigMapBuilderSupplier cms) {
-    this.configMap = cms.get();
-    final ConfigMap tempMap = this.configMap.get(); // Interim values
-
-    Map<String, String> q = tempMap.keySet().stream()
-
-        .filter(e -> e.startsWith(ProcessRunnerSupplier.PROCESS_NAMESPACE))
-
-        .collect(toMap(Function.identity(), v -> tempMap.get(v).toString()));
-    this.configMap.withMapStringString(q);
-  }
-
-  @Override
-  public ConfigMapBuilder get() {
-    return configMap;
-  }
-
-  @Override
-  public String getName() {
-    return PROCESSRUNNERCONFIG;
-  }
-}
+//package org.infrastructurebuilder.maven.util.plexus;
+//
+//import static java.util.stream.Collectors.toMap;
+//
+//import java.util.Map;
+//import java.util.function.Function;
+//
+//import org.infrastructurebuilder.util.config.ConfigMap;
+//import org.infrastructurebuilder.util.config.ConfigMapBuilder;
+//import org.infrastructurebuilder.util.config.ConfigMapBuilderSupplier;
+//import org.infrastructurebuilder.util.config.impl.DefaultConfigMapBuilderSupplier;
+//import org.infrastructurebuilder.util.executor.ProcessRunnerSupplier;
+//
+//@Deprecated
+//public class DefaultProcessRunnerConfigMapSupplier extends DefaultConfigMapBuilderSupplier {
+//
+//  public static final String PROCESSRUNNERCONFIG = "processrunnerconfig";
+//  private final ConfigMapBuilder configMap;
+//
+//  public DefaultProcessRunnerConfigMapSupplier(final ConfigMapBuilderSupplier cms) {
+//    this.configMap = cms.get();
+//    final ConfigMap tempMap = this.configMap.get(); // Interim values
+//
+//    Map<String, String> q = tempMap.keySet().stream()
+//
+//        .filter(e -> e.startsWith(ProcessRunnerSupplier.PROCESS_NAMESPACE))
+//
+//        .collect(toMap(Function.identity(), v -> tempMap.get(v).toString()));
+//    this.configMap.withMapStringString(q);
+//  }
+//
+//  @Override
+//  public ConfigMapBuilder get() {
+//    return configMap;
+//  }
+//
+//  @Override
+//  public String getName() {
+//    return PROCESSRUNNERCONFIG;
+//  }
+//}

@@ -26,9 +26,11 @@ import org.apache.maven.settings.Settings;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MavenConfigWithServersMapSupplierTest extends MavenConfigMapSupplierTest {
-
+  private static final Logger log = LoggerFactory.getLogger(MavenConfigWithServersMapSupplierTest.class);
   private static final String PRIVATEKEY = "privatekey";
   private static final String PASSWORD = "password";
   private static final String PASSPHRASE = "passphrase";
@@ -74,6 +76,7 @@ public class MavenConfigWithServersMapSupplierTest extends MavenConfigMapSupplie
   @Test
   public void testSetSettings() {
     final ConfigMap map = cms.get().get();
+    log.info("JSON is " + map.asJSON().toString(2));
     assertEquals(map.getString(ns + USERNAME), USERNAME);
     assertEquals(map.getString(ns + PASSPHRASE), PASSPHRASE);
     assertEquals(map.getString(ns + PASSWORD), PASSWORD);

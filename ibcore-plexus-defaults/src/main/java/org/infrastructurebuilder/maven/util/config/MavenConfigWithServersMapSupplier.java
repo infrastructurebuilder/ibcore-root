@@ -33,6 +33,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Settings;
 import org.eclipse.sisu.Nullable;
 import org.infrastructurebuilder.util.config.ConfigMapBuilderSupplier;
+import org.json.JSONObject;
 
 @Named(ConfigMapBuilderSupplier.MAVEN_WITH_SERVERS)
 @Singleton
@@ -57,7 +58,8 @@ public class MavenConfigWithServersMapSupplier extends MavenConfigMapBuilderSupp
 
     ofNullable(sb.toString().length() > 0 ? sb.toString() : null)
         .ifPresent(v -> p.setProperty(ConfigMapBuilderSupplier.MAVEN_SETTINGS_SERVER_NAMESPACE + "servers", v));
-    super.get().withProperties(p);
+    super.addASingle(new JSONObject(p));
+//    super.get().withProperties(p);
   }
 
   @Override

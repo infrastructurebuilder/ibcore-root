@@ -24,6 +24,7 @@ import static org.infrastructurebuilder.util.constants.IBConstants.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -37,7 +38,9 @@ import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.sisu.Nullable;
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.util.config.ConfigMapBuilder;
 import org.infrastructurebuilder.util.config.ConfigMapBuilderSupplier;
+import org.infrastructurebuilder.util.config.impl.DefaultConfigMapBuilder;
 import org.infrastructurebuilder.util.config.impl.DefaultConfigMapBuilderSupplier;
 import org.json.JSONObject;
 
@@ -85,19 +88,14 @@ public class MavenConfigMapBuilderSupplier extends DefaultConfigMapBuilderSuppli
 
     final Path workingDir = Paths.get(build.getDirectory()).resolve(UUID.randomUUID().toString());
     IBException.cet.translate(() -> Files.createDirectories(workingDir));
-    super.get().withJSONObject(proj)
+    DefaultConfigMapBuilder l = (DefaultConfigMapBuilder) super.get();
+    List<JSONObject> list = List.of(proj, sess, exec, new JSONObject(System.getenv()),
+        new JSONObject(System.getProperties()),
+        new JSONObject().put(ConfigMapBuilderSupplier.IB_DATA_WORKING_DIR, workingDir.toString()));
 
-        .withJSONObject(sess)
+    l.addInternal(list);
 
-        .withJSONObject(exec)
-
-        .withMapStringString(System.getenv())
-
-        .withProperties(System.getProperties())
-
-        // FIXME Probably not doing this
-        .withMapStringString(Map.of(ConfigMapBuilderSupplier.IB_DATA_WORKING_DIR, workingDir.toString()))
-
+    super.resetConfigMapBuilder(l);
     // TODO The order and priority of these is important
 //        .withProperties(mavenProject.getProperties())
 
@@ -109,4 +107,8 @@ public class MavenConfigMapBuilderSupplier extends DefaultConfigMapBuilderSuppli
     return MAVEN;
   }
 
+  protected void addASingle(JSONObject jsonObject) {
+    super.addASingle(jsonObject);
+
+  }
 }

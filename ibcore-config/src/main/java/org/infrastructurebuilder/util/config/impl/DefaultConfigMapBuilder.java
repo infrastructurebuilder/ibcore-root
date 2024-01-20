@@ -17,6 +17,8 @@
  */
 package org.infrastructurebuilder.util.config.impl;
 
+import java.util.List;
+
 import org.json.JSONObject;
 
 public class DefaultConfigMapBuilder extends IBJSONObject {
@@ -27,6 +29,21 @@ public class DefaultConfigMapBuilder extends IBJSONObject {
 
   public DefaultConfigMapBuilder(JSONObject j) {
     super(j);
+  }
+
+  @Override
+  public String toString() {
+    return super.toString();
+  }
+
+  public void addInternal(List<JSONObject> list) {
+    this.s.clear();
+    this.s.addAll(list);
+
+  }
+
+  protected void addASingle(JSONObject jsonObject) {
+    this.s.add(jsonObject);
   }
 
 }

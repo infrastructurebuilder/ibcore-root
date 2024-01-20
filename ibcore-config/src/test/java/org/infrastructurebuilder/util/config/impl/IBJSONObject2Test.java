@@ -17,6 +17,10 @@
  */
 package org.infrastructurebuilder.util.config.impl;
 
+import static org.infrastructurebuilder.util.config.impl.IBJSONObject.stringToNumber;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -43,6 +47,9 @@ class IBJSONObject2Test {
 
   @Test
   void testIBJSONObject() {
+//    var xx = stringToNumber(null);
+//    assertNull(xx);
+    assertEquals(1, stringToNumber("1"));
     // fail("Not yet implemented");
   }
 

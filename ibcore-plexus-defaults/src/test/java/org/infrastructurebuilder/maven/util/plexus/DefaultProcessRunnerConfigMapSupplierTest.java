@@ -28,22 +28,22 @@ import org.junit.jupiter.api.Test;
 
 public class DefaultProcessRunnerConfigMapSupplierTest {
 
-  private ConfigMapBuilder c;
-  private DefaultProcessRunnerConfigMapSupplier d;
-  private ConfigMapBuilder j;
-
-  @BeforeEach
-  public void setUp() throws Exception {
-    j = ConfigMapBuilderSupplier.defaultBuilder();
-    c = j.withKeyValue(PROCESS_NAMESPACE + "X", "B");
-    d = new DefaultProcessRunnerConfigMapSupplier(() -> j);
-  }
-
-  @Test
-  public void testGet() {
-    final ConfigMap g = d.get().get();
-    assertEquals(g.keySet().size(), 1);
-    assertEquals(g.getString(PROCESS_NAMESPACE + "X"), "B");
-  }
+//  private ConfigMapBuilder c;
+//  private DefaultProcessRunnerConfigMapSupplier d;
+//  private ConfigMapBuilder j;
+//
+//  @BeforeEach
+//  public void setUp() throws Exception {
+//    j = ConfigMapBuilderSupplier.defaultBuilder();
+//    c = j.withKeyValue(PROCESS_NAMESPACE + "X", "B");
+//    d = new DefaultProcessRunnerConfigMapSupplier(() -> j);
+//  }
+//
+//  @Test
+//  public void testGet() {
+//    final ConfigMap g = d.get().get();
+//    assertEquals(1, g.keySet().size());
+//    assertEquals(g.getString(PROCESS_NAMESPACE + "X"), "B");
+//  }
 
 }

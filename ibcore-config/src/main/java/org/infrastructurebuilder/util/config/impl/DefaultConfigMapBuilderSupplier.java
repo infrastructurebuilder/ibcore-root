@@ -22,11 +22,12 @@ import javax.inject.Named;
 import org.infrastructurebuilder.util.config.ConfigMapBuilder;
 import org.infrastructurebuilder.util.config.ConfigMapBuilderSupplier;
 import org.infrastructurebuilder.util.constants.IBConstants;
+import org.json.JSONObject;
 
 @Named(IBConstants.DEFAULT) // FIXME Maybe? Dunno if this is a component or not
 public class DefaultConfigMapBuilderSupplier implements ConfigMapBuilderSupplier {
 
-  private final ConfigMapBuilder builder = new DefaultConfigMapBuilder();
+  private ConfigMapBuilder builder = new DefaultConfigMapBuilder();
 
   @Override
   public ConfigMapBuilder get() {
@@ -35,6 +36,20 @@ public class DefaultConfigMapBuilderSupplier implements ConfigMapBuilderSupplier
 
   public String getName() {
     return IBConstants.DEFAULT;
+  }
+
+  protected void resetConfigMapBuilder(ConfigMapBuilder l) {
+    this.builder = l;
+
+  }
+
+  @Override
+  public String toString() {
+    return "DefaultConfigMapBuilderSupplier of :\n" + builder.toString();
+  }
+
+  protected void addASingle(JSONObject jsonObject) {
+    ((DefaultConfigMapBuilder) this.builder).addASingle(jsonObject);
   }
 
 }
