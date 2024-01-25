@@ -17,11 +17,6 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import static java.lang.System.getProperties;
-import static java.util.Optional.ofNullable;
-
-import java.nio.file.Paths;
-import java.util.Optional;
 import java.util.Properties;
 
 import javax.inject.Named;
@@ -40,38 +35,23 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 @Named(RelativeRootBasicPathPropertiesSupplier.NAME)
-public class RelativeRootBasicPathPropertiesSupplier implements RelativeRootSupplier {
+public class RelativeRootBasicPathPropertiesSupplier extends AbstractRelativeRootBasicPathPropertiesSupplier {
 
-  private static final Logger log = LoggerFactory.getLogger(RelativeRootBasicPathPropertiesSupplier.class);
+  static final Logger log = LoggerFactory.getLogger(RelativeRootBasicPathPropertiesSupplier.class);
   public static final String RR_BASIC_PATH = "rr.basic.path";
-  public static final String NAME = "basic-path-properties";
+  static final String NAME = "basic-path-properties";
 
   @Override
   public String getName() {
     return NAME;
   }
 
-  @Override
-  public Optional<RelativeRoot> get() {
-    return getProperty().flatMap(pStr -> {
-      try {
-        return AbstractBaseRelativeRoot.checkAbsolute(Paths.get(pStr)).map(ap -> new AbsolutePathRelativeRoot(ap));
-      } catch (Throwable t) {
-        getLog().warn("No RR created due to path failure of {}", pStr);
-        return Optional.empty();
-      }
-    });
-  }
-
-  protected Logger getLog() {
-    return log;
-  }
-
-  public Optional<String> getProperty() {
-    return ofNullable(getProperties().getProperty(getPropertyName()));
-  }
-
   public String getPropertyName() {
     return RR_BASIC_PATH;
+  }
+
+  @Override
+  protected Logger getLog() {
+    return log;
   }
 }

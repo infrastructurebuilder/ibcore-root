@@ -22,6 +22,8 @@ import static java.util.Optional.ofNullable;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -47,7 +49,8 @@ public class RelativeRootFactory {
   private Map<String, RelativeRootSupplier> suppliers;
 
   @Inject
-  public RelativeRootFactory(Set<RelativeRootSupplier> s) {
+  public RelativeRootFactory(Collection<RelativeRootSupplier> s) {
+    log.info("Got list with names: %s", s.stream().map(RelativeRootSupplier::getName).toList().toString());
     this.suppliers = requireNonNull(s).stream() //
         .collect(toMap(k -> k.getName(), identity()));
     log.info("Injected the following names: %s", this.suppliers.keySet().toString());

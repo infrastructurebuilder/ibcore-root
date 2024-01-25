@@ -17,39 +17,40 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import java.nio.file.Path;
-import java.util.Objects;
+import static java.lang.System.getProperties;
+import static java.util.Optional.ofNullable;
+
+import java.nio.file.Paths;
 import java.util.Optional;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-/**
- * This is (mostly) a testing instance of RelativeRootSupplier, allowing for the creation of RelativeRootSupplier
- * instances in the same manner as the Named instances
- */
-public class RelativeRootSetPathSupplier extends AbstractRelativeRootBasicPathPropertiesSupplier {
-  private static final Logger log = LoggerFactory.getLogger(RelativeRootSetPathSupplier.class);
-  public static final String NAME = "set-path";
-  private final String path;
+abstract public class AbstractRelativeRootBasicPathPropertiesSupplier implements RelativeRootSupplier {
 
   @Override
-  public String getName() {
-    return NAME;
+  public Optional<RelativeRoot> get() {
+    return getProperty().flatMap(pStr -> {
+      try {
+        return AbstractBaseRelativeRoot.checkAbsolute(Paths.get(pStr)).map(ap -> new AbsolutePathRelativeRoot(ap));
+      } catch (Throwable t) {
+        getLog().warn("No RR created due to path failure of {}", pStr);
+        return Optional.empty();
+      }
+    });
   }
 
-  public RelativeRootSetPathSupplier(Path p) {
-    this.path = Objects.requireNonNull(p).toAbsolutePath().toString();
+  /**
+   * Override for different property name
+   * @return
+   */
+  public String getPropertyName() {
+    return getName();
   }
+  
+  abstract protected Logger getLog();
 
-  @Override
   public Optional<String> getProperty() {
-    return Optional.of(this.path);
-  }
-
-  @Override
-  protected Logger getLog() {
-    return log;
+    return ofNullable(getProperties().getProperty(getPropertyName()));
   }
 
 }

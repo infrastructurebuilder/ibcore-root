@@ -23,12 +23,11 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.infrastructurebuilder.util.core.AbstractTSupplierFactory;
 import org.infrastructurebuilder.util.core.IBRuntimeUtils;
 import org.infrastructurebuilder.util.core.TSupplier;
 
 @Named
-public class IBRuntimeUtilsFactory extends AbstractTSupplierFactory<IBRuntimeUtils, ConfigMapBuilder> {
+public class IBRuntimeUtilsFactory extends AbstractTSupplierConfigurableFactory<IBRuntimeUtils> {
 
   private final TSupplier<IBRuntimeUtils> ts = new TSupplier<>();
   private final Map<String, ConfigMapBuilderSupplier> suppliers;

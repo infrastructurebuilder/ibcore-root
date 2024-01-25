@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 @Named(RelativeRootBasicPathEnvSupplier.NAME)
 @Singleton
-public class RelativeRootBasicPathEnvSupplier extends RelativeRootBasicPathPropertiesSupplier {
+public class RelativeRootBasicPathEnvSupplier extends AbstractRelativeRootBasicPathPropertiesSupplier {
   private static final Logger log = LoggerFactory.getLogger(RelativeRootBasicPathEnvSupplier.class);
   public static final String ENV_VAR = "RELATIVE_ROOT_PATH";
   public static final String NAME = "basic-path-env";

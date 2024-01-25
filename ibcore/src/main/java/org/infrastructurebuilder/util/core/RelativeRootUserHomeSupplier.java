@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 @Named(RelativeRootUserHomeSupplier.NAME)
-public final class RelativeRootUserHomeSupplier extends RelativeRootBasicPathPropertiesSupplier {
+public final class RelativeRootUserHomeSupplier extends AbstractRelativeRootBasicPathPropertiesSupplier {
   public static final Logger logger = LoggerFactory.getLogger(RelativeRootUserHomeSupplier.class);
   public static final String NAME = "user.home";
 
