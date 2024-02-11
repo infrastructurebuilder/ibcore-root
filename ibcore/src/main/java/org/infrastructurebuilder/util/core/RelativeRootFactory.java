@@ -50,10 +50,10 @@ public class RelativeRootFactory {
 
   @Inject
   public RelativeRootFactory(Collection<RelativeRootSupplier> s) {
-    log.info("Got list with names: %s", s.stream().map(RelativeRootSupplier::getName).toList().toString());
+    log.info("Got list with names: {}", s.stream().map(RelativeRootSupplier::getName).toList().toString());
     this.suppliers = requireNonNull(s).stream() //
         .collect(toMap(k -> k.getName(), identity()));
-    log.info("Injected the following names: %s", this.suppliers.keySet().toString());
+    log.info("Injected the following names: {}", this.suppliers.keySet().toString());
   }
 
   public final Set<String> getAvailableNames() {
@@ -62,7 +62,7 @@ public class RelativeRootFactory {
 
   public final Optional<RelativeRoot> get(String name) {
     if (!suppliers.keySet().contains(name))
-      log.warn("RelativeRootSupplier %s not available", name);
+      log.warn("RelativeRootSupplier {} not available", name);
     return ofNullable(this.suppliers.get(name)).flatMap(Supplier::get);
   }
 

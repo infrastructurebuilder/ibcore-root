@@ -40,9 +40,9 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.StringJoiner;
 
+import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.ChecksumBuilder;
 import org.infrastructurebuilder.util.core.ChecksumEnabled;
@@ -208,6 +208,8 @@ public interface IBResource<T> extends JSONOutputEnabled, ChecksumEnabled, NameD
 
   Optional<String> getSourceName();
 
+  JSONObject getMetadata();
+
   long size();
 
   default int defaultHashCode() {
@@ -269,22 +271,12 @@ public interface IBResource<T> extends JSONOutputEnabled, ChecksumEnabled, NameD
 
         .addString(DESCRIPTION, getDescription())
 
-        .addProperties(ADDITIONAL_PROPERTIES, getAdditionalProperties())
+        .addJSONObject(IBConstants.METADATA, getMetadata())
 
         .asJSON();
   }
 
 //  Path getOriginalPath();
-
-  /**
-   * This method should not return an empty Properties object. If there are no additional properties then the return
-   * should be Optional.empty()
-   *
-   * @return empty or a Properties with size() > 0
-   */
-  default Optional<Properties> getAdditionalProperties() {
-    return empty();
-  }
 
   default Optional<BasicFileAttributes> getBasicFileAttributes() {
     return getPath().flatMap(path -> IBResourceBuilderFactory.getAttributes.apply(path));

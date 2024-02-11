@@ -34,7 +34,7 @@ import org.infrastructurebuilder.util.readdetect.impl.AbsolutePathIBResource;
 public class ThrowingIBChecksumType extends AbsolutePathIBResource {
 
   public ThrowingIBChecksumType() throws IOException {
-    super(Optional.empty(), Paths.get("."), new Checksum(), Optional.of("doesnt/matter"));
+    super(Paths.get("."), new Checksum(), Optional.of("doesnt/matter"));
   }
 
   @Override

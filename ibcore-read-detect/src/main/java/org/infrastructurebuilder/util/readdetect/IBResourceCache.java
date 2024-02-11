@@ -18,16 +18,11 @@
 package org.infrastructurebuilder.util.readdetect;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
+import org.json.JSONObject;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-@Deprecated
-public interface IBResourceCacheIF {
+public interface IBResourceCache<T> {
 
   /**
    * Declares to which version of descriptor this configuration conforms. This value is the api version (major.minor)
@@ -54,8 +49,8 @@ public interface IBResourceCacheIF {
    */
   Optional<String> getDescription();
 
-  Optional<List<IBResourceModel>> getResources();
+  Optional<List<IBResource<T>>> getResources();
 
-  Map<String, Object> getAdditionalProperties();
+  Optional<JSONObject> getMetadata();
 
 }

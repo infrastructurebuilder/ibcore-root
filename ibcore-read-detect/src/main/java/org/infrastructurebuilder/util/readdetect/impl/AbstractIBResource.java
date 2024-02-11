@@ -30,15 +30,23 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
 
+import javax.annotation.Nullable;
+
+import org.infrastructurebuilder.objectmapper.jackson.ObjectMapperUtils;
 import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
+import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 abstract public class AbstractIBResource<T> implements IBResource<T> {
   private final static Logger log = LoggerFactory.getLogger(AbstractIBResource.class);
@@ -47,13 +55,13 @@ abstract public class AbstractIBResource<T> implements IBResource<T> {
 
   protected final RelativeRoot root;
 
-  public AbstractIBResource(RelativeRoot root, IBResourceModel model) {
+  public AbstractIBResource(@Nullable RelativeRoot root, IBResourceModel model) {
     this.root = root;
     this.m = model;
     log.info("AbstractIBResource with " + this.root + " " + this.m);
   }
 
-  public AbstractIBResource(RelativeRoot root) {
+  public AbstractIBResource(@Nullable RelativeRoot root) {
     this(root, new IBResourceModel());
   }
 
@@ -129,11 +137,15 @@ abstract public class AbstractIBResource<T> implements IBResource<T> {
   }
 
   @Override
-  public Optional<Properties> getAdditionalProperties() {
-    var p2 = m.getAdditionalProperties();
-    Properties p = new Properties();
-    m.getAdditionalProperties().forEach((k, v) -> p.setProperty(k, v.toString()));
-    return (p.size() == 0) ? empty() : of(p);
+  public JSONObject getMetadata() {
+    var mx = this.m.getMetadata().orElse(new IBMetadataModel());
+    String x = "{}";
+    try {
+      x = ObjectMapperUtils.mapper.get().writeValueAsString(mx);
+    } catch (JsonProcessingException | JSONException e) {
+      log.error("Error with processing metadata" + x);
+    }
+    return new JSONObject(x);
   }
 
   protected void setName(String name) {

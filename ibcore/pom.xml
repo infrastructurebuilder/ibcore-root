@@ -66,6 +66,10 @@
       <artifactId>javax.inject</artifactId>
     </dependency>
     <dependency>
+      <groupId>io.avaje</groupId>
+      <artifactId>avaje-jsr305</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.infrastructurebuilder.usurped</groupId>
       <artifactId>semver4j</artifactId>
     </dependency>

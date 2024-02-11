@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 
 public class DefaultServerProxyListSupplierTest {
 
-  private ServerProxyListSupplier spl;
+  private ServerProxyMap spl;
 
   @BeforeEach
   public void setUp() throws Exception {

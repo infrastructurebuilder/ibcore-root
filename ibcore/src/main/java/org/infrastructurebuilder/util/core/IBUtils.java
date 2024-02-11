@@ -51,9 +51,6 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
@@ -106,8 +103,8 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import javax.annotation.Nullable;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -1153,5 +1150,94 @@ public class IBUtils {
   public static boolean isParent(Path targetDir, Path sourcePath) {
     return Objects.requireNonNull(targetDir).startsWith(sourcePath);
   };
+
+
+  // ---- 
+  // Pulled verbatim from org.apache.maven.shared.utils.StringUtils
+  /**
+   * <p>Checks if a String is non <code>null</code> and is
+   * not empty (<code>length &gt; 0</code>).</p>
+   *
+   * @param str the String to check
+   * @return true if the String is non-null, and not length zero
+   */
+  public static boolean isNotEmpty( @Nullable String str )
+  {
+      return ( ( str != null ) && ( str.length() > 0 ) );
+  }
+
+  /**
+   * <p>Checks if a (trimmed) String is <code>null</code> or empty.</p>
+   * 
+   * <p><strong>Note:</strong> In future releases, this method will no longer trim the input string such that it works
+   * complementary to {@link #isNotEmpty(String)}. Code that wants to test for whitespace-only strings should be
+   * migrated to use {@link #isBlank(String)} instead.</p>
+   *
+   * @param str the String to check
+   * @return <code>true</code> if the String is <code>null</code>, or
+   *         length zero once trimmed
+   */
+  public static boolean isEmpty( @Nullable String str )
+  {
+      return ( ( str == null ) || ( str.trim().length() == 0 ) );
+  }
+
+  /**
+   * <p>
+   * Checks if a String is whitespace, empty ("") or null.
+   * </p>
+   * 
+   * <pre>
+   * StringUtils.isBlank(null)      = true
+   * StringUtils.isBlank("")        = true
+   * StringUtils.isBlank(" ")       = true
+   * StringUtils.isBlank("bob")     = false
+   * StringUtils.isBlank("  bob  ") = false
+   * </pre>
+   *
+   * @param str the String to check, may be null
+   * @return <code>true</code> if the String is null, empty or whitespace
+   * 
+   */
+  public static boolean isBlank( @Nullable String str )
+  {
+      int strLen;
+      // CHECKSTYLE_OFF: InnerAssignment
+      if ( str == null || ( strLen = str.length() ) == 0 )
+      // CHECKSTYLE_ON: InnerAssignment
+      {
+          return true;
+      }
+      for ( int i = 0; i < strLen; i++ )
+      {
+          if ( !Character.isWhitespace( str.charAt( i ) ) )
+          {
+              return false;
+          }
+      }
+      return true;
+  }
+
+  /**
+   * <p>
+   * Checks if a String is not empty (""), not null and not whitespace only.
+   * </p>
+   * 
+   * <pre>
+   * StringUtils.isNotBlank(null)      = false
+   * StringUtils.isNotBlank("")        = false
+   * StringUtils.isNotBlank(" ")       = false
+   * StringUtils.isNotBlank("bob")     = true
+   * StringUtils.isNotBlank("  bob  ") = true
+   * </pre>
+   *
+   * @param str the String to check, may be null
+   * @return <code>true</code> if the String is not empty and not null and not whitespace
+   * 
+   */
+  public static boolean isNotBlank( @Nullable String str )
+  {
+      return !isBlank( str );
+  }
 
 }

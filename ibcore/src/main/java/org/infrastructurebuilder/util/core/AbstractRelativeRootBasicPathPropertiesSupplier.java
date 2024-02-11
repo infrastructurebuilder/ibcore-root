@@ -41,12 +41,13 @@ abstract public class AbstractRelativeRootBasicPathPropertiesSupplier implements
 
   /**
    * Override for different property name
+   *
    * @return
    */
   public String getPropertyName() {
     return getName();
   }
-  
+
   abstract protected Logger getLog();
 
   public Optional<String> getProperty() {

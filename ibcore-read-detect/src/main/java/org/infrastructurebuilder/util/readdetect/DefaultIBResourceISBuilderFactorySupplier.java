@@ -42,7 +42,7 @@ public class DefaultIBResourceISBuilderFactorySupplier extends AbstractIBResourc
   }
 
   public Optional<IBResourceBuilderFactory<Optional<IBResourceIS>>> get(String id) {
-    return getRoot(id).map(AbsolutePathIBResourceBuilderFactory::new);
+    return Optional.of(new AbsolutePathIBResourceBuilderFactory());
   }
 
 }

@@ -17,11 +17,18 @@
  */
 package org.infrastructurebuilder.util.readdetect.impl;
 
+import static java.util.Objects.requireNonNull;
+
+import java.nio.file.Path;
+import java.time.Instant;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.AbstractIBResourceBuilder;
+import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
+import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.IBResourceIS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,20 +36,57 @@ import org.slf4j.LoggerFactory;
 public class AbsolutePathIBResourceBuilder extends AbstractIBResourceBuilder<Optional<IBResourceIS>> {
   private final static Logger log = LoggerFactory.getLogger(AbsolutePathIBResourceBuilder.class);
 
-  public AbsolutePathIBResourceBuilder(Optional<RelativeRoot> root) {
-    super(root);
+  public AbsolutePathIBResourceBuilder() {
+    super(null);
   }
 
   @Override
   public Optional<IBResourceIS> build(boolean hard) {
     try {
       validate(hard);
-      var k = getRoot();
-      return Optional.of(new AbsolutePathIBResource(k, this.model, this.sourcePath));
+      return Optional.of(new AbsolutePathIBResource(this.model, this.sourcePath));
     } catch (IBException e) {
       log.error("Error building IBResource", e);
       return Optional.empty();
     }
+  }
+
+  @Override
+  public IBResourceBuilder<Optional<IBResourceIS>> fromURL(String url) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public IBResourceBuilder<Optional<IBResourceIS>> fromPath(Path path) {
+    var op = requireNonNull(path);
+    if (!op.isAbsolute()) {
+      op = path.toAbsolutePath();
+      log.warn("Path {} is not absolute.  Making absolute to {}", path, op);
+    }
+    this.sourcePath = requireNonNull(op);
+
+    IBResourceBuilderFactory.getAttributes.apply(op).ifPresent(attr -> {
+      this.withCreateDate(attr.creationTime().toInstant())
+
+          .withLastUpdated(attr.lastModifiedTime().toInstant())
+
+          .withMostRecentAccess(Instant.now())
+
+          .withAcquired(Instant.now())
+
+          .withSize(attr.size());
+    });
+    return this
+
+        .withFilePath(op.toString())
+
+        .withName(op.getFileName().toString())
+
+        .withSource(op.toUri().toASCIIString())
+
+    ;
+
   }
 
 }

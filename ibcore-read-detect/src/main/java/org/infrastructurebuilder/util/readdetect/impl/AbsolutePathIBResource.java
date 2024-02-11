@@ -60,26 +60,21 @@ import org.slf4j.LoggerFactory;
 public class AbsolutePathIBResource extends AbstractIBResourceIS implements IBResourceIS {
   private final static Logger log = LoggerFactory.getLogger(AbsolutePathIBResource.class);
 
-  public AbsolutePathIBResource(Optional<RelativeRoot> root, IBResourceModel m, Path sourcePath) {
-    super(Objects.requireNonNull(root).orElse(null), m);
+  public AbsolutePathIBResource(IBResourceModel m, Path sourcePath) {
+    super(null, m);
     this.m.setPath(IBResource.requireAbsolutePath(sourcePath).toUri().toASCIIString());
   }
 
-  public AbsolutePathIBResource(Optional<RelativeRoot> root, IBResourceModel m) {
-    this(root, m,
-        Paths.get(URI.create(m.getPath().orElseThrow(() -> new IBResourceException("No [required] file path")))));
+  public AbsolutePathIBResource(IBResourceModel m) {
+    this(m, Paths.get(URI.create(m.getPath().orElseThrow(() -> new IBResourceException("No [required] file path")))));
   }
 
-  public AbsolutePathIBResource(Optional<RelativeRoot> root, JSONObject j) {
-    super(Objects.requireNonNull(root).orElse(null), IBResourceBuilder.modelFromJSON.apply(j).get()); // TODO Convert
-                                                                                                      // from
-    // older models?
+  public AbsolutePathIBResource(JSONObject j) {
+    super(null, IBResourceBuilder.modelFromJSON.apply(j).get()); // TODO Convert
   }
 
-  public AbsolutePathIBResource(Optional<RelativeRoot> root, Path path, Checksum checksum, Optional<String> type,
-      Optional<Properties> addlProps)
-  {
-    this(Objects.requireNonNull(root), new IBResourceModel());
+  public AbsolutePathIBResource(Path path, Checksum checksum, Optional<String> type, Optional<Properties> addlProps) {
+    this(new IBResourceModel());
     m.setPath(requireNonNull(path).toAbsolutePath().toString());
     m.setStreamChecksum(requireNonNull(checksum).toString());
     getAttributes.apply(path).ifPresent(bfa -> {
@@ -92,8 +87,8 @@ public class AbsolutePathIBResource extends AbstractIBResourceIS implements IBRe
     requireNonNull(type).ifPresent(t -> m.setStreamType(t));
   }
 
-  public AbsolutePathIBResource(Optional<RelativeRoot> root, Path path, Checksum checksum, Optional<String> type) {
-    this(root, path, checksum, type, empty());
+  public AbsolutePathIBResource(Path path, Checksum checksum, Optional<String> type) {
+    this(path, checksum, type, empty());
   }
 
   @Override

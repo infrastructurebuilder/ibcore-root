@@ -59,7 +59,7 @@ public class IBResourceTest {
     testFile = this.wps.getTestClasses().resolve(TFILE_TEST);
     this.root = this.wps.get();
     this.rrs = new AbsolutePathRelativeRoot(this.root);
-    this.rcf = new AbsolutePathIBResourceBuilderFactory(this.rrs);
+    this.rcf = new AbsolutePathIBResourceBuilderFactory();
   }
 
 //  @Test
@@ -126,7 +126,8 @@ public class IBResourceTest {
 
   @Test
   public void testFromPath() {
-    IBResourceIS cset = this.rcf.fromPath(testFile).flatMap(IBResourceBuilder<Optional<IBResourceIS>>::build).get();
+    var builder = this.rcf.fromPath(testFile).get();
+    IBResourceIS cset = builder.build().get();
     long d = new Date().toInstant().toEpochMilli();
     InputStream g = cset.get().get();
     cet.translate(() -> g.close());

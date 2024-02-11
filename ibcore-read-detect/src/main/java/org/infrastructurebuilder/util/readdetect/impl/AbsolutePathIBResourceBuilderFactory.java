@@ -17,6 +17,7 @@
  */
 package org.infrastructurebuilder.util.readdetect.impl;
 
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -30,18 +31,24 @@ public class AbsolutePathIBResourceBuilderFactory extends AbstractIBResourceISBu
 
   private static final long serialVersionUID = -8847933754124713375L;
 
-  public AbsolutePathIBResourceBuilderFactory(RelativeRoot relRoot) {
-    super(relRoot);
+  public AbsolutePathIBResourceBuilderFactory() {
+    super(null);
   }
 
   @Override
   protected Supplier<IBResourceBuilder<Optional<IBResourceIS>>> getBuilder() {
     // Delivers a new builder from the relative root each time
-    return () -> new AbsolutePathIBResourceBuilder(getRelativeRoot());
+    return () -> new AbsolutePathIBResourceBuilder();
   }
 
   @Override
-  public Optional<IBResourceBuilder<Optional<IBResourceIS>>> fromModel(IBResourceModel model) {
-    return Optional.empty();
+  public Optional<IBResourceBuilder<Optional<IBResourceIS>>> fromPath(Path p) {
+    return Optional.of(getBuilder().get().fromPath(p));
   }
+
+  @Override
+  public Optional<IBResourceBuilder<Optional<IBResourceIS>>> fromURL(String u) {
+    return Optional.ofNullable(u).map(string -> getBuilder().get().fromURL(string));
+  }
+
 }

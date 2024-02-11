@@ -18,11 +18,14 @@
 package org.infrastructurebuilder.util.constants;
 
 import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.json.JSONArray;
 
@@ -132,11 +135,15 @@ public interface IBConstants {
   String GITHUB = "github";
   String AZUREDEVOPS = "azuredevops";
   String HEX_IDENTIFIER = "HEXID:";
+  String HOME_ENV = "user.home";
+  Supplier<String> HOMESUPPLIER = () -> System.getenv("HOME");
   String ID = "id";
   String KEYSERVER_DEFAULT_HOST = "pgp.mit.edu";
   String KEYSERVER_HOST_ENV = "SPECIFIC_KEYSERVER_HOST";
   String MAVEN = "maven";
   String MAVEN_MIRRORS = "MAVEN_MIRRORS";
+  String MAVEN_REPO_LOCAL = "maven.repo.local";
+  Path M2REPOSITORYPATH = Paths.get(".m2").resolve("repository");
   String NAME = "name";
   String NO_OP = "no-op";
   String NULL_PASSPHRASE = "*NULL*";

@@ -28,4 +28,5 @@ module org.infrastructurebuilder.util.core {
   requires transitive java.xml;
   requires javax.inject;
   requires transitive org.slf4j;
+  requires io.avaje.jsr305x;
 }

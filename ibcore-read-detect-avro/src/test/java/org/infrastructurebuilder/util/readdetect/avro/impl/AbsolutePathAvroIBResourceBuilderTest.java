@@ -23,6 +23,7 @@ import org.infrastructurebuilder.util.core.AbsolutePathRelativeRoot;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
 import org.infrastructurebuilder.util.readdetect.impl.AbsolutePathIBResourceBuilderFactory;
+import org.infrastructurebuilder.util.readdetect.impl.RelativePathIBResourceISBuilderFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -42,12 +43,12 @@ class AbsolutePathAvroIBResourceBuilderTest {
   }
 
   private RelativeRoot rrs;
-  private AbsolutePathIBResourceBuilderFactory rcf;
+  private RelativePathIBResourceISBuilderFactory rcf;
 
   @BeforeEach
   void setUp() throws Exception {
     rrs = new AbsolutePathRelativeRoot(wps.get());
-    this.rcf = new AbsolutePathIBResourceBuilderFactory(rrs);
+    this.rcf = new RelativePathIBResourceISBuilderFactory(rrs);
   }
 
   @AfterEach
@@ -61,7 +62,7 @@ class AbsolutePathAvroIBResourceBuilderTest {
 //
   @Test
   void testFromURLLikeString() {
-    assertTrue(rcf.fromURLLike(null, null).isEmpty());
+    assertTrue(rcf.fromURL(null).isEmpty());
   }
 
 //  @Test

@@ -122,51 +122,23 @@ public interface IBResourceBuilderFactory<B> {
   };
 
   /**
-   * The RelativeRoot is optional (for some reason)
+   * The RelativeRoot is not optional
    *
    * @return
    */
-  Optional<RelativeRoot> getRelativeRoot();
 
-  /**
-   * Return method but force type
-   *
-   * @param p    path
-   * @param type type to force. If null, type will be interpreted.
-   * @return IBResource instance
-   */
-  Optional<IBResourceBuilder<B>> fromPath(Path p, String type);
-
-  Optional<IBResourceBuilder<B>> fromURLLike(String u, String type);
+  RelativeRoot getRelativeRoot();
 
   Optional<IBResourceBuilder<B>> fromModel(IBResourceModel model);
 
   Optional<IBResourceBuilder<B>> fromJSON(JSONObject json);
 
-  Optional<IBResourceBuilder<B>> builderFromPathAndChecksum(Path p, Checksum checksum);
+  Optional<IBResourceBuilder<B>> fromPath(Path p);
 
-  default Optional<IBResourceBuilder<B>> fromURL(URL u, String type) {
-    return fromURLLike(u.toExternalForm(), type);
-  }
-
-  default Optional<IBResourceBuilder<B>> fromPath(Path p) {
-    return fromPath(p, null);
-  }
-
-  default Optional<IBResourceBuilder<B>> fromURL(URL u) {
-    return fromURL(u, null);
-  }
-
-  default Optional<IBResourceBuilder<B>> fromURLLike(String u) {
-    return fromURLLike(u, null);
-  }
-
-  default Optional<IBResourceBuilder<B>> builderFromPath(Path p) {
-    return builderFromPathAndChecksum(p, new Checksum(p));
-  }
+  Optional<IBResourceBuilder<B>> fromURL(String u);
 
   /**
-   * Dont (at) me bro. The string needs to be a JSON string
+   * Dont (at) me bro. The string needs to be a JSON string so that I can translate between types
    *
    * @param json
    * @return

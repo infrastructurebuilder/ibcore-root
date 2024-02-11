@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 
 class RelativeRootTest {
 
+  private static final String XFILE = "X.txt";
   private static final String ABC = "abc";
   private static final String XML = ".xml";
   private static final String BOB2 = "bob";
@@ -244,10 +245,28 @@ class RelativeRootTest {
     Files.delete(file);
   }
 
+  @Test
   public void testThatFilesMustBeWithinTree() {
     Path bob = Paths.get(BOB2);
     Optional<Path> file2 = absurl.getPermanantPath(bob.toAbsolutePath(), ABC, XML);
     assertFalse(file2.isPresent());
   }
 
+  @Test
+  public void testRRIsParent() {
+    RelativeRoot q = prr.extend(BOB2);
+    assertTrue(prr.isParentOf(q));
+  }
+
+  @Test
+  public void testRRIsParentPath() throws IOException {
+    Path wp = tps.get();
+    Path xp = wp.resolve(XFILE);
+    IBUtils.copy(tps.getTestClasses().resolve(XFILE), xp);
+    var rr = new AbsolutePathRelativeRoot(wp);
+    assertTrue(rr.isParentOf(xp));
+    assertFalse(rr.isParentOf(Paths.get(XFILE)));
+    assertFalse(rr.isParentOf(prr.getPath().get()));
+
+  }
 }

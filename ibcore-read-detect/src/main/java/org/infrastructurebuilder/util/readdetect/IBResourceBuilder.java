@@ -112,7 +112,15 @@ public interface IBResourceBuilder<B> {
    * @param path
    * @return
    */
-  IBResourceBuilder<B> from(Path path);
+  IBResourceBuilder<B> fromPath(Path path);
+
+  /**
+   * Set a URL or URL-like that this builder will reference.
+   *
+   * @param url
+   * @return
+   */
+  IBResourceBuilder<B> fromURL(String url);
 
   /**
    * Set the expected file checksum
@@ -166,6 +174,13 @@ public interface IBResourceBuilder<B> {
   IBResourceBuilder<B> withType(String type);
 
   /**
+   * Detect the type using Tika.
+   *
+   * @return
+   */
+  IBResourceBuilder<B> detectType();
+
+  /**
    * Sets an expected type, if present, otherwise does nothing
    *
    * @param type
@@ -183,7 +198,7 @@ public interface IBResourceBuilder<B> {
    * @param p
    * @return
    */
-  IBResourceBuilder<B> withAdditionalProperties(Properties p);
+  IBResourceBuilder<B> withMetadata(JSONObject p);
 
   /**
    * Sets the date that the source was last updated
@@ -250,7 +265,7 @@ public interface IBResourceBuilder<B> {
   B build(boolean hard);
 
   default B build() {
-    return build(false);
+    return build(false); // FixMe? Maybe there's no default?
   }
 
 }

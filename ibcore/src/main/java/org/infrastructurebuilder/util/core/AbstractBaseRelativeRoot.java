@@ -94,12 +94,6 @@ abstract public class AbstractBaseRelativeRoot implements RelativeRoot {
   }
 
   @Override
-  public boolean isParentOf(RelativeRoot otherRoot) {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
   public String getStringRoot() {
     return stringRoot;
   }

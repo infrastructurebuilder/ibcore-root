@@ -38,9 +38,11 @@ import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -189,7 +191,7 @@ public final class FileBackedIndex implements HttpCacheStorage {
    * @throws IncompatibleIndexException is the store cannot be read due to a deserialization issue
    */
   @SuppressWarnings("unchecked")
-  private void load(final Path store) throws IncompatibleIndexException, IOException {
+  public void load(final Path store) throws IncompatibleIndexException, IOException {
     if (Files.exists(store) && Files.size(store) != 0L) {
       try (final RandomAccessFile file = new RandomAccessFile(store.toFile(), "r");
           final FileChannel channel = file.getChannel();
@@ -225,5 +227,9 @@ public final class FileBackedIndex implements HttpCacheStorage {
   @Override
   public void updateEntry(String key, HttpCacheUpdateCallback callback) {
     // do nothing
+  }
+  
+  public Set<URI> getKeys() {
+    return this.index.keySet();
   }
 }

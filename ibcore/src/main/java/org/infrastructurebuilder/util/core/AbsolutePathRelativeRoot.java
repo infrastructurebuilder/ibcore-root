@@ -17,25 +17,38 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.function.Function;
 
 import org.infrastructurebuilder.exceptions.IBException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AbsolutePathRelativeRoot extends AbstractBaseRelativeRoot {
+  private static final Logger log = LoggerFactory.getLogger(AbsolutePathRelativeRoot.class);
+  private final static Function<Path, String> toURL = (p) -> {
+    log.warn("toURL for " + p);
+    return cet.returns(() -> {
+      var q = p.toUri();
+      var r = q.toURL();
+      return r.toExternalForm();
+    });
+  };
 
   public AbsolutePathRelativeRoot(Path p) {
-    super(requireNonNull(checkAbsolute(p)).map(path -> cet.returns(() -> path.toUri().toURL().toExternalForm()))
-        .orElseThrow(() -> new IBException("Path provided is not valid: " + p)));
+    super(toURL.apply(p));
+    checkAbsolute(p).orElseThrow(() -> new IBException("Path provided is not valid: " + p));
   }
 
   @Override
   public RelativeRoot extend(String newPath) {
-    return new AbsolutePathRelativeRoot(Paths.get(format("%s%s%s", getStringRoot(), "/", requireNonNull(newPath))));
+    // TODO Unsure about how this should actually be
+    return new AbsolutePathRelativeRoot(
+        getPath().map(p -> p.resolve(newPath)).orElseThrow(() -> new IBException("Cannot extend " + getStringRoot())));
   }
 
 }

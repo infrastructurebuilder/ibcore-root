@@ -31,24 +31,34 @@ import java.util.Optional;
 import java.util.Properties;
 
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.RelativeRoot;
+import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel;
+import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel.IBMetadataModelBuilder;
+import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel.IBMetadataModelBuilderBase;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * builder base NOT THREADSAFE
+ *
+ * @param <B>
+ */
 abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<B> {
 
   private final static Logger log = LoggerFactory.getLogger(AbstractIBResourceBuilder.class);
   protected IBResourceModel model = new IBResourceModel();
   private Checksum targetChecksum;
+  private boolean typeSet = false;
   protected Path sourcePath;
   private Path finalRestingPath;
   private final RelativeRoot root;
 
-  public AbstractIBResourceBuilder(Optional<RelativeRoot> root) {
-    this.root = requireNonNull(root).orElse(null);
+  public AbstractIBResourceBuilder(RelativeRoot root) {
+    this.root = root;
   }
 
   @Override
@@ -67,22 +77,6 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
     this.targetChecksum = requireNonNull(csum);
     this.model.setStreamChecksum(csum.toString());
     return this;
-  }
-
-  @Override
-  public IBResourceBuilder<B> from(Path path) {
-    this.sourcePath = requireNonNull(path);
-    Path op = path.isAbsolute() ? path
-        : this.getRoot().flatMap(rr -> rr.resolvePath(path.toString()))
-            .orElseThrow(() -> new IBException("Path " + path + " is invalid with current root"));
-
-    return this
-
-        .withFilePath(path.toString())
-
-        .withName(path.getFileName().toString())
-
-        .withSource(op.toUri().toASCIIString());
   }
 
   @Override
@@ -112,12 +106,17 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
   @Override
   public IBResourceBuilder<B> withType(String type) {
     this.model.setStreamType(requireNonNull(type));
+    this.typeSet = true;
     return this;
   }
 
   @Override
-  public IBResourceBuilder<B> withAdditionalProperties(Properties p) {
-    p.forEach((k, v) -> this.model.setAdditionalProperty(k.toString(), v));
+  public IBResourceBuilder<B> withMetadata(JSONObject p) {
+    IBMetadataModelBuilderBase b = IBMetadataModel.builder();
+    if (p != null)
+      p.toMap().forEach((k, v) -> b.withAdditionalProperty(k, v));
+    this.model.setMetadata(b.build());
+    ;
     return this;
   }
 
@@ -151,6 +150,16 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
     return this;
   }
 
+  @Override
+  public IBResourceBuilder<B> detectType() {
+    if (this.typeSet) {
+      // We've already set the type
+      log.warn("Call to detectType() but type already set to {}", this.model.getStreamType());
+      return this;
+    }
+    return withType(toType.apply(this.sourcePath));
+  }
+
   /**
    * validate checks the values provided so far and throws IBResourceException if anything is off. You can call validate
    * whenever you set any value and if it returns your data is still possibly OK
@@ -161,20 +170,24 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
    */
   @Override
   public Optional<IBResourceBuilder<B>> validate(boolean hard) {
+    log.info("{} Validating {}", hard ? "Hard" : "Soft", this.sourcePath);
     if (this.sourcePath != null) {
       if (!Files.exists(sourcePath)) {
         log.error("unreadable.path {}", this.sourcePath);
         return empty();
       }
+      if (this.targetChecksum == null) {
+        var c = Checksum.ofPath.apply(this.sourcePath).get();
+        log.info("target checksum not available.  Reading source path checksum as {}", c);
+        this.withChecksum(c);
+      }
+      if (!this.typeSet)
+        detectType();
       if (hard) {
         var aType = toType.apply(this.sourcePath);
         if (!this.model.getStreamType().equals(aType)) {
           log.error("Expected type {} does not equal actual type {}", this.model.getStreamType(), aType);
           return empty();
-        }
-        if (this.targetChecksum == null) {
-          log.warn("target checksum not available.  Reading source path");
-          this.targetChecksum = Checksum.ofPath.apply(this.sourcePath).get();
         }
       }
       if (!Objects.equals(this.targetChecksum, this.model.getStreamChecksum())) {
@@ -215,7 +228,7 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
   }
 
   public Optional<RelativeRoot> getRoot() {
-    return Optional.of(root);
+    return Optional.ofNullable(root);
   }
 
 }

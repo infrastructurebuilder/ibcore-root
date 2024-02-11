@@ -47,7 +47,7 @@ class AbsolutePathIBResourceBuilderFactoryTest {
   @BeforeEach
   void setUp() throws Exception {
     rrs = new AbsolutePathRelativeRoot(wps.get());
-    this.rcf = new AbsolutePathIBResourceBuilderFactory(rrs);
+    this.rcf = new AbsolutePathIBResourceBuilderFactory();
   }
 
   @AfterEach
@@ -61,7 +61,7 @@ class AbsolutePathIBResourceBuilderFactoryTest {
 //
   @Test
   void testFromURLLikeString() {
-    assertTrue(rcf.fromURLLike(null, null).isEmpty());
+    assertTrue(rcf.fromURL(null).isEmpty());
   }
 
 //  @Test

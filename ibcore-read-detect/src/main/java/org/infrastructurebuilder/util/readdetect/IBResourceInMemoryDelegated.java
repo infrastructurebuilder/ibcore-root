@@ -40,6 +40,8 @@ import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.ChecksumBuilder;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.impl.AbsolutePathIBResourceBuilder;
+import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel;
+import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel.IBMetadataModelBuilderBase;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -84,9 +86,11 @@ public class IBResourceInMemoryDelegated implements IBResourceIS {
       m.setStreamType(APPLICATION_OCTET_STREAM);
     }
 
-    requireNonNull(addlProps).ifPresent(p -> p.forEach((k, v) -> m.setAdditionalProperty(k.toString(), v.toString())));
+    IBMetadataModelBuilderBase b = IBMetadataModel.builder();
+    requireNonNull(addlProps).ifPresent(p -> p.forEach((k, v) -> b.withAdditionalProperty(k.toString(), v.toString())));
+    m.setMetadata(b.build());
 
-    r = new AbsolutePathIBResourceBuilder(Optional.empty()).fromModel(m).build().get();
+    r = new AbsolutePathIBResourceBuilder().fromModel(m).build().get();
     log.debug("Built model {}", r.getChecksum().asUUID().get());
   }
 
@@ -161,11 +165,6 @@ public class IBResourceInMemoryDelegated implements IBResourceIS {
   }
 
   @Override
-  public Optional<Properties> getAdditionalProperties() {
-    return r.getAdditionalProperties();
-  }
-
-  @Override
   public IBResourceModel copyModel() {
     return r.copyModel();
   }
@@ -193,5 +192,10 @@ public class IBResourceInMemoryDelegated implements IBResourceIS {
   @Override
   public String getModelVersion() {
     return r.getModelVersion();
+  }
+
+  @Override
+  public JSONObject getMetadata() {
+    return r.getMetadata();
   }
 }

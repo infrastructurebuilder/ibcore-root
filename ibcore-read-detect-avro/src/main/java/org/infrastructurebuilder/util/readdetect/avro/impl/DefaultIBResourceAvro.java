@@ -30,24 +30,25 @@ import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.avro.IBResourceAvro;
 import org.infrastructurebuilder.util.readdetect.impl.AbsolutePathIBResource;
+import org.infrastructurebuilder.util.readdetect.impl.RelativePathIBResourceIS;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DefaultIBResourceAvro extends AbsolutePathIBResource implements IBResourceAvro {
+public class DefaultIBResourceAvro extends RelativePathIBResourceIS implements IBResourceAvro {
   private final static Logger log = LoggerFactory.getLogger(DefaultIBResourceAvro.class.getName());
 
-  public DefaultIBResourceAvro(Optional<RelativeRoot> root, IBResourceModel m, Path sourcePath) {
+  public DefaultIBResourceAvro(RelativeRoot root, IBResourceModel m, Path sourcePath) {
     super(root, m, sourcePath);
   }
 
-  public DefaultIBResourceAvro(Optional<RelativeRoot> root, Path path, Checksum checksum, Optional<String> type,
+  public DefaultIBResourceAvro(RelativeRoot root, Path path, Checksum checksum, Optional<String> type,
       Optional<Properties> addlProps)
   {
     super(root, path, checksum, type, addlProps);
   }
 
-  public DefaultIBResourceAvro(Optional<RelativeRoot> root, IBResourceModel m) {
+  public DefaultIBResourceAvro(RelativeRoot root, IBResourceModel m) {
     this(requireNonNull(root), m, null);
   }
 

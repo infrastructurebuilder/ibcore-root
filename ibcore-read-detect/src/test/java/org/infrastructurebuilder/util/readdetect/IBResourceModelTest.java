@@ -19,7 +19,7 @@ package org.infrastructurebuilder.util.readdetect;
 
 import static org.infrastructurebuilder.util.constants.IBConstants.IMAGE_JPG;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.AbsolutePathRelativeRoot;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.IBUtils;
@@ -59,12 +60,13 @@ public class IBResourceModelTest {
     IBUtils.copy(source, path);
     lc = new Checksum(source);
     rrs = new AbsolutePathRelativeRoot(root);
-    f = new AbsolutePathIBResourceBuilderFactory(rrs);
+    f = new AbsolutePathIBResourceBuilderFactory();
     checksum = new Checksum(source);
-    c2 = f.fromPath(source, "ABC").flatMap(IBResourceBuilder<Optional<IBResourceIS>>::build).get();
+    c2 = f.fromPath(source).get().withType("ABC").build().get();
+    assertNotNull(c2.getChecksum());
 //    c2 = new AbsolutePathIBResource(path, checksum);
-    c1 = f.fromPath(path).flatMap(IBResourceBuilder<Optional<IBResourceIS>>::build).get();
-
+    c1 = f.fromPath(path).get().withType(IBConstants.IMAGE_JPG).build(false).get();
+    assertNotNull(c1.getChecksum());
   }
 
   @AfterEach

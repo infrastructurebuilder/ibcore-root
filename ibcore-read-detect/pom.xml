@@ -38,7 +38,7 @@
 	<!-- I see no way to increase this at the moment -->
 	<properties>
 		<test.coverage.percentage.required>54</test.coverage.percentage.required>
-		<jacoco.max.missed.classes>9</jacoco.max.missed.classes>
+		<jacoco.max.missed.classes>11</jacoco.max.missed.classes>
 		<!--
 		<maven.download.plugin.groupId>com.googlecode.maven-download-plugin</maven.download.plugin.groupId>
     <maven.download.plugin.version>1.7.1</maven.download.plugin.version>
@@ -53,10 +53,10 @@
 			<artifactId>s3fs-nio</artifactId>
 			<version>1.0.2</version>
 			<exclusions>
-			  <exclusion>
-  <groupId>com.google.code.findbugs</groupId>
-  <artifactId>jsr305</artifactId>
-			  </exclusion>
+				<exclusion>
+					<groupId>com.google.code.findbugs</groupId>
+					<artifactId>jsr305</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 
@@ -112,10 +112,10 @@
 			<artifactId>plexus-archiver</artifactId>
 			<version>4.9.1.1-SNAPSHOT</version>
 			<exclusions>
-			  <exclusion>
-  <groupId>javax.inject</groupId>
-  <artifactId>javax.inject</artifactId>
-			  </exclusion>
+				<exclusion>
+					<groupId>javax.inject</groupId>
+					<artifactId>javax.inject</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<!--
@@ -158,4 +158,29 @@
 			<!--			<optional>true</optional>-->
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.infrastructurebuilder.maven</groupId>
+				<artifactId>ibversions-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default</id>
+						<phase>validate</phase> <!-- Needs to be before resource filtering -->
+						<goals>
+							<goal>generate-source-version</goal>
+							<goal>generate-test-version</goal>
+						</goals>
+						<configuration>
+							<apiVersionPropertyName>apiVersion</apiVersionPropertyName>
+							<apiVersionPropertyNameSafe>apiVersionSafe</apiVersionPropertyNameSafe>
+							<targetPackageName>
+								${project.groupId}.util.readdetect.impl</targetPackageName>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

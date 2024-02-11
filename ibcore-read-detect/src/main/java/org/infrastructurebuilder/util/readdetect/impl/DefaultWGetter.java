@@ -70,7 +70,7 @@ public class DefaultWGetter implements WGetter {
     // Log l2 = new LoggingMavenComponent(log);
 //      Logger localLogger = requireNonNull(log); // FIXME (See above)
     Logger l2 = log;
-    cf = new AbsolutePathIBResourceBuilderFactory(new AbsolutePathRelativeRoot(workingDir));
+    cf = new RelativePathIBResourceISBuilderFactory(new AbsolutePathRelativeRoot(workingDir));
     this.wget.setCacheFactory(cf);
     this.wget.setLog(l2);
     this.wget.setT2EMapper(Objects.requireNonNull(t2e));
@@ -163,7 +163,7 @@ public class DefaultWGetter implements WGetter {
     Checksum cSum = new Checksum(source);
     Path newTarget = targetDir.resolve(cSum.asUUID().get().toString());
     cet.returns(() -> copy(source, newTarget));
-    return cf.builderFromPathAndChecksum(newTarget, cSum);
+    return cf.fromPath(newTarget).map(b -> b.withChecksum(cSum));
   }
 
 }

@@ -109,6 +109,14 @@ public interface RelativeRoot extends JSONAndChecksumEnabled {
     return or.startsWith(sr) && !(or.equals(sr));
   }
 
+  default boolean isParentOf(Path p) {
+    if (p.isAbsolute())
+      return getPath().map(path -> {
+        return p.startsWith(path);
+      }).orElse(false);
+    return false;
+  }
+
   /**
    * Resolving a path may not always has a result, because although stringroot always exists, some RelativeRoot
    * implementations may return empty for absolute paths because they always expect relative paths.

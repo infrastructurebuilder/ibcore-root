@@ -19,8 +19,12 @@ package org.infrastructurebuilder.util.readdetect.impl;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 //import static org.apache.maven.shared.utils.StringUtils.isBlank;
 import static org.codehaus.plexus.util.StringUtils.isNotBlank;
+import static org.infrastructurebuilder.util.constants.IBConstants.HOME_ENV;
+import static org.infrastructurebuilder.util.constants.IBConstants.M2REPOSITORYPATH;
+import static org.infrastructurebuilder.util.constants.IBConstants.MAVEN_REPO_LOCAL;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +42,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 //import javax.annotation.Nullable;
 
@@ -62,6 +65,7 @@ import org.eclipse.aether.repository.Proxy;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
@@ -80,9 +84,13 @@ import org.slf4j.Logger;
  * @author Mickael Istria (Red Hat Inc)
  */
 public final class WGet {
+
   public static String getOutputFileName(URI uri) {
-    return uri.getPath().isEmpty() || uri.getPath().equals("/") ? uri.getHost()
-        : uri.getPath().substring(uri.getPath().lastIndexOf('/') + 1);
+    return uri.getPath().isEmpty() || uri.getPath().equals("/") //
+        ? //
+        uri.getHost()
+        : //
+        uri.getPath().substring(uri.getPath().lastIndexOf('/') + 1);
   }
 
   public static boolean isBlank(String str) {
@@ -424,14 +432,14 @@ public final class WGet {
   public Path getLocalRepository() {
     if (this.localRepo == null) {
       Properties p = getAvailableProperties();
-      if (p.containsKey("maven.repo.local")) {
-        this.localRepo = Paths.get(p.getProperty("maven.repo.local"));
-      } else if (p.containsKey("user.home")) {
-        this.localRepo = Paths.get(p.getProperty("user.home")).resolve(".m2").resolve("repository");
+      if (p.containsKey(MAVEN_REPO_LOCAL)) {
+        this.localRepo = Paths.get(p.getProperty(MAVEN_REPO_LOCAL));
+      } else if (p.containsKey(HOME_ENV)) {
+        this.localRepo = Paths.get(p.getProperty(HOME_ENV)).resolve(M2REPOSITORYPATH);
       } else {
-        String home = System.getenv("HOME");
+        String home = IBConstants.HOMESUPPLIER.get();
         this.localRepo = ofNullable(home).map(Paths::get).map(Path::toAbsolutePath)
-            .map(p2 -> p2.resolve(".m2").resolve("repository")).orElse(null);
+            .map(p2 -> p2.resolve(M2REPOSITORYPATH)).orElse(null);
       }
     }
     return this.localRepo;
@@ -443,7 +451,7 @@ public final class WGet {
 
   private Properties getAvailableProperties() {
     // TODO Auto-generated method stub
-    return null;
+    return new Properties();
   }
 
   public void setOutputPath(Path outputPath) {
@@ -613,15 +621,14 @@ public final class WGet {
         this.cacheDirectory = ofNullable(getLocalRepository())
             .map(repo -> repo.resolve(".cache").resolve("download-maven-plugin")).map(Path::toFile)
             .orElseThrow(() -> new IBException("No local repo"));
-//        this.cacheDirectory = new File(this.session.getLocalRepository().getBasedir(), ".cache/download-maven-plugin");
       } else if (this.cacheDirectory.exists() && !this.cacheDirectory.isDirectory()) {
         throw new IBException(
             String.format("cacheDirectory is not a directory: " + this.cacheDirectory.getAbsolutePath()));
       }
-      getLog().debug("Cache is: " + this.cacheDirectory.getAbsolutePath());
+      log.info("Cache is: " + this.cacheDirectory.getAbsolutePath());
 
     } else {
-      getLog().debug("Cache is skipped");
+      log.info("Cache is skipped");
     }
     IBException.cet.translate(() -> Files.createDirectories(this.outputPath));
     final File outputFile = new File(this.outputPath.toFile(), this.outputFileName);
@@ -727,7 +734,7 @@ public final class WGet {
 
     var csum = new Checksums(null, null, null, this.sha512, getLog());
     return IBException.cet.returns(() -> {
-//      cache.install(this.uri, outputFile, checksums);
+//                  cache.install(this.uri, outputFile, checksums);
 //      /* Get the "final name" */
 
       getLog().error("OutputPath {}", outputPath.toString());
@@ -743,17 +750,19 @@ public final class WGet {
       }
 
       Path outPath = newTarget;
-
       String externalForm = this.uri.toURL().toExternalForm();
-      return cf.builderFromPathAndChecksum(outPath, finalChecksum).map(vq -> {
+      log.info("outPath = {}, externalForm = {}", outPath, externalForm);
+      return cf.fromPath(outPath).flatMap(vq -> {
         final IBResourceBuilder<Optional<IBResourceIS>> b = vq
+
+            .withChecksum(finalChecksum)
 
             .withSource(externalForm)
 
             .withType(ofNullable(this.mimeType));
 
-        return List.of(b.build().get()); // FIXME!!!!!
-      });
+        return b.build(true); // FIXME!!!!!
+      }).map(List::of);
     });
   }
 
@@ -771,13 +780,18 @@ public final class WGet {
     outputFile.delete();
   }
 
-//  private boolean isFileUnArchiver(final UnArchiver unarchiver) {
-//    return unarchiver.isFileUnarchiver();
-//  }
-
   private static RemoteRepository createRemoteRepository(String serverId, URI uri) {
-    return new RemoteRepository.Builder(isBlank(serverId) ? null : serverId, isBlank(serverId) ? uri.getScheme() : null,
-        isBlank(serverId) ? uri.getHost() : null).build();
+    return new RemoteRepository.Builder( //
+        isBlank(serverId) //
+            ? //
+            null
+            : serverId,
+        isBlank(serverId) //
+            ? //
+            uri.getScheme()
+            : null,
+        isBlank(serverId) ? uri.getHost() : null) //
+        .build();
   }
 
   private void doGet(final File outputFile) throws IOException {
@@ -787,17 +801,22 @@ public final class WGet {
 
     // set proxy if present
 
-    ofNullable(this.wagonManager).map(pip -> pip.getProxyInfo(repository.getProtocol()))
+    ofNullable(this.wagonManager) //
+        .map(pip -> pip.getProxyInfo(repository.getProtocol()))
 //      Optional.ofNullable(this.session.getRepositorySession().getProxySelector())
 //              .map(selector -> selector.getProxy(repository))
-        .filter(pip -> !ProxyUtils.validateNonProxyHosts(pip, this.uri.getHost())).map(WGet.mapPIPToProxy)
+        .filter(pip -> !ProxyUtils.validateNonProxyHosts(pip, this.uri.getHost())) //
+        .map(WGet.mapPIPToProxy) //
         .ifPresent(proxy -> addProxy(fileRequesterBuilder, repository, proxy));
 
     // Optional.ofNullable(this.session.getRepositorySession().getAuthenticationSelector())
 //        .map(selector -> selector.getAuthentication(repository))
 //        .ifPresent(auth -> addAuthentication(fileRequesterBuilder, repository, auth));
-    Authentication auth = new AuthenticationBuilder().addNtlm(this.ntlmHost, this.ntlmDomain).addUsername(this.username)
-        .addPassword(this.password).build();
+    Authentication auth = new AuthenticationBuilder() //
+        .addNtlm(this.ntlmHost, this.ntlmDomain) //
+        .addUsername(this.username) //
+        .addPassword(this.password) //
+        .build();
     addAuthentication(fileRequesterBuilder, repository, auth);
 
     if (!this.skipCache) {
@@ -806,11 +825,15 @@ public final class WGet {
 
     try {
       final HttpFileRequester fileRequester = fileRequesterBuilder
-          .withProgressReport(new LoggingProgressReport(getLog())).withConnectTimeout(this.readTimeOut)
-          .withSocketTimeout(this.readTimeOut).withUri(this.uri).withUsername(this.username).withPassword(this.password)
-          .withServerId(this.serverId).withPreemptiveAuth(this.preemptiveAuth)
-//              .withMavenSession(this.session)
-          .withRedirectsEnabled(this.followRedirects).withLog(this.getLog()).build();
+          .withProgressReport(new LoggingProgressReport(getLog())) //
+          .withConnectTimeout(this.readTimeOut) //
+          .withSocketTimeout(this.readTimeOut) //
+          .withUri(this.uri) //
+          .withUsername(this.username) //
+          .withPassword(this.password).withServerId(this.serverId) //
+          .withPreemptiveAuth(this.preemptiveAuth).withRedirectsEnabled(this.followRedirects) //
+          .withLog(this.getLog()) //
+          .build();
       fileRequester.download(outputFile, getAdditionalHeaders());
     } catch (Exception e) {
       throw new IOException(e);
@@ -853,21 +876,21 @@ public final class WGet {
 //      getLog().debug("providing custom authentication");
 //      getLog().debug("username: " + username + " and password: ***");
 
-    fileRequesterBuilder.withUsername(this.username);
-    fileRequesterBuilder.withPassword(this.password);
-    fileRequesterBuilder.withNtlmDomain(this.ntlmDomain);
-    fileRequesterBuilder.withNtlmHost(this.ntlmHost);
+    fileRequesterBuilder.withUsername(this.username) //
+        .withPassword(this.password)//
+        .withNtlmDomain(this.ntlmDomain) //
+        .withNtlmHost(this.ntlmHost);
 //    }
   }
 
   private List<Header> getAdditionalHeaders() {
-    return headers.entrySet().stream().map(pair -> new BasicHeader(pair.getKey(), pair.getValue()))
-        .collect(Collectors.toList());
+    return headers.entrySet().stream() //
+        .map(pair -> new BasicHeader(pair.getKey(), pair.getValue())) //
+        .collect(toList()); // not just .toList because type erasure
   }
 
   public void setCacheFactory(IBResourceBuilderFactory<Optional<IBResourceIS>> cf2) {
     this.cf = requireNonNull(cf2);
-
   }
 
 }

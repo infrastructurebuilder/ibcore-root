@@ -20,8 +20,10 @@ package org.infrastructurebuilder.util.maven.artifacts.impl;
 import static java.util.Optional.ofNullable;
 
 import java.nio.file.Paths;
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -29,12 +31,12 @@ import javax.inject.Named;
 
 import org.apache.maven.settings.Settings;
 import org.infrastructurebuilder.util.settings.ServerProxy;
-import org.infrastructurebuilder.util.settings.ServerProxyListSupplier;
+import org.infrastructurebuilder.util.settings.ServerProxyMap;
 
 @Named
-public class DefaultServerProxyListSupplier implements ServerProxyListSupplier {
+public class DefaultServerProxyListSupplier implements ServerProxyMap {
 
-  private final List<ServerProxy> servers;
+  private final Map<String, ServerProxy> servers;
 
   @Inject
   public DefaultServerProxyListSupplier(final Settings settings) {
@@ -42,12 +44,17 @@ public class DefaultServerProxyListSupplier implements ServerProxyListSupplier {
         .map(s -> new ServerProxy(s.getId(), ofNullable(s.getUsername()), ofNullable(s.getPassword()),
             ofNullable(s.getPassphrase()), ofNullable(s.getPrivateKey()).map(Paths::get),
             ofNullable(s.getFilePermissions()), ofNullable(s.getDirectoryPermissions()), Optional.empty()))
-        .collect(Collectors.toList());
+        .collect(Collectors.toMap(k -> k.getId(), Function.identity()));
   }
 
   @Override
-  public List<ServerProxy> get() {
-    return servers;
+  public Set<String> getServerIds() {
+    return servers.keySet();
+  }
+  
+  @Override
+  public Optional<ServerProxy> getServer(String id) {
+    return Optional.ofNullable(servers.get(id));
   }
 
 }

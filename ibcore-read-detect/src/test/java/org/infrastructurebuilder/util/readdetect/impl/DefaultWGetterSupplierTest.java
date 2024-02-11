@@ -139,6 +139,7 @@ public class DefaultWGetterSupplierTest {
 
   @Test
   public void testGet() throws IOException {
+    log.info("Starting testGet() -----");
     WGetter w = this.ws.get();
     Path outputPath = wps.get();
 

@@ -79,7 +79,7 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
   }
 
   @Override
-  public IBResourceBuilder<Future<VertxIBResource>> from(Path path) {
+  public IBResourceBuilder<Future<VertxIBResource>> fromPath(Path path) {
     this.sourcePath = requireNonNull(path);
 
     return this
@@ -127,9 +127,9 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
   }
 
   @Override
-  public IBResourceBuilder<Future<VertxIBResource>> withAdditionalProperties(Properties p) {
-    Optional.ofNullable(p).ifPresent(pp -> pp.entrySet().stream()
-        .forEach(e -> this.model.setAdditionalProperty(e.getKey().toString(), e.getValue().toString())));
+  public IBResourceBuilder<Future<VertxIBResource>> withMetadata(JSONObject p) {
+
+    // TODO Auto-generated method stub
     return this;
   }
 

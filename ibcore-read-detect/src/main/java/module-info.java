@@ -36,7 +36,7 @@ module org.infrastructurebuilder.util.readdetect {
   requires transitive com.fasterxml.jackson.datatype.jsr310;
   requires org.infrastructurebuilder.util.config;
   requires io.avaje.jsr305x;
-  requires plexus.io;
+  requires transitive plexus.io;
   requires org.slf4j;
   requires com.fasterxml.jackson.datatype.jdk8;
 }

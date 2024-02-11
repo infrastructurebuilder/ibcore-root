@@ -19,9 +19,14 @@ package org.infrastructurebuilder.util.readdetect;
 
 import java.io.InputStream;
 
+import org.codehaus.plexus.components.io.resources.PlexusIoResource;
+import org.infrastructurebuilder.util.readdetect.impl.IBURLPlexusIOResource;
+
 /**
  * Literally the most common version of an IBResource
  */
 public interface IBResourceIS extends IBResource<InputStream> {
-
+  default PlexusIoResource asPlexusIOResource() {
+    return new IBURLPlexusIOResource(this);
+  }
 }
