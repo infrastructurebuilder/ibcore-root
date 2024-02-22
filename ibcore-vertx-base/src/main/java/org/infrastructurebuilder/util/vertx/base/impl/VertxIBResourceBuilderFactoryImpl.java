@@ -36,6 +36,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
+import org.infrastructurebuilder.util.core.IBUtils;
+import org.infrastructurebuilder.util.core.PathAndChecksum;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.core.RelativeRootSupplier;
 import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
@@ -43,6 +46,8 @@ import org.infrastructurebuilder.util.readdetect.AbstractIBResourceBuilderFactor
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.IBResourceException;
+import org.infrastructurebuilder.util.readdetect.IBResourceIS;
+import org.infrastructurebuilder.util.readdetect.impl.RelativePathIBResourceBuilder;
 import org.infrastructurebuilder.util.vertx.base.VertxIBResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,8 +81,8 @@ public class VertxIBResourceBuilderFactoryImpl extends AbstractIBResourceBuilder
     this.typeMapper = Objects.requireNonNull(typeMapper);
     this.vertx = Objects.requireNonNull(vertx);
     // Delivers a new builder from the relative root each time
-    this.builder = () -> new DefaultVertxIBResourceBuilder(this.vertx, getRelativeRoot().get());
-    this.setRoot(this.getRelativeRoot().get().getPath().map(Path::toAbsolutePath).map(Path::toString).orElse(null));
+    this.builder = () -> new DefaultVertxIBResourceBuilder(this.vertx, getRelativeRoot());
+    this.setRoot(this.getRelativeRoot().getPath().map(Path::toAbsolutePath).map(Path::toString).orElse(null));
   }
 
   public String getName() {
@@ -85,16 +90,23 @@ public class VertxIBResourceBuilderFactoryImpl extends AbstractIBResourceBuilder
   }
 
   @Override
-  public Optional<IBResourceBuilder<Future<VertxIBResource>>> fromPath(Path p, String type) {
-    log.debug("Getting stream from {}", p);
+  protected Supplier<IBResourceBuilder<Future<VertxIBResource>>> getBuilder() {
+    // Delivers a new builder from the relative root each time
+    return () -> null; // new RelativePathIBResourceBuilder(getRelativeRoot());
+  }
 
-    var c = getRelativeRoot()
-
-        .map(rr -> cacheIt(p, type))
-
-        .orElseGet(() -> readIt(p, type));
-
-    return Optional.ofNullable(c.result());
+  @Override
+  public Optional<IBResourceBuilder<Future<VertxIBResource>>> fromPathAndChecksum(PathAndChecksum p) {
+    return Optional.of(getBuilder().get().fromPathAndChecksum(p));
+//    log.debug("Getting stream from {}", p);
+//
+//    var c = getRelativeRoot()
+//
+//        .map(rr -> cacheIt(p, type))
+//
+//        .orElseGet(() -> readIt(p, type));
+//
+//    return Optional.ofNullable(c.result());
   }
 
   private Future<IBResourceBuilder<Future<VertxIBResource>>> readIt(Path p, String type) {
@@ -110,7 +122,7 @@ public class VertxIBResourceBuilderFactoryImpl extends AbstractIBResourceBuilder
 
   private Future<IBResourceBuilder<Future<VertxIBResource>>> cacheIt(Path p, String type) {
     log.info("Cacheing from {}", p);
-    var rootPath = getRelativeRoot().flatMap(RelativeRoot::getPath);
+    var rootPath = getRelativeRoot().getPath();
 //
 //    if (rootPath.isEmpty()) {
 //      log.error("no.root.path");
@@ -144,9 +156,9 @@ public class VertxIBResourceBuilderFactoryImpl extends AbstractIBResourceBuilder
       // Get path to copied file
       // File is copied?
       IBResourceBuilder<Future<VertxIBResource>> builder = new DefaultVertxIBResourceBuilder(this.vertx,
-          this.getRelativeRoot().get())
+          this.getRelativeRoot())
           // From the file
-          .from(target);
+          .fromPath(target);
       return succeededFuture(builder);
     });
 
@@ -180,13 +192,13 @@ public class VertxIBResourceBuilderFactoryImpl extends AbstractIBResourceBuilder
   }
 
   // Package private
-  @Override
   public Optional<IBResourceBuilder<Future<VertxIBResource>>> builderFromPathAndChecksum(Path p, Checksum checksum) {
     // We have a checksum, so we can read it, etc.
-    Optional<BasicFileAttributes> bfa = IBResourceBuilderFactory.getAttributes.apply(p);
+    Optional<BasicFileAttributes> bfa = IBUtils.getAttributes.apply(p);
+    var pandc = new DefaultPathAndChecksum(p, checksum);
     var m = this.builder.get()
 
-        .from(p) // sets filepath and name (and source?)
+        .fromPathAndChecksum(pandc) // sets filepath and name (and source?)
 
         .withChecksum(checksum)
 
@@ -206,9 +218,9 @@ public class VertxIBResourceBuilderFactoryImpl extends AbstractIBResourceBuilder
   }
 
   @Override
-  protected Supplier<IBResourceBuilder<Future<VertxIBResource>>> getBuilder() {
+  public Optional<IBResourceBuilder<Future<VertxIBResource>>> fromURL(String u) {
     // TODO Auto-generated method stub
-    return null;
+    return Optional.empty();
   }
 
 }

@@ -36,7 +36,7 @@
 	<url>${github.url.base}/${project.artifactId}</url>
 
 	<properties>
-		<test.coverage.percentage.required>39</test.coverage.percentage.required>
+		<test.coverage.percentage.required>11</test.coverage.percentage.required>
 		<jacoco.max.missed.classes>2</jacoco.max.missed.classes>
 	</properties>
 

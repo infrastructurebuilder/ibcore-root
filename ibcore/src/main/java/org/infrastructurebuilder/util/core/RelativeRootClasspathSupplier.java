@@ -17,6 +17,9 @@
  */
 package org.infrastructurebuilder.util.core;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Optional;
 
 import javax.inject.Named;
@@ -26,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 @Named(RelativeRootClasspathSupplier.NAME)
 public class RelativeRootClasspathSupplier implements RelativeRootSupplier {
-  private static final Logger logger = LoggerFactory.getLogger(RelativeRootClasspathSupplier.class);
+  private static final Logger log = LoggerFactory.getLogger(RelativeRootClasspathSupplier.class);
 
   public static final String NAME = "classpath:/";
 
@@ -39,8 +42,22 @@ public class RelativeRootClasspathSupplier implements RelativeRootSupplier {
   public Optional<RelativeRoot> get() {
     return Optional.of(new AbstractBaseRelativeRoot(NAME) {
       @Override
-      public RelativeRoot extend(String newPath) {
+      public RelativeRoot extendAsNewRoot(Path newPath) {
         return this; // "extend" doesn't work for classpath types
+      }
+
+      @Override
+      public Optional<InputStream> getInputStreamFromExtendedPath(String path) {
+        return Optional.ofNullable(this.getClass().getResource(path))
+
+            .map(u -> {
+              try {
+                return u.openStream();
+              } catch (IOException e) {
+                log.error("Could not open " + u.toExternalForm(), e);
+                return null;
+              }
+            });
       }
     });
   }

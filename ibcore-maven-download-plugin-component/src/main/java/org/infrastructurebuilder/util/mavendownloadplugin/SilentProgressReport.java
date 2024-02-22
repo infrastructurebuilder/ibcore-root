@@ -24,35 +24,32 @@ import org.slf4j.Logger;
 //import org.apache.maven.plugin.logging.Log;
 
 /**
- * Silent (no-op) implementation of {@link ProgressReport}. Only errors will get logged
- * at ERROR priority.
+ * Silent (no-op) implementation of {@link ProgressReport}. Only errors will get logged at ERROR priority.
  */
 public final class SilentProgressReport implements ProgressReport {
 
-//  private final Log log;
   private final Logger log;
 
-//  public SilentProgressReport(Log log) {
-    public SilentProgressReport(Logger log) {
-        this.log = log;
-    }
+  public SilentProgressReport(Logger log) {
+    this.log = log;
+  }
 
-    @Override
-    public void initiate(URI uri, long total) {
-    }
+  @Override
+  public void initiate(URI uri, long total) {
+  }
 
-    @Override
-    public void update(long bytesRead) {
-    }
+  @Override
+  public void update(long bytesRead) {
+  }
 
-    @Override
-    public void completed() {
-    }
+  @Override
+  public void completed() {
+  }
 
-    @Override
-    public void error(Exception ex) {
-//      log.error(ex);
-      log.error("Error",ex);
-    }
+  @Override
+  public void error(Exception ex) {
+    if (this.log != null)
+      log.error("Error", ex);
+  }
 
 }

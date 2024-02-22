@@ -41,7 +41,7 @@ public interface TypeToExtensionMapper {
   SortedSet<String> reverseMapFromExtension(String extension);
 
   /**
-   * Denotes that
+   * Future expansion
    *
    * @param type
    * @return

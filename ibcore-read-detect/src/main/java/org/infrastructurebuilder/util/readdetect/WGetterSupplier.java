@@ -19,6 +19,7 @@ package org.infrastructurebuilder.util.readdetect;
 
 import java.util.function.Supplier;
 
-public interface WGetterSupplier extends Supplier<WGetter> {
+// FIXME Might not be needed unless we need to additionally config
+public interface WGetterSupplier extends Supplier<IBResourceCollector> {
 
 }

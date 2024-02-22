@@ -21,10 +21,11 @@ import static java.util.Objects.requireNonNull;
 
 import java.nio.file.Path;
 import java.time.Instant;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.util.core.IBUtils;
+import org.infrastructurebuilder.util.core.PathAndChecksum;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.AbstractIBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
@@ -54,19 +55,24 @@ public class AbsolutePathIBResourceBuilder extends AbstractIBResourceBuilder<Opt
   @Override
   public IBResourceBuilder<Optional<IBResourceIS>> fromURL(String url) {
     // TODO Auto-generated method stub
-    return null;
+    throw new IBException("unimplemented"); // return this;
   }
 
+//  @Override
+//  protected Optional<Path> getActualFullPathToResource() {
+//    return Optional.of(this.sourcePath);
+//  }
+
   @Override
-  public IBResourceBuilder<Optional<IBResourceIS>> fromPath(Path path) {
-    var op = requireNonNull(path);
+  public IBResourceBuilder<Optional<IBResourceIS>> fromPathAndChecksum(PathAndChecksum path) {
+    var op = requireNonNull(path.get());
     if (!op.isAbsolute()) {
-      op = path.toAbsolutePath();
+      op = op.toAbsolutePath();
       log.warn("Path {} is not absolute.  Making absolute to {}", path, op);
     }
     this.sourcePath = requireNonNull(op);
 
-    IBResourceBuilderFactory.getAttributes.apply(op).ifPresent(attr -> {
+    path.getAttributes().ifPresent(attr -> {
       this.withCreateDate(attr.creationTime().toInstant())
 
           .withLastUpdated(attr.lastModifiedTime().toInstant())
@@ -81,12 +87,13 @@ public class AbsolutePathIBResourceBuilder extends AbstractIBResourceBuilder<Opt
 
         .withFilePath(op.toString())
 
+        .withChecksum(path.asChecksum())
+
         .withName(op.getFileName().toString())
 
         .withSource(op.toUri().toASCIIString())
 
     ;
-
   }
 
 }

@@ -15,10 +15,16 @@
  * limitations under the License.
  * @formatter:on
  */
-module org.infrastructurebuilder.util.vertx.blobstore {
-  exports org.infrastructurebuilder.util.vertx.blobstore;
-  requires org.infrastructurebuilder.util.readdetect;
-  requires io.vertx.core;
-  requires io.vertx.codegen;
-  requires com.google.common;
+package org.infrastructurebuilder.util.core;
+
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Optional;
+import java.util.function.Supplier;
+
+public interface PathAndChecksum extends Supplier<Path>, ChecksumEnabled {
+
+  default Optional<BasicFileAttributes> getAttributes() {
+    return IBUtils.getAttributes.apply(get());
+  }
 }

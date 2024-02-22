@@ -20,13 +20,15 @@ package org.infrastructurebuilder.util.readdetect;
 import static java.util.Objects.requireNonNull;
 
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
+import org.infrastructurebuilder.util.core.PathAndChecksum;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -112,7 +114,11 @@ public interface IBResourceBuilder<B> {
    * @param path
    * @return
    */
-  IBResourceBuilder<B> fromPath(Path path);
+  default IBResourceBuilder<B> fromPath(Path path) {
+    return fromPathAndChecksum(new DefaultPathAndChecksum(path));
+  }
+
+  IBResourceBuilder<B> fromPathAndChecksum(PathAndChecksum p);
 
   /**
    * Set a URL or URL-like that this builder will reference.
@@ -181,13 +187,15 @@ public interface IBResourceBuilder<B> {
   IBResourceBuilder<B> detectType();
 
   /**
-   * Sets an expected type, if present, otherwise does nothing
+   * Sets an expected type, if present, otherwise deetect type
    *
    * @param type
    * @return
    */
   default IBResourceBuilder<B> withType(Optional<String> type) {
-    return requireNonNull(type).map(t -> withType(t)).orElse(this);
+    return requireNonNull(type) //
+        .map(t -> withType(t)) //
+        .orElseGet(() -> this.detectType());
   }
 
   /**
@@ -241,6 +249,8 @@ public interface IBResourceBuilder<B> {
    * @return
    */
   IBResourceBuilder<B> withMostRecentAccess(Instant access);
+
+  IBResourceBuilder<B> withBasicFileAttributes(BasicFileAttributes a);
 
   /**
    * validate checks the values provided so far and throws IBResourceException if anything is off.

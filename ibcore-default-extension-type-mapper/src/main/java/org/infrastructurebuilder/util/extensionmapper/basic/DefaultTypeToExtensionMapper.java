@@ -17,10 +17,14 @@
  */
 package org.infrastructurebuilder.util.extensionmapper.basic;
 
+import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_ACCESS;
+import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_IBDATA;
+import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_JAR;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_LIQUIBASE_CHANGELOG;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_MSWORD;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_MSWORDX;
+import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_PDF;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_PPTX;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_VND_OASIS_SPREADSHEET;
@@ -34,6 +38,7 @@ import static org.infrastructurebuilder.util.constants.IBConstants.AVRO;
 import static org.infrastructurebuilder.util.constants.IBConstants.AVRO_BINARY;
 import static org.infrastructurebuilder.util.constants.IBConstants.AVRO_SCHEMA;
 import static org.infrastructurebuilder.util.constants.IBConstants.AVSC;
+import static org.infrastructurebuilder.util.constants.IBConstants.BIN;
 import static org.infrastructurebuilder.util.constants.IBConstants.CSV;
 import static org.infrastructurebuilder.util.constants.IBConstants.DBUNIT_DTD;
 import static org.infrastructurebuilder.util.constants.IBConstants.DBUNIT_FLATXML;
@@ -43,8 +48,10 @@ import static org.infrastructurebuilder.util.constants.IBConstants.DOCX;
 import static org.infrastructurebuilder.util.constants.IBConstants.DTD;
 import static org.infrastructurebuilder.util.constants.IBConstants.HTM;
 import static org.infrastructurebuilder.util.constants.IBConstants.HTML;
+import static org.infrastructurebuilder.util.constants.IBConstants.IBDATAARCHIVE;
 import static org.infrastructurebuilder.util.constants.IBConstants.IBDATA_SCHEMA;
 import static org.infrastructurebuilder.util.constants.IBConstants.IMAGE_JPG;
+import static org.infrastructurebuilder.util.constants.IBConstants.JARARCHIVE;
 import static org.infrastructurebuilder.util.constants.IBConstants.JAVA_LANG_STRING;
 import static org.infrastructurebuilder.util.constants.IBConstants.JPEG;
 import static org.infrastructurebuilder.util.constants.IBConstants.JPG;
@@ -77,7 +84,7 @@ import static org.infrastructurebuilder.util.constants.IBConstants.TSV;
 import static org.infrastructurebuilder.util.constants.IBConstants.TXT;
 import static org.infrastructurebuilder.util.constants.IBConstants.VIDEO_AVI_1;
 import static org.infrastructurebuilder.util.constants.IBConstants.XLS;
-import static org.infrastructurebuilder.util.constants.IBConstants.*;
+import static org.infrastructurebuilder.util.constants.IBConstants.XLSX;
 import static org.infrastructurebuilder.util.constants.IBConstants.XML;
 import static org.infrastructurebuilder.util.constants.IBConstants.ZIP;
 
@@ -91,7 +98,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.infrastructurebuilder.util.core.IdentifiedAndWeighted;
-import org.infrastructurebuilder.util.core.TypeMapTuple;
 import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
 
 @Named
@@ -107,8 +113,9 @@ public class DefaultTypeToExtensionMapper implements TypeToExtensionMapper {
 
         new TypeMapTuple(APPLICATION_OCTET_STREAM, BIN) // DEFAULT
         , new TypeMapTuple(IBDATA_SCHEMA, JSON_EXT) //
-        , new TypeMapTuple(APPLICATION_IBDATA, IBDATAARCHIVE), new TypeMapTuple(APPLICATION_JAR, JARARCHIVE),
-        new TypeMapTuple(APPLICATION_XML, XML, ORG_W3C_DOM_NODE) //
+        , new TypeMapTuple(APPLICATION_IBDATA, IBDATAARCHIVE) //
+        , new TypeMapTuple(APPLICATION_JAR, JARARCHIVE) //
+        , new TypeMapTuple(APPLICATION_XML, XML, ORG_W3C_DOM_NODE) //
         , new TypeMapTuple(TEXT_HTML, HTM, JAVA_LANG_STRING) //
         , new TypeMapTuple(TEXT_HTML, HTML, JAVA_LANG_STRING) //
         , new TypeMapTuple(TEXT_PLAIN, TXT, JAVA_LANG_STRING) //
@@ -164,4 +171,51 @@ public class DefaultTypeToExtensionMapper implements TypeToExtensionMapper {
         .orElse(Optional.empty());
 
   }
+
+  /**
+   * Default-weighted data tuple with the MIME type as the identifier
+   *
+   * @author mykel.alvis
+   *
+   */
+  private class TypeMapTuple implements IdentifiedAndWeighted {
+
+    private final String type;
+    private final String extension;
+    private final String structuredType;
+    private final Integer weight;
+
+    public TypeMapTuple(String type, String extension) {
+      this(type, extension, null);
+    }
+
+    public TypeMapTuple(String type, String extension, String structuredType) {
+      this(type, extension, structuredType, 0);
+    }
+
+    public TypeMapTuple(String type, String extension, String structuredType, Integer weight) {
+      this.type = type;
+      this.extension = extension;
+      this.structuredType = structuredType;
+      this.weight = ofNullable(weight).orElse(0);
+    }
+
+    public String getId() {
+      return type;
+    }
+
+    public String getExtension() {
+      return extension;
+    }
+
+    public Optional<String> getStructuredType() {
+      return ofNullable(structuredType);
+    }
+
+    @Override
+    public Integer getWeight() {
+      return this.weight;
+    }
+  }
+
 }

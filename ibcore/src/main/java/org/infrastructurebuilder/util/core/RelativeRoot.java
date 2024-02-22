@@ -18,9 +18,11 @@
 package org.infrastructurebuilder.util.core;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 import static org.infrastructurebuilder.util.core.IBUtils.stripTrailingSlash;
 
 import java.io.BufferedWriter;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -97,14 +99,18 @@ public interface RelativeRoot extends JSONAndChecksumEnabled {
     return !(isPath() || isURL());
   }
 
-  Optional<Path> getPath();
+  default Optional<Path> getPath() {
+    return empty();
+  }
 
-  Optional<URL> getUrl();
+  default Optional<URL> getUrl() {
+    return empty();
+  }
 
   default boolean isParentOf(RelativeRoot otherRoot) {
 
-    var sr = stripTrailingSlash.apply(getStringRoot());
-    var or = stripTrailingSlash.apply(requireNonNull(otherRoot).getStringRoot());
+    var sr = stripTrailingSlash.apply(toString());
+    var or = stripTrailingSlash.apply(requireNonNull(otherRoot).toString());
 
     return or.startsWith(sr) && !(or.equals(sr));
   }
@@ -144,19 +150,13 @@ public interface RelativeRoot extends JSONAndChecksumEnabled {
     });
   }
 
-  default Checksum asChecksum() {
-    return getChecksumBuilder().asChecksum();
-  }
-
   Optional<Path> relativize(Path p);
 
   Optional<String> relativize(URL p);
 
   String relativize(String pext);
 
-  RelativeRoot extend(String newPath);
-
-  String getStringRoot();
+  RelativeRoot extendAsNewRoot(Path newPath);
 
   /**
    * Creates a temp file (that can then be opened) that will be deleted upon jvm exit. This is a relative path to the
@@ -198,4 +198,7 @@ public interface RelativeRoot extends JSONAndChecksumEnabled {
    */
   Optional<Path> getPermanantPath(Path relativePath, String prefix, String suffix);
 
+  Optional<Path> extendPath(Path p);
+
+  Optional<InputStream> getInputStreamFromExtendedPath(String path);
 }

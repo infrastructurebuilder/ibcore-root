@@ -18,14 +18,13 @@
 package org.infrastructurebuilder.util.readdetect.impl;
 
 import static java.lang.String.format;
-import static java.nio.file.Files.newInputStream;
 import static java.time.Instant.now;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
-import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory.getAttributes;
 import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory.toOptionalType;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
@@ -33,8 +32,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
@@ -59,9 +61,19 @@ import org.slf4j.LoggerFactory;
 public class RelativePathIBResourceIS extends AbstractIBResourceIS implements IBResourceIS {
   private final static Logger log = LoggerFactory.getLogger(RelativePathIBResourceIS.class);
 
+  private static Function<Path, InputStream> fileInputStreamWithZipOptions = (path) -> {
+    try {
+      return Files.newInputStream(path, (path.getClass().getCanonicalName().contains("Zip")) ? ZIP_OPTIONS : OPTIONS);
+    } catch (Throwable e) {
+      log.error("Error opening " + path, e);
+      return null;
+    }
+  };
+
   public RelativePathIBResourceIS(RelativeRoot root, IBResourceModel m, Path sourcePath) {
     super(requireNonNull(root), m);
-    this.m.setPath(IBResource.requireAbsolutePath(sourcePath).toUri().toASCIIString());
+    m.setPath(sourcePath.toString());
+//    this.m.setPath(IBResource.requireRelativePath(sourcePath).toUri().toASCIIString());
   }
 
   public RelativePathIBResourceIS(RelativeRoot root, IBResourceModel m) {
@@ -70,7 +82,7 @@ public class RelativePathIBResourceIS extends AbstractIBResourceIS implements IB
   }
 
   public RelativePathIBResourceIS(RelativeRoot root, JSONObject j) {
-    super(requireNonNull(root), IBResourceBuilder.modelFromJSON.apply(j).get()); // TODO Convert
+    super(requireNonNull(root), IBResourceBuilder.modelFromJSON.apply(j).get());
   }
 
   public RelativePathIBResourceIS(RelativeRoot root, Path path, Checksum checksum, Optional<String> type,
@@ -79,7 +91,7 @@ public class RelativePathIBResourceIS extends AbstractIBResourceIS implements IB
     this(requireNonNull(root), new IBResourceModel());
     m.setPath(requireNonNull(path).toAbsolutePath().toString());
     m.setStreamChecksum(requireNonNull(checksum).toString());
-    getAttributes.apply(path).ifPresent(bfa -> {
+    IBUtils.getAttributes.apply(path).ifPresent(bfa -> {
       this.m.setCreated(bfa.creationTime().toInstant());
       this.m.setLastUpdate(bfa.lastModifiedTime().toInstant());
       this.m.setMostRecentReadTime(bfa.lastAccessTime().toInstant());
@@ -97,12 +109,17 @@ public class RelativePathIBResourceIS extends AbstractIBResourceIS implements IB
   public Optional<InputStream> get() {
     m.setMostRecentReadTime(now());
     return getPath().map(path -> {
-      try {
-        return newInputStream(path, (path.getClass().getCanonicalName().contains("Zip")) ? ZIP_OPTIONS : OPTIONS);
-      } catch (Throwable t) {
-        log.error("Error opening " + path, t);
-        return null;
-      }
+      AtomicReference<Path> p = new AtomicReference<>(path);
+      getRelativeRoot().ifPresent(rr -> {
+        // There IS a relative root
+        rr.getPath().ifPresent(rrp -> {
+          var pp = p.get();
+          var pr = rrp.resolve(pp);
+
+          p.set(pr);
+        });
+      });
+      return fileInputStreamWithZipOptions.apply(p.get());
     });
   }
 

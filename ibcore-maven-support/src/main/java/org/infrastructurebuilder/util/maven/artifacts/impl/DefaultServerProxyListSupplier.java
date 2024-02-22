@@ -51,7 +51,7 @@ public class DefaultServerProxyListSupplier implements ServerProxyMap {
   public Set<String> getServerIds() {
     return servers.keySet();
   }
-  
+
   @Override
   public Optional<ServerProxy> getServer(String id) {
     return Optional.ofNullable(servers.get(id));

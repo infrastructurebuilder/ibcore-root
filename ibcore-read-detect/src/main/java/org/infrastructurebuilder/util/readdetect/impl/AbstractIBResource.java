@@ -18,8 +18,6 @@
 package org.infrastructurebuilder.util.readdetect.impl;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 
 import java.net.URI;
@@ -28,7 +26,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Optional;
-import java.util.Properties;
 
 import javax.annotation.Nullable;
 
@@ -183,7 +180,9 @@ abstract public class AbstractIBResource<T> implements IBResource<T> {
   @Override
   public Optional<Path> getPath() {
     try {
-      return m.getPath().map(URI::create).map(Paths::get);
+      return m.getPath().map(Paths::get);
+//      return Optional.of(Paths.get(m.getStreamSource()));
+//      return m.getPath().map(URI::create).map(Paths::get);
     } catch (Throwable e) {
       log.error("Failed to get path " + m.getPath());
       return Optional.empty();

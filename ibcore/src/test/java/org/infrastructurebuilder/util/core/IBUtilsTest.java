@@ -209,7 +209,9 @@ public class IBUtilsTest {
     Path bdir = Files.createDirectories(adir.resolve("B"));
     Path cfile = writeString(bdir.resolve("C"), "HI");
     IBUtils.moveAtomic(source, target);
-    assertTrue(Files.exists(target.resolve("A").resolve("B").resolve("C")));
+    Path newC = target.resolve("A").resolve("B").resolve("C");
+    assertTrue(Files.exists(newC));
+    assertTrue(IBUtils.getAttributes.apply(newC).isPresent());
   }
 
   @Test

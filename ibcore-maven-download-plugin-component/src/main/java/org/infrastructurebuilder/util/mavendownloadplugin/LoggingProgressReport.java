@@ -18,6 +18,7 @@
 package org.infrastructurebuilder.util.mavendownloadplugin;
 
 import java.net.URI;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 
@@ -39,9 +40,8 @@ public final class LoggingProgressReport implements ProgressReport {
     private long total;
     private long completed;
 
-//    public LoggingProgressReport(Log log) {
       public LoggingProgressReport(Logger log) {
-        this.log = log;
+        this.log = Objects.requireNonNull(log);
     }
 
     @Override

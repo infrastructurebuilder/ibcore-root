@@ -21,12 +21,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
-import org.infrastructurebuilder.util.maven.artifacts.impl.DefaultServerProxyListSupplier;
 import org.infrastructurebuilder.util.settings.ServerProxy;
-import org.infrastructurebuilder.util.settings.ServerProxyListSupplier;
+import org.infrastructurebuilder.util.settings.ServerProxyMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -47,7 +47,7 @@ public class DefaultServerProxyListSupplierTest {
 
   @Test
   public void testGet() {
-    List<ServerProxy> k = spl.get();
+    Set<String> k = spl.getServerIds();
     assertEquals(2, k.size());
   }
 

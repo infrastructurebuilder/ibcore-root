@@ -33,8 +33,8 @@ import org.infrastructurebuilder.util.core.IdentifiedAndWeighted;
  *
  * REQUIREMENT: If the resolver cannot resolve the path, then Optional.empty() is the correct return result.
  *
- * A resolver has some internally defined understanding of where to look for the artifact bytestream. It then maps
- * the GAV from the supplied GAV param and returns that same GAV but with the file path set to that stream of bytes.
+ * A resolver has some internally defined understanding of where to look for the artifact bytestream. It then maps the
+ * GAV from the supplied GAV param and returns that same GAV but with the file path set to that stream of bytes.
  *
  * This obviously means that any implementation requires access to a file that may not yet exist. The impl would need to
  * acquire that file in order to set the path in the resultant GAV.

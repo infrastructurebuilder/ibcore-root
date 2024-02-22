@@ -35,6 +35,7 @@ import java.util.Optional;
 import java.util.Properties;
 
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.objectmapper.jackson.ObjectMapperUtils;
 import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.ChecksumBuilder;
@@ -42,11 +43,15 @@ import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
+import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.infrastructurebuilder.util.vertx.base.VertxIBResource;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.vertx.core.Vertx;
 
@@ -103,7 +108,7 @@ public class VertxDefaultIBResource implements VertxIBResource {
 //    m.setFilePath(this.originalPath.toAbsolutePath().toString());
     m.setPath(requireNonNull(path).toAbsolutePath().toString());
     m.setStreamChecksum(requireNonNull(checksum).toString());
-    IBResourceBuilderFactory.getAttributes.apply(path).ifPresent(bfa -> {
+    IBUtils.getAttributes.apply(path).ifPresent(bfa -> {
       this.m.setCreated(bfa.creationTime().toInstant());
       this.m.setLastUpdate(bfa.lastModifiedTime().toInstant());
       this.m.setMostRecentReadTime(bfa.lastAccessTime().toInstant());
@@ -238,10 +243,15 @@ public class VertxDefaultIBResource implements VertxIBResource {
   }
 
   @Override
-  public Optional<Properties> getAdditionalProperties() {
-    var p = new Properties();
-    m.getAdditionalProperties().forEach((k, v) -> p.setProperty(k, v.toString()));
-    return (p.size() == 0) ? empty() : of(p);
+  public JSONObject getMetadata() {
+    var mx = this.m.getMetadata().orElse(new IBMetadataModel());
+    String x = "{}";
+    try {
+      x = ObjectMapperUtils.mapper.get().writeValueAsString(mx);
+    } catch (JsonProcessingException | JSONException e) {
+      log.error("Error with processing metadata" + x);
+    }
+    return new JSONObject(x);
   }
 
   @Override

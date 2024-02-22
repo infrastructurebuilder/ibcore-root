@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -52,7 +53,7 @@ import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
 import org.infrastructurebuilder.util.credentials.basic.DefaultBasicCredentials;
 import org.infrastructurebuilder.util.extensionmapper.basic.DefaultTypeToExtensionMapper;
 import org.infrastructurebuilder.util.readdetect.IBResourceIS;
-import org.infrastructurebuilder.util.readdetect.WGetter;
+import org.infrastructurebuilder.util.readdetect.IBResourceCollector;
 import org.infrastructurebuilder.util.readdetect.WGetterSupplier;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -93,18 +94,26 @@ public class DefaultWGetterSupplierTest {
   }
 
   private WGetterSupplier ws;
+  private JSONObject rootMD;
+  private JSONObject expandMD;
 
   @BeforeEach
   public void setUp() throws Exception {
+    rootMD = new JSONObject().put("key", "value");
+    expandMD = new JSONObject().put("key2", "value2");
     Map<String, FileMapper> fileMAppers = new HashMap<>();
     Map<String, PathSupplier> pathSuppliers = Map.of(WORKINGDIR, wps, CACHEDIR, wps);
     HeadersSupplier headerSupplier = () -> new HashMap<>();
-    JSONObject config = new JSONObject().put(WORKINGDIR, WORKINGDIR).put(CACHEDIR, CACHEDIR).put(FILEMAPPERS,
-        new JSONArray());
-    ConfigMap p1 = ConfigMapBuilderSupplier.defaultBuilder().withJSONObject(config).get();
+    JSONObject config = new JSONObject()
+
+        .put(WORKINGDIR, WORKINGDIR)//
+        .put(CACHEDIR, CACHEDIR)//
+        .put(FILEMAPPERS, new JSONArray());
+    ConfigMap p1 = ConfigMapBuilderSupplier.defaultBuilder()//
+        .withJSONObject(config).get();
     ArchiverManager am = new FakeArchiverManager();
     ;
-    this.ws = new DefaultWGetterSupplier(
+    this.ws = new DefaultIBResourceCollectorSupplier(
         // Logger
         ls,
         // Type mapper
@@ -133,29 +142,30 @@ public class DefaultWGetterSupplierTest {
 
   @Test
   public void testRetries() {
-    assertThrows(IBException.class, () -> this.ws.get().collectCachedIBResources(true, empty(), wps.get(),
-        HTTP_WWW_EXAMPLE_COM_INDEX_HTML, CHECKSUM, empty(), 0, 1000, true, false));
+    assertThrows(IBException.class, () -> this.ws.get().collectCachedIBResources(true, empty(),
+        HTTP_WWW_EXAMPLE_COM_INDEX_HTML, CHECKSUM, empty(), 0, 1000, true, false, of(rootMD), of(expandMD)));
   }
 
   @Test
   public void testGet() throws IOException {
     log.info("Starting testGet() -----");
-    WGetter w = this.ws.get();
-    Path outputPath = wps.get();
+    IBResourceCollector w = this.ws.get();
 
     String src = HTTP_WWW_EXAMPLE_COM_INDEX_HTML; // wps.getTestClasses().resolve("rick.jpg").toUri().toURL().toExternalForm();
     Optional<IBResourceIS> q = w
-        .collectCachedIBResources(true, empty(), outputPath, src, CHECKSUM, empty(), 5, 1000, true, false)
+        .collectCachedIBResources(true, empty(), src, CHECKSUM, empty(), 5, 1000, true, false, of(rootMD), of(expandMD))
         .map(l -> l.get(0));
     assertTrue(q.isPresent());
     IBResourceIS qr = q.get();
     assertEquals(CHECKSUM.get().toString(), qr.getTChecksum().toString());
     assertEquals(IBConstants.TEXT_HTML, qr.getType());
-    String v = IBUtils.readToString(qr.get().get());
+    Optional<InputStream> qq = qr.get();
+    assertTrue(qq.isPresent(), "There is an inputstream");
+    String v = IBUtils.readToString(qq.get());
     assertTrue(v.contains(WWW_IANA_ORG));
 
     // Do it again
-    q = w.collectCachedIBResources(false, empty(), outputPath, src, CHECKSUM, empty(), 5, 1000, false, false)
+    q = w.collectCachedIBResources(false, empty(), src, CHECKSUM, empty(), 5, 1000, false, false, empty(), empty())
         .map(l -> l.get(0));
     assertTrue(q.isPresent());
     qr = q.get();
@@ -168,13 +178,12 @@ public class DefaultWGetterSupplierTest {
 
   @Test
   public void testGetWithCreds() throws IOException {
-    WGetter w = this.ws.get();
-    Path outputPath = wps.get();
+    IBResourceCollector w = this.ws.get();
 
     String src = HTTP_WWW_EXAMPLE_COM_INDEX_HTML; // wps.getTestClasses().resolve("rick.jpg").toUri().toURL().toExternalForm();
     BasicCredentials creds = new DefaultBasicCredentials("A", of("B"));
     Optional<IBResourceIS> q;
-    q = w.collectCachedIBResources(false, of(creds), outputPath, src, CHECKSUM, empty(), 5, 0, true, false)
+    q = w.collectCachedIBResources(false, of(creds), src, CHECKSUM, empty(), 5, 0, true, false, empty(), empty())
         .map(l -> l.get(0));
     assertTrue(q.isPresent());
     assertEquals(CHECKSUM.get().toString(), q.get().getTChecksum().toString());
@@ -183,7 +192,7 @@ public class DefaultWGetterSupplierTest {
     assertTrue(v.contains(WWW_IANA_ORG));
 
     // Do it again
-    q = w.collectCachedIBResources(true, empty(), outputPath, src, CHECKSUM, empty(), 5, 1000, false, false)
+    q = w.collectCachedIBResources(true, empty(), src, CHECKSUM, empty(), 5, 1000, false, false, empty(), empty())
         .map(l -> l.get(0));
     assertTrue(q.isPresent());
     assertEquals(CHECKSUM.get().toString(), q.get().getTChecksum().toString());
@@ -195,17 +204,18 @@ public class DefaultWGetterSupplierTest {
 
   @Test
   public void testZip() throws IOException {
-    WGetter w = this.ws.get();
-    Path outputPath = wps.get();
+    IBResourceCollector w = this.ws.get();
     String src = "https://releases.hashicorp.com/athena-cli/0.1.0/athena-cli_0.1.0_darwin_arm64.zip";
 //    String src = wps.getTestClasses().resolve("test.zip").toUri().toURL().toExternalForm();
-    Optional<List<IBResourceIS>> v = w.collectCachedIBResources(false, empty(), outputPath, src, ZIP_CHECKSUM, empty(),
-        5, 0, true, true);
+    Optional<List<IBResourceIS>> v = w.collectCachedIBResources(false, empty(), src, ZIP_CHECKSUM, empty(), 5, 0, true,
+        true, empty(), empty());
     assertTrue(v.isPresent());
     List<IBResourceIS> l = v.get();
     assertEquals(IBConstants.APPLICATION_ZIP, l.get(0).getType());
-    assertEquals(IBConstants.APPLICATION_X_MAC, l.get(1).getType());
-    assertEquals(17117024, Files.size(l.get(1).getPath().get()));
+    var b = l.get(1);
+    Optional<Path> f = b.getRelativeRoot().flatMap(rr -> rr.extendPath(b.getPath().get()));
+    assertEquals(IBConstants.APPLICATION_X_MAC, b.getType());
+    assertEquals(17117024, Files.size(f.get()));
   }
 
 }

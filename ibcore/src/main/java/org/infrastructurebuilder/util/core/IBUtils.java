@@ -24,6 +24,7 @@ import static java.nio.file.Files.createFile;
 import static java.nio.file.Files.exists;
 import static java.nio.file.Files.isRegularFile;
 import static java.nio.file.Files.isWritable;
+import static java.nio.file.Files.readAttributes;
 import static java.nio.file.Files.walkFileTree;
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
@@ -32,6 +33,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.util.Comparator.nullsFirst;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.Spliterator.ORDERED;
 import static java.util.stream.Collectors.toMap;
@@ -178,6 +180,16 @@ public class IBUtils {
     cet.translate(() -> tfSupplier.get().transform(new DOMSource((Document) document), new StreamResult(writer)));
     return writer.toString();
   }
+
+  public final static Function<Path, Optional<BasicFileAttributes>> getAttributes = (i) -> {
+    Optional<BasicFileAttributes> retVal = empty();
+    try {
+      retVal = of(readAttributes(requireNonNull(i), BasicFileAttributes.class));
+    } catch (IOException e) {
+      // log.error("Error reading basic attributes " + i, e);
+    }
+    return retVal;
+  };
 
   public final static Function<String, Optional<Document>> strToDoc = (xmlString) -> {
     Document doc;
@@ -387,12 +399,9 @@ public class IBUtils {
 
   public static Path copyTree(final Path in, final Path out) throws IOException {
     walkFileTree(in, new SimpleFileVisitor<Path>() {
-      private final Path relativize(Path p) {
-        return in.relativize(p);
-      }
 
       private final Path outTarget(Path p) {
-        return out.resolve(relativize(p));
+        return out.resolve(in.relativize(p));
       }
 
       @Override
@@ -1151,42 +1160,43 @@ public class IBUtils {
     return Objects.requireNonNull(targetDir).startsWith(sourcePath);
   };
 
-
-  // ---- 
+  // ----
   // Pulled verbatim from org.apache.maven.shared.utils.StringUtils
   /**
-   * <p>Checks if a String is non <code>null</code> and is
-   * not empty (<code>length &gt; 0</code>).</p>
+   * <p>
+   * Checks if a String is non <code>null</code> and is not empty (<code>length &gt; 0</code>).
+   * </p>
    *
    * @param str the String to check
    * @return true if the String is non-null, and not length zero
    */
-  public static boolean isNotEmpty( @Nullable String str )
-  {
-      return ( ( str != null ) && ( str.length() > 0 ) );
+  public static boolean isNotEmpty(@Nullable String str) {
+    return ((str != null) && (str.length() > 0));
   }
 
   /**
-   * <p>Checks if a (trimmed) String is <code>null</code> or empty.</p>
-   * 
-   * <p><strong>Note:</strong> In future releases, this method will no longer trim the input string such that it works
+   * <p>
+   * Checks if a (trimmed) String is <code>null</code> or empty.
+   * </p>
+   *
+   * <p>
+   * <strong>Note:</strong> In future releases, this method will no longer trim the input string such that it works
    * complementary to {@link #isNotEmpty(String)}. Code that wants to test for whitespace-only strings should be
-   * migrated to use {@link #isBlank(String)} instead.</p>
+   * migrated to use {@link #isBlank(String)} instead.
+   * </p>
    *
    * @param str the String to check
-   * @return <code>true</code> if the String is <code>null</code>, or
-   *         length zero once trimmed
+   * @return <code>true</code> if the String is <code>null</code>, or length zero once trimmed
    */
-  public static boolean isEmpty( @Nullable String str )
-  {
-      return ( ( str == null ) || ( str.trim().length() == 0 ) );
+  public static boolean isEmpty(@Nullable String str) {
+    return ((str == null) || (str.trim().length() == 0));
   }
 
   /**
    * <p>
    * Checks if a String is whitespace, empty ("") or null.
    * </p>
-   * 
+   *
    * <pre>
    * StringUtils.isBlank(null)      = true
    * StringUtils.isBlank("")        = true
@@ -1197,32 +1207,29 @@ public class IBUtils {
    *
    * @param str the String to check, may be null
    * @return <code>true</code> if the String is null, empty or whitespace
-   * 
+   *
    */
-  public static boolean isBlank( @Nullable String str )
-  {
-      int strLen;
-      // CHECKSTYLE_OFF: InnerAssignment
-      if ( str == null || ( strLen = str.length() ) == 0 )
-      // CHECKSTYLE_ON: InnerAssignment
-      {
-          return true;
-      }
-      for ( int i = 0; i < strLen; i++ )
-      {
-          if ( !Character.isWhitespace( str.charAt( i ) ) )
-          {
-              return false;
-          }
-      }
+  public static boolean isBlank(@Nullable String str) {
+    int strLen;
+    // CHECKSTYLE_OFF: InnerAssignment
+    if (str == null || (strLen = str.length()) == 0)
+    // CHECKSTYLE_ON: InnerAssignment
+    {
       return true;
+    }
+    for (int i = 0; i < strLen; i++) {
+      if (!Character.isWhitespace(str.charAt(i))) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /**
    * <p>
    * Checks if a String is not empty (""), not null and not whitespace only.
    * </p>
-   * 
+   *
    * <pre>
    * StringUtils.isNotBlank(null)      = false
    * StringUtils.isNotBlank("")        = false
@@ -1233,11 +1240,10 @@ public class IBUtils {
    *
    * @param str the String to check, may be null
    * @return <code>true</code> if the String is not empty and not null and not whitespace
-   * 
+   *
    */
-  public static boolean isNotBlank( @Nullable String str )
-  {
-      return !isBlank( str );
+  public static boolean isNotBlank(@Nullable String str) {
+    return !isBlank(str);
   }
 
 }

@@ -17,9 +17,9 @@
  */
 package org.infrastructurebuilder.util.readdetect;
 
-import java.nio.file.Path;
 import java.util.Optional;
 
+import org.infrastructurebuilder.util.core.PathAndChecksum;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 
 public class DefaultEmptyIBResourceBuilder<T> extends AbstractIBResourceBuilder<Optional<T>> {
@@ -29,7 +29,7 @@ public class DefaultEmptyIBResourceBuilder<T> extends AbstractIBResourceBuilder<
   }
 
   @Override
-  public IBResourceBuilder<Optional<T>> fromPath(Path path) {
+  public IBResourceBuilder<Optional<T>> fromPathAndChecksum(PathAndChecksum path) {
     return this;
   }
 

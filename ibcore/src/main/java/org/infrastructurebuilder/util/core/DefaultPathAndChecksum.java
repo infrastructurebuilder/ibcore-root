@@ -15,38 +15,35 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.readdetect.impl;
+package org.infrastructurebuilder.util.core;
 
-import java.net.URI;
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Objects;
+import java.util.Optional;
 
-import org.slf4j.Logger;
+public class DefaultPathAndChecksum implements PathAndChecksum {
 
-/**
- * Silent (no-op) implementation of {@link ProgressReport}. Only errors will get logged at ERROR priority.
- */
-public final class SilentProgressReport implements ProgressReport {
+  private final Path path;
+  private final Checksum checksum;
 
-  private final Logger log;
+  public DefaultPathAndChecksum(Path p) {
+    this(p, new Checksum(p));
+  }
 
-  public SilentProgressReport(Logger log) {
-    this.log = log;
+  public DefaultPathAndChecksum(Path p, Checksum s) {
+    this.path = Objects.requireNonNull(p);
+    this.checksum = s;
   }
 
   @Override
-  public void initiate(URI uri, long total) {
+  public Path get() {
+    return this.path;
   }
 
   @Override
-  public void update(long bytesRead) {
-  }
-
-  @Override
-  public void completed() {
-  }
-
-  @Override
-  public void error(Exception ex) {
-    log.error("Error", ex);
+  public ChecksumBuilder getChecksumBuilder() {
+    return ChecksumBuilder.flatInstance(this.checksum);
   }
 
 }

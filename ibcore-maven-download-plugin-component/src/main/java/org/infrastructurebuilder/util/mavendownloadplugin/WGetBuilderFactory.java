@@ -17,10 +17,22 @@
  */
 package org.infrastructurebuilder.util.mavendownloadplugin;
 
-import java.util.function.Supplier;
+import java.nio.file.Path;
 
-import org.infrastructurebuilder.util.mavendownloadplugin.nonpublic.WGetComponent;
+import org.slf4j.Logger;
 
-public interface WGetSupplier extends Supplier<WGetComponent.Builder> {
+/**
+ * Fluent factory for setting up builders of 
+ */
+public interface WGetBuilderFactory  {
+  
+  /**
+   * 
+   * @return a new {@link WGetBuilder} every time
+   */
+  WGetBuilder builder();
+  
+  WGetBuilderFactory withLogger(Logger log);
 
+  WGetBuilderFactory withCacheDirectory(Path path);
 }

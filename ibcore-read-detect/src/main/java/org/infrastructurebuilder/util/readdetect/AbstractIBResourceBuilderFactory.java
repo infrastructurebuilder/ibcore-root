@@ -17,31 +17,16 @@
  */
 package org.infrastructurebuilder.util.readdetect;
 
-import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
-import static org.infrastructurebuilder.exceptions.IBException.cet;
-import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
-import static org.infrastructurebuilder.util.constants.IBConstants.UNKNOWN_SIZE;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.FileTime;
-import java.security.NoSuchAlgorithmException;
-import java.time.Instant;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.core.AbsolutePathRelativeRoot;
 import org.infrastructurebuilder.util.core.Checksum;
-import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.RelativeRoot;
+import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceCacheModel;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
@@ -56,6 +41,8 @@ abstract public class AbstractIBResourceBuilderFactory<B> extends IBResourceCach
   private final static Logger log = LoggerFactory.getLogger(AbstractIBResourceBuilderFactory.class);
 
   private final RelativeRoot _root;
+
+  private final AtomicReference<TypeToExtensionMapper> t2e = new AtomicReference<>();
 
   public AbstractIBResourceBuilderFactory(RelativeRoot relRoot) {
     super();
@@ -72,6 +59,17 @@ abstract public class AbstractIBResourceBuilderFactory<B> extends IBResourceCach
   @Override
   public final RelativeRoot getRelativeRoot() {
     return this._root;
+  }
+
+  @Override
+  public final IBResourceBuilderFactory<B> withTypeMapper(TypeToExtensionMapper m) {
+    this.t2e.compareAndExchange(null, m); // Only settable once
+    return this;
+  }
+
+  @Override
+  public Optional<TypeToExtensionMapper> getTypeMapper() {
+    return Optional.ofNullable(t2e.get());
   }
 
   @Override

@@ -19,18 +19,19 @@ package org.infrastructurebuilder.util.vertx.base.impl;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
-import static org.infrastructurebuilder.util.constants.IBConstants.*;
+import static org.infrastructurebuilder.util.constants.IBConstants.NO_PATH_SUPPLIED;
 import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory.extracted;
 import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory.toType;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
 import java.util.Optional;
-import java.util.Properties;
 
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.util.core.PathAndChecksum;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceException;
@@ -42,7 +43,6 @@ import org.slf4j.LoggerFactory;
 
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
-import io.vertx.core.file.AsyncFile;
 
 public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<VertxIBResource>> {
 
@@ -79,16 +79,16 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
   }
 
   @Override
-  public IBResourceBuilder<Future<VertxIBResource>> fromPath(Path path) {
-    this.sourcePath = requireNonNull(path);
+  public IBResourceBuilder<Future<VertxIBResource>> fromPathAndChecksum(PathAndChecksum path) {
+    this.sourcePath = requireNonNull(path).get();
 
     return this
 
         .withFilePath(path.toString())
 
-        .withName(path.getFileName().toString())
+        .withName(this.sourcePath.getFileName().toString())
 
-        .withSource(path.toUri().toASCIIString());
+        .withSource(this.sourcePath.toUri().toASCIIString());
   }
 
   @Override
@@ -265,6 +265,24 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
 
   public Optional<RelativeRoot> getRoot() {
     return Optional.of(root);
+  }
+
+  @Override
+  public IBResourceBuilder<Future<VertxIBResource>> fromURL(String url) {
+    // TODO Auto-generated method stub
+    throw new IBException("unimplemented"); // return this;
+  }
+
+  @Override
+  public IBResourceBuilder<Future<VertxIBResource>> detectType() {
+    // TODO Auto-generated method stub
+    throw new IBException("unimplemented"); // return this;
+  }
+
+  @Override
+  public IBResourceBuilder<Future<VertxIBResource>> withBasicFileAttributes(BasicFileAttributes a) {
+    // TODO Auto-generated method stub
+    return this;
   }
 
 }

@@ -25,17 +25,15 @@ import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Properties;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel;
-import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel.IBMetadataModelBuilder;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel.IBMetadataModelBuilderBase;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
@@ -83,6 +81,18 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
   public IBResourceBuilder<B> withFilePath(String path) {
     this.model.setPath(path);
     return this;
+  }
+
+  @Override
+  public IBResourceBuilder<B> withBasicFileAttributes(BasicFileAttributes a) {
+    return (a == null) ? this
+        : this.withCreateDate(a.creationTime().toInstant())
+
+            .withSize(a.size())
+
+            .withMostRecentAccess(a.lastAccessTime().toInstant())
+
+            .withLastUpdated(a.lastModifiedTime().toInstant());
   }
 
   @Override
@@ -157,7 +167,16 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
       log.warn("Call to detectType() but type already set to {}", this.model.getStreamType());
       return this;
     }
-    return withType(toType.apply(this.sourcePath));
+    return withType(toType.apply(getActualFullPathToResource().orElseThrow(() -> new IBResourceException("No root"))));
+  }
+
+  protected Optional<Path> getActualFullPathToResource() {
+    return (this.sourcePath.isAbsolute()) ? //
+        Optional.of(this.sourcePath) //
+        : //
+        getRoot().flatMap(root -> {
+          return root.getPath().map(rPath -> rPath.resolve(this.sourcePath));
+        });
   }
 
   /**
@@ -172,14 +191,17 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
   public Optional<IBResourceBuilder<B>> validate(boolean hard) {
     log.info("{} Validating {}", hard ? "Hard" : "Soft", this.sourcePath);
     if (this.sourcePath != null) {
-      if (!Files.exists(sourcePath)) {
-        log.error("unreadable.path {}", this.sourcePath);
-        return empty();
-      }
-      if (this.targetChecksum == null) {
-        var c = Checksum.ofPath.apply(this.sourcePath).get();
-        log.info("target checksum not available.  Reading source path checksum as {}", c);
-        this.withChecksum(c);
+      Optional<Path> fullPath = getActualFullPathToResource();
+      if (fullPath.isPresent()) {
+        if (!Files.exists(fullPath.get())) {
+          log.error("unreadable.path {}", fullPath.get());
+          return empty();
+        }
+        if (this.targetChecksum == null) {
+          var c = Checksum.ofPath.apply(fullPath.get()).get();
+          log.info("target checksum not available.  Reading source path checksum as {}", c);
+          this.withChecksum(c);
+        }
       }
       if (!this.typeSet)
         detectType();
@@ -190,7 +212,7 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
           return empty();
         }
       }
-      if (!Objects.equals(this.targetChecksum, this.model.getStreamChecksum())) {
+      if (!Objects.equals(this.targetChecksum.toString(), this.model.getStreamChecksum())) {
         log.error("Model checksum {} not equal to targeted checksum {}", this.model.getStreamChecksum(),
             this.targetChecksum);
         return empty();

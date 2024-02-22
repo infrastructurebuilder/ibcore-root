@@ -15,9 +15,11 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.readdetect.impl;
+package org.infrastructurebuilder.util.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.nio.file.Path;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -25,7 +27,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class DownloadFailureExceptionTest {
+class PathAndChecksumTest {
+  private static final String CSUM = "5cd814bd44716a73c2e380c443f573aa3f0a4aaf881f70810ec9c9552035433f6cca4c64161ce460e97db0089eefb1aad4d09e7151c330afc7a4caf528a6f475";
+  private static final String B_XML = "b.xml";
+  private final static TestingPathSupplier tps = new TestingPathSupplier();
+  private final static Path wp = tps.get();
+  private final static Path tRoot = tps.getTestClasses();
 
   @BeforeAll
   static void setUpBeforeClass() throws Exception {
@@ -33,13 +40,15 @@ class DownloadFailureExceptionTest {
 
   @AfterAll
   static void tearDownAfterClass() throws Exception {
+    tps.finalize();
   }
 
-  private DownloadFailureException dfe;
+  private Path target;
 
   @BeforeEach
   void setUp() throws Exception {
-    this.dfe = new DownloadFailureException(404, "STATUS");
+    target = wp.resolve(B_XML);
+    IBUtils.copy(tRoot.resolve(B_XML), target);
   }
 
   @AfterEach
@@ -47,13 +56,12 @@ class DownloadFailureExceptionTest {
   }
 
   @Test
-  void testGetHttpCode() {
-    assertEquals(404, this.dfe.getHttpCode());
-  }
-
-  @Test
-  void testGetStatusLine() {
-    assertEquals("STATUS", this.dfe.getStatusLine());
+  void testGetAttributes() {
+    PathAndChecksum pandc = new DefaultPathAndChecksum(target);
+    var checksum = pandc.asChecksum();
+    assertEquals(CSUM, checksum.toString());
+    var a = pandc.getAttributes().get();
+    assertEquals(204L, a.size());
   }
 
 }

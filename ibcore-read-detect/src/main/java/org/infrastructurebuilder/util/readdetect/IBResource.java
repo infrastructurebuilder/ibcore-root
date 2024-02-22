@@ -21,7 +21,6 @@ import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static java.nio.file.StandardOpenOption.READ;
 import static java.util.Objects.hash;
 import static java.util.Optional.empty;
-import static org.infrastructurebuilder.util.constants.IBConstants.ADDITIONAL_PROPERTIES;
 import static org.infrastructurebuilder.util.constants.IBConstants.CREATE_DATE;
 import static org.infrastructurebuilder.util.constants.IBConstants.MIME_TYPE;
 import static org.infrastructurebuilder.util.constants.IBConstants.MOST_RECENT_READ_TIME;
@@ -46,6 +45,7 @@ import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.ChecksumBuilder;
 import org.infrastructurebuilder.util.core.ChecksumEnabled;
+import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.JSONBuilder;
 import org.infrastructurebuilder.util.core.JSONOutputEnabled;
 import org.infrastructurebuilder.util.core.Modeled;
@@ -138,7 +138,7 @@ public interface IBResource<T> extends JSONOutputEnabled, ChecksumEnabled, NameD
     return p;
   }
 
-  public static Path requireRealtivePath(Path p) {
+  public static Path requireRelativePath(Path p) {
     if (Objects.requireNonNull(p).isAbsolute())
       throw new IBResourceException("Path " + p + " must be relative");
     return p;
@@ -279,7 +279,7 @@ public interface IBResource<T> extends JSONOutputEnabled, ChecksumEnabled, NameD
 //  Path getOriginalPath();
 
   default Optional<BasicFileAttributes> getBasicFileAttributes() {
-    return getPath().flatMap(path -> IBResourceBuilderFactory.getAttributes.apply(path));
+    return getPath().flatMap(path -> IBUtils.getAttributes.apply(path));
   }
 
   /**

@@ -17,24 +17,28 @@
  */
 package org.infrastructurebuilder.util.readdetect;
 
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
+import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
 import org.json.JSONObject;
 
-public interface IBResourceCacheBuilder<B, T> {
-  // TODO this might need to be set automatically
-  IBResourceCacheBuilder<B, T> withModelVersion(String modelVersion);
+public interface IBResourceCollector {
 
-  IBResourceCacheBuilder<B, T> withRoot(String root);
-
-  IBResourceCacheBuilder<B, T> withName(String name);
-
-  IBResourceCacheBuilder<B, T> withDescription(String desc);
-
-  IBResourceCacheBuilder<B, T> withResources(List<IBResource<T>> l);
-
-  IBResourceCacheBuilder<B, T> withMetadata(JSONObject j);
-
-  B build(boolean hard);
+  Optional<List<IBResourceIS>> collectCachedIBResources( //
+      boolean deleteExistingCacheIfPresent //
+      , Optional<BasicCredentials> creds //
+      , String sourceString //
+      , Optional<Checksum> checksum //
+      , Optional<String> type //
+      , int retries //
+      , int readTimeOut //
+      , boolean skipCache //
+      , boolean expandArchives //
+      , Optional<JSONObject> rootMetadata //
+      , Optional<JSONObject> metadataForExpandedArchive //
+  );
 
 }

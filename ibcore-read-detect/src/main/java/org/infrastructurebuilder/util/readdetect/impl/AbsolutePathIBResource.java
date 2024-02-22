@@ -23,7 +23,6 @@ import static java.time.Instant.now;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
-import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory.getAttributes;
 import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory.toOptionalType;
 
 import java.io.InputStream;
@@ -31,12 +30,11 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 
 import org.infrastructurebuilder.util.core.Checksum;
-import org.infrastructurebuilder.util.core.RelativeRoot;
+import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceException;
@@ -62,7 +60,7 @@ public class AbsolutePathIBResource extends AbstractIBResourceIS implements IBRe
 
   public AbsolutePathIBResource(IBResourceModel m, Path sourcePath) {
     super(null, m);
-    this.m.setPath(IBResource.requireAbsolutePath(sourcePath).toUri().toASCIIString());
+    this.m.setPath(IBResource.requireAbsolutePath(sourcePath).toString());
   }
 
   public AbsolutePathIBResource(IBResourceModel m) {
@@ -77,7 +75,7 @@ public class AbsolutePathIBResource extends AbstractIBResourceIS implements IBRe
     this(new IBResourceModel());
     m.setPath(requireNonNull(path).toAbsolutePath().toString());
     m.setStreamChecksum(requireNonNull(checksum).toString());
-    getAttributes.apply(path).ifPresent(bfa -> {
+    IBUtils.getAttributes.apply(path).ifPresent(bfa -> {
       this.m.setCreated(bfa.creationTime().toInstant());
       this.m.setLastUpdate(bfa.lastModifiedTime().toInstant());
       this.m.setMostRecentReadTime(bfa.lastAccessTime().toInstant());

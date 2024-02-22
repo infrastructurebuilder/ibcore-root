@@ -20,12 +20,12 @@ package org.infrastructurebuilder.util.readdetect.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceCacheBuilder;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel.IBMetadataModelBuilderBase;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceCacheModel;
+import org.infrastructurebuilder.util.readdetect.model.v1_0.IbcoreReadDetectModelVersioning;
 import org.json.JSONObject;
 
 abstract public class AbstractIBResourceCacheBuilder<B, T> implements IBResourceCacheBuilder<B, T> {
@@ -34,6 +34,7 @@ abstract public class AbstractIBResourceCacheBuilder<B, T> implements IBResource
 
   public AbstractIBResourceCacheBuilder() {
     this.model = new IBResourceCacheModel();
+    this.model.setModelVersion(IbcoreReadDetectModelVersioning.apiVersion());
   }
 
   @Override

@@ -38,8 +38,10 @@ import org.apache.tika.Tika;
 import org.apache.tika.metadata.TikaCoreProperties;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.constants.IBConstants;
-import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
+import org.infrastructurebuilder.util.core.PathAndChecksum;
 import org.infrastructurebuilder.util.core.RelativeRoot;
+import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -111,15 +113,15 @@ public interface IBResourceBuilderFactory<B> {
     }
   };
 
-  public final static Function<Path, Optional<BasicFileAttributes>> getAttributes = (i) -> {
-    Optional<BasicFileAttributes> retVal = empty();
-    try {
-      retVal = of(readAttributes(requireNonNull(i), BasicFileAttributes.class));
-    } catch (IOException e) {
-      log.error("Error reading basic attributes " + i, e);
-    }
-    return retVal;
-  };
+//  public final static Function<Path, Optional<BasicFileAttributes>> getAttributes = (i) -> {
+//    Optional<BasicFileAttributes> retVal = empty();
+//    try {
+//      retVal = of(readAttributes(requireNonNull(i), BasicFileAttributes.class));
+//    } catch (IOException e) {
+//      log.error("Error reading basic attributes " + i, e);
+//    }
+//    return retVal;
+//  };
 
   /**
    * The RelativeRoot is not optional
@@ -133,7 +135,11 @@ public interface IBResourceBuilderFactory<B> {
 
   Optional<IBResourceBuilder<B>> fromJSON(JSONObject json);
 
-  Optional<IBResourceBuilder<B>> fromPath(Path p);
+  default Optional<IBResourceBuilder<B>> fromPath(Path p) {
+    return fromPathAndChecksum(new DefaultPathAndChecksum(p));
+  }
+
+  Optional<IBResourceBuilder<B>> fromPathAndChecksum(PathAndChecksum p);
 
   Optional<IBResourceBuilder<B>> fromURL(String u);
 
@@ -154,4 +160,8 @@ public interface IBResourceBuilderFactory<B> {
     return fromJSON(j);
 
   }
+
+  IBResourceBuilderFactory<B> withTypeMapper(TypeToExtensionMapper m);
+
+  Optional<TypeToExtensionMapper> getTypeMapper();
 }

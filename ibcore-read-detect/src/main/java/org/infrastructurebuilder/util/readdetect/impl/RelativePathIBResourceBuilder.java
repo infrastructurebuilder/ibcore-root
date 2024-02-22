@@ -24,6 +24,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.util.core.PathAndChecksum;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.AbstractIBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.DefaultEmptyIBResourceBuilder;
@@ -44,18 +45,17 @@ public class RelativePathIBResourceBuilder extends AbstractIBResourceBuilder<Opt
   @Override
   public Optional<IBResourceIS> build(boolean hard) {
     try {
-      validate(hard);
-      return Optional.of(new RelativePathIBResourceIS(this.getRoot().get(), this.model, this.sourcePath));
+      return validate(hard).map(r -> new RelativePathIBResourceIS(this.getRoot().get(), this.model, this.sourcePath));
     } catch (IBException e) {
       log.error("Error building IBResource", e);
-      return Optional.empty();
     }
+    return Optional.empty();
   }
 
   @Override
   public IBResourceBuilder<Optional<IBResourceIS>> fromURL(String url) {
     String op = requireNonNull(url);
-    var rel = Paths.get(getRoot().get().relativize(op));
+    Path rel = Paths.get(getRoot().get().relativize(op));
     this.sourcePath = rel;
     return this
 
@@ -67,24 +67,25 @@ public class RelativePathIBResourceBuilder extends AbstractIBResourceBuilder<Opt
   }
 
   @Override
-  public IBResourceBuilder<Optional<IBResourceIS>> fromPath(Path path) {
-    var op = path;
-    var rr = getRoot().get();
+  public IBResourceBuilder<Optional<IBResourceIS>> fromPathAndChecksum(PathAndChecksum pandc) {
+    Path op = pandc.get();
+    RelativeRoot rr = getRoot().get();
     if (requireNonNull(op).isAbsolute()) {
       if (rr.isParentOf(op)) {
         op = rr.relativize(op).get();
       } else {
-        log.warn("Absolute path {} outside relative root {} is disallowed.  Builder will not produce a resource.", path,
-            rr.getStringRoot());
+        log.warn("Absolute path {} outside relative root {} is disallowed.  Builder will not produce a resource.",
+            pandc, rr.toString());
         return EMPTY_BUILDER;
       }
     }
     Optional<String> k = rr.resolvePath(op);
     if (k.isEmpty()) {
-      log.warn("Path {} unresolvable with {}", rr.getStringRoot());
+      log.warn("Path {} unresolvable with {}", rr.toString());
       return EMPTY_BUILDER;
     }
-    return fromURL(k.get());
+
+    return fromURL(k.get()).withBasicFileAttributes(pandc.getAttributes().orElse(null));
   }
 
 }

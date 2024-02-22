@@ -27,7 +27,6 @@ import static org.infrastructurebuilder.exceptions.IBException.cet;
 import static org.infrastructurebuilder.util.constants.IBConstants.BLOBSTORE_NO_MAXBYTES;
 import static org.infrastructurebuilder.util.constants.IBConstants.METADATA_DIR_NAME;
 import static org.infrastructurebuilder.util.core.Checksum.ofPath;
-import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory.getAttributes;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,8 +42,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
+import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.core.RelativeRootFactory;
 import org.infrastructurebuilder.util.core.RelativeRootSupplier;
@@ -206,7 +206,7 @@ public class FilesystemBlobstore implements Blobstore<InputStream> {
     getLog().error("writeMetadata {}, {}, desc {}, {}, {}, {}", getRelativeRoot().relativize(blob).get(), originalName,
         description, createDate, lastUpdated, addlProps);
 
-    return rcf.builderFromPathAndChecksum(blob, csum).map(builder -> {
+    return rcf.fromPathAndChecksum(new DefaultPathAndChecksum(blob, csum)).map(builder -> {
 
       return builder
 
@@ -242,7 +242,7 @@ public class FilesystemBlobstore implements Blobstore<InputStream> {
   public Future<String> putBlob(String blobname, @Nullable String description, Path p, Optional<Properties> addlProps) {
     AtomicReference<Instant> c = new AtomicReference<>(Instant.now());
     AtomicReference<Instant> m = new AtomicReference<>(Instant.now());
-    getAttributes.apply(p).ifPresentOrElse(attr -> {
+    IBUtils.getAttributes.apply(p).ifPresentOrElse(attr -> {
       c.set(attr.creationTime().toInstant());
       m.set(attr.lastModifiedTime().toInstant());
     }, () -> getLog().error("Error getting attributes of {}", p.toAbsolutePath()));

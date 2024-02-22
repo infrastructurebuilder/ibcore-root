@@ -24,9 +24,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,6 +36,7 @@ import java.util.UUID;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.AbsolutePathRelativeRoot;
 import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
 import org.infrastructurebuilder.util.readdetect.impl.AbsolutePathIBResourceBuilderFactory;
@@ -125,14 +128,18 @@ public class IBResourceTest {
 //  }
 
   @Test
-  public void testFromPath() {
-    var builder = this.rcf.fromPath(testFile).get();
-    IBResourceIS cset = builder.build().get();
-    long d = new Date().toInstant().toEpochMilli();
-    InputStream g = cset.get().get();
-    cet.translate(() -> g.close());
-    assertTrue(cset.getMostRecentReadTime().get().toEpochMilli() - d < 3);
-
+  public void testFromPath() throws IOException {
+    var csum = new Checksum(testFile);
+    var pandc = new DefaultPathAndChecksum(testFile, csum);
+    var builder = this.rcf.fromPathAndChecksum(pandc);
+    var b1 = builder.get();
+    var b2 = b1.build();
+    IBResourceIS cset = b2.get();
+    long d = Instant.now().toEpochMilli();
+    var b3 = cset.get();
+    try (InputStream g = b3.get()) {
+      assertTrue(cset.getMostRecentReadTime().get().toEpochMilli() - d < 3);
+    }
     assertEquals(183, cset.getPath().get().toFile().length());
     assertEquals(CHECKSUMVAL, cset.getTChecksum().toString());
     assertEquals(APPLICATION_ZIP, cset.getType());

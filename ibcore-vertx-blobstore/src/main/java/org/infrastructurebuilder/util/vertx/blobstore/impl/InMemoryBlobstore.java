@@ -36,6 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.IBResourceIS;
@@ -142,7 +143,7 @@ public class InMemoryBlobstore implements Blobstore<InputStream> {
   @Override
   public Future<String> putBlob(String blobname, @Nullable String description, Path p, Optional<Properties> addlProps) {
     log.info("N: {} , D: {} P: {}", blobname, description, p);
-    BasicFileAttributes bfa = IBResourceBuilderFactory.getAttributes.apply(requireNonNull(p)).get();
+    BasicFileAttributes bfa = IBUtils.getAttributes.apply(requireNonNull(p)).get();
     Future<Buffer> rf = fs.readFile(p.toAbsolutePath().toString());
 
 //    var test = rf.result(); // FIXME Remove later

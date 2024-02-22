@@ -19,14 +19,15 @@ package org.infrastructurebuilder.util.mavendownloadplugin;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.mavendownloadplugin.nonpublic.WGetComponent.Builder;
-import org.infrastructurebuilder.util.mavendownloadplugin.nonpublic.WGetSupplierImpl;
+import org.infrastructurebuilder.util.core.TestingPathSupplier;
+import org.infrastructurebuilder.util.mavendownloadplugin.nonpublic.DefaultWGetSupplier;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -36,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 class WGetSupplierTest {
+  private final static TestingPathSupplier tps = new TestingPathSupplier();
   private static final String URL = "https://releases.hashicorp.com/packer/1.10.1/packer_1.10.1_windows_386.zip";
   private final static Logger log = LoggerFactory.getLogger(WGetSupplierTest.class);
 
@@ -48,12 +50,19 @@ class WGetSupplierTest {
   }
 
   private LoggingProgressReport lpr;
-  private WGetSupplier wgs;
+  private WGetBuilderFactory wgs;
+  private Path od;
+  private WGetBuilder b;
 
   @BeforeEach
   void setUp() throws Exception {
+    this.od = tps.get();
     this.lpr = new LoggingProgressReport(log);
-    this.wgs = new WGetSupplierImpl(new FakeArchiverManager());
+    this.wgs = new DefaultWGetSupplier(new FakeArchiverManager());
+    this.b = wgs //
+        .withLogger(log) //
+        .withCacheDirectory(od) //
+        .builder();
   }
 
   @AfterEach
@@ -62,10 +71,12 @@ class WGetSupplierTest {
 
   @Test
   void testGet() throws MalformedURLException, URISyntaxException {
-    Builder b = wgs.get();
-    b.withUri(new URL(URL).toURI());
-    Optional<File> f = b.build().get();
+    b.withUri(new URL(URL).toURI())
+    .withOutputDirectory(this.od);
+    Optional<WGetResult> f = b.wget();
     assertTrue(f.isPresent());
+    var res = f.get();
+    assertTrue(Files.exists(res.getOriginal().get()));
   }
 
 }

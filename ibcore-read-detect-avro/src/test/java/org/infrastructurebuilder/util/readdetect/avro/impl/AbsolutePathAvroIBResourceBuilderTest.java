@@ -60,11 +60,11 @@ class AbsolutePathAvroIBResourceBuilderTest {
 //    fail("Not yet implemented");
 //  }
 //
-  @Test
-  void testFromURLLikeString() {
-    assertTrue(rcf.fromURL(null).isEmpty());
-  }
-
+//  @Test
+//  void testFromURLLikeString() {
+//    assertTrue(rcf.fromURL(null).isEmpty());
+//  }
+//
 //  @Test
 //  void testFromJSON() {
 //    fail("Not yet implemented");

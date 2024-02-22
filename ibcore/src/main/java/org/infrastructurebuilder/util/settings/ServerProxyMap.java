@@ -20,7 +20,7 @@ package org.infrastructurebuilder.util.settings;
 import java.util.Optional;
 import java.util.Set;
 
-public interface ServerProxyMap  {
+public interface ServerProxyMap {
 
   Set<String> getServerIds();
 

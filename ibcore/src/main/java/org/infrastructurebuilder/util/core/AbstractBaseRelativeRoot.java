@@ -58,16 +58,11 @@ abstract public class AbstractBaseRelativeRoot implements RelativeRoot {
   }
 
   private final String stringRoot; // Required
-  private transient final Path path; // Nullable for certain cases
-  private transient final URL url; // Nullable (for certain cases)
+  protected transient final URL url; // Nullable (for certain cases)
 
   protected AbstractBaseRelativeRoot(String u) {
     AtomicReference<String> aref = new AtomicReference<>("/");
     this.url = fromString(requireNonNull(u)).orElse(null);
-
-    this.path = (this.url != null)
-        ? (this.url.getProtocol().equals("file")) ? Paths.get(cet.returns(() -> this.url.toURI())) : null
-        : null;
 
     // Actually ensures that the RR dirs are available for a "path"/"file"
     getPath().ifPresent(p -> {
@@ -86,16 +81,13 @@ abstract public class AbstractBaseRelativeRoot implements RelativeRoot {
   }
 
   public Optional<Path> getPath() {
-    return ofNullable(path);
+    return ofNullable((this.url != null)
+        ? (this.url.getProtocol().equals("file")) ? Paths.get(cet.returns(() -> this.url.toURI())) : null
+        : null);
   }
 
   public Optional<URL> getUrl() {
     return ofNullable(url);
-  }
-
-  @Override
-  public String getStringRoot() {
-    return stringRoot;
   }
 
   @Override
@@ -186,6 +178,11 @@ abstract public class AbstractBaseRelativeRoot implements RelativeRoot {
   @Override
   public Optional<Path> getPermanantPath(Path relativePath, String prefix, String suffix) {
     return makeAFile(relativePath, prefix, suffix, false);
+  }
+
+  @Override
+  public Optional<Path> extendPath(Path p) {
+    return getPath().map(p1 -> p1.resolve(requireNonNull(p)));
   }
 
 }

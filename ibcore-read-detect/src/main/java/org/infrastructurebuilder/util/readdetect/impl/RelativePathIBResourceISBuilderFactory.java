@@ -19,10 +19,10 @@ package org.infrastructurebuilder.util.readdetect.impl;
 
 import static java.util.Objects.requireNonNull;
 
-import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.infrastructurebuilder.util.core.PathAndChecksum;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.AbstractIBResourceISBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
@@ -43,8 +43,8 @@ public class RelativePathIBResourceISBuilderFactory extends AbstractIBResourceIS
   }
 
   @Override
-  public Optional<IBResourceBuilder<Optional<IBResourceIS>>> fromPath(Path p) {
-    return Optional.of(getBuilder().get().fromPath(p));
+  public Optional<IBResourceBuilder<Optional<IBResourceIS>>> fromPathAndChecksum(PathAndChecksum p) {
+    return Optional.of(getBuilder().get().fromPathAndChecksum(p));
   }
 
   @Override

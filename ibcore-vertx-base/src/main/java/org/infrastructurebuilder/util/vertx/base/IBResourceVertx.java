@@ -43,8 +43,8 @@ import java.util.function.Supplier;
 
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.readdetect.IBResource;
-import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
 
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
@@ -129,7 +129,7 @@ public interface IBResourceVertx extends Supplier<Future<Buffer>>, JsonOutputEna
   Path getOriginalPath();
 
   default Optional<BasicFileAttributes> getBasicFileAttributes() {
-    return getPath().flatMap(path -> IBResourceBuilderFactory.getAttributes.apply(path));
+    return getPath().flatMap(path -> IBUtils.getAttributes.apply(path));
   }
 
   IBResource asIBResource();

@@ -21,11 +21,10 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.util.core.RelativeRoot;
+import org.infrastructurebuilder.util.core.PathAndChecksum;
 import org.infrastructurebuilder.util.readdetect.AbstractIBResourceISBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceIS;
-import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 
 public class AbsolutePathIBResourceBuilderFactory extends AbstractIBResourceISBuilderFactory {
 
@@ -42,8 +41,8 @@ public class AbsolutePathIBResourceBuilderFactory extends AbstractIBResourceISBu
   }
 
   @Override
-  public Optional<IBResourceBuilder<Optional<IBResourceIS>>> fromPath(Path p) {
-    return Optional.of(getBuilder().get().fromPath(p));
+  public Optional<IBResourceBuilder<Optional<IBResourceIS>>> fromPathAndChecksum(PathAndChecksum p) {
+    return Optional.of(getBuilder().get().fromPathAndChecksum(p));
   }
 
   @Override
