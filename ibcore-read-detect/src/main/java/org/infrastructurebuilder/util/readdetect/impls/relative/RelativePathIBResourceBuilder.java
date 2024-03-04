@@ -15,7 +15,7 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.readdetect.impl;
+package org.infrastructurebuilder.util.readdetect.impls.relative;
 
 import static java.util.Objects.requireNonNull;
 

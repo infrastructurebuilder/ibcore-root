@@ -39,7 +39,7 @@ import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
-import org.infrastructurebuilder.util.readdetect.impl.AbsolutePathIBResourceBuilderFactory;
+import org.infrastructurebuilder.util.readdetect.impls.absolute.AbsolutePathIBResourceBuilderFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -29,7 +29,7 @@ import org.infrastructurebuilder.util.readdetect.model.v1_0.IbcoreReadDetectMode
 import org.json.JSONObject;
 
 abstract public class AbstractIBResourceCacheBuilder<B, T> implements IBResourceCacheBuilder<B, T> {
-  private final IBResourceCacheModel model;
+  protected final IBResourceCacheModel model;
   protected final List<IBResource<T>> resources = new ArrayList<>();
 
   public AbstractIBResourceCacheBuilder() {

@@ -20,7 +20,6 @@ package org.infrastructurebuilder.util.readdetect.impl;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 
-import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;

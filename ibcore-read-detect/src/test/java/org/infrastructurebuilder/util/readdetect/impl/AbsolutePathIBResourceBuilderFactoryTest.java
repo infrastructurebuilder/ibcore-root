@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.infrastructurebuilder.util.core.AbsolutePathRelativeRoot;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
+import org.infrastructurebuilder.util.readdetect.impls.absolute.AbsolutePathIBResourceBuilderFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;

@@ -60,14 +60,16 @@ import org.infrastructurebuilder.util.mavendownloadplugin.nonpublic.DefaultWGetS
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.IBResourceCollector;
+import org.infrastructurebuilder.util.readdetect.IBResourceCollectorSupplier;
 import org.infrastructurebuilder.util.readdetect.IBResourceException;
 import org.infrastructurebuilder.util.readdetect.IBResourceIS;
-import org.infrastructurebuilder.util.readdetect.WGetterSupplier;
+import org.infrastructurebuilder.util.readdetect.impls.relative.RelativePathIBResourceISBuilderFactory;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 
 @Named
-public class DefaultIBResourceCollectorSupplier implements WGetterSupplier, Configurable<ConfigMap, WGetterSupplier> {
+public class DefaultIBResourceCollectorSupplier
+    implements IBResourceCollectorSupplier, Configurable<ConfigMap, IBResourceCollectorSupplier> {
 
   @Inject
   private final ArchiverManager archiverManager;
@@ -117,7 +119,7 @@ public class DefaultIBResourceCollectorSupplier implements WGetterSupplier, Conf
         t2e, headers, workingDirectory.get(), ofNullable(this.proxyInfoProvider), ofNullable(mappers.get()));
   }
 
-  public WGetterSupplier withProxyInfoProvider(ProxyInfoProvider proxyInfoProvider) {
+  public IBResourceCollectorSupplier withProxyInfoProvider(ProxyInfoProvider proxyInfoProvider) {
     if (this.proxyInfoProvider == null)
       this.proxyInfoProvider = proxyInfoProvider;
     else
@@ -126,7 +128,7 @@ public class DefaultIBResourceCollectorSupplier implements WGetterSupplier, Conf
   }
 
   @Override
-  public WGetterSupplier withConfig(ConfigMap config) {
+  public IBResourceCollectorSupplier withConfig(ConfigMap config) {
     this.workingDirectory.compareAndSet(null,
         this.pathSuppliers.get(requireNonNull(config).getString(WORKINGDIR)).get());
     this.cacheDirectory.compareAndSet(null, this.pathSuppliers.get(requireNonNull(config).getString(CACHEDIR)).get());

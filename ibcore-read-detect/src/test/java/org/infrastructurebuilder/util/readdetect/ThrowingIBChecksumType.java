@@ -23,7 +23,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 import org.infrastructurebuilder.util.core.Checksum;
-import org.infrastructurebuilder.util.readdetect.impl.AbsolutePathIBResource;
+import org.infrastructurebuilder.util.readdetect.impls.absolute.AbsolutePathIBResource;
 
 /**
  * Just a testing implementation that allows us to throw an excetion when get is called

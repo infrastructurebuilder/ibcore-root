@@ -23,8 +23,8 @@ import java.util.function.Supplier;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceIS;
-import org.infrastructurebuilder.util.readdetect.impl.AbsolutePathIBResourceBuilderFactory;
-import org.infrastructurebuilder.util.readdetect.impl.RelativePathIBResourceISBuilderFactory;
+import org.infrastructurebuilder.util.readdetect.impls.absolute.AbsolutePathIBResourceBuilderFactory;
+import org.infrastructurebuilder.util.readdetect.impls.relative.RelativePathIBResourceISBuilderFactory;
 
 public class RelativePathAvroIBResourceBuilderFactory extends RelativePathIBResourceISBuilderFactory {
   private static final long serialVersionUID = 8394943566089224494L;

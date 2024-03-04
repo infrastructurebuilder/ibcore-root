@@ -39,7 +39,7 @@ import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.ChecksumBuilder;
 import org.infrastructurebuilder.util.core.RelativeRoot;
-import org.infrastructurebuilder.util.readdetect.impl.AbsolutePathIBResourceBuilder;
+import org.infrastructurebuilder.util.readdetect.impls.absolute.AbsolutePathIBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel.IBMetadataModelBuilderBase;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;

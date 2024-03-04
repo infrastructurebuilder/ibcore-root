@@ -15,7 +15,7 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.readdetect.impl;
+package org.infrastructurebuilder.util.readdetect.impls.absolute;
 
 import static java.lang.String.format;
 import static java.nio.file.Files.newInputStream;
@@ -39,6 +39,7 @@ import org.infrastructurebuilder.util.readdetect.IBResource;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceException;
 import org.infrastructurebuilder.util.readdetect.IBResourceIS;
+import org.infrastructurebuilder.util.readdetect.impl.AbstractIBResourceIS;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;

@@ -54,7 +54,7 @@ import org.infrastructurebuilder.util.credentials.basic.DefaultBasicCredentials;
 import org.infrastructurebuilder.util.extensionmapper.basic.DefaultTypeToExtensionMapper;
 import org.infrastructurebuilder.util.readdetect.IBResourceIS;
 import org.infrastructurebuilder.util.readdetect.IBResourceCollector;
-import org.infrastructurebuilder.util.readdetect.WGetterSupplier;
+import org.infrastructurebuilder.util.readdetect.IBResourceCollectorSupplier;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterAll;
@@ -65,7 +65,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DefaultWGetterSupplierTest {
+public class DefaultIBResourceCollectorSupplierTest {
 
   private static final String HTTP_WWW_EXAMPLE_COM_INDEX_HTML = "http://www.example.com/index.html";
   private static final String WWW_IANA_ORG = "/www.iana.org/";
@@ -73,7 +73,7 @@ public class DefaultWGetterSupplierTest {
       "6877e3512f026803128e9cbe531a4e849fef0562c30d702854edfcbb4e50dc983f81155924b56c919272e695a8cdd4e91d982407271e2c523b1451f6c560f812"));
   private static final Optional<Checksum> CHECKSUM = Optional.of(new Checksum(
       "d06b93c883f8126a04589937a884032df031b05518eed9d433efb6447834df2596aebd500d69b8283e5702d988ed49655ae654c1683c7a4ae58bfa6b92f2b73a"));
-  private final static Logger log = LoggerFactory.getLogger(DefaultWGetterSupplierTest.class.toString());
+  private final static Logger log = LoggerFactory.getLogger(DefaultIBResourceCollectorSupplierTest.class.toString());
   private final static LoggerSupplier ls = new LoggerSupplier() {
     @Override
     public Logger get() {
@@ -93,7 +93,7 @@ public class DefaultWGetterSupplierTest {
     wps.finalize();
   }
 
-  private WGetterSupplier ws;
+  private IBResourceCollectorSupplier ws;
   private JSONObject rootMD;
   private JSONObject expandMD;
 

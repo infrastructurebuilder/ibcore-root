@@ -47,7 +47,7 @@ import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.IBResourceException;
 import org.infrastructurebuilder.util.readdetect.IBResourceIS;
-import org.infrastructurebuilder.util.readdetect.impl.RelativePathIBResourceBuilder;
+import org.infrastructurebuilder.util.readdetect.impls.relative.RelativePathIBResourceBuilder;
 import org.infrastructurebuilder.util.vertx.base.VertxIBResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

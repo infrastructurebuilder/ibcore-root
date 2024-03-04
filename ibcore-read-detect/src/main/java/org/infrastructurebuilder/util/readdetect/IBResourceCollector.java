@@ -17,7 +17,6 @@
  */
 package org.infrastructurebuilder.util.readdetect;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 

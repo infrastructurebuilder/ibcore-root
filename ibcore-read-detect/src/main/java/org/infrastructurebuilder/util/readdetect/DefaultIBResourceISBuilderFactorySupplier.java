@@ -24,7 +24,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.infrastructurebuilder.util.core.RelativeRootFactory;
-import org.infrastructurebuilder.util.readdetect.impl.AbsolutePathIBResourceBuilderFactory;
+import org.infrastructurebuilder.util.readdetect.impls.absolute.AbsolutePathIBResourceBuilderFactory;
 
 @Named(DefaultIBResourceISBuilderFactorySupplier.NAME)
 @Singleton

@@ -15,9 +15,12 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.readdetect.impl;
+package org.infrastructurebuilder.util.readdetect.impls.referenced;
+
+import static java.util.Objects.requireNonNull;
 
 import org.infrastructurebuilder.util.core.RelativeRoot;
+import org.infrastructurebuilder.util.readdetect.impl.AbstractIBResource;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 
 /**
@@ -29,20 +32,17 @@ import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
  * case. It is entirely the responsibility of external infrastructure to manage the availability and immutability of the
  * referenced resource.
  *
- * If a {@link RelativeRoot} exists for this resource, then that root <b>MUST</b> be a parent for the resource. It is
- * invalid to specify a resource location that is not a child of the given (optional) root.
- *
- * If no root is provided for this resource, then the source must be an absolute location. No relative paths or
- * sub-paths to existing resources are valid as locations.
+ * The given required {@link RelativeRoot} <b>MUST</b> be a parent for the resource. It is invalid to specify a resource
+ * location that is not a child of the given root.
  *
  * You have been warned.
  *
- * @param <T>
+ * @param <T> The supplied type of IBResource stream
  */
 abstract public class ReferencedIBResource<T> extends AbstractIBResource<T> {
 
   public ReferencedIBResource(RelativeRoot root, IBResourceModel model) {
-    super(root, model);
+    super(requireNonNull(root), requireNonNull(model));
   }
 
 }

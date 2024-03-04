@@ -15,21 +15,17 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.readdetect.impl;
+package org.infrastructurebuilder.util.readdetect.impls.absolute;
 
 import static java.util.Objects.requireNonNull;
 
-import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Optional;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.PathAndChecksum;
-import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.AbstractIBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
-import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.IBResourceIS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -15,31 +15,28 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.readdetect.impl;
-
-import static java.util.Objects.requireNonNull;
+package org.infrastructurebuilder.util.readdetect.impls.absolute;
 
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.util.core.PathAndChecksum;
-import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.AbstractIBResourceISBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceIS;
 
-public class RelativePathIBResourceISBuilderFactory extends AbstractIBResourceISBuilderFactory {
+public class AbsolutePathIBResourceBuilderFactory extends AbstractIBResourceISBuilderFactory {
 
   private static final long serialVersionUID = -8847933754124713375L;
 
-  public RelativePathIBResourceISBuilderFactory(RelativeRoot root) {
-    super(requireNonNull(root));
+  public AbsolutePathIBResourceBuilderFactory() {
+    super(null);
   }
 
   @Override
   protected Supplier<IBResourceBuilder<Optional<IBResourceIS>>> getBuilder() {
     // Delivers a new builder from the relative root each time
-    return () -> new RelativePathIBResourceBuilder(getRelativeRoot());
+    return () -> new AbsolutePathIBResourceBuilder();
   }
 
   @Override
@@ -49,7 +46,7 @@ public class RelativePathIBResourceISBuilderFactory extends AbstractIBResourceIS
 
   @Override
   public Optional<IBResourceBuilder<Optional<IBResourceIS>>> fromURL(String u) {
-    return Optional.of(getBuilder().get().fromURL(u));
+    return Optional.ofNullable(u).map(string -> getBuilder().get().fromURL(string));
   }
 
 }

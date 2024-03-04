@@ -17,10 +17,7 @@
  */
 package org.infrastructurebuilder.util.readdetect;
 
-import static java.nio.file.Files.readAttributes;
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
 
@@ -30,7 +27,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Optional;
 import java.util.function.Function;
 

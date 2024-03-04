@@ -24,7 +24,7 @@ import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.AbstractIBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.IBResourceIS;
 import org.infrastructurebuilder.util.readdetect.avro.impl.DefaultIBResourceAvro;
-import org.infrastructurebuilder.util.readdetect.impl.RelativePathIBResourceBuilder;
+import org.infrastructurebuilder.util.readdetect.impls.relative.RelativePathIBResourceBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
