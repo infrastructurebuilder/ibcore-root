@@ -17,8 +17,10 @@
  */
 package org.infrastructurebuilder.maven.util.plexus;
 
+import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.of;
+import static org.infrastructurebuilder.util.executor.ProcessException.pet;
 
 import java.io.PrintStream;
 import java.nio.file.Files;
@@ -37,7 +39,6 @@ import org.infrastructurebuilder.util.executor.DefaultProcessRunner;
 import org.infrastructurebuilder.util.executor.ProcessException;
 import org.infrastructurebuilder.util.executor.ProcessRunner;
 import org.infrastructurebuilder.util.executor.ProcessRunnerSupplier;
-import org.infrastructurebuilder.util.logging.SLF4JFromMavenLogger;
 import org.slf4j.Logger;
 
 @Named
@@ -48,21 +49,22 @@ public class DefaultProcessRunnerSupplier implements ProcessRunnerSupplier {
   private final Path buildDir;
   private final ConfigMap cfgMap;
   private final Optional<Long> interimSleep;
-  private final Optional<Logger> logger;
+  private final Logger logger;
   private final Optional<Path> relativeRoot;
   private final Path scratchDir;
 
   @Inject
   public DefaultProcessRunnerSupplier(final ConfigMapBuilderSupplier cms, final Logger logger) {
     cfgMap = requireNonNull(cms, "ConfigMapBuilderSupplier to DefaultProcessRunnerSupplier").get().get();
-    this.logger = of(new SLF4JFromMavenLogger(requireNonNull(logger)));
+    this.logger = requireNonNull(logger);
 
     addl = cfgMap.optString(PROCESS_EXECUTOR_SYSTEM_OUT).map(Boolean::valueOf)
         .flatMap(b -> Optional.ofNullable(b ? System.out : null));
     final Path p = Paths.get(cfgMap.getString(PROCESS_TARGET)).toAbsolutePath().normalize();
     if (!Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS))
-      throw new ProcessException("Directory " + cfgMap.getString(PROCESS_TARGET) + " is not a valid location");
-    buildDir = ProcessException.pet.returns(() -> Files.createDirectories(p));
+      throw new ProcessException(
+          format("%s is not a valid `%s` location", cfgMap.getString(PROCESS_TARGET), PROCESS_TARGET));
+    buildDir = pet.returns(() -> Files.createDirectories(p));
     scratchDir = buildDir.resolve("process-runner-" + UUID.randomUUID());
     relativeRoot = cfgMap.optString(PROCESS_EXECUTOR_RELATIVE_ROOT).map(Paths::get);
     interimSleep = cfgMap.optString(PROCESS_EXECUTOR_INTERIM_SLEEP).map(Long::valueOf);
@@ -70,7 +72,7 @@ public class DefaultProcessRunnerSupplier implements ProcessRunnerSupplier {
 
   @Override
   public ProcessRunner get() {
-    return new DefaultProcessRunner(scratchDir, addl, logger, relativeRoot, interimSleep);
+    return new DefaultProcessRunner(scratchDir, addl, of(logger), relativeRoot, interimSleep);
   }
 
 }

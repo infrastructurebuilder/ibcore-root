@@ -25,7 +25,6 @@ import java.util.Set;
 
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
-import org.infrastructurebuilder.util.settings.ServerProxy;
 import org.infrastructurebuilder.util.settings.ServerProxyMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

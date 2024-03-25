@@ -23,6 +23,8 @@ package org.infrastructurebuilder.util.mavendownloadplugin;
  */
 public final class DownloadFailureException extends RuntimeException {
 
+    private static final long serialVersionUID = 6516540477376703081L;
+
     private final int statusCode;
 
     private final String statusLine;

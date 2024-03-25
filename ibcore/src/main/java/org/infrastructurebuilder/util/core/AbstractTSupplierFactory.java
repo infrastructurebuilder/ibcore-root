@@ -67,9 +67,9 @@ public abstract class AbstractTSupplierFactory<T, C> implements TSupplierFactory
     return this.weight;
   }
 
-  public AbstractTSupplierFactory<T, C> withConfig(C config) {
+  public <T> T withConfig(C config) {
     this.config = config;
-    return this;
+    return (T) this;
   }
 
   protected C getConfig() {

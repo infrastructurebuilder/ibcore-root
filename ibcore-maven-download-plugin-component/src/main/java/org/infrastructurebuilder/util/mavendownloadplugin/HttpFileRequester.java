@@ -17,6 +17,19 @@
  */
 package org.infrastructurebuilder.util.mavendownloadplugin;
 
+import static java.util.Objects.requireNonNull;
+//import static org.apache.maven.shared.utils.StringUtils.isNotBlank;
+import static org.infrastructurebuilder.util.core.IBUtils.isNotBlank;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.ProxySelector;
+import java.net.URI;
+import java.nio.file.Files;
+import java.util.List;
+
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -33,31 +46,19 @@ import org.apache.http.conn.routing.HttpRoutePlanner;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.impl.auth.BasicScheme;
-import org.apache.http.impl.client.*;
+import org.apache.http.impl.client.BasicAuthCache;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
 import org.apache.http.ssl.SSLContextBuilder;
-import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
-import org.infrastructurebuilder.util.settings.ServerProxy;
-import org.infrastructurebuilder.util.settings.ServerProxyMap;
 //import org.apache.maven.execution.MavenSession;
 //import org.apache.maven.plugin.MojoExecutionException;
 //import org.apache.maven.plugin.logging.Log;
 //import org.apache.maven.settings.Server;
 import org.slf4j.Logger;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.ProxySelector;
-import java.net.URI;
-import java.nio.file.Files;
-import java.util.List;
-
-import static java.util.Objects.requireNonNull;
-//import static org.apache.maven.shared.utils.StringUtils.isNotBlank;
-import static org.infrastructurebuilder.util.core.IBUtils.isNotBlank;
 
 /**
  * File requester that can download resources over HTTP transport using Apache HttpClient 4.x.

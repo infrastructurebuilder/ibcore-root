@@ -44,15 +44,17 @@ import java.util.function.Supplier;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.readdetect.IBResource;
+import org.infrastructurebuilder.util.readdetect.base.IBResource;
 
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
+import io.vertx.core.file.OpenOptions;
 import io.vertx.core.json.JsonObject;
 
-public interface IBResourceVertx extends Supplier<Future<Buffer>>, JsonOutputEnabled {
+public interface IBResourceVertx extends Supplier<FutureStream>, JsonOutputEnabled {
+  static final OpenOptions oRead = new OpenOptions().setRead(true);
 
   default Vertx vertx() {
     return Vertx.vertx();
@@ -83,8 +85,9 @@ public interface IBResourceVertx extends Supplier<Future<Buffer>>, JsonOutputEna
    */
   Future<IBResourceVertx> moveTo(Path target) throws IOException;
 
-  default Future<Buffer> get() {
-    return vertx().fileSystem().readFile(getPath().toString());
+  default FutureStream get() {
+    String filePath = getPath().toString();
+    return new FutureStream(vertx().fileSystem().open(filePath, oRead));
   }
 
   default Future<String> defaultToString() {

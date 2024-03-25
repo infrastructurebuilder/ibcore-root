@@ -17,7 +17,6 @@
  */
 package org.infrastructurebuilder.util.mavendownloadplugin;
 
-import java.io.File;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.Map;

@@ -20,6 +20,6 @@ package org.infrastructurebuilder.util.core;
 import org.w3c.dom.Document;
 
 @Deprecated
-public interface DOMConfigurable<T> extends Configurable<Document, T> {
+public interface DOMConfigurable<T> extends Configurable<Document> {
 
 }

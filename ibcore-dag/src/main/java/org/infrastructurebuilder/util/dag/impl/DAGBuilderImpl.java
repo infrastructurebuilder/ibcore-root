@@ -17,6 +17,8 @@
  */
 package org.infrastructurebuilder.util.dag.impl;
 
+import static java.util.stream.Collectors.toList;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -281,18 +283,14 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
           if (otherV == null)
             return false;
 
-          final List<T> thisParents = vertex.getParentLabels().stream().distinct().sorted()
-              .collect(Collectors.toList());
-          final List<T> otherParents = otherV.getParentLabels().stream().distinct().sorted()
-              .collect(Collectors.toList());
+          final List<T> thisParents = vertex.getParentLabels().stream().distinct().sorted().toList();
+          final List<T> otherParents = otherV.getParentLabels().stream().distinct().sorted().toList();
 
           if (!thisParents.equals(otherParents))
             return false;
 
-          final List<T> thisChildren = vertex.getChildLabels().stream().distinct().sorted()
-              .collect(Collectors.toList());
-          final List<T> otherChildren = otherV.getChildLabels().stream().distinct().sorted()
-              .collect(Collectors.toList());
+          final List<T> thisChildren = vertex.getChildLabels().stream().distinct().sorted().toList();
+          final List<T> otherChildren = otherV.getChildLabels().stream().distinct().sorted().toList();
 
           if (!thisChildren.equals(otherChildren))
             return false;

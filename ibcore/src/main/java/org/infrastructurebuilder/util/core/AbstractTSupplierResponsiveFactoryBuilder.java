@@ -69,9 +69,10 @@ public abstract class AbstractTSupplierResponsiveFactoryBuilder<R, T, C>
     return this.weight;
   }
 
-  public AbstractTSupplierResponsiveFactoryBuilder<R, T, C> withConfig(C config) {
+  @Override
+  public <T> T withConfig(C config) {
     this.config = config;
-    return this;
+    return (T) this;
   }
 
   protected C getConfig() {

@@ -67,7 +67,7 @@ public interface IBRuntimeUtils extends
    *    .map(GAV::getFile) // Get all the file objects
    *    .filter(g -> g.isPresent()) // Ensure they're present (Java 11 version probably different)
    *    .map(g -> g.get()) // Fetch that path
-   *    .collect(Collectors.toList()); // Collect to a list
+   *    .collect(Collectors .toList()); // Collect to a list
    * </code>
    *
    * @return

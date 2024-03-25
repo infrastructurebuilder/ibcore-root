@@ -70,7 +70,7 @@ public class MavenBackedRelativeRootSupplier implements RelativeRootSupplier {
   }
 
   @Override
-  public Optional<RelativeRoot> get() {
+  public Optional<RelativeRoot> getRelativeRoot() {
     return this.path.map(AbsolutePathRelativeRoot::new);
   }
 

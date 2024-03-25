@@ -23,7 +23,7 @@ import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
 import static org.infrastructurebuilder.util.constants.IBConstants.NO_PATH_SUPPLIED;
-import static org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory.extracted;
+import static org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory.extracted;
 
 import java.net.URL;
 import java.nio.file.Files;
@@ -41,8 +41,9 @@ import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.ChecksumBuilder;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.RelativeRoot;
-import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
-import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
+import org.infrastructurebuilder.util.readdetect.base.IBResource;
+import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilder;
+import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.infrastructurebuilder.util.vertx.base.VertxIBResource;
@@ -173,17 +174,17 @@ public class VertxDefaultIBResource implements VertxIBResource {
 
   @Override
   public int hashCode() {
-    return defaultHashCode();
+    return IBResource.defaultHashCode(this);
   }
 
   @Override
   public boolean equals(Object obj) {
-    return defaultEquals(obj);
+    return IBResource.defaultEquals(this, obj);
   }
 
   @Override
   public String toString() {
-    return defaultToString();
+    return IBResource.defaultToString(this);
   }
 
   @Override

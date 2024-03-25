@@ -22,7 +22,7 @@ import java.util.Optional;
 import org.infrastructurebuilder.exceptions.IBException;
 
 public interface TSupplierResponsiveFactoryBuilder<R, T, C> extends ResponsiveTo<R>, //
-    Configurable<C, TSupplierResponsiveFactoryBuilder<R, T, C>>, //
+    Configurable<C>, //
     NameDescribed, Hinted, LoggerEnabled, IdentifiedAndWeighted, LoggerConfigurable {
 
   Optional<TSupplier<T>> build(R resp);

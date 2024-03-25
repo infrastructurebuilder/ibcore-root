@@ -17,14 +17,12 @@
  */
 package org.infrastructurebuilder.util.credentials.basic;
 
-import static java.util.Optional.empty;
 import static org.infrastructurebuilder.util.constants.IBConstants.DEFAULT;
 import static org.infrastructurebuilder.util.core.Weighted.weighted;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -36,7 +34,7 @@ public class DefaultCredentialsFactory implements CredentialsFactory {
 
   @Inject
   public DefaultCredentialsFactory(Map<String, CredentialsSupplier> credentialsSuppliers) {
-    this.ss = credentialsSuppliers.values().stream().sorted(weighted).collect(Collectors.toList());
+    this.ss = credentialsSuppliers.values().stream().sorted(weighted).toList();
   }
 
   @Override

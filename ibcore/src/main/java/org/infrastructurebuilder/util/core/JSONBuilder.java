@@ -46,7 +46,7 @@ public final class JSONBuilder implements JSONOutputEnabled {
   private final static AtomicReference<DateTimeFormatter> dts = new AtomicReference<>();
 
   public final static Function<List<JSONOutputEnabled>, JSONArray> jsonOutputToJSONArray = oe -> {
-    return new JSONArray(requireNonNull(oe).stream().map(JSONOutputEnabled::asJSON).collect(Collectors.toList()));
+    return new JSONArray(requireNonNull(oe).stream().map(JSONOutputEnabled::asJSON).toList());
   };
 
   public static JSONBuilder addOn(final JSONObject j, final Optional<Path> relativeRoot) {
@@ -83,6 +83,7 @@ public final class JSONBuilder implements JSONOutputEnabled {
     synchronized (dts) {
       if (!dts.compareAndSet(null, DateTimeFormatter.ofPattern(format).withZone(ZoneId.from(ZoneOffset.UTC)))) {
         // TODO Warn?
+        log.warn("Attempted to set datetime format to %s but already set to %s", format, dts.toString());
       }
       return this;
     }
@@ -106,13 +107,11 @@ public final class JSONBuilder implements JSONOutputEnabled {
   }
 
   public JSONBuilder addBoolean(final String key, final Boolean s) {
-
     json.put(key, requireNonNull(s).booleanValue());
     return this;
   }
 
   public JSONBuilder addBoolean(final String key, final Optional<Boolean> s) {
-
     requireNonNull(s).ifPresent(s1 -> this.addBoolean(key, s1));
     return this;
   }

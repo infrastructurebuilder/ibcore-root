@@ -64,10 +64,10 @@ class MavenBackedRelativeRootProtocolTest {
 
   @Test
   void test() {
-    RelativeRoot rr = p.get().get();
+    RelativeRoot rr = p.getRelativeRoot().get();
     assertTrue(rr.isPath());
     assertEquals(target, rr.getPath().get());
-    RelativeRoot rr2 = t.get().get();
+    RelativeRoot rr2 = t.getRelativeRoot().get();
     assertTrue(rr2.isPath());
     assertEquals(target, rr2.getPath().get().getParent());
     assertTrue(Files.isDirectory(rr2.getPath().get()));

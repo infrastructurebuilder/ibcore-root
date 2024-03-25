@@ -17,6 +17,7 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.URL;
@@ -54,7 +55,7 @@ public class ArtifactServicesTest {
 
     @Override
     public List<GAV> getArtifacts(final GAV coords, final String scope, final boolean includeUnresolved) {
-      return known.parallelStream().filter(a -> a.equalsIgnoreClassifier(coords, true)).collect(Collectors.toList());
+      return known.parallelStream().filter(a -> a.equalsIgnoreClassifier(coords, true)).toList();
     }
 
     @Override
@@ -86,8 +87,7 @@ public class ArtifactServicesTest {
         final String type, final boolean throwOnFail) {
 
       return getArtifacts(coords, scope, true).stream().filter(a -> a.getFile().isPresent())
-          .filter(a -> a.equalsIgnoreClassifier(coords, false)).map(a -> a.getFile().get())
-          .collect(Collectors.toList());
+          .filter(a -> a.equalsIgnoreClassifier(coords, false)).map(a -> a.getFile().get()).toList();
     }
 
     @Override

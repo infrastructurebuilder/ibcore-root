@@ -18,7 +18,6 @@
 package org.infrastructurebuilder.util.core;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -37,7 +36,7 @@ public abstract class AbstractRoseTree<A extends JSONAndChecksumEnabled>
   @Override
   public JSONObject asJSON() {
     return getValue().asJSON().put(getKeyForTreeInJSON(),
-        new JSONArray(getChildren().stream().map(c -> c.asJSON()).collect(Collectors.toList())));
+        new JSONArray(getChildren().stream().map(c -> c.asJSON()).toList()));
   }
 
   @Override

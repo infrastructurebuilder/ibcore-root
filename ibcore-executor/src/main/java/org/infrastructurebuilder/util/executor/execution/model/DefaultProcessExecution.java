@@ -18,10 +18,8 @@
 package org.infrastructurebuilder.util.executor.execution.model;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static java.util.UUID.randomUUID;
-import static java.util.stream.Collectors.toList;
 
 import java.io.PrintStream;
 import java.net.URL;
@@ -45,14 +43,13 @@ import org.infrastructurebuilder.util.executor.ProcessExecution;
 import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.EnvEntry;
 import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.Environment;
 import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.GeneratedProcessExecution;
-import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.GeneratedProcessExecution.GeneratedProcessExecutionBuilder;
 import org.zeroturnaround.exec.ProcessExecutor;
 
 public class DefaultProcessExecution implements ProcessExecution {
 
   public final static Function<Map<String, String>, Environment> toEnvironment = (m) -> {
     return new Environment(
-        requireNonNull(m).entrySet().stream().map(e -> new EnvEntry(e.getKey(), e.getValue())).collect(toList()));
+        requireNonNull(m).entrySet().stream().map(e -> new EnvEntry(e.getKey(), e.getValue())).toList());
   };
   public final static Function<Environment, Map<String, String>> fromEnvironment = (e) -> {
     return requireNonNull(e).getEnvEntry()
@@ -92,7 +89,7 @@ public class DefaultProcessExecution implements ProcessExecution {
     this.gpe = new ModeledProcessExecution("1.0", id, executable, arguments,
         timeout.map(Duration::toString).orElse(null), //
         optional, background, workDirectory.toString(),
-        exitValues.map(x -> x.stream().map(i -> i.toString()).collect(toList())).orElse(null),
+        exitValues.map(x -> x.stream().map(i -> i.toString()).toList()).orElse(null),
 
         null, // Placeholders until we set the values below
         null, //
@@ -194,7 +191,7 @@ public class DefaultProcessExecution implements ProcessExecution {
 
   @Override
   public Optional<List<Integer>> getExitValuesAsIntegers() {
-    return gpe.getExitValues().map(ev -> ev.stream().map(Integer::parseInt).collect(toList()));
+    return gpe.getExitValues().map(ev -> ev.stream().map(Integer::parseInt).toList());
   }
 
   public Optional<RelativeRoot> getRelativeRoot() {

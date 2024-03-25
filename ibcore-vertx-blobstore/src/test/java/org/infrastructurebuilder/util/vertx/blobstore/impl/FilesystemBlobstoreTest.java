@@ -25,9 +25,9 @@ import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
 import org.infrastructurebuilder.util.constants.IBConstants;
-import org.infrastructurebuilder.util.core.RelativeRootSetPathSupplier;
 import org.infrastructurebuilder.util.core.RelativeRootSupplier;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
+import org.infrastructurebuilder.util.relativeroot.base.RelativeRootSetPathSupplier;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;

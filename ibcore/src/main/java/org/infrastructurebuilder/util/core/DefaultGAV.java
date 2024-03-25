@@ -17,7 +17,6 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import static java.util.Arrays.copyOf;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
@@ -38,16 +37,16 @@ public class DefaultGAV extends DefaultGAVBasic implements GAV {
         hs.getVersion().orElse(null), hs.getExtension()).withFile(hs.getFile().orElse(null));
   }
 
-  private final Optional<Path> path;
+  private final Path path;
 
-  private final ChecksumBuilder builder;
+  private ChecksumBuilder builder;
 
   public DefaultGAV(final JSONObject json) {
     super(requireNonNull(json).getString(GAV_GROUPID), json.getString(GAV_ARTIFACTID),
         json.optString(GAV_CLASSIFIER, null), json.optString(GAV_VERSION, null),
         json.optString(GAV_EXTENSION, json.optString(GAV_TYPE, json.optString(GAV_PACKAGING, null))));
-    path = ofNullable(json.optString(GAV_PATH, null)).map(Paths::get);
-    this.builder = ChecksumBuilder.newInstance(this.path);
+    path = ofNullable(json.optString(GAV_PATH, null)).map(Paths::get).orElse(null);
+    this.builder = ChecksumBuilder.newInstance(empty());
   }
 
   public DefaultGAV(final JSONObject json, final String classifier) {
@@ -61,8 +60,8 @@ public class DefaultGAV extends DefaultGAVBasic implements GAV {
 
   public DefaultGAV(final String from) {
     super(from);
-    this.path = Optional.empty();
-    this.builder = ChecksumBuilder.newInstance(this.path);
+    this.path = null;
+    this.builder = ChecksumBuilder.newInstance(empty());
   }
 
   public DefaultGAV(final String groupId, final String artifactId, final String version) {
@@ -90,8 +89,8 @@ public class DefaultGAV extends DefaultGAVBasic implements GAV {
 
   private DefaultGAV() {
     super();
-    path = empty();
-    this.builder = ChecksumBuilder.newInstance(this.path);
+    path = null;
+    this.builder = ChecksumBuilder.newInstance(empty());
   }
 
   private DefaultGAV(final GAV gav, final Path path) {
@@ -100,8 +99,8 @@ public class DefaultGAV extends DefaultGAVBasic implements GAV {
     setVersion(gav.getVersion().orElse(null));
     setClassifier(gav.getClassifier().orElse(null));
     setExtension(gav.getExtension());
-    this.path = ofNullable(path);
-    this.builder = ChecksumBuilder.newInstance(this.path);
+    this.path = path;
+    this.builder = ChecksumBuilder.newInstance(empty());
   }
 
   @Override
@@ -176,12 +175,18 @@ public class DefaultGAV extends DefaultGAVBasic implements GAV {
 
   @Override
   public Optional<Path> getFile() {
-    return this.path;
+    return Optional.ofNullable(this.path);
   }
 
   @Override
   public GAV withFile(final Path file) {
     return new DefaultGAV(this, file);
+  }
+
+  @Override
+  public GAV withRelativeRoot(RelativeRoot r) {
+    this.builder = ChecksumBuilder.newAlternateInstanceWithRelativeRoot(Optional.ofNullable(r));
+    return this;
   }
 
   @Override

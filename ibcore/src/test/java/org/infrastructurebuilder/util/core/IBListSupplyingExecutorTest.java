@@ -17,6 +17,7 @@
  */
 package org.infrastructurebuilder.util.core;
 
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -27,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.exceptions.IBException;
 import org.junit.jupiter.api.AfterAll;
@@ -101,7 +101,7 @@ public class IBListSupplyingExecutorTest {
       if (!config.get().keySet().containsAll(getRequiredConfigItems()))
         throw new IBException();
       getLog().info("The config value for 'A' is " + config.get().get("A"));
-      return Arrays.asList(new ArrayList<String>(config.get().keySet().stream().sorted().collect(Collectors.toList())));
+      return Arrays.asList(new ArrayList<String>(config.get().keySet().stream().sorted().toList()));
     }
 
     @Override

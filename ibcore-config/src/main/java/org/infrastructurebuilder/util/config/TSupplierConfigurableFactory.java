@@ -30,8 +30,8 @@ import org.infrastructurebuilder.util.core.NameDescribed;
 import org.infrastructurebuilder.util.core.TSupplier;
 
 public interface TSupplierConfigurableFactory<T> extends Supplier<TSupplier<T>>, //
-    Configurable<ConfigMapBuilder, TSupplierConfigurableFactory<T>>, //
-    NameDescribed, Hinted, LoggerEnabled, IdentifiedAndWeighted, LoggerConfigurable {
+    Configurable<ConfigMapBuilder>, //
+    NameDescribed, Hinted, LoggerEnabled, LoggerConfigurable, IdentifiedAndWeighted {
   Optional<TSupplier<T>> build();
 
   default TSupplier<T> get() {

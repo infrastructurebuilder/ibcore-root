@@ -18,9 +18,7 @@
 package org.infrastructurebuilder.util.core;
 
 import java.nio.file.Path;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Objects;
-import java.util.Optional;
 
 public class DefaultPathAndChecksum implements PathAndChecksum {
 

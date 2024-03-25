@@ -19,8 +19,9 @@ package org.infrastructurebuilder.util.core;
 
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.Optional;
 
-public class TestingPathSupplier extends WorkingPathSupplier {
+public class TestingPathSupplier extends WorkingPathSupplier implements RelativeRootSupplier {
 
   public TestingPathSupplier() {
     super();
@@ -44,6 +45,17 @@ public class TestingPathSupplier extends WorkingPathSupplier {
 
   public final Path getClasses() {
     return getRoot().resolve("classes");
+  }
+
+  @Override
+  public String getName() {
+    return "testing-path-supplier";
+  }
+
+  @Override
+  public Optional<RelativeRoot> getRelativeRoot() {
+    // TODO Auto-generated method stub
+    return Optional.empty();
   }
 
 }

@@ -17,6 +17,8 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
+import static java.util.stream.Collectors.toList;
+
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.List;
@@ -61,7 +63,7 @@ public interface ArtifactServices extends Weighted {
       final String classifier, final String type) {
     final List<GAV> s = getArtifacts(coords, scope, includeUnresolved);
     return s.stream().filter(a -> (classifier == null || classifier.equals(a.getClassifier().orElse(null))))
-        .filter(a -> (type == null || type.equals(a.getExtension()))).collect(Collectors.toList());
+        .filter(a -> (type == null || type.equals(a.getExtension()))).toList();
   }
 
   default List<GAV> getArtifactsRuntime(final GAV coords) {
@@ -73,9 +75,8 @@ public interface ArtifactServices extends Weighted {
   String getClasspathOf(GAV coords, String scope, List<GAV> additional, boolean eliminateEquivalentFiles);
 
   default List<Path> getDependencies(final GAV coords, final String scope) {
-    List<GAV> q = getArtifacts(coords, scope, false).stream().filter(a -> a.getFile().isPresent())
-        .collect(Collectors.toList());
-    return q.stream().map(a -> a.getFile().get()).collect(Collectors.toList());
+    List<GAV> q = getArtifacts(coords, scope, false).stream().filter(a -> a.getFile().isPresent()).toList();
+    return q.stream().map(a -> a.getFile().get()).toList();
   }
 
   List<Path> getDependenciesOfClassifiedTypeFor(GAV coords, String scope, String classifier, String type,

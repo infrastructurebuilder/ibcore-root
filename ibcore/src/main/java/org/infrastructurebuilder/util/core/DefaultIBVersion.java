@@ -21,7 +21,6 @@ import static java.util.Objects.requireNonNull;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
 import static org.infrastructurebuilder.util.core.IBVersionException.ibt;
 
-import java.util.Comparator;
 import java.util.Objects;
 
 import org.infrastructurebuilder.exceptions.IBException;

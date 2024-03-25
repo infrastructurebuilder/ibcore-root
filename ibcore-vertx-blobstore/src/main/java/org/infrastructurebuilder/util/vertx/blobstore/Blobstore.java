@@ -25,7 +25,7 @@ import java.util.Optional;
 import java.util.Properties;
 
 import org.infrastructurebuilder.util.core.LoggerEnabled;
-import org.infrastructurebuilder.util.readdetect.IBResource;
+import org.infrastructurebuilder.util.readdetect.base.IBResource;
 
 import io.vertx.codegen.annotations.Nullable;
 import io.vertx.core.Future;

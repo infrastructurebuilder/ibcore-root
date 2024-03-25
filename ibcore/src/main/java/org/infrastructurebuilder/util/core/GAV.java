@@ -22,14 +22,8 @@ import static java.util.Optional.empty;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.versions.GAVBasic;
 import org.json.JSONObject;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 public interface GAV extends GAVBasic, JSONAndChecksumEnabled {
   String COMPILE_SCOPE = "compile";
@@ -81,6 +75,10 @@ public interface GAV extends GAVBasic, JSONAndChecksumEnabled {
   GAV copy();
 
   default GAV withFile(Path file) {
+    return this;
+  }
+  
+  default GAV withRelativeRoot(RelativeRoot r) {
     return this;
   }
 

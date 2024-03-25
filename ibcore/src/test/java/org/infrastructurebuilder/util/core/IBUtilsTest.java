@@ -224,7 +224,7 @@ public class IBUtilsTest {
     a.forEach(ss -> q.add(ss));
     String v = q.toString();
     Enumeration<Object> e = new StringTokenizer(v);
-    List<String> k = IBUtils.enumerationAsStream(e, true).map(Object::toString).collect(Collectors.toList());
+    List<String> k = IBUtils.enumerationAsStream(e, true).map(Object::toString).toList();
     assertEquals(a, k);
   }
 
@@ -249,7 +249,7 @@ public class IBUtilsTest {
   public void testIteratorAsStream() {
 
     List<String> a = Arrays.asList("A", "B", "C", "D", "E");
-    List<String> k = IBUtils.iteratorAsStream(a.iterator(), true).map(Object::toString).collect(Collectors.toList());
+    List<String> k = IBUtils.iteratorAsStream(a.iterator(), true).map(Object::toString).toList();
     assertEquals(a, k);
 
   }
@@ -280,7 +280,7 @@ public class IBUtilsTest {
   @Test
   public void testAsJSONObjectStream() {
     final JSONArray a = new JSONArray(asList(objects));
-    final List<JSONObject> x = asJSONObjectStream(a).collect(toList());
+    final List<JSONObject> x = asJSONObjectStream(a).toList();
     assertEquals(asList(objects), x);
   }
 
@@ -288,7 +288,7 @@ public class IBUtilsTest {
   public void testAsJSONObjectStream2() {
     final JSONArray a = new JSONArray(asList(objects));
     final Stream<JSONObject> y = asStream(a);
-    final List<JSONObject> x = y.collect(toList());
+    final List<JSONObject> x = y.toList();
     assertEquals(asList(objects), x);
   }
 
@@ -313,7 +313,7 @@ public class IBUtilsTest {
     final List<String> l = asList(s);
     final JSONArray j = new JSONArray(l);
     final Stream<String> y = asStringStream(j);
-    assertEquals(l, y.collect(toList()));
+    assertEquals(l, y.toList());
   }
 
   @Test

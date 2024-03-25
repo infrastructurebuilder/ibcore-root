@@ -20,6 +20,7 @@ package org.infrastructurebuilder.util.config.impl;
 import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElseGet;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -216,7 +217,7 @@ public class IBJSONObject implements ConfigMap, ConfigMapBuilder {
 
   private synchronized JSONObject collapse() {
     JSONObject j = new JSONObject();
-    List<JSONObject> items = this.s.stream().collect(Collectors.toList());
+    List<JSONObject> items = new ArrayList<>(this.s.stream().toList());
     Collections.reverse(items);
     items.forEach(jo -> jo.keySet().forEach(k -> j.put(k, jo.get(k))));
     return j;

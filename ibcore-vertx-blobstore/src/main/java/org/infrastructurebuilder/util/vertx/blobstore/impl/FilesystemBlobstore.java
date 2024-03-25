@@ -29,7 +29,6 @@ import static org.infrastructurebuilder.util.constants.IBConstants.METADATA_DIR_
 import static org.infrastructurebuilder.util.core.Checksum.ofPath;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
@@ -48,12 +47,13 @@ import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.core.RelativeRootFactory;
 import org.infrastructurebuilder.util.core.RelativeRootSupplier;
-import org.infrastructurebuilder.util.readdetect.DefaultIBResourceISBuilderFactorySupplier;
-import org.infrastructurebuilder.util.readdetect.IBResource;
-import org.infrastructurebuilder.util.readdetect.IBResourceBuilder;
-import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
-import org.infrastructurebuilder.util.readdetect.IBResourceException;
-import org.infrastructurebuilder.util.readdetect.IBResourceIS;
+import org.infrastructurebuilder.util.readdetect.base.IBResource;
+import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilder;
+import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory;
+import org.infrastructurebuilder.util.readdetect.base.IBResourceException;
+import org.infrastructurebuilder.util.readdetect.base.IBResourceIS;
+import org.infrastructurebuilder.util.readdetect.base.base.DefaultIBResourceISBuilderFactorySupplier;
+import org.infrastructurebuilder.util.vertx.base.VertxIBResource;
 import org.infrastructurebuilder.util.vertx.blobstore.Blobstore;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -67,7 +67,7 @@ import io.vertx.core.file.FileSystem;
 import io.vertx.core.impl.ConcurrentHashSet;
 import io.vertx.core.json.JsonObject;
 
-public class FilesystemBlobstore implements Blobstore<InputStream> {
+public class FilesystemBlobstore implements Blobstore<VertxIBResource> {
 
   private final static Logger log = LoggerFactory.getLogger(FilesystemBlobstore.class);
   private final static FileSystem fs = Vertx.vertx().fileSystem();
@@ -84,7 +84,7 @@ public class FilesystemBlobstore implements Blobstore<InputStream> {
     this.root = requireNonNull(requireNonNull(rrs, "RelativeRootSupplier").get(), "RelativeRoot")
         .orElseThrow(() -> new IBException("No relative root"));
     this.rcf = new DefaultIBResourceISBuilderFactorySupplier(new RelativeRootFactory(Set.of(rrs))).get(rrs.getName())
-        .get();
+        .getRelativeRoot();
     this.metadata = getRelativeRoot().resolvePath(METADATA_DIR_NAME).map(Path::toAbsolutePath)
         .orElseThrow(() -> new IBResourceException("No path"));
     try {
@@ -270,7 +270,7 @@ public class FilesystemBlobstore implements Blobstore<InputStream> {
     return getMetadata(id).compose(md -> succeededFuture(md.getDescription().orElse(null)));
   }
 
-  public final Future<IBResource<InputStream>> getMetadata(String id) {
+  public final Future<VertxIBResource> getMetadata(String id) {
     return fs
 
         .readFile(getMetadataPath(id).toString())

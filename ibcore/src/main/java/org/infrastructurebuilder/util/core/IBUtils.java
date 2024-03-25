@@ -618,12 +618,11 @@ public class IBUtils {
   }
 
   public static List<String> getJSONArrayAsListString(final JSONObject g, final String key) {
-    return asStringStream(g.getJSONArray(key)).collect(Collectors.toList());
+    return asStringStream(g.getJSONArray(key)).toList();
   }
 
   public final static JSONArray getJSONArrayFromJSONOutputEnabled(final List<? extends JSONOutputEnabled> v) {
-    return ofNullable(v)
-        .map(v1 -> new JSONArray(v1.stream().map(JSONOutputEnabled::asJSON).collect(Collectors.toList()))).orElse(null);
+    return ofNullable(v).map(v1 -> new JSONArray(v1.stream().map(JSONOutputEnabled::asJSON).toList())).orElse(null);
   }
 
   public static JSONObject getJSONObjectFromMapStringString(final Map<String, String> map) {
@@ -685,6 +684,8 @@ public class IBUtils {
     return m;
   }
 
+  public final static Function<File, URL> fileToURL = (f) -> cet.returns(() -> requireNonNull(f).toURI().toURL());
+
   public final static FileSystem getZipFileSystem(final Path pathToZip, final boolean create) throws IOException {
     final String pathToZip2 = requireNonNull(pathToZip).toAbsolutePath().toUri().getPath();
     return FileSystems.newFileSystem(URI.create("jar:file:" + pathToZip2), getZipFileCreateMap(create));
@@ -697,8 +698,7 @@ public class IBUtils {
   }
 
   public final static boolean hasAll(final JSONObject j, final Collection<String> keys) {
-    return requireNonNull(keys).stream().filter(key -> !requireNonNull(j).has(key)).collect(Collectors.toList())
-        .size() == 0;
+    return requireNonNull(keys).stream().filter(key -> !requireNonNull(j).has(key)).toList().size() == 0;
   }
 
   public final static boolean hex8Digit(final String v) {

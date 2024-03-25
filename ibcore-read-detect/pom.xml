@@ -18,7 +18,9 @@
     @formatter:on
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -28,61 +30,14 @@
 	</parent>
 
 	<artifactId>ibcore-read-detect</artifactId>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 
 	<name>${project.artifactId}</name>
 	<description>Component that reads files and detects their types</description>
 	<!-- URL for site gen -->
 	<url>${github.url.base}/${project.artifactId}</url>
 
-	<!-- I see no way to increase this at the moment -->
-	<properties>
-		<test.coverage.percentage.required>47</test.coverage.percentage.required>
-		<jacoco.max.missed.classes>12</jacoco.max.missed.classes>
-		<!--
-		<maven.download.plugin.groupId>com.googlecode.maven-download-plugin</maven.download.plugin.groupId>
-    <maven.download.plugin.version>1.7.1</maven.download.plugin.version>
-    -->
-		<maven.download.plugin.groupId>org.infrastructurebuilder.usurped</maven.download.plugin.groupId>
-		<maven.download.plugin.version>1.7.1.2</maven.download.plugin.version>
-	</properties>
-
 	<dependencies>
-		<dependency>
-			<groupId>org.carlspring.cloud.aws</groupId>
-			<artifactId>s3fs-nio</artifactId>
-			<version>1.0.2</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.google.code.findbugs</groupId>
-					<artifactId>jsr305</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.infrastructurebuilder</groupId>
-			<artifactId>ibcore</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.infrastructurebuilder</groupId>
-			<artifactId>ibcore-maven-support</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.infrastructurebuilder</groupId>
-			<artifactId>ibcore-maven-download-plugin-component</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.infrastructurebuilder</groupId>
-			<artifactId>ibcore</artifactId>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.infrastructurebuilder</groupId>
-			<artifactId>ibcore-default-extension-type-mapper</artifactId>
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
@@ -90,101 +45,15 @@
 		</dependency>
 		<dependency>
 			<groupId>org.infrastructurebuilder.util.logging</groupId>
-			<artifactId>iblog-maven-component</artifactId>
-			<version>${iblog.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.infrastructurebuilder.util.logging</groupId>
 			<artifactId>iblogconfig</artifactId>
 			<classifier>debug</classifier>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.tika</groupId>
-			<artifactId>tika-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>ibcore-read-detect-model</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.plexus</groupId>
-			<artifactId>plexus-utils</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.infrastructurebuilder.usurped</groupId>
-			<artifactId>plexus-archiver</artifactId>
-			<version>4.9.1.1-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<groupId>javax.inject</groupId>
-					<artifactId>javax.inject</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<!--
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-archiver</artifactId>
-      <version>4.9.1</version>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.inject</groupId>
-          <artifactId>javax.inject</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    -->
-		<dependency>
-			<groupId>org.apache.maven.wagon</groupId>
-			<artifactId>wagon-provider-api</artifactId>
-		</dependency>
-
-		<!--
-    <dependency>
-      <groupId>${maven.download.plugin.groupId}</groupId>
-      <artifactId>download-maven-plugin</artifactId>
-      <version>${maven.download.plugin.version}</version>
-      <type>jar</type>
-      <optional>true</optional>
-    </dependency>
-    -->
-		<dependency><!--  Requires a direct dependency on client and cache for the
-      subsequent
-      maven plugin run -->
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<!--			<optional>true</optional>-->
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient-cache</artifactId>
-			<!--			<optional>true</optional>-->
-		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.infrastructurebuilder.maven</groupId>
-				<artifactId>ibversions-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>default</id>
-						<phase>validate</phase> <!-- Needs to be before resource filtering -->
-						<goals>
-							<goal>generate-source-version</goal>
-							<goal>generate-test-version</goal>
-						</goals>
-						<configuration>
-							<apiVersionPropertyName>apiVersion</apiVersionPropertyName>
-							<apiVersionPropertyNameSafe>apiVersionSafe</apiVersionPropertyNameSafe>
-							<targetPackageName>
-								${project.groupId}.util.readdetect.impl</targetPackageName>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+	<modules>
+		<module>ibcore-read-detect-base</module>
+		<module>ibcore-read-detect-path</module>
+		<module>ibcore-read-detect-url</module>
+		<module>ibcore-read-detect-avro</module>
+	</modules>
 </project>

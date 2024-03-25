@@ -47,8 +47,8 @@ class AbstractTSupplierResponsiveFactoryBuilderTest {
   void setUp() throws Exception {
     this.map = Map.of("X", "Y", "Z", "A", "XX", "YY");
 
-    this.fake = (FakeTSupplierResponsiveFactoryBuilder) new FakeTSupplierResponsiveFactoryBuilder(map).withConfig("X")
-        .withHint("fake").withLogger(log);
+    this.fake = (FakeTSupplierResponsiveFactoryBuilder) new FakeTSupplierResponsiveFactoryBuilder(map).withHint("fake")
+        .withLogger(log).withConfig("X");
   }
 
   @AfterEach

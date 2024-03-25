@@ -47,6 +47,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.infrastructurebuilder</groupId>
+			<artifactId>ibcore-vertx-base</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.infrastructurebuilder</groupId>
 			<artifactId>ibcore</artifactId>
 			<type>test-jar</type>
 			<scope>test</scope>
@@ -54,6 +58,10 @@
 		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-codegen</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.infrastructurebuilder.relativeroot</groupId>
+			<artifactId>ibcore-relativeroot-setpath</artifactId>
 		</dependency>
 		<!--
     <dependency>
@@ -110,7 +118,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.infrastructurebuilder</groupId>
-			<artifactId>ibcore-read-detect</artifactId>
+			<artifactId>ibcore-read-detect-path</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.vertx</groupId>

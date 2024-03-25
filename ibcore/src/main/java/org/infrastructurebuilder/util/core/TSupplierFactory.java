@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 import org.infrastructurebuilder.exceptions.IBException;
 
 public interface TSupplierFactory<T, C> extends Supplier<TSupplier<T>>, //
-    Configurable<C, TSupplierFactory<T, C>>, //
+    Configurable<C>, //
     NameDescribed, Hinted, LoggerEnabled, IdentifiedAndWeighted, LoggerConfigurable {
 
   Optional<TSupplier<T>> build();

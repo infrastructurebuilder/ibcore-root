@@ -37,6 +37,12 @@
 
 	<modules>
 		<module>ibcore</module>
+		<module>ibcore-default-extension-type-mapper</module>
+		<module>ibcore-files</module>
+		<module>ibcore-plexus-defaults</module>
+		<module>ibcore-maven-support</module>
+		<module>ibcore-rr-root</module>
+		<module>ibcore-read-detect</module>
 		<module>ibcore-vertx-base</module>
 		<module>ibcore-vertx-blobstore</module>
 		<module>ibcore-vertx-dataobjects</module>
@@ -44,13 +50,7 @@
 		<module>ibcore-artifacts</module>
 		<module>ibcore-dag</module>
 		<module>ibcore-executor</module>
-		<module>ibcore-plexus-defaults</module>
-		<module>ibcore-maven-support</module>
-		<module>ibcore-files</module>
 		<module>ibcore-maven-download-plugin-component</module>
-		<module>ibcore-read-detect</module>
-		<module>ibcore-read-detect-avro</module>
-		<module>ibcore-default-extension-type-mapper</module>
 	</modules>
 
 	<scm>
@@ -137,9 +137,25 @@
 			</dependency>
 			<dependency>
 				<groupId>org.infrastructurebuilder</groupId>
-				<artifactId>ibcore-read-detect</artifactId>
+				<artifactId>ibcore-read-detect-path</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.infrastructurebuilder</groupId>
+				<artifactId>ibcore-read-detect-path-url</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.infrastructurebuilder</groupId>
+				<artifactId>ibcore-read-detect-path-urllike</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.infrastructurebuilder</groupId>
+				<artifactId>ibcore-read-detect-path-s3</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
 			<dependency>
 				<groupId>org.infrastructurebuilder</groupId>
 				<artifactId>ibcore-vertx-base</artifactId>

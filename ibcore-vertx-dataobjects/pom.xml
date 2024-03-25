@@ -119,7 +119,7 @@
     </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder</groupId>
-      <artifactId>ibcore-read-detect</artifactId>
+      <artifactId>ibcore-read-detect-path</artifactId>
     </dependency>
   </dependencies>
 </project>

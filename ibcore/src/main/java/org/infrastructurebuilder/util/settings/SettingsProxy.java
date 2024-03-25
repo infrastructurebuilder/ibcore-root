@@ -20,7 +20,6 @@ package org.infrastructurebuilder.util.settings;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 import java.nio.charset.Charset;
@@ -65,7 +64,7 @@ public class SettingsProxy implements CredentialsSupplier {
    * @return List
    */
   public List<String> getActiveProfiles() {
-    return profiles.stream().filter(ProfileProxy::isActive).map(ProfileProxy::getId).collect(toList());
+    return profiles.stream().filter(ProfileProxy::isActive).map(ProfileProxy::getId).toList();
   }
 
   /**

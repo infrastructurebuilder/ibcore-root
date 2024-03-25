@@ -17,7 +17,7 @@
  */
 package org.infrastructurebuilder.util.maven.mavensupport;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

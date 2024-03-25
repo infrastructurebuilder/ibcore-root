@@ -45,7 +45,6 @@ public class DefaultIBArtifactVersionMapper implements IBArtifactVersionMapper {
   @Override
   public List<IBVersionsSupplier> getMatchingArtifacts(String groupId, String artifactId) {
     return this.ibvs.values().parallelStream()
-        .filter(v -> v.getGroupId().get().equals(groupId) && v.getArtifactId().get().equals(artifactId))
-        .collect(toList());
+        .filter(v -> v.getGroupId().get().equals(groupId) && v.getArtifactId().get().equals(artifactId)).toList();
   }
 }

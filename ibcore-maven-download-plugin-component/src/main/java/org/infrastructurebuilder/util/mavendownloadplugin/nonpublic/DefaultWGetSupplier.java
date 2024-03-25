@@ -865,7 +865,7 @@ public class DefaultWGetSupplier implements WGetBuilderFactory {
 
                   .map(p -> (PathAndChecksum) new DefaultPathAndChecksum(/*in.relativize*/(p), new Checksum(p)))
 
-                  .collect(toList());
+                  .toList();
             } catch (IOException e) {
               throw new IBMavenDownloadPluginComponentException("Failed to walk expanded", e);
             }

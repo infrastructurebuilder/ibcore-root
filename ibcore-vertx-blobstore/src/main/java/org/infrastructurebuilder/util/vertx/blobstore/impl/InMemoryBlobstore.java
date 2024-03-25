@@ -37,10 +37,10 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.readdetect.IBResource;
-import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
-import org.infrastructurebuilder.util.readdetect.IBResourceIS;
-import org.infrastructurebuilder.util.readdetect.IBResourceInMemoryDelegated;
+import org.infrastructurebuilder.util.readdetect.base.IBResource;
+import org.infrastructurebuilder.util.readdetect.base.IBResourceIS;
+import org.infrastructurebuilder.util.readdetect.base.base.IBResourceInMemoryDelegated;
+import org.infrastructurebuilder.util.vertx.base.FutureStream;
 import org.infrastructurebuilder.util.vertx.blobstore.Blobstore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +54,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.file.FileSystem;
 
-public class InMemoryBlobstore implements Blobstore<InputStream> {
+public class InMemoryBlobstore implements Blobstore<FutureStream> {
 
   public static final String ERROR_GETTING_ATTRIBUTES = "error.getting.attributes";
 
@@ -100,8 +100,8 @@ public class InMemoryBlobstore implements Blobstore<InputStream> {
   }
 
   @Override
-  public Future<IBResource<InputStream>> getMetadata(String id) {
-    return ofNullable(resources.get(id)).map(i -> (IBResource<InputStream>) i).map(Future::succeededFuture)
+  public Future<IBResource<FutureStream>> getMetadata(String id) {
+    return ofNullable(resources.get(id)).map(i -> (IBResourceIS) i).map(Future::succeededFuture)
         .orElse(Future.failedFuture(NOT_FOUND));
   }
 

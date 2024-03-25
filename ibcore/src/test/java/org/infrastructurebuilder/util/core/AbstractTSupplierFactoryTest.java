@@ -69,11 +69,12 @@ class AbstractTSupplierFactoryTest {
     }
         //
         .withWeight(WEIGHT) // weight
-        .withConfig(VAL2) // confiug
         .withDescription(DESC) // desc
         .withDisplayName(VAL3) // displayName
         .withHint(VAL4) // hint
-        .withName(VAL5);
+        .withName(VAL5).withConfig(VAL2) // confiug
+
+    ;
   }
 
   @AfterEach

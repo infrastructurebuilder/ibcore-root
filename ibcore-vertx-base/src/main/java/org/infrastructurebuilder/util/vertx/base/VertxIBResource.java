@@ -18,25 +18,25 @@
 package org.infrastructurebuilder.util.vertx.base;
 
 import java.nio.file.Path;
-import java.util.Optional;
 
-import org.infrastructurebuilder.util.readdetect.IBResource;
+import org.infrastructurebuilder.util.readdetect.base.IBResource;
 
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.file.AsyncFile;
 import io.vertx.core.file.OpenOptions;
 
-public interface VertxIBResource extends IBResource<Future<AsyncFile>> {
+public interface VertxIBResource extends IBResource<FutureStream> {
   public static final OpenOptions OPTIONS = new OpenOptions().setRead(true);
 
   Vertx vertx();
 
-  default Optional<Future<AsyncFile>> get() {
-    return getPath() // Optional?
+  default FutureStream get() {
+    return new FutureStream(getPath() // Optional?
         .map(Path::toAbsolutePath) // Maybe we do this?
         .map(Path::toString) // have to do this
-        .map(pStr -> vertx().fileSystem().open(pStr, OPTIONS));
+        .map(pStr -> vertx().fileSystem().open(pStr, OPTIONS))
+        .orElse(Future.failedFuture("VertxIBResource.failed.to.get.stream")));
   }
 
 }

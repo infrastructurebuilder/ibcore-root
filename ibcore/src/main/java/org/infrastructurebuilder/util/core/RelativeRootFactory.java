@@ -23,7 +23,6 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -63,7 +62,7 @@ public class RelativeRootFactory {
   public final Optional<RelativeRoot> get(String name) {
     if (!suppliers.keySet().contains(name))
       log.warn("RelativeRootSupplier {} not available", name);
-    return ofNullable(this.suppliers.get(name)).flatMap(Supplier::get);
+    return ofNullable(this.suppliers.get(name)).flatMap(RelativeRootSupplier::getRelativeRoot);
   }
 
 }

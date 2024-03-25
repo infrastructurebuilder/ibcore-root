@@ -17,13 +17,13 @@
  */
 package org.infrastructurebuilder.util.maven.artifacts.impl;
 
-import static org.infrastructurebuilder.exceptions.IBException.cet;
+import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
+import static org.eclipse.aether.util.artifact.JavaScopes.RUNTIME;
+import static org.infrastructurebuilder.util.core.IBUtils.fileToURL;
 
 import java.net.URL;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -35,8 +35,8 @@ import org.apache.maven.artifact.resolver.ArtifactResolutionRequest;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.repository.LocalArtifactRepository;
 import org.apache.maven.repository.RepositorySystem;
-import org.eclipse.aether.util.artifact.JavaScopes;
 import org.infrastructurebuilder.util.core.DefaultGAV;
 import org.infrastructurebuilder.util.core.GAV;
 import org.infrastructurebuilder.util.maven.artifacts.InjectedResolver;
@@ -45,19 +45,20 @@ import org.infrastructurebuilder.util.maven.artifacts.ResolveOutcome;
 @Named
 public class DefaultInjectedResolver implements InjectedResolver {
 
-  private final ArtifactRepository localRepository;
+  private final LocalArtifactRepository localRepository;
 
   private final RepositorySystem mavenRepositorySystem;
 
   private final List<ArtifactRepository> remoteArtifactRepos;
 
   @Inject
-  public DefaultInjectedResolver(final ArtifactRepository localRepository, final RepositorySystem mavRepositorySystem,
-      final List<ArtifactRepository> remoteArtifactRepositories)
+  public DefaultInjectedResolver(final LocalArtifactRepository localRepository,
+      final RepositorySystem mavRepositorySystem, final List<ArtifactRepository> remoteArtifactRepositories)
   {
-    this.localRepository = Objects.requireNonNull(localRepository);
-    mavenRepositorySystem = Objects.requireNonNull(mavRepositorySystem);
-    remoteArtifactRepos = Objects.requireNonNull(remoteArtifactRepositories);
+    this.localRepository = requireNonNull(localRepository);
+    mavenRepositorySystem = requireNonNull(mavRepositorySystem);
+    remoteArtifactRepos = requireNonNull(remoteArtifactRepositories).stream().filter(f -> !f.equals(localRepository))
+        .toList();
   }
 
   @Override
@@ -73,22 +74,23 @@ public class DefaultInjectedResolver implements InjectedResolver {
   @Override
   public Artifact getArtifactFromDependency(final Dependency dep) {
     return mavenRepositorySystem.createArtifact(dep.getGroupId(), dep.getArtifactId(), dep.getVersion(),
-        Optional.ofNullable(dep.getScope()).orElse(JavaScopes.RUNTIME),
-        Optional.ofNullable(dep.getType()).orElse("jar"));
+        ofNullable(dep.getScope()).orElse(RUNTIME), ofNullable(dep.getType()).orElse("jar"));
   }
 
   @Override
   public Artifact getArtifactFromPlugin(final PluginDescriptor dep) {
-    return mavenRepositorySystem.createArtifact(dep.getGroupId(), dep.getArtifactId(), dep.getVersion(),
-        JavaScopes.RUNTIME, "jar");
+    return mavenRepositorySystem.createArtifact(dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), RUNTIME,
+        "jar");
   }
 
   @Override
   public ResolveOutcome resolutionOutcomeFor(final Artifact artifact) {
     final ArtifactResolutionResult res = resolve(artifact);
-    final List<URL> urls = res.getArtifacts().stream().map(a -> cet.returns(() -> a.getFile().toURI().toURL()))
-        .collect(Collectors.toList());
-    final URL origi = cet.returns(() -> res.getOriginatingArtifact().getFile().toURI().toURL());
+    final List<URL> urls = res.getArtifacts().stream() //
+        .map(Artifact::getFile) //
+        .map(fileToURL) // Throws IBException if fails
+        .toList();
+    final URL origi = fileToURL.apply(res.getOriginatingArtifact().getFile());
     return new DefaultResolveOutcome(urls, res.getOriginatingArtifact(), origi);
   }
 
@@ -104,9 +106,16 @@ public class DefaultInjectedResolver implements InjectedResolver {
 
   @Override
   public ArtifactResolutionResult resolve(final Artifact artifact) {
-    return mavenRepositorySystem.resolve(new ArtifactResolutionRequest(
-        new DefaultRepositoryRequest().setRemoteRepositories(remoteArtifactRepos).setLocalRepository(localRepository))
-        .setArtifact(artifact).setResolveTransitively(true));
+    return mavenRepositorySystem //
+        .resolve( //
+            new ArtifactResolutionRequest( //
+                new DefaultRepositoryRequest() //
+                    .setRemoteRepositories(remoteArtifactRepos) //
+                    .setLocalRepository(localRepository) //
+            ) //
+                .setArtifact(artifact) //
+                .setResolveTransitively(true) //
+        );
   }
 
 }

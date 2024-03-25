@@ -22,18 +22,15 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Future;
-import java.util.stream.Stream;
 
 import org.infrastructurebuilder.util.core.JSONBuilder;
 import org.infrastructurebuilder.util.core.JSONOutputEnabled;
@@ -78,7 +75,7 @@ public interface ProcessExecutionResultBag extends JSONOutputEnabled {
 
         .map(ProcessExecutionResult::getId)
 
-        .collect(toList());
+        .toList();
 
   }
 
@@ -101,11 +98,11 @@ public interface ProcessExecutionResultBag extends JSONOutputEnabled {
 
   default List<String> getStdErr() {
 //    final Map<String, Optional<List<String>>> l = getStdErrs();
-//    return getExecutedIds().stream().map(l::get).flatMap(Optional::stream).flatMap(List::stream).collect(toList());
+//    return getExecutedIds().stream().map(l::get).flatMap(Optional::stream).flatMap(List::stream).toList();
     var v = getStdErrs();
     return getExecutedIds().stream() //
         .map(key -> v.get(key)).map(v2 -> Optional.ofNullable(v2)).flatMap(Optional::stream)
-        .map(o -> (o.orElseGet(() -> emptyList()).stream())).map(o -> o.toString()).collect(toList());
+        .map(o -> (o.orElseGet(() -> emptyList()).stream())).map(o -> o.toString()).toList();
 
   }
 
@@ -119,7 +116,7 @@ public interface ProcessExecutionResultBag extends JSONOutputEnabled {
     var v = getStdOuts();
     return getExecutedIds().stream() //
         .map(key -> v.get(key)).map(v2 -> Optional.ofNullable(v2)).flatMap(Optional::stream)
-        .map(o -> (o.orElseGet(() -> emptyList()).stream())).map(o -> o.toString()).collect(toList());
+        .map(o -> (o.orElseGet(() -> emptyList()).stream())).map(o -> o.toString()).toList();
   }
 
   default Map<String, Optional<List<String>>> getStdOuts() {
@@ -135,7 +132,7 @@ public interface ProcessExecutionResultBag extends JSONOutputEnabled {
 
         .addJSONArray(INCOMPLETE_FUTURE_IDS, new JSONArray(getIncompleteFuturesIds()))
 
-        .addJSONArray(RESULTS, new JSONArray(getExecutions().values().stream().map(v -> v.asJSON()).collect(toList())))
+        .addJSONArray(RESULTS, new JSONArray(getExecutions().values().stream().map(v -> v.asJSON()).toList()))
 
         .asJSON();
   }

@@ -138,10 +138,10 @@ abstract public class AbstractBaseRelativeRoot implements RelativeRoot {
         .asJSON();
   }
 
-  @Override
-  public ChecksumBuilder getChecksumBuilder() {
-    return ChecksumBuilder.newInstance().addString(this.stringRoot); // Only the stringroot actually matters
-  }
+//  @Override
+//  public ChecksumBuilder getChecksumBuilder() {
+//    return ChecksumBuilder.newInstance().addString(this.stringRoot); // Only the stringroot actually matters
+//  }
 
   private Optional<Path> makeAFile(Path relativePath, String prefix, String suffix, boolean temp) {
     if (relativePath != null && relativePath.isAbsolute())

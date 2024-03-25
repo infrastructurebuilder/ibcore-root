@@ -19,7 +19,6 @@ package org.infrastructurebuilder.util.vertx.base;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 import java.net.URL;
@@ -63,19 +62,19 @@ import io.vertx.core.json.JsonObject;
 public final class JsonBuilder implements JsonOutputEnabled {
   private final static Logger log = LoggerFactory.getLogger(JsonBuilder.class);
   public final static Function<Collection<? extends JsonOutputEnabled>, JsonArray> jsonOutputToJsonArray = oe -> {
-    return new JsonArray(requireNonNull(oe).stream().map(JsonOutputEnabled::toJson).collect(toList()));
+    return new JsonArray(requireNonNull(oe).stream().map(JsonOutputEnabled::toJson).toList());
   };
 
   public final static Function<List<JSONOutputEnabled>, JsonArray> JSONOutputToJsonArray = oe -> {
     return new JsonArray(
-        requireNonNull(oe).stream().map(JSONOutputEnabled::asJSON).map(JsonBuilder.orgToVertxObject).collect(toList()));
+        requireNonNull(oe).stream().map(JSONOutputEnabled::asJSON).map(JsonBuilder.orgToVertxObject).toList());
   };
 
   public final static Function<JSONObject, JsonObject> orgToVertxObject = oe -> {
     return new JsonObject(requireNonNull(oe).toString()); // inefficient AF
   };
   public final static Function<JSONArray, JsonArray> orgToVertxArray = ja -> {
-    return new JsonArray(IBUtils.asStringStream(ja).map(s -> new JsonObject(s)).collect(toList()));
+    return new JsonArray(IBUtils.asStringStream(ja).map(s -> new JsonObject(s)).toList());
   };
   private static final String RELATIVE_ROOT = "__relative##_root";
 
@@ -410,7 +409,7 @@ public final class JsonBuilder implements JsonOutputEnabled {
   }
 
   public JsonBuilder addSetString(final String key, final Set<String> s) {
-    json.put(requireNonNull(key), new JsonArray(Objects.requireNonNull(s).stream().collect(toList())));
+    json.put(requireNonNull(key), new JsonArray(Objects.requireNonNull(s).stream().toList()));
     return this;
   }
 
@@ -430,7 +429,7 @@ public final class JsonBuilder implements JsonOutputEnabled {
   }
 
   public JsonBuilder addCollectionUUID(final String key, final Collection<UUID> s) {
-    return this.addListString(key, s.stream().map(UUID::toString).collect(toList()));
+    return this.addListString(key, s.stream().map(UUID::toString).toList());
   }
 
   public JsonBuilder addCollectionUUID(final String key, final Optional<Collection<UUID>> s) {
@@ -449,7 +448,7 @@ public final class JsonBuilder implements JsonOutputEnabled {
   }
 
   public JsonBuilder addCollectionUUIdentified(final String key, final Collection<? extends UUIdentified> s) {
-    return this.addListString(key, s.stream().map(s1 -> s1.getId().toString()).collect(toList()));
+    return this.addListString(key, s.stream().map(s1 -> s1.getId().toString()).toList());
   }
 
   public JsonBuilder addCollectionUUIdentified(final String key, final Optional<Collection<? extends UUIdentified>> s) {
@@ -463,7 +462,6 @@ public final class JsonBuilder implements JsonOutputEnabled {
   }
 
   public JsonBuilder addThrowable(final String key, final Optional<Throwable> s) {
-
     requireNonNull(s).ifPresent(s1 -> this.addThrowable(key, s1));
     return this;
   }

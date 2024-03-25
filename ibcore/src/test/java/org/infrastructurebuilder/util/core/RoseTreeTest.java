@@ -31,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,7 +65,7 @@ public class RoseTreeTest {
     public ChecksumBuilder getChecksumBuilder() {
       return ChecksumBuilder.newInstance().addChecksumEnabled(getValue())
           // It's actually pretty irritating that this works ---vvv
-          .addListChecksumEnabled((getChildren().stream().collect(toList())));
+          .addListChecksumEnabled((getChildren().stream().collect(Collectors.toList())));
     }
 
   }

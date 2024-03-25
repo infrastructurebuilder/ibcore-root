@@ -21,7 +21,6 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static org.infrastructurebuilder.util.core.IBUtils.stripTrailingSlash;
 
-import java.io.BufferedWriter;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
@@ -86,6 +85,11 @@ import org.slf4j.LoggerFactory;
 public interface RelativeRoot extends JSONAndChecksumEnabled {
   final static String RELATIVE_ROOT_URLLIKE = "URL";
   final static Logger log = LoggerFactory.getLogger(RelativeRoot.class);
+
+  @Override
+  default ChecksumBuilder getChecksumBuilder() {
+    return ChecksumBuilder.newAlternateInstanceWithRelativeRoot(Optional.of(this));
+  }
 
   default boolean isPath() {
     return getPath().isPresent();

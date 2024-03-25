@@ -26,7 +26,7 @@ import javax.inject.Named;
 
 import org.infrastructurebuilder.util.core.RelativeRootSupplier;
 import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
-import org.infrastructurebuilder.util.readdetect.IBResourceBuilderFactory;
+import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.vertx.base.impl.VertxIBResourceBuilderFactoryImpl;
 
 import io.vertx.core.Future;

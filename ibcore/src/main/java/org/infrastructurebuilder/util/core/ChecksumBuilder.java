@@ -31,12 +31,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.constants.IBConstants;
@@ -47,13 +45,7 @@ public final class ChecksumBuilder implements ChecksumEnabled {
 
   public static ChecksumBuilder newAlternateInstance(final String t) {
     return cet.returns(() -> {
-      return new ChecksumBuilder(t, MessageDigest.getInstance(requireNonNull(t)), empty());
-    });
-  }
-
-  public static ChecksumBuilder newAlternateInstance(final String t, final Optional<Path> relativeRoot) {
-    return cet.returns(() -> {
-      return new ChecksumBuilder(t, MessageDigest.getInstance(requireNonNull(t)), relativeRoot);
+      return new ChecksumBuilder(t,empty(), MessageDigest.getInstance(requireNonNull(t)));
     });
   }
 
@@ -77,8 +69,8 @@ public final class ChecksumBuilder implements ChecksumEnabled {
     return newAlternateInstance(IBConstants.DIGEST_TYPE);
   }
 
-  public static ChecksumBuilder newInstance(final Optional<Path> relativeRoot) {
-    return newAlternateInstance(IBConstants.DIGEST_TYPE, relativeRoot);
+  public static ChecksumBuilder newInstance(final Optional<RelativeRoot> relativeRoot) {
+    return newAlternateInstanceWithRelativeRoot(IBConstants.DIGEST_TYPE, relativeRoot);
   }
 
   public final static ChecksumBuilder flatInstance(Checksum csum) {
@@ -95,10 +87,6 @@ public final class ChecksumBuilder implements ChecksumEnabled {
     md = requireNonNull(digestType);
     this.relativeRoot = requireNonNull(rr);
 
-  }
-
-  private ChecksumBuilder(final String t, final MessageDigest digestType, final Optional<Path> relativeRoot) {
-    this(t, requireNonNull(relativeRoot).map(Path::toAbsolutePath).map(AbsolutePathRelativeRoot::new), digestType);
   }
 
   public ChecksumBuilder(Checksum csum) {
@@ -219,7 +207,7 @@ public final class ChecksumBuilder implements ChecksumEnabled {
 
     final ChecksumBuilder jBuilder = ChecksumBuilder.newAlternateInstanceWithRelativeRoot(type, relativeRoot);
     jBuilder.addString("{");
-    final List<String> keys = requireNonNull(j).keySet().stream().sorted().collect(Collectors.toList());
+    final List<String> keys = requireNonNull(j).keySet().stream().sorted().toList();
     for (final String key : keys) {
       final Object o = j.get(key);
       jBuilder.addString(key + "=");

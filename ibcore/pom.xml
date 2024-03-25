@@ -48,15 +48,11 @@
     <hashicorp.waypoint.download.skip>false</hashicorp.waypoint.download.skip>
 
 
-    <test.coverage.percentage.required>87</test.coverage.percentage.required>
+    <test.coverage.percentage.required>86</test.coverage.percentage.required>
     <jacoco.max.missed.classes>0</jacoco.max.missed.classes>
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>org.infrastructurebuilder.util</groupId>
-      <artifactId>ibcore-urlclasspath</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>

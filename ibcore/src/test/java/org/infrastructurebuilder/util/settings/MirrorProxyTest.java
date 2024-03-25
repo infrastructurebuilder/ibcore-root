@@ -17,6 +17,7 @@
  */
 package org.infrastructurebuilder.util.settings;
 
+import static java.util.stream.Collectors.toList;
 import static org.infrastructurebuilder.util.settings.Layout.DEFAULT;
 import static org.infrastructurebuilder.util.settings.Layout.LEGACY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,7 +26,6 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.exceptions.IBException;
 import org.junit.jupiter.api.Assertions;
@@ -55,8 +55,8 @@ public class MirrorProxyTest {
   public void test() {
     assertEquals(ID, m.getId());
     assertEquals(NAME, m.getName().get());
-    assertEquals(mirrorOf, m.getMirrorOf().stream().collect(Collectors.toList()));
-    assertEquals(mirrorOfLayouts, m.getMirrorOfLayouts().stream().collect(Collectors.toList()));
+    assertEquals(mirrorOf, m.getMirrorOf().stream().toList());
+    assertEquals(mirrorOfLayouts, m.getMirrorOfLayouts().stream().toList());
     assertEquals(url, m.getUrl().toExternalForm());
     assertEquals(DEFAULT, m.getLayout());
   }
