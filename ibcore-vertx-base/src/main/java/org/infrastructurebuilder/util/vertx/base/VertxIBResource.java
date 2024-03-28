@@ -26,12 +26,12 @@ import io.vertx.core.Vertx;
 import io.vertx.core.file.AsyncFile;
 import io.vertx.core.file.OpenOptions;
 
-public interface VertxIBResource extends IBResource<FutureStream> {
+public interface VertxIBResource extends IBResource {
   public static final OpenOptions OPTIONS = new OpenOptions().setRead(true);
 
   Vertx vertx();
 
-  default FutureStream get() {
+  default FutureStream getFutureStream() {
     return new FutureStream(getPath() // Optional?
         .map(Path::toAbsolutePath) // Maybe we do this?
         .map(Path::toString) // have to do this

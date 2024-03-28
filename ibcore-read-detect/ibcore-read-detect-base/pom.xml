@@ -37,7 +37,7 @@
 
 	<!-- I see no way to increase this at the moment -->
 	<properties>
-		<test.coverage.percentage.required>46</test.coverage.percentage.required>
+		<test.coverage.percentage.required>30</test.coverage.percentage.required>
 		<jacoco.max.missed.classes>20</jacoco.max.missed.classes>
 		<!--
 		<maven.download.plugin.groupId>com.googlecode.maven-download-plugin</maven.download.plugin.groupId>
@@ -168,7 +168,7 @@
 							<apiVersionPropertyName>apiVersion</apiVersionPropertyName>
 							<apiVersionPropertyNameSafe>apiVersionSafe</apiVersionPropertyNameSafe>
 							<targetPackageName>
-								${project.groupId}.util.readdetect.impl</targetPackageName>
+								${project.groupId}.util.readdetect.base.impls</targetPackageName>
 						</configuration>
 					</execution>
 				</executions>

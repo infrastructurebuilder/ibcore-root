@@ -51,8 +51,6 @@ import org.infrastructurebuilder.util.readdetect.base.IBResource;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceException;
-import org.infrastructurebuilder.util.readdetect.base.IBResourceIS;
-import org.infrastructurebuilder.util.readdetect.base.base.DefaultIBResourceISBuilderFactorySupplier;
 import org.infrastructurebuilder.util.vertx.base.VertxIBResource;
 import org.infrastructurebuilder.util.vertx.blobstore.Blobstore;
 import org.json.JSONObject;
@@ -78,12 +76,12 @@ public class FilesystemBlobstore implements Blobstore<VertxIBResource> {
   private final AtomicLong size = new AtomicLong(0);
   private final Set<String> blobs; // = new ConcurrentHashSet<>();
   private final long maxBytes;
-  private IBResourceBuilderFactory<Optional<IBResourceIS>> rcf;
+  private IBResourceBuilderFactory<Optional<IBResource>> rcf;
 
   public FilesystemBlobstore(RelativeRootSupplier rrs, Long size) {
-    this.root = requireNonNull(requireNonNull(rrs, "RelativeRootSupplier").get(), "RelativeRoot")
+    this.root = requireNonNull(requireNonNull(rrs, "RelativeRootSupplier").getRelativeRoot(), "RelativeRoot")
         .orElseThrow(() -> new IBException("No relative root"));
-    this.rcf = new DefaultIBResourceISBuilderFactorySupplier(new RelativeRootFactory(Set.of(rrs))).get(rrs.getName())
+    this.rcf = new DefaultIBResourceBuilderFactorySupplier(new RelativeRootFactory(Set.of(rrs))).get(rrs.getName())
         .getRelativeRoot();
     this.metadata = getRelativeRoot().resolvePath(METADATA_DIR_NAME).map(Path::toAbsolutePath)
         .orElseThrow(() -> new IBResourceException("No path"));
@@ -108,7 +106,7 @@ public class FilesystemBlobstore implements Blobstore<VertxIBResource> {
     cet.translate(() -> Files.newDirectoryStream(metadata).forEach(p -> {
       try {
         UUID u = UUID.fromString(p.getFileName().toString());
-        Optional<IBResourceIS> res = this.rcf.fromJSONString(new JsonObject(readString(p)).toString())
+        Optional<IBResource> res = this.rcf.fromJSONString(new JsonObject(readString(p)).toString())
             .flatMap(IBResourceBuilder::build);
         res.ifPresent(r -> {
           resources.add(u.toString());

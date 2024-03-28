@@ -28,9 +28,9 @@ import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceCacheModel
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IbcoreReadDetectModelVersioning;
 import org.json.JSONObject;
 
-abstract public class AbstractIBResourceCacheBuilder<B, T> implements IBResourceCacheBuilder<B, T> {
+abstract public class AbstractIBResourceCacheBuilder implements IBResourceCacheBuilder {
   protected final IBResourceCacheModel model;
-  protected final List<IBResource<T>> resources = new ArrayList<>();
+  protected final List<IBResource> resources = new ArrayList<>();
 
   public AbstractIBResourceCacheBuilder() {
     this.model = new IBResourceCacheModel();
@@ -38,31 +38,31 @@ abstract public class AbstractIBResourceCacheBuilder<B, T> implements IBResource
   }
 
   @Override
-  public IBResourceCacheBuilder<B, T> withModelVersion(String modelVersion) {
+  public IBResourceCacheBuilder withModelVersion(String modelVersion) {
     this.model.setModelVersion(modelVersion);
     return this;
   }
 
   @Override
-  public IBResourceCacheBuilder<B, T> withRoot(String root) {
+  public IBResourceCacheBuilder withRoot(String root) {
     this.model.setRoot(root);
     return this;
   }
 
   @Override
-  public IBResourceCacheBuilder<B, T> withName(String name) {
+  public IBResourceCacheBuilder withName(String name) {
     this.model.setName(name);
     return this;
   }
 
   @Override
-  public IBResourceCacheBuilder<B, T> withDescription(String desc) {
+  public IBResourceCacheBuilder withDescription(String desc) {
     this.model.setDescription(desc);
     return this;
   }
 
   @Override
-  public IBResourceCacheBuilder<B, T> withResources(List<IBResource<T>> l) {
+  public IBResourceCacheBuilder withResources(List<IBResource> l) {
     this.resources.clear();
     this.resources.addAll(l);
     this.model.setResources(l.stream().map(m -> m.copyModel()).toList());
@@ -70,7 +70,7 @@ abstract public class AbstractIBResourceCacheBuilder<B, T> implements IBResource
   }
 
   @Override
-  public IBResourceCacheBuilder<B, T> withMetadata(JSONObject j) {
+  public IBResourceCacheBuilder withMetadata(JSONObject j) {
     IBMetadataModelBuilderBase b = IBMetadataModel.builder();
     j.toMap().forEach((k, v) -> b.withAdditionalProperty(k, v));
     this.model.setMetadata(b.build());

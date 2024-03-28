@@ -34,8 +34,6 @@ import org.apache.tika.Tika;
 import org.apache.tika.metadata.TikaCoreProperties;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.constants.IBConstants;
-import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
-import org.infrastructurebuilder.util.core.PathAndChecksum;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
@@ -51,7 +49,7 @@ import org.slf4j.LoggerFactory;
  * A given IBResourceBuilderFactory may or may not have a {@link RelativeRoot}. If it does not, then all values are
  * considered to be purely reference values
  *
- * @param <B>
+ * @param
  */
 
 /*
@@ -59,7 +57,7 @@ import org.slf4j.LoggerFactory;
  * local copy. An IBResourceCache is expected to be inviolate from the time a cache is created until it is no longer
  * needed. A cache has a serialized representation of all the IBResource elements within it, and thus can be persisted.
  */
-public interface IBResourceBuilderFactory<B> {
+public interface IBResourceBuilderFactory<I> {
   final static Logger log = LoggerFactory.getLogger(IBResourceBuilderFactory.class.getName());
   final static Tika tika = new Tika();
 
@@ -109,16 +107,6 @@ public interface IBResourceBuilderFactory<B> {
     }
   };
 
-//  public final static Function<Path, Optional<BasicFileAttributes>> getAttributes = (i) -> {
-//    Optional<BasicFileAttributes> retVal = empty();
-//    try {
-//      retVal = of(readAttributes(requireNonNull(i), BasicFileAttributes.class));
-//    } catch (IOException e) {
-//      log.error("Error reading basic attributes " + i, e);
-//    }
-//    return retVal;
-//  };
-
   /**
    * The RelativeRoot is not optional
    *
@@ -127,25 +115,17 @@ public interface IBResourceBuilderFactory<B> {
 
   RelativeRoot getRelativeRoot();
 
-  Optional<IBResourceBuilder<B>> fromModel(IBResourceModel model);
+  Optional<IBResourceBuilder<I>> fromModel(IBResourceModel model);
 
-  Optional<IBResourceBuilder<B>> fromJSON(JSONObject json);
-
-  default Optional<IBResourceBuilder<B>> fromPath(Path p) {
-    return fromPathAndChecksum(new DefaultPathAndChecksum(p));
-  }
-
-  Optional<IBResourceBuilder<B>> fromPathAndChecksum(PathAndChecksum p);
-
-  Optional<IBResourceBuilder<B>> fromURL(String u);
+  Optional<IBResourceBuilder<I>> fromJSON(JSONObject json);
 
   /**
-   * Dont (at) me bro. The string needs to be a JSON string so that I can translate between types
+   * Don't (at) me bro. The string needs to be a JSON string so that I can translate between types
    *
    * @param json
    * @return
    */
-  default Optional<IBResourceBuilder<B>> fromJSONString(String json) {
+  default Optional<IBResourceBuilder<I>> fromJSONString(String json) {
     JSONObject j;
     try {
       j = new JSONObject(json);
@@ -157,7 +137,7 @@ public interface IBResourceBuilderFactory<B> {
 
   }
 
-  IBResourceBuilderFactory<B> withTypeMapper(TypeToExtensionMapper m);
+  IBResourceBuilderFactory<I> withTypeMapper(TypeToExtensionMapper m);
 
   Optional<TypeToExtensionMapper> getTypeMapper();
 }

@@ -18,13 +18,15 @@
     @formatter:on
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-	<groupId>org.infrastructurebuilder</groupId>
-	<artifactId>ibcore-read-detect</artifactId>
-	<version>0.22.0-SNAPSHOT</version>
+		<groupId>org.infrastructurebuilder</groupId>
+		<artifactId>ibcore-read-detect</artifactId>
+		<version>0.22.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>ibcore-read-detect-url</artifactId>
@@ -53,6 +55,11 @@
 			<groupId>org.infrastructurebuilder</groupId>
 			<artifactId>ibcore</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.infrastructurebuilder</groupId>
+			<artifactId>ibcore-read-detect-base</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.infrastructurebuilder</groupId>
 			<artifactId>ibcore-maven-support</artifactId>
@@ -125,7 +132,7 @@
 							<apiVersionPropertyName>apiVersion</apiVersionPropertyName>
 							<apiVersionPropertyNameSafe>apiVersionSafe</apiVersionPropertyNameSafe>
 							<targetPackageName>
-								${project.groupId}.util.readdetect.impl</targetPackageName>
+								${project.groupId}.util.readdetect.url.impls</targetPackageName>
 						</configuration>
 					</execution>
 				</executions>

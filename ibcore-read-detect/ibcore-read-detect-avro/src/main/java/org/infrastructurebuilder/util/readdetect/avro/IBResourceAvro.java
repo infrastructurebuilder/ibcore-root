@@ -32,11 +32,11 @@ import org.apache.avro.file.DataFileStream;
 import org.apache.avro.file.SeekableInput;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericRecord;
-import org.infrastructurebuilder.util.readdetect.base.IBResourceIS;
+import org.infrastructurebuilder.util.readdetect.base.IBResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public interface IBResourceAvro extends IBResourceIS {
+public interface IBResourceAvro extends IBResource {
   final static Logger log = LoggerFactory.getLogger(IBResourceAvro.class);
   public final static Function<InputStream, Optional<Stream<GenericRecord>>> genericStreamFromInputStream = (ins) -> {
     try (DataFileStream<GenericRecord> s = new DataFileStream<GenericRecord>(ins,

@@ -41,5 +41,4 @@
 			<artifactId>ibcore-relativeroot-base</artifactId>
 		</dependency>
 	</dependencies>
-
 </project>

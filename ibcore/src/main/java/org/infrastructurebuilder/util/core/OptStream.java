@@ -34,7 +34,7 @@ public class OptStream implements AutoCloseable {
   public OptStream() {
     this(null, null);
   }
-  
+
   public OptStream(@Nullable InputStream ins) {
     this(ins, null);
   }

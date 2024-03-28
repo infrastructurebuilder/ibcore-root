@@ -22,7 +22,7 @@ import java.util.Optional;
 
 import org.json.JSONObject;
 
-public interface IBResourceCache<T> {
+public interface IBResourceCache {
 
   /**
    * Declares to which version of descriptor this configuration conforms. This value is the API version (major.minor)
@@ -55,7 +55,7 @@ public interface IBResourceCache<T> {
    *
    * @return
    */
-  Optional<List<IBResource<T>>> getResources();
+  Optional<List<IBResource>> getResources();
 
   /**
    * Optional JSONObject that constitutes query-capable metadata for this cache

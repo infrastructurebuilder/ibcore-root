@@ -24,7 +24,9 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
@@ -49,9 +51,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
  *
  * References to 'origin stream' are referring to the underlying byte stream that the IBResource points to.
  *
- * @param <B>
+ * @param
  */
-public interface IBResourceBuilder<B> {
+public interface IBResourceBuilder<I> {
   static final Logger log = LoggerFactory.getLogger(IBResourceBuilder.class);
   final static AtomicReference<ObjectMapper> mapper = new AtomicReference<>();
 
@@ -100,33 +102,35 @@ public interface IBResourceBuilder<B> {
 //    return model;
   };
 
+  IBResourceBuilder<I> accept(Supplier<I> a);
+
   /**
    * Initialize a builder from a given JSONObject
    *
    * @param j
    * @return
    */
-  IBResourceBuilder<B> fromJSON(JSONObject j);
+  IBResourceBuilder<I> fromJSON(JSONObject j);
 
-  /**
-   * Set a path that this builder will reference.
-   *
-   * @param path
-   * @return
-   */
-  default IBResourceBuilder<B> fromPath(Path path) {
-    return fromPathAndChecksum(new DefaultPathAndChecksum(path));
-  }
-
-  IBResourceBuilder<B> fromPathAndChecksum(PathAndChecksum p);
-
-  /**
-   * Set a URL or URL-like that this builder will reference.
-   *
-   * @param url
-   * @return
-   */
-  IBResourceBuilder<B> fromURL(String url);
+//  /**
+//   * Set a path that this builder will reference.
+//   *
+//   * @param path
+//   * @return
+//   */
+//  default IBResourceBuilder<I> fromPath(Path path) {
+//    return fromPathAndChecksum(new DefaultPathAndChecksum(path));
+//  }
+//
+//  IBResourceBuilder<I> fromPathAndChecksum(PathAndChecksum p);
+//
+//  /**
+//   * Set a URL or URL-like that this builder will reference.
+//   *
+//   * @param url
+//   * @return
+//   */
+//  IBResourceBuilder<I> fromURL(String url);
 
   /**
    * Set the expected file checksum
@@ -134,7 +138,7 @@ public interface IBResourceBuilder<B> {
    * @param csum The expected checksum of the referenced stream
    * @return
    */
-  IBResourceBuilder<B> withChecksum(Checksum csum);
+  IBResourceBuilder<I> withChecksum(Checksum csum);
 
   /**
    * Sets some file path of the origin stream.
@@ -142,7 +146,7 @@ public interface IBResourceBuilder<B> {
    * @param path
    * @return
    */
-  IBResourceBuilder<B> withFilePath(String path);
+  IBResourceBuilder<I> withFilePath(String path);
 
   /**
    * Set the model to indicate that this is cached.
@@ -153,7 +157,7 @@ public interface IBResourceBuilder<B> {
    * @param cached
    * @return
    */
-  IBResourceBuilder<B> withAcquired(Instant acquired);
+  IBResourceBuilder<I> withAcquired(Instant acquired);
 
   /**
    * Sets the expected model name. This is, most often, the origin stream's filename
@@ -161,7 +165,7 @@ public interface IBResourceBuilder<B> {
    * @param name
    * @return
    */
-  IBResourceBuilder<B> withName(String name);
+  IBResourceBuilder<I> withName(String name);
 
   /**
    * Assigns a description to this resource
@@ -169,7 +173,7 @@ public interface IBResourceBuilder<B> {
    * @param desc
    * @return
    */
-  IBResourceBuilder<B> withDescription(String desc);
+  IBResourceBuilder<I> withDescription(String desc);
 
   /**
    * Assigns an expected type to this resource
@@ -177,14 +181,14 @@ public interface IBResourceBuilder<B> {
    * @param type
    * @return
    */
-  IBResourceBuilder<B> withType(String type);
+  IBResourceBuilder<I> withType(String type);
 
   /**
    * Detect the type using Tika.
    *
    * @return
    */
-  IBResourceBuilder<B> detectType();
+  IBResourceBuilder<I> detectType();
 
   /**
    * Sets an expected type, if present, otherwise deetect type
@@ -192,7 +196,7 @@ public interface IBResourceBuilder<B> {
    * @param type
    * @return
    */
-  default IBResourceBuilder<B> withType(Optional<String> type) {
+  default IBResourceBuilder<I> withType(Optional<String> type) {
     return requireNonNull(type) //
         .map(t -> withType(t)) //
         .orElseGet(() -> this.detectType());
@@ -206,7 +210,7 @@ public interface IBResourceBuilder<B> {
    * @param p
    * @return
    */
-  IBResourceBuilder<B> withMetadata(JSONObject p);
+  IBResourceBuilder<I> withMetadata(JSONObject p);
 
   /**
    * Sets the date that the source was last updated
@@ -214,7 +218,7 @@ public interface IBResourceBuilder<B> {
    * @param last
    * @return
    */
-  IBResourceBuilder<B> withLastUpdated(Instant last);
+  IBResourceBuilder<I> withLastUpdated(Instant last);
 
   /**
    * Sets the 'source' for this resource. This can be pretty much anything as long as there's an interpreter for what it
@@ -223,7 +227,7 @@ public interface IBResourceBuilder<B> {
    * @param source
    * @return
    */
-  IBResourceBuilder<B> withSource(String source);
+  IBResourceBuilder<I> withSource(String source);
 
   /**
    * Sets the model create date for the underlying resource
@@ -231,7 +235,7 @@ public interface IBResourceBuilder<B> {
    * @param create
    * @return
    */
-  IBResourceBuilder<B> withCreateDate(Instant create);
+  IBResourceBuilder<I> withCreateDate(Instant create);
 
   /**
    * Sets the model original size of the origin stream
@@ -239,7 +243,7 @@ public interface IBResourceBuilder<B> {
    * @param size
    * @return
    */
-  IBResourceBuilder<B> withSize(long size);
+  IBResourceBuilder<I> withSize(long size);
 
   /**
    * Sets the model most-recent value. At the builder's discretion, this can also be used to denote when the actual
@@ -248,9 +252,9 @@ public interface IBResourceBuilder<B> {
    * @param access
    * @return
    */
-  IBResourceBuilder<B> withMostRecentAccess(Instant access);
+  IBResourceBuilder<I> withMostRecentAccess(Instant access);
 
-  IBResourceBuilder<B> withBasicFileAttributes(BasicFileAttributes a);
+  IBResourceBuilder<I> withBasicFileAttributes(BasicFileAttributes a);
 
   /**
    * validate checks the values provided so far and throws IBResourceException if anything is off.
@@ -262,7 +266,7 @@ public interface IBResourceBuilder<B> {
    * @throws IBResourceException if validation fails
    * @return this builder
    */
-  Optional<IBResourceBuilder<B>> validate(boolean hard);
+  Optional<? extends IBResourceBuilder<I>> validate(boolean hard);
 
   /**
    * Performs a <code>validate(hard)</code> and then performs the build
@@ -270,9 +274,9 @@ public interface IBResourceBuilder<B> {
    * @param hard
    * @return
    */
-  B build(boolean hard);
+  Optional<IBResource> build(boolean hard);
 
-  default B build() {
+  default Optional<IBResource> build() {
     return build(false); // FixMe? Maybe there's no default?
   }
 

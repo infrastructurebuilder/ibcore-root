@@ -77,7 +77,7 @@ class RelativeRootTest {
     s2 = s2.withPath(p2);
     assertNotEquals(p2, s2.getRelativeRoot().get().getPath().get());
   }
-  
+
   @Test
   void testWithPath() {
     var v = new RelativeRootSetPathSupplier(tp);

@@ -25,7 +25,7 @@ import java.util.Set;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.core.RelativeRootFactory;
 
-abstract public class AbstractIBResourceBuilderFactorySupplier<T> implements IBResourceBuilderFactorySupplier<T> {
+abstract public class AbstractIBResourceBuilderFactorySupplier implements IBResourceBuilderFactorySupplier {
   private final RelativeRootFactory root;
 
   public AbstractIBResourceBuilderFactorySupplier(RelativeRootFactory rrf) {
@@ -42,8 +42,5 @@ abstract public class AbstractIBResourceBuilderFactorySupplier<T> implements IBR
   public Optional<RelativeRoot> getRoot(String name) {
     return root.get(name);
   }
-
-  @Override
-  abstract public Optional<IBResourceBuilderFactory<T>> get(String name);
 
 }

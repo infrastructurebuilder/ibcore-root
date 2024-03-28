@@ -57,7 +57,7 @@ abstract public class AbstractRelativeRootBasicPathPropertiesSupplier implements
   public Optional<String> getProperty() {
     return ofNullable(getProperties().getProperty(getPropertyName()));
   }
-  
+
   protected Properties getProperties() {
     return System.getProperties();
   }

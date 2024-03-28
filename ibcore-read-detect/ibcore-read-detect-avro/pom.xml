@@ -19,42 +19,79 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>org.infrastructurebuilder</groupId>
-    <artifactId>ibcore-read-detect</artifactId>
-    <version>0.22.0-SNAPSHOT</version>
-  </parent>
+	<parent>
+		<groupId>org.infrastructurebuilder</groupId>
+		<artifactId>ibcore-read-detect</artifactId>
+		<version>0.22.0-SNAPSHOT</version>
+	</parent>
 
-  <artifactId>ibcore-read-detect-avro</artifactId>
-  <packaging>jar</packaging>
+	<artifactId>ibcore-read-detect-avro</artifactId>
+	<packaging>jar</packaging>
 
-  <name>${project.artifactId}</name>
-  <description>ibcore-read-detect components for avro</description>
-  <!-- URL for site gen -->
-  <url>${github.url.base}/${project.artifactId}</url>
+	<name>${project.artifactId}</name>
+	<description>ibcore-read-detect components for avro</description>
+	<!-- URL for site gen -->
+	<url>${github.url.base}/${project.artifactId}</url>
 
-  <!-- I see no way to increase this at the moment -->
-  <properties>
-    <test.coverage.percentage.required>00</test.coverage.percentage.required>
-    <jacoco.max.missed.classes>9</jacoco.max.missed.classes>
-  </properties>
+	<!-- I see no way to increase this at the moment -->
+	<properties>
+		<test.coverage.percentage.required>00</test.coverage.percentage.required>
+		<jacoco.max.missed.classes>9</jacoco.max.missed.classes>
+	</properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.infrastructurebuilder</groupId>
-      <artifactId>ibcore-read-detect-path</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.avro</groupId>
-      <artifactId>avro</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
+	<dependencies>
+		<dependency>
+			<groupId>org.infrastructurebuilder</groupId>
+			<artifactId>ibcore-read-detect-base</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.avro</groupId>
+			<artifactId>avro</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
-  </dependencies>
+	<build>
+		<testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>true</filtering>
+        <excludes>
+          <exclude>**/*.avro</exclude>
+        </excludes>
+      </testResource>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>false</filtering>
+        <includes>
+          <include>**/*.avro</include>
+        </includes>
+      </testResource>
+    </testResources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.avro</groupId>
+				<artifactId>avro-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>first</id>
+						<goals>
+							<goal>idl-protocol</goal>
+							<goal>schema</goal>
+						</goals>
+						<phase>process-test-resources</phase>
+						<configuration>
+							<testSourceDirectory>${basedir}/src/test/resources</testSourceDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

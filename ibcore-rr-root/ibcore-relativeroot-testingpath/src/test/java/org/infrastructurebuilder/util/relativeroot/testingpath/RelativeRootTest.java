@@ -59,13 +59,12 @@ class RelativeRootTest {
     h.finalize();
   }
 
-
   @Test
   void testTPS() {
     Path root = h.getTps().getRoot();
     RelativeRoot t = rrp.get(h.getName()).get();
     assertEquals(root, t.getPath().get().getParent());
-    
+
   }
 
 }

@@ -55,7 +55,7 @@ class RelativeRootTest {
     tps = new TestingPathSupplier();
     p = tps.get();
     h = new RelativeRootBasicPathPropertiesSupplier();
-    System.setProperty(h.getPropertyName(),p.toString());
+    System.setProperty(h.getPropertyName(), p.toString());
     rrp = new RelativeRootFactory(Set.of(this.h));
   }
 
@@ -63,7 +63,6 @@ class RelativeRootTest {
   void tearDown() throws Exception {
     tps.finalize();
   }
-
 
   @Test
   void testUserHome() {

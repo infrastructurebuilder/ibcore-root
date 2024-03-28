@@ -94,7 +94,7 @@ class RelativeRootTest {
       public Optional<RelativeRoot> getRelativeRoot() {
         return Optional.of(prr);
       }
-      
+
     }));
   }
 
@@ -148,7 +148,6 @@ class RelativeRootTest {
     assertEquals(j.toString(), j2.toString());
 
   }
-
 
   @Test
   void testAbsoluteURLRR() {

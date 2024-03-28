@@ -40,6 +40,7 @@ import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.ChecksumBuilder;
 import org.infrastructurebuilder.util.core.IBUtils;
+import org.infrastructurebuilder.util.core.OptStream;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.base.IBResource;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilder;
@@ -239,8 +240,8 @@ public class VertxDefaultIBResource implements VertxIBResource {
   }
 
   @Override
-  public long size() {
-    return this.m.getStreamSize();
+  public Optional<Long> size() {
+    return Optional.of( this.m.getStreamSize());
   }
 
   @Override
@@ -283,5 +284,11 @@ public class VertxDefaultIBResource implements VertxIBResource {
   public ChecksumBuilder getChecksumBuilder() {
     return ChecksumBuilder.newAlternateInstanceWithRelativeRoot(this.getRelativeRoot())
         .addChecksum(new Checksum(m.getStreamChecksum()));
+  }
+  
+  @Override
+  public OptStream get() {
+    // TODO Auto-generated method stub
+    return new OptStream(); // FIXME
   }
 }

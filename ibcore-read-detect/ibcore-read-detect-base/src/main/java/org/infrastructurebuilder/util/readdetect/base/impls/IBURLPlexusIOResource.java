@@ -25,13 +25,13 @@ import java.time.Instant;
 import java.util.NoSuchElementException;
 
 import org.codehaus.plexus.components.io.resources.AbstractPlexusIoResource;
-import org.infrastructurebuilder.util.readdetect.base.IBResourceIS;
+import org.infrastructurebuilder.util.readdetect.base.IBResource;
 
 public class IBURLPlexusIOResource extends AbstractPlexusIoResource {
 
-  private final IBResourceIS r;
+  private final IBResource r;
 
-  public IBURLPlexusIOResource(IBResourceIS r) {
+  public IBURLPlexusIOResource(IBResource r) {
     super(r.getName(), // Name
         r.getLastUpdateDate().map(Instant::toEpochMilli)
             .orElseThrow(() -> new IllegalArgumentException("No last update")),

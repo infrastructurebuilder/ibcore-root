@@ -18,9 +18,7 @@
     @formatter:on
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -38,9 +36,20 @@
 	<!-- URL for site gen -->
 	<url>${github.url.base}/${project.artifactId}</url>
 
+	<modules>
+		<module>ibcore-relativeroot-base</module>
+		<module>ibcore-relativeroot-user-home</module>
+		<module>ibcore-relativeroot-classpath</module>
+		<module>ibcore-relativeroot-basicpathenv</module>
+		<module>ibcore-relativeroot-testingpath</module>
+		<module>ibcore-relativeroot-setpath</module>
+		<module>ibcore-relativeroot-basicpathproperties</module>
+	</modules>
+
 	<properties>
 		<test.coverage.percentage.required>100</test.coverage.percentage.required>
 	</properties>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -63,14 +72,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-	<modules>
-		<module>ibcore-relativeroot-base</module>
-		<module>ibcore-relativeroot-user-home</module>
-		<module>ibcore-relativeroot-classpath</module>
-		<module>ibcore-relativeroot-basicpathenv</module>
-		<module>ibcore-relativeroot-testingpath</module>
-		<module>ibcore-relativeroot-setpath</module>
-		<module>ibcore-relativeroot-basicpathproperties</module>
-	</modules>
 </project>

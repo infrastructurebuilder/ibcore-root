@@ -214,7 +214,6 @@ public class VertxIBResourceBuilderFactoryImpl extends AbstractIBResourceBuilder
     return Optional.of(m);
   }
 
-  @Override
   public Optional<IBResourceBuilder<Future<VertxIBResource>>> fromURL(String u) {
     // TODO Auto-generated method stub
     return Optional.empty();

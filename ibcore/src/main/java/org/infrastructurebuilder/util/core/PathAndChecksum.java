@@ -27,4 +27,10 @@ public interface PathAndChecksum extends Supplier<Path>, ChecksumEnabled {
   default Optional<BasicFileAttributes> getAttributes() {
     return IBUtils.getAttributes.apply(get());
   }
+
+  Optional<Long> size();
+
+  OptStream asOptStream();
+
+  Optional<RelativeRoot> getRoot();
 }

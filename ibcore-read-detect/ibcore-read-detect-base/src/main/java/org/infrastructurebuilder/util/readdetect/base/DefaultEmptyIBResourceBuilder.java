@@ -18,30 +18,25 @@
 package org.infrastructurebuilder.util.readdetect.base;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.infrastructurebuilder.util.core.PathAndChecksum;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 
-public class DefaultEmptyIBResourceBuilder<T> extends AbstractIBResourceBuilder<Optional<T>> {
+public class DefaultEmptyIBResourceBuilder extends AbstractIBResourceBuilder<Void> {
 
   public DefaultEmptyIBResourceBuilder(RelativeRoot root) {
     super(null);
   }
 
   @Override
-  public IBResourceBuilder<Optional<T>> fromPathAndChecksum(PathAndChecksum path) {
-    return this;
-  }
-
-  @Override
-  public IBResourceBuilder<Optional<T>> fromURL(String url) {
-    // TODO Auto-generated method stub
-    return this;
-  }
-
-  @Override
-  public Optional<T> build(boolean hard) {
+  public Optional<IBResource> build(boolean hard) {
     return Optional.empty();
+  }
+
+  @Override
+  public IBResourceBuilder<Void> accept(Supplier<Void> a) {
+    return this;
   }
 
 }

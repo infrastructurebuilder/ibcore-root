@@ -29,6 +29,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
@@ -43,9 +44,9 @@ import org.slf4j.LoggerFactory;
 /**
  * builder base NOT THREADSAFE
  *
- * @param <B>
+ * @param
  */
-abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<B> {
+abstract public class AbstractIBResourceBuilder<I> implements IBResourceBuilder<I> {
 
   private final static Logger log = LoggerFactory.getLogger(AbstractIBResourceBuilder.class);
   protected IBResourceModel model = new IBResourceModel();
@@ -60,7 +61,7 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
   }
 
   @Override
-  public IBResourceBuilder<B> fromJSON(JSONObject j) {
+  public IBResourceBuilder<I> fromJSON(JSONObject j) {
     model = IBResourceBuilder.modelFromJSON.apply(j)
         .orElseThrow(() -> new IBException("Unable to acquire model from json"));
     String fp = model.getPath().orElseThrow(() -> new IBResourceException(NO_PATH_SUPPLIED));
@@ -70,21 +71,32 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
     return this;
   }
 
+  /**
+   * For IBResourceInMemoryDelegated. Do not use for general construction of a resource.
+   *
+   * @param m model to replace existing model with
+   * @return this builder.
+   */
+  public IBResourceBuilder<I> fromModel(IBResourceModel m) {
+    this.model = m;
+    return this;
+  }
+
   @Override
-  public IBResourceBuilder<B> withChecksum(Checksum csum) {
+  public IBResourceBuilder<I> withChecksum(Checksum csum) {
     this.targetChecksum = requireNonNull(csum);
     this.model.setStreamChecksum(csum.toString());
     return this;
   }
 
   @Override
-  public IBResourceBuilder<B> withFilePath(String path) {
+  public IBResourceBuilder<I> withFilePath(String path) {
     this.model.setPath(path);
     return this;
   }
 
   @Override
-  public IBResourceBuilder<B> withBasicFileAttributes(BasicFileAttributes a) {
+  public IBResourceBuilder<I> withBasicFileAttributes(BasicFileAttributes a) {
     return (a == null) ? this
         : this.withCreateDate(a.creationTime().toInstant())
 
@@ -96,33 +108,33 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
   }
 
   @Override
-  public IBResourceBuilder<B> withAcquired(Instant acquired) {
+  public IBResourceBuilder<I> withAcquired(Instant acquired) {
     this.model.setAcquired(acquired);
     return this;
   }
 
   @Override
-  public IBResourceBuilder<B> withName(String name) {
+  public IBResourceBuilder<I> withName(String name) {
     this.model.setStreamName(requireNonNull(name));
     return this;
   }
 
   @Override
-  public IBResourceBuilder<B> withDescription(String desc) {
+  public IBResourceBuilder<I> withDescription(String desc) {
     this.model.setDescription(requireNonNull(desc));
     return this;
   }
 
   @Override
-  public IBResourceBuilder<B> withType(String type) {
+  public IBResourceBuilder<I> withType(String type) {
     this.model.setStreamType(requireNonNull(type));
     this.typeSet = true;
     return this;
   }
 
   @Override
-  public IBResourceBuilder<B> withMetadata(JSONObject p) {
-    IBMetadataModelBuilderBase b = IBMetadataModel.builder();
+  public IBResourceBuilder<I> withMetadata(JSONObject p) {
+    IBMetadataModelBuilderBase<?> b = IBMetadataModel.builder();
     if (p != null)
       p.toMap().forEach((k, v) -> b.withAdditionalProperty(k, v));
     this.model.setMetadata(b.build());
@@ -131,37 +143,37 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
   }
 
   @Override
-  public IBResourceBuilder<B> withLastUpdated(Instant last) {
+  public IBResourceBuilder<I> withLastUpdated(Instant last) {
     this.model.setLastUpdate(requireNonNull(last));
     return this;
   }
 
   @Override
-  public IBResourceBuilder<B> withSource(String source) {
+  public IBResourceBuilder<I> withSource(String source) {
     this.model.setStreamSource(requireNonNull(source));
     return this;
   }
 
   @Override
-  public IBResourceBuilder<B> withCreateDate(Instant create) {
+  public IBResourceBuilder<I> withCreateDate(Instant create) {
     this.model.setCreated(requireNonNull(create));
     return this;
   }
 
   @Override
-  public IBResourceBuilder<B> withSize(long size) {
+  public IBResourceBuilder<I> withSize(long size) {
     this.model.setStreamSize(size);
     return this;
   }
 
   @Override
-  public IBResourceBuilder<B> withMostRecentAccess(Instant access) {
+  public IBResourceBuilder<I> withMostRecentAccess(Instant access) {
     this.model.setMostRecentReadTime(requireNonNull(access));
     return this;
   }
 
   @Override
-  public IBResourceBuilder<B> detectType() {
+  public IBResourceBuilder<I> detectType() {
     if (this.typeSet) {
       // We've already set the type
       log.warn("Call to detectType() but type already set to {}", this.model.getStreamType());
@@ -188,7 +200,7 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
    * @return this builder
    */
   @Override
-  public Optional<IBResourceBuilder<B>> validate(boolean hard) {
+  public Optional<? extends IBResourceBuilder<I>> validate(boolean hard) {
     log.info("{} Validating {}", hard ? "Hard" : "Soft", this.sourcePath);
     if (this.sourcePath != null) {
       Optional<Path> fullPath = getActualFullPathToResource();
@@ -207,9 +219,14 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
         detectType();
       if (hard) {
         var aType = toType.apply(this.sourcePath);
-        if (!this.model.getStreamType().equals(aType)) {
-          log.error("Expected type {} does not equal actual type {}", this.model.getStreamType(), aType);
-          return empty();
+        if (this.typeSet) {
+          if (!this.model.getStreamType().equals(aType)) {
+            log.error("Expected type {} does not equal actual type {}", this.model.getStreamType(), aType);
+            return empty();
+          }
+        } else {
+          this.model.setStreamType(aType);
+          this.typeSet = true;
         }
       }
       if (!Objects.equals(this.targetChecksum.toString(), this.model.getStreamChecksum())) {
@@ -230,21 +247,10 @@ abstract public class AbstractIBResourceBuilder<B> implements IBResourceBuilder<
     return Optional.of(this);
   }
 
-  abstract public B build(boolean hard);
-
-  /**
-   * For IBResourceInMemoryDelegated. Do not use for general construction of a resource.
-   *
-   * @param m model to replace existing model with
-   * @return this builder.
-   */
-  public IBResourceBuilder<B> fromModel(IBResourceModel m) {
-    this.model = m;
-    return this;
-  }
+  abstract public Optional<IBResource> build(boolean hard);
 
 //  @Override
-  private IBResourceBuilder<B> movedTo(Path path) {
+  private IBResourceBuilder<I> movedTo(Path path) {
     this.finalRestingPath = path;
     return this;
   }

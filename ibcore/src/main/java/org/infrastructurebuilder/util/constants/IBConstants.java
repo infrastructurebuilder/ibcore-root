@@ -217,4 +217,8 @@ public interface IBConstants {
   String FILEMAPPERS = "file.mappers";
   String UNIMPLEMENTED = "UNIMPLEMENTED";
 
+  String TIMESTAMP_FORMATTER = "timestamp.formatter";
+  String TIME_FORMATTER = "time.formatter";
+  String DATE_FORMATTER = "date.formatter";
+
 }

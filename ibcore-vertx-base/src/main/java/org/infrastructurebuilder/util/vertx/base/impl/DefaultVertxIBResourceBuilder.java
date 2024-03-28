@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
@@ -235,8 +236,7 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
 //    return this;
 //  }
 
-  @Override
-  public Future<VertxIBResource> build(boolean hard) {
+  public Future<VertxIBResource> buildFuture(boolean hard) {
     try {
       validate(hard);
       return Future.succeededFuture(new VertxDefaultIBResource(this.vertx, getRoot(), this.model, this.sourcePath));
@@ -267,7 +267,6 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
     return Optional.of(root);
   }
 
-  @Override
   public IBResourceBuilder<Future<VertxIBResource>> fromURL(String url) {
     // TODO Auto-generated method stub
     throw new IBException("unimplemented"); // return this;
@@ -283,6 +282,12 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
   public IBResourceBuilder<Future<VertxIBResource>> withBasicFileAttributes(BasicFileAttributes a) {
     // TODO Auto-generated method stub
     return this;
+  }
+
+  @Override
+  public IBResourceBuilder<Future<VertxIBResource>> accept(Supplier<Future<VertxIBResource>> a) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

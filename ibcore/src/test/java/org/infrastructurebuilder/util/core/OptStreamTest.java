@@ -71,7 +71,7 @@ class OptStreamTest {
       Optional<InputStream> kv = rick2.getStream();
       assertTrue(kv.isPresent());
       Checksum c = rick2.getChecksum().get();
-      assertEquals(this.csum,c);
+      assertEquals(this.csum, c);
     }
   }
 

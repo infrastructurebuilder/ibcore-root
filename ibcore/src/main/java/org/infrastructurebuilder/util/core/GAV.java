@@ -77,7 +77,7 @@ public interface GAV extends GAVBasic, JSONAndChecksumEnabled {
   default GAV withFile(Path file) {
     return this;
   }
-  
+
   default GAV withRelativeRoot(RelativeRoot r) {
     return this;
   }

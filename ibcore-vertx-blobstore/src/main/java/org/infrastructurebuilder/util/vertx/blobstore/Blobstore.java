@@ -46,7 +46,7 @@ public interface Blobstore<T> extends LoggerEnabled {
     return putBlob(blobname, description, p, Optional.empty());
   }
 
-  Future<IBResource<T>> getMetadata(String id);
+  Future<IBResource> getMetadata(String id);
 
   default Future<Instant> getCreateDate(String id) {
     return getMetadata(id)

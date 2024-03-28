@@ -66,7 +66,7 @@ class RelativeRootTest {
   void tearDown() throws Exception {
     tps.finalize();
   }
-  
+
   @Test
   void testBasicConstruct() {
     assertNotNull(new RelativeRootBasicPathEnvSupplier());

@@ -34,11 +34,11 @@
 	<description>RelativeRoot from an absolute java.nio.file.Path of user's \${HOME}</description>
 	<!-- URL for site gen -->
 	<url>${github.url.base}/${project.artifactId}</url>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.infrastructurebuilder.relativeroot</groupId>
 			<artifactId>ibcore-relativeroot-base</artifactId>
 		</dependency>
 	</dependencies>
-
 </project>

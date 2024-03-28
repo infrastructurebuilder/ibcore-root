@@ -41,5 +41,4 @@
 			<artifactId>ibcore</artifactId>
 		</dependency>
 	</dependencies>
-
 </project>

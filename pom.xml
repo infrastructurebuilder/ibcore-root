@@ -43,14 +43,16 @@
 		<module>ibcore-maven-support</module>
 		<module>ibcore-rr-root</module>
 		<module>ibcore-read-detect</module>
-		<module>ibcore-vertx-base</module>
-		<module>ibcore-vertx-blobstore</module>
-		<module>ibcore-vertx-dataobjects</module>
 		<module>ibcore-config</module>
 		<module>ibcore-artifacts</module>
 		<module>ibcore-dag</module>
 		<module>ibcore-executor</module>
 		<module>ibcore-maven-download-plugin-component</module>
+		<!--
+		<module>ibcore-vertx-base</module>
+		<module>ibcore-vertx-blobstore</module>
+		<module>ibcore-vertx-dataobjects</module>
+		-->
 	</modules>
 
 	<scm>
@@ -137,22 +139,22 @@
 			</dependency>
 			<dependency>
 				<groupId>org.infrastructurebuilder</groupId>
-				<artifactId>ibcore-read-detect-path</artifactId>
+				<artifactId>ibcore-read-detect-base</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.infrastructurebuilder</groupId>
-				<artifactId>ibcore-read-detect-path-url</artifactId>
+				<artifactId>ibcore-read-detect-base-url</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.infrastructurebuilder</groupId>
-				<artifactId>ibcore-read-detect-path-urllike</artifactId>
+				<artifactId>ibcore-read-detect-base-urllike</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.infrastructurebuilder</groupId>
-				<artifactId>ibcore-read-detect-path-s3</artifactId>
+				<artifactId>ibcore-read-detect-base-s3</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 

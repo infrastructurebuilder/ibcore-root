@@ -26,7 +26,7 @@ import org.json.JSONObject;
 
 public interface IBResourceCollector {
 
-  Optional<List<IBResourceIS>> collectCachedIBResources( //
+  Optional<List<IBResource>> collectCachedIBResources( //
       boolean deleteExistingCacheIfPresent //
       , Optional<BasicCredentials> creds //
       , String sourceString //

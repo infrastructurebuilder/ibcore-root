@@ -35,7 +35,7 @@ import org.infrastructurebuilder.util.core.RelativeRootFactory;
  *
  * @param <T> The type of {@link IBResourceBuilderFactory} being supplied
  */
-public interface IBResourceBuilderFactorySupplier<T> extends NameDescribed {
+public interface IBResourceBuilderFactorySupplier extends NameDescribed {
 
   Set<String> getAvailableNames();
 
@@ -47,6 +47,6 @@ public interface IBResourceBuilderFactorySupplier<T> extends NameDescribed {
    * @param id
    * @return
    */
-  Optional<IBResourceBuilderFactory<T>> get(String relativeRootName);
+  Optional<IBResourceBuilderFactory<?>> get(String relativeRootName);
 
 }

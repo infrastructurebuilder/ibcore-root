@@ -83,10 +83,10 @@ class RelativeRootTest {
     String q = cprr.getUrl().get().toExternalForm();
     assertEquals(q, RelativeRootClasspathSupplier.NAME);
     assertEquals(MYFILE_XML, k);
-    
-    Optional<InputStream> q1 = cprr.getInputStreamFromExtendedPath("/"+MYFILE_XML);
+
+    Optional<InputStream> q1 = cprr.getInputStreamFromExtendedPath("/" + MYFILE_XML);
     assertTrue(q1.isPresent());
-    assertFalse(cprr.getInputStreamFromExtendedPath("/"+"doesnotexist.txt").isPresent());
+    assertFalse(cprr.getInputStreamFromExtendedPath("/" + "doesnotexist.txt").isPresent());
   }
 
 }

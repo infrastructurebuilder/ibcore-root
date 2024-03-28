@@ -41,6 +41,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
 
+import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.ChecksumBuilder;
@@ -50,7 +51,9 @@ import org.infrastructurebuilder.util.core.JSONBuilder;
 import org.infrastructurebuilder.util.core.JSONOutputEnabled;
 import org.infrastructurebuilder.util.core.Modeled;
 import org.infrastructurebuilder.util.core.NameDescribed;
+import org.infrastructurebuilder.util.core.OptStream;
 import org.infrastructurebuilder.util.core.RelativeRoot;
+import org.infrastructurebuilder.util.readdetect.base.impls.IBURLPlexusIOResource;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
 
@@ -124,7 +127,7 @@ import org.json.JSONObject;
  *
  */
 
-public interface IBResource<T> extends JSONOutputEnabled, ChecksumEnabled, NameDescribed, Modeled {
+public interface IBResource extends JSONOutputEnabled, ChecksumEnabled, NameDescribed, Modeled {
   public final static OpenOption[] ZIP_OPTIONS = {
       READ
   };
@@ -138,11 +141,11 @@ public interface IBResource<T> extends JSONOutputEnabled, ChecksumEnabled, NameD
     return p;
   }
 
-  public static int defaultHashCode(IBResource<?> t) {
+  public static int defaultHashCode(IBResource t) {
     return hash(t.getChecksum(), t.getPath(), t.getSourceName(), t.getSourceURL(), t.getType());
   }
 
-  public static String defaultToString(IBResource<?> t) {
+  public static String defaultToString(IBResource t) {
     StringJoiner sj = new StringJoiner("|") //
         .add(t.getTChecksum().asUUID().get().toString()) // Checksum
         .add(t.getType()) // type
@@ -152,7 +155,7 @@ public interface IBResource<T> extends JSONOutputEnabled, ChecksumEnabled, NameD
     return sj.toString();
   }
 
-  public static boolean defaultEquals(IBResource<?> t, Object obj) {
+  public static boolean defaultEquals(IBResource t, Object obj) {
     if (t == obj) {
       return true;
     }
@@ -160,7 +163,7 @@ public interface IBResource<T> extends JSONOutputEnabled, ChecksumEnabled, NameD
       return false;
     }
     if ((obj instanceof IBResource)) {
-      IBResource<?> other = (IBResource<?>) obj;
+      IBResource other = (IBResource) obj;
       return Objects.equals(t.getChecksum(), other.getChecksum()) // checksum
           && Objects.equals(t.getPath(), other.getPath()) // path TODO Maybe not?
           && Objects.equals(t.getSourceName(), other.getSourceName()) // source
@@ -176,7 +179,7 @@ public interface IBResource<T> extends JSONOutputEnabled, ChecksumEnabled, NameD
     return p;
   }
 
-  T get();
+  OptStream get();
 
   /**
    * @return Non-null Optional Path to this result. If <code>empty()</code>, this is considered a reference resource.
@@ -242,10 +245,10 @@ public interface IBResource<T> extends JSONOutputEnabled, ChecksumEnabled, NameD
 
   JSONObject getMetadata();
 
-  long size();
+  Optional<Long> size();
 
   default JSONObject asJSON() {
-    return new JSONBuilder(empty())
+    return new JSONBuilder(getRelativeRoot().flatMap(RelativeRoot::getPath))
 
         .addChecksum(PATH_CHECKSUM, getTChecksum())
 
@@ -267,7 +270,7 @@ public interface IBResource<T> extends JSONOutputEnabled, ChecksumEnabled, NameD
 
 //        .addString(ORIGINAL_PATH, getOriginalPath().toString())
 
-        .addLong(SIZE, size())
+        .addLong(SIZE, size()) // -1L means unknowable and missing means unknown
 
         .addString(DESCRIPTION, getDescription())
 
@@ -317,4 +320,9 @@ public interface IBResource<T> extends JSONOutputEnabled, ChecksumEnabled, NameD
     return ChecksumBuilder.newInstance(this.getRelativeRoot())
         .addChecksum(new Checksum(copyModel().getStreamChecksum()));
   }
+
+  default PlexusIoResource asPlexusIOResource() {
+    return new IBURLPlexusIOResource(this);
+  }
+
 }

@@ -18,7 +18,9 @@
 package org.infrastructurebuilder.util.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.io.IOException;
 import java.nio.file.Path;
 
 import org.junit.jupiter.api.AfterAll;
@@ -62,6 +64,13 @@ class PathAndChecksumTest {
     assertEquals(CSUM, checksum.toString());
     var a = pandc.getAttributes().get();
     assertEquals(204L, a.size());
+    assertEquals(204L, pandc.size().get());
+  }
+
+  @Test
+  void testAsOptStream() throws IOException {
+    PathAndChecksum pandc = new DefaultPathAndChecksum(target);
+    assertNotNull(pandc.asOptStream());
   }
 
 }

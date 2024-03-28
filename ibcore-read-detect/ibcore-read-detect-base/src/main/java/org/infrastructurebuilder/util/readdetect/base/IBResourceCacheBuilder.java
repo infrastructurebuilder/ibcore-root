@@ -18,23 +18,24 @@
 package org.infrastructurebuilder.util.readdetect.base;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.json.JSONObject;
 
-public interface IBResourceCacheBuilder<B, T> {
+public interface IBResourceCacheBuilder {
   // TODO this might need to be set automatically
-  IBResourceCacheBuilder<B, T> withModelVersion(String modelVersion);
+  IBResourceCacheBuilder withModelVersion(String modelVersion);
 
-  IBResourceCacheBuilder<B, T> withRoot(String root);
+  IBResourceCacheBuilder withRoot(String root);
 
-  IBResourceCacheBuilder<B, T> withName(String name);
+  IBResourceCacheBuilder withName(String name);
 
-  IBResourceCacheBuilder<B, T> withDescription(String desc);
+  IBResourceCacheBuilder withDescription(String desc);
 
-  IBResourceCacheBuilder<B, T> withResources(List<IBResource<T>> l);
+  IBResourceCacheBuilder withResources(List<IBResource> l);
 
-  IBResourceCacheBuilder<B, T> withMetadata(JSONObject j);
+  IBResourceCacheBuilder withMetadata(JSONObject j);
 
-  B build(boolean hard);
+  Optional<IBResourceCache> build(boolean hard);
 
 }

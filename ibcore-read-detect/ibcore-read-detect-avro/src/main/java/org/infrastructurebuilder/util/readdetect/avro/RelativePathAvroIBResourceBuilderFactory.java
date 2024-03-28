@@ -17,15 +17,26 @@
  */
 package org.infrastructurebuilder.util.readdetect.avro;
 
+import static java.util.Objects.requireNonNull;
+
+import java.nio.file.Path;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.function.Supplier;
 
+import org.apache.avro.file.SeekableFileInput;
+import org.apache.avro.file.SeekableInput;
+import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.util.core.PathAndChecksum;
 import org.infrastructurebuilder.util.core.RelativeRoot;
-import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilder;
-import org.infrastructurebuilder.util.readdetect.base.IBResourceIS;
-import org.infrastructurebuilder.util.readdetect.path.impls.relative.RelativePathIBResourceISBuilderFactory;
+import org.infrastructurebuilder.util.readdetect.base.IBResource;
+import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
+import org.infrastructurebuilder.util.readdetect.path.impls.relative.RelativePathIBResourceBuilderFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class RelativePathAvroIBResourceBuilderFactory extends RelativePathIBResourceISBuilderFactory {
+public class RelativePathAvroIBResourceBuilderFactory extends RelativePathIBResourceBuilderFactory {
   private static final long serialVersionUID = 8394943566089224494L;
 
   public RelativePathAvroIBResourceBuilderFactory(RelativeRoot relRoot) {
@@ -33,8 +44,51 @@ public class RelativePathAvroIBResourceBuilderFactory extends RelativePathIBReso
   }
 
   @Override
-  protected Supplier<IBResourceBuilder<Optional<IBResourceIS>>> getBuilder() {
+  public Supplier<? extends AbstractPathIBResourceBuilder> getBuilder() {
     return () -> new RelativePathAvroIBResourceBuilder(getRelativeRoot());
   }
 
+  public static class RelativePathAvroIBResourceBuilder extends RelativePathIBResourceBuilder {
+    private final static Logger log = LoggerFactory.getLogger(RelativePathAvroIBResourceBuilder.class);
+
+    public RelativePathAvroIBResourceBuilder(RelativeRoot root) {
+      super(root);
+    }
+
+    @Override
+    public Optional<IBResource> build(boolean hard) {
+      try {
+        validate(hard);
+        return Optional.of(new RelativePathIBResourceAvro(this.model, this.path));
+      } catch (IBException e) {
+        log.error("Error building IBResource", e);
+        return Optional.empty();
+      }
+    }
+
+    public static class RelativePathIBResourceAvro extends RelativePathIBResource implements IBResourceAvro {
+      private final static Logger log = LoggerFactory.getLogger(RelativePathIBResourceAvro.class.getName());
+
+      public RelativePathIBResourceAvro(IBResourceModel m, PathAndChecksum sourcePath) {
+        super(m, sourcePath);
+      }
+
+      public RelativePathIBResourceAvro(RelativeRoot root, Path path, Checksum checksum, Optional<String> type,
+          Optional<Properties> addlProps)
+      {
+        super(root, path, checksum, type, addlProps);
+      }
+
+      @Override
+      public Optional<SeekableInput> getSeekableFile() {
+        try {
+          return getPath().map(Path::toFile).map(f -> IBException.cet.returns(() -> new SeekableFileInput(f)));
+        } catch (Throwable t) {
+          log.error("Error getting seekable " + getPath(), t);
+          return Optional.empty();
+        }
+      }
+
+    }
+  }
 }

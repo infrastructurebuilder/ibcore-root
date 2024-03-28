@@ -74,6 +74,7 @@ import static org.infrastructurebuilder.util.core.IBUtils.readJsonObject;
 import static org.infrastructurebuilder.util.core.IBUtils.readToJSONObject;
 import static org.infrastructurebuilder.util.core.IBUtils.readToString;
 import static org.infrastructurebuilder.util.core.IBUtils.removeXMLPrefix;
+import static org.infrastructurebuilder.util.core.IBUtils.size;
 import static org.infrastructurebuilder.util.core.IBUtils.splitToMap;
 import static org.infrastructurebuilder.util.core.IBUtils.strToDoc;
 import static org.infrastructurebuilder.util.core.IBUtils.stringFromDocument;
@@ -190,6 +191,7 @@ public class IBUtilsTest {
   }
 
   private Path testDir;
+  private Path testFile;
 
   @AfterEach
   public void after() {
@@ -261,6 +263,8 @@ public class IBUtilsTest {
 
   @BeforeEach
   public void setUp() throws Exception {
+    this.testFile = wps.getTestClasses().resolve(TESTFILE);
+    ;
   }
 
   @AfterEach
@@ -439,12 +443,11 @@ public class IBUtilsTest {
   public void testCoptToDeletedOnExitTemp() throws IOException {
     String prefix = "testpre";
     String suffix = ".tmp";
-    Path p = wps.getTestClasses().resolve(TESTFILE);
     Path target = null;
-    try (InputStream source = Files.newInputStream(p)) {
+    try (InputStream source = Files.newInputStream(this.testFile)) {
       target = copyToDeletedOnExitTempPath(prefix, suffix, source);
     }
-    assertEquals(new Checksum(p), new Checksum(target));
+    assertEquals(new Checksum(this.testFile), new Checksum(target));
   }
 
   @Test
@@ -1419,5 +1422,12 @@ public class IBUtilsTest {
         a:"B",y:3,z:1
         """.trim();
     assertEquals(expected, IBUtils.deepMapJSONtoOrderedString.apply(j));
+  }
+
+  @Test
+  public void testSize() {
+    assertTrue(size(null).isEmpty());
+    assertThrows(IBException.class, () -> size(this.testDir.resolve("bob")));
+    assertEquals(22152L, size(this.testFile).get());
   }
 }

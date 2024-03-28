@@ -33,8 +33,8 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-abstract public class AbstractIBResourceBuilderFactory<B> extends IBResourceCacheModel
-    implements IBResourceBuilderFactory<B> {
+abstract public class AbstractIBResourceBuilderFactory<I> extends IBResourceCacheModel
+    implements IBResourceBuilderFactory<I> {
 
   private static final long serialVersionUID = 1200177361527373141L;
 
@@ -54,7 +54,7 @@ abstract public class AbstractIBResourceBuilderFactory<B> extends IBResourceCach
     log.debug("Root is {}", this.getRoot());
   }
 
-  abstract protected Supplier<IBResourceBuilder<B>> getBuilder();
+  abstract protected Supplier<? extends IBResourceBuilder<I>> getBuilder();
 
   @Override
   public final RelativeRoot getRelativeRoot() {
@@ -62,7 +62,7 @@ abstract public class AbstractIBResourceBuilderFactory<B> extends IBResourceCach
   }
 
   @Override
-  public final IBResourceBuilderFactory<B> withTypeMapper(TypeToExtensionMapper m) {
+  public final IBResourceBuilderFactory<I> withTypeMapper(TypeToExtensionMapper m) {
     this.t2e.compareAndExchange(null, m); // Only settable once
     return this;
   }
@@ -73,12 +73,12 @@ abstract public class AbstractIBResourceBuilderFactory<B> extends IBResourceCach
   }
 
   @Override
-  public Optional<IBResourceBuilder<B>> fromJSON(JSONObject json) {
+  public Optional<IBResourceBuilder<I>> fromJSON(JSONObject json) {
     return of(getBuilder().get().fromJSON(json));
   }
 
   @Override
-  public Optional<IBResourceBuilder<B>> fromModel(IBResourceModel model) {
+  public Optional<IBResourceBuilder<I>> fromModel(IBResourceModel model) {
     return Optional.ofNullable(model).map(m -> {
       return getBuilder().get()
           // TODO am I losing metadata somehow?
@@ -96,5 +96,9 @@ abstract public class AbstractIBResourceBuilderFactory<B> extends IBResourceCach
           .withType(m.getStreamType()); //
     });
   }
+
+  protected abstract Optional<I> extractFromModel(IBResourceModel model);
+
+  protected abstract Optional<I> extractFromJSON(JSONObject json);
 
 }

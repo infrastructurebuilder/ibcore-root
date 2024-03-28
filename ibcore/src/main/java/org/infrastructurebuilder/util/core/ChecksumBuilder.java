@@ -45,7 +45,7 @@ public final class ChecksumBuilder implements ChecksumEnabled {
 
   public static ChecksumBuilder newAlternateInstance(final String t) {
     return cet.returns(() -> {
-      return new ChecksumBuilder(t,empty(), MessageDigest.getInstance(requireNonNull(t)));
+      return new ChecksumBuilder(t, empty(), MessageDigest.getInstance(requireNonNull(t)));
     });
   }
 

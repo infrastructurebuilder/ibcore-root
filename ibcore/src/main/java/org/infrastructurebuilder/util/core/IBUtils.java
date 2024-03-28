@@ -1246,4 +1246,7 @@ public class IBUtils {
     return !isBlank(str);
   }
 
+  public static Optional<Long> size(Path p) {
+    return Optional.ofNullable(p).map(pp -> IBException.cet.returns(() -> Files.size(pp)));
+  }
 }
