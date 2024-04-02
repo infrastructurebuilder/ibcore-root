@@ -258,7 +258,7 @@ public class IBUtils {
   };
 
   public final static Function<String, String> nullIfBlank = l -> {
-    return new String(ofNullable(l).orElse("")).trim().length() > 0 ? l : null;
+    return new String(ofNullable(l).orElse("")).trim().length() > 0 ? l.trim() : null;
   };
 
   public final static Function<String, String> blankIfNull = l -> {

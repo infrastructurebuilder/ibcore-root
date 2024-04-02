@@ -27,7 +27,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
-import org.infrastructurebuilder.util.mavendownloadplugin.nonpublic.DefaultWGetSupplier;
+import org.infrastructurebuilder.util.mavendownloadplugin.nonpublic.DefaultWGetBuilderFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -58,11 +58,10 @@ class WGetSupplierTest {
   void setUp() throws Exception {
     this.od = tps.get();
     this.lpr = new LoggingProgressReport(log);
-    this.wgs = new DefaultWGetSupplier(new FakeArchiverManager());
+    this.wgs = new DefaultWGetBuilderFactory(new FakeArchiverManager());
     this.b = wgs //
-        .withLogger(log) //
         .withCacheDirectory(od) //
-        .builder();
+        .builder().withLogger(log);
   }
 
   @AfterEach
@@ -71,12 +70,25 @@ class WGetSupplierTest {
 
   @Test
   void testGet() throws MalformedURLException, URISyntaxException {
-    b.withUri(new URL(URL).toURI())
-    .withOutputDirectory(this.od);
+    b.withUnpack(false).withUri(new URL(URL).toURI()).withOutputDirectory(this.od);
     Optional<WGetResult> f = b.wget();
     assertTrue(f.isPresent());
     var res = f.get();
     assertTrue(Files.exists(res.getOriginal().get()));
+  }
+
+  @Test
+  void testGetUnpacked() throws MalformedURLException, URISyntaxException {
+    b.withUnpack(true).withUri(new URL(URL).toURI()).withOutputDirectory(this.od);
+    Optional<WGetResult> f = b.wget();
+    assertTrue(f.isPresent());
+    var res = f.get();
+    assertTrue(Files.exists(res.getOriginal().get()));
+
+    var all = res.getExpanded().get();
+    all.forEach(pandc -> {
+      log.info(pandc.toString());
+    });
   }
 
 }

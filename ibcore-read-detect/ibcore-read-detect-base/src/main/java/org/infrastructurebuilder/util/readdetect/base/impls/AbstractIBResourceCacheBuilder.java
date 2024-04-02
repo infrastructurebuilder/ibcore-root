@@ -70,10 +70,8 @@ abstract public class AbstractIBResourceCacheBuilder implements IBResourceCacheB
   }
 
   @Override
-  public IBResourceCacheBuilder withMetadata(JSONObject j) {
-    IBMetadataModelBuilderBase b = IBMetadataModel.builder();
-    j.toMap().forEach((k, v) -> b.withAdditionalProperty(k, v));
-    this.model.setMetadata(b.build());
+  public IBResourceCacheBuilder withMetadata(IBMetadataModel j) {
+    this.model.setMetadata(j);
     return this;
   }
 

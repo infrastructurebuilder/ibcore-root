@@ -29,10 +29,10 @@ import org.apache.commons.codec.binary.Hex;
 /**
  * @author Mickael Istria (Red Hat Inc)
  */
-public class ChecksumUtils {
+public class DLChecksumUtils {
 
     public static void verifyChecksum(File file, String expectedDigest, MessageDigest digest) throws Exception {
-        String actualDigestHex = ChecksumUtils.computeChecksumAsString(file, digest);
+        String actualDigestHex = DLChecksumUtils.computeChecksumAsString(file, digest);
         if (!actualDigestHex.equals(expectedDigest)) {
 //          throw new MojoFailureException("Not same digest as expected: expected <" + expectedDigest + "> was <" + actualDigestHex + ">");
           throw new IBMavenDownloadPluginComponentException("Not same digest as expected: expected <" + expectedDigest + "> was <" + actualDigestHex + ">");

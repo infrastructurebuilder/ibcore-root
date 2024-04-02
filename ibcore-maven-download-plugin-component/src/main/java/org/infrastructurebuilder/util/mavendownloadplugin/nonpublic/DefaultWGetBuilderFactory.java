@@ -74,7 +74,7 @@ import org.infrastructurebuilder.util.mavendownloadplugin.WGetBuilder;
 import org.infrastructurebuilder.util.mavendownloadplugin.WGetBuilderFactory;
 import org.infrastructurebuilder.util.mavendownloadplugin.WGetResult;
 import org.infrastructurebuilder.util.mavendownloadplugin.cache.DownloadCache;
-import org.infrastructurebuilder.util.mavendownloadplugin.checksum.Checksums;
+import org.infrastructurebuilder.util.mavendownloadplugin.checksum.DLChecksums;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,13 +82,13 @@ import org.slf4j.LoggerFactory;
  * DefaultWGetSupplier is the basic (and probably only) implementation of WGetBuilderFactory.
  */
 @Named
-public class DefaultWGetSupplier implements WGetBuilderFactory {
+public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
+  private final static Logger logger = LoggerFactory.getLogger(DefaultWGetBuilderFactory.class);
   private ArchiverManager am;
-  private Logger logger;
   private Path cacheDir;
 
   @Inject
-  public DefaultWGetSupplier(ArchiverManager am) {
+  public DefaultWGetBuilderFactory(ArchiverManager am) {
     this.am = am;
   }
 
@@ -107,12 +107,6 @@ public class DefaultWGetSupplier implements WGetBuilderFactory {
         .withSkipCache(false) //
         .withOverwrite(false) //
     ;
-  }
-
-  @Override
-  public WGetBuilderFactory withLogger(Logger log) {
-    this.logger = log;
-    return this;
   }
 
   @Override
@@ -438,7 +432,7 @@ public class DefaultWGetSupplier implements WGetBuilderFactory {
       final File outputFile = this.outputDirectory.resolve(this.outputFileName).toFile();
       final Lock fileLock = FILE_LOCKS.computeIfAbsent(outputFile.getAbsolutePath(), ignored -> new ReentrantLock());
 
-      final Checksums checksums = new Checksums(this.md5, this.sha1, this.sha256, this.sha512, this.log);
+      final DLChecksums checksums = new DLChecksums(this.md5, this.sha1, this.sha256, this.sha512, this.log);
       // DO
       boolean lockAcquired = false;
       try {

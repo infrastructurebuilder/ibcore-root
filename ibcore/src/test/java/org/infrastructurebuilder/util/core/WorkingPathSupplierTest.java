@@ -15,7 +15,7 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.config;
+package org.infrastructurebuilder.util.core;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -26,7 +26,6 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.infrastructurebuilder.util.core.TestingPathSupplier;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -52,10 +52,12 @@ public class TestingPathSupplier extends WorkingPathSupplier implements Relative
     return "testing-path-supplier";
   }
 
+  /**
+   * Get a new RelativeRoot path every time
+   */
   @Override
   public Optional<RelativeRoot> getRelativeRoot() {
-    // TODO Auto-generated method stub
-    return Optional.empty();
+    return Optional.of(new AbsolutePathRelativeRoot(get()));
   }
 
 }

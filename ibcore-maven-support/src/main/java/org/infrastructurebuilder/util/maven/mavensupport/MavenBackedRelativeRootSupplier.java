@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 public class MavenBackedRelativeRootSupplier implements RelativeRootSupplier {
   private static final Logger log = LoggerFactory.getLogger(MavenBackedRelativeRootSupplier.class);
 
-  public static final String NAME = "maven";
+  public static final String NAME = "maven-basedir";
 
   transient private final Optional<Path> path;
 
@@ -57,7 +57,7 @@ public class MavenBackedRelativeRootSupplier implements RelativeRootSupplier {
   protected Optional<Path> getPathFromProject(MavenProject project) {
     Path t = null;
     try {
-      t = Paths.get(requireNonNull(project, "null.project").getBuild().getOutputDirectory()).toAbsolutePath();
+      t = Paths.get(requireNonNull(project, "null.project").getBasedir().toString()).toAbsolutePath();
     } catch (Throwable thr) {
       getLog().warn("Error getting " + NAME + " RelativeRootProtocol with value " + t, thr);
     }

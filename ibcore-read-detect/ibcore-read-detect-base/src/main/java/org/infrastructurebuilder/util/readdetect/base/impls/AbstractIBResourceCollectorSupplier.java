@@ -56,7 +56,7 @@ import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
 import org.infrastructurebuilder.util.mavendownloadplugin.WGetBuilder;
 import org.infrastructurebuilder.util.mavendownloadplugin.WGetBuilderFactory;
-import org.infrastructurebuilder.util.mavendownloadplugin.nonpublic.DefaultWGetSupplier;
+import org.infrastructurebuilder.util.mavendownloadplugin.nonpublic.DefaultWGetBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.base.IBResource;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory;
@@ -96,7 +96,7 @@ abstract public class AbstractIBResourceCollectorSupplier<I>
       , ProxyInfoProvider pip //
   ) {
     this.log = requireNonNull(log).get();
-    this.wgs = new DefaultWGetSupplier(archiverManager);
+    this.wgs = new DefaultWGetBuilderFactory(archiverManager);
     this.t2e = requireNonNull(t2e);
     this.headers = requireNonNull(headerSupplier).get();
     this.pathSuppliers = requireNonNull(pathSuppliers);
@@ -161,7 +161,7 @@ abstract public class AbstractIBResourceCollectorSupplier<I>
       this.log = log;
       this.t2e = requireNonNull(t2e);
       // this.wps = requireNonNull(wps);
-      this.wGetBldrFact = Objects.requireNonNull(wgs).withLogger(log);
+      this.wGetBldrFact = Objects.requireNonNull(wgs);
       Objects.requireNonNull(proxinfo).ifPresent(p -> {
       });
       cf = getBuilderFactory(new AbsolutePathRelativeRoot(workingDir)).withTypeMapper(t2e);

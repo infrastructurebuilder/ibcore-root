@@ -21,7 +21,7 @@ package org.infrastructurebuilder.util.mavendownloadplugin.checksum;
  * Supported checksum types with corresponding digest algos.
  * @author Paul Polishchuk
  */
-enum Checksum {
+enum DLChecksum {
     MD5("MD5"),
     SHA1("SHA1"),
     SHA256("SHA-256"),
@@ -29,7 +29,7 @@ enum Checksum {
 
     private final String algo;
 
-    Checksum(final String algo) {
+    DLChecksum(final String algo) {
         this.algo = algo;
     }
 

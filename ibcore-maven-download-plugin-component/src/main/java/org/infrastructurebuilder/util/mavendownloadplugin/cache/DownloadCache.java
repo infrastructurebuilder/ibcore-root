@@ -20,7 +20,7 @@ package org.infrastructurebuilder.util.mavendownloadplugin.cache;
 //import com.googlecode.download.maven.plugin.internal.checksum.Checksums;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.infrastructurebuilder.util.mavendownloadplugin.IBMavenDownloadPluginComponentException;
-import org.infrastructurebuilder.util.mavendownloadplugin.checksum.Checksums;
+import org.infrastructurebuilder.util.mavendownloadplugin.checksum.DLChecksums;
 //import org.apache.maven.plugin.MojoFailureException;
 //import org.apache.maven.plugin.logging.Log;
 import org.slf4j.Logger;
@@ -47,7 +47,7 @@ public final class DownloadCache {
         this.basedir = cacheDirectory;
     }
 
-	private String getEntry(URI uri, final Checksums checksums) {
+	private String getEntry(URI uri, final DLChecksums checksums) {
 		final String res = this.index.get(uri);
 		if (res == null) {
 			return null;
@@ -68,7 +68,7 @@ public final class DownloadCache {
 	 * @param checksums Supplied checksums.
 	 * @return A File when cache is found, null if no available cache
 	 */
-    public File getArtifact(URI uri, final Checksums checksums) {
+    public File getArtifact(URI uri, final DLChecksums checksums) {
 		final String res;
 		this.index.getLock().lock();
 		try {
@@ -82,7 +82,7 @@ public final class DownloadCache {
 		return null;
 	}
 
-    public void install(URI uri, File outputFile, final Checksums checksums) throws /*MojoFailureException,*/ IOException {
+    public void install(URI uri, File outputFile, final DLChecksums checksums) throws /*MojoFailureException,*/ IOException {
 		if (!basedir.exists()) {
 			if (!basedir.mkdirs()) {
 //        throw new MojoFailureException("Could not create cache directory: " + basedir.getAbsolutePath());

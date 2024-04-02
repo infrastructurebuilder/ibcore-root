@@ -25,6 +25,7 @@ import java.nio.file.Path;
 
 import org.apache.maven.model.Build;
 import org.apache.maven.project.MavenProject;
+import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
 import org.junit.jupiter.api.AfterAll;
@@ -34,6 +35,7 @@ import org.junit.jupiter.api.Test;
 
 class MavenBackedRelativeRootProtocolTest {
 
+  private static final String XTXT = "X.txt";
   public final static TestingPathSupplier tps = new TestingPathSupplier();
 
   @BeforeAll
@@ -53,10 +55,16 @@ class MavenBackedRelativeRootProtocolTest {
   @BeforeEach
   void setUp() throws Exception {
     target = tps.get();
+
+    var xfile = target.resolve(XTXT);
+    IBUtils.copy(tps.getTestClasses().resolve(XTXT), xfile);
     project = new MavenProject();
     Build b = new Build();
+
     b.setOutputDirectory(target.toString());
     project.setBuild(b);
+    project.setFile(xfile.toFile());
+
     MavenProjectSupplier p2 = new MavenProjectSupplier(project);
     p = new MavenBackedRelativeRootSupplier(p2);
     t = new MavenBackedTempRelativeRootSupplier(p2);

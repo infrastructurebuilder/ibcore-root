@@ -15,7 +15,7 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.config;
+package org.infrastructurebuilder.util.core;
 
 import java.util.EmptyStackException;
 import java.util.Stack;

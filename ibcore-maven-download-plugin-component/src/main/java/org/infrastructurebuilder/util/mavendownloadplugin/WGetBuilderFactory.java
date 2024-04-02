@@ -32,7 +32,5 @@ public interface WGetBuilderFactory  {
    */
   WGetBuilder builder();
   
-  WGetBuilderFactory withLogger(Logger log);
-
   WGetBuilderFactory withCacheDirectory(Path path);
 }

@@ -91,4 +91,9 @@ public class DefaultPathAndChecksum implements PathAndChecksum {
     return ofNullable(resolvePath()).flatMap(IBUtils::size);
   }
 
+  @Override
+  public String toString() {
+    return "DefaultPathAndChecksum [path=" + path + ", checksum=" + checksum + ", root=" + root + "]";
+  }
+
 }

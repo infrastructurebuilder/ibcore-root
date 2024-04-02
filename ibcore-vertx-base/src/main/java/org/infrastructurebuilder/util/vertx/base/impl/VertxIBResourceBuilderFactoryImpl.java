@@ -74,7 +74,7 @@ public class VertxIBResourceBuilderFactoryImpl extends AbstractIBResourceBuilder
   public VertxIBResourceBuilderFactoryImpl(Vertx vertx, RelativeRootSupplier relRootSupplier,
       TypeToExtensionMapper typeMapper)
   {
-    super(requireNonNull(relRootSupplier).get().orElseThrow(() -> new IBResourceException("No root")));
+    super(requireNonNull(relRootSupplier).getRelativeRoot().orElseThrow(() -> new IBResourceException("No root")));
     this.typeMapper = Objects.requireNonNull(typeMapper);
     this.vertx = Objects.requireNonNull(vertx);
     // Delivers a new builder from the relative root each time
@@ -92,7 +92,6 @@ public class VertxIBResourceBuilderFactoryImpl extends AbstractIBResourceBuilder
     return () -> null; // new RelativePathIBResourceBuilder(getRelativeRoot());
   }
 
-  @Override
   public Optional<IBResourceBuilder<Future<VertxIBResource>>> fromPathAndChecksum(PathAndChecksum p) {
     return Optional.of(getBuilder().get().fromPathAndChecksum(p));
 //    log.debug("Getting stream from {}", p);

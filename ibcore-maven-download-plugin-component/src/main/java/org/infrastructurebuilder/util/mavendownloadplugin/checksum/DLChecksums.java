@@ -24,7 +24,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import javax.annotation.Nullable;
 
-import org.infrastructurebuilder.util.mavendownloadplugin.ChecksumUtils;
+import org.infrastructurebuilder.util.mavendownloadplugin.DLChecksumUtils;
 import org.slf4j.Logger;
 //import org.apache.maven.plugin.logging.Log;
 
@@ -32,17 +32,17 @@ import org.slf4j.Logger;
  * Checksums supplied to verify file integrity.
  * @author Paul Polishchuk
  */
-public final class Checksums {
+public final class DLChecksums {
 
-    private final Map<Checksum, String> supplied;
+    private final Map<DLChecksum, String> supplied;
 
-    public Checksums(
+    public DLChecksums(
         @Nullable final String md5, @Nullable final String sha1,
         @Nullable final String sha256, @Nullable final String sha512,
 //        Log log
         Logger log
     ) {
-        this.supplied = Checksums.create(md5, sha1, sha256, sha512);
+        this.supplied = DLChecksums.create(md5, sha1, sha256, sha512);
         if (this.supplied.isEmpty()) {
             log.debug("No checksums were supplied, skipping file validation");
         } else if (this.supplied.size() > 1) {
@@ -72,8 +72,8 @@ public final class Checksums {
      * @throws Exception If the file didn't match any supplied checksum.
      */
     public void validate(final File file) throws Exception {
-        for (final Map.Entry<Checksum, String> entry : this.supplied.entrySet()) {
-            ChecksumUtils.verifyChecksum(
+        for (final Map.Entry<DLChecksum, String> entry : this.supplied.entrySet()) {
+            DLChecksumUtils.verifyChecksum(
                 file, entry.getValue(),
                 MessageDigest.getInstance(entry.getKey().algo())
             );
@@ -89,22 +89,22 @@ public final class Checksums {
      * @return A map of a checksum type to a digest; {@literal null} digests
      *  are not included.
      */
-    private static Map<Checksum, String> create(
+    private static Map<DLChecksum, String> create(
         @Nullable final String md5, @Nullable final String sha1,
         @Nullable final String sha256, @Nullable final String sha512
     ) {
-        final Map<Checksum, String> digests = new EnumMap<>(Checksum.class);
+        final Map<DLChecksum, String> digests = new EnumMap<>(DLChecksum.class);
         if (md5 != null) {
-            digests.put(Checksum.MD5, md5);
+            digests.put(DLChecksum.MD5, md5);
         }
         if (sha1 != null) {
-            digests.put(Checksum.SHA1, sha1);
+            digests.put(DLChecksum.SHA1, sha1);
         }
         if (sha256 != null) {
-            digests.put(Checksum.SHA256, sha256);
+            digests.put(DLChecksum.SHA256, sha256);
         }
         if (sha512 != null) {
-            digests.put(Checksum.SHA512, sha512);
+            digests.put(DLChecksum.SHA512, sha512);
         }
         return digests;
     }

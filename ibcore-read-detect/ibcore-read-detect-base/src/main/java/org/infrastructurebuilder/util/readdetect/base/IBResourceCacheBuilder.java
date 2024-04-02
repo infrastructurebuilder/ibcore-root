@@ -20,6 +20,7 @@ package org.infrastructurebuilder.util.readdetect.base;
 import java.util.List;
 import java.util.Optional;
 
+import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel;
 import org.json.JSONObject;
 
 public interface IBResourceCacheBuilder {
@@ -34,7 +35,7 @@ public interface IBResourceCacheBuilder {
 
   IBResourceCacheBuilder withResources(List<IBResource> l);
 
-  IBResourceCacheBuilder withMetadata(JSONObject j);
+  IBResourceCacheBuilder withMetadata(IBMetadataModel j);
 
   Optional<IBResourceCache> build(boolean hard);
 
