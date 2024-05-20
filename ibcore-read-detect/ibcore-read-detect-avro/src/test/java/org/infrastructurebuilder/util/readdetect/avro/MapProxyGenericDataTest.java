@@ -67,9 +67,9 @@ public class MapProxyGenericDataTest {
   public void testMapProxyGenericData() {
     IBDataJRMPDateConversion k = new MapProxyGenericData.IBDataJRMPDateConversion(f.getDateFormatter());
     assertEquals(String.class, k.getPreconversionType());
-    assertEquals(new Integer(22930), k.toInt("10-12-32", null, null));
+    assertEquals(Integer.valueOf(22930), k.toInt("10-12-32", null, null));
     IBDataJRMPTimeConversion l = new MapProxyGenericData.IBDataJRMPTimeConversion(f.getTimeFormatter());
-    assertEquals(new Integer(81120000), l.toInt("22:32", null, null));
+    assertEquals(Integer.valueOf(81120000), l.toInt("22:32", null, null));
     DateTimeFormatter prf = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     Instant i2 = Instant.parse(INST2);
     assertNotNull(i2);

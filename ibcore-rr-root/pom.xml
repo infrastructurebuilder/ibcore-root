@@ -44,6 +44,7 @@
 		<module>ibcore-relativeroot-testingpath</module>
 		<module>ibcore-relativeroot-setpath</module>
 		<module>ibcore-relativeroot-basicpathproperties</module>
+		<module>ibcore-relativeroot-urifactory</module>
 	</modules>
 
 	<properties>

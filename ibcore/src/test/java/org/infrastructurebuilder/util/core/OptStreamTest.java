@@ -50,7 +50,7 @@ class OptStreamTest {
   @BeforeEach
   void setUp() throws Exception {
     this.nullos = new OptStream();
-    this.rickroll = this.tps.getTestClasses().resolve("rick.jpg");
+    this.rickroll = tps.getTestClasses().resolve("rick.jpg");
     this.csum = new Checksum(this.rickroll);
   }
 

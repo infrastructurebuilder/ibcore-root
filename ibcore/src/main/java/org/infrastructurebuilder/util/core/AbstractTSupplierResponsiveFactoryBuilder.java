@@ -70,9 +70,9 @@ public abstract class AbstractTSupplierResponsiveFactoryBuilder<R, T, C>
   }
 
   @Override
-  public <T> T withConfig(C config) {
+  public <THIS> THIS withConfig(C config) {
     this.config = config;
-    return (T) this;
+    return (THIS) this;
   }
 
   protected C getConfig() {

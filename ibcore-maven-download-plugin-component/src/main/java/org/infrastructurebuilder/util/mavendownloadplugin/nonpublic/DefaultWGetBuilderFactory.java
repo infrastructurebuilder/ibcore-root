@@ -95,7 +95,7 @@ public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
   @Override
   public final WGetBuilder builder() {
     return new Builder() //
-        .withLogger(this.logger) //
+        .withLogger(logger) //
         .withArchiverManager(am) //
         .withCacheDirectory(this.cacheDir)
         // Follows are "defaults"

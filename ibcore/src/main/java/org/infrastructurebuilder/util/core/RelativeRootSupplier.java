@@ -26,4 +26,8 @@ import java.util.function.Supplier;
  */
 public interface RelativeRootSupplier extends NameDescribed {
   Optional<RelativeRoot> getRelativeRoot();
+
+  default Optional<RelativeRoot> getRelativeRoot(Object data) {
+    return getRelativeRoot();
+  }
 }

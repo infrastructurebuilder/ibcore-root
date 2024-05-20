@@ -103,6 +103,11 @@ class RelativeRootTest {
   }
 
   @Test
+  void testWithParam() {
+    assertEquals(prr, rrp.get("ABS", "xyz").get());
+  }
+
+  @Test
   void testPathFrom() {
     assertTrue(prr.isPath());
     assertTrue(prr.isURL());

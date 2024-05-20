@@ -60,9 +60,13 @@ public class RelativeRootFactory {
   }
 
   public final Optional<RelativeRoot> get(String name) {
+    return get(name, null);
+  }
+
+  public final Optional<RelativeRoot> get(String name, Object config) {
     if (!suppliers.keySet().contains(name))
       log.warn("RelativeRootSupplier {} not available", name);
-    return ofNullable(this.suppliers.get(name)).flatMap(RelativeRootSupplier::getRelativeRoot);
+    return ofNullable(this.suppliers.get(name)).flatMap(sup -> sup.getRelativeRoot(config));
   }
 
 }
