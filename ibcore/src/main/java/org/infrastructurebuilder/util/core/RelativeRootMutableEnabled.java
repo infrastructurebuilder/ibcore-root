@@ -17,6 +17,9 @@
  */
 package org.infrastructurebuilder.util.core;
 
+import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.RelativeRootEnabled;
+
 public interface RelativeRootMutableEnabled extends RelativeRootEnabled {
   <T> T withRelativeRoot(RelativeRoot r);
 

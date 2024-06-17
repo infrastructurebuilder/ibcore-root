@@ -32,10 +32,11 @@ import java.util.function.Function;
 
 import org.apache.tika.Tika;
 import org.apache.tika.metadata.TikaCoreProperties;
+import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.constants.IBConstants;
-import org.infrastructurebuilder.util.core.RelativeRoot;
-import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
+import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
+import org.infrastructurebuilder.util.core.ResponsiveToString;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -57,7 +58,7 @@ import org.slf4j.LoggerFactory;
  * local copy. An IBResourceCache is expected to be inviolate from the time a cache is created until it is no longer
  * needed. A cache has a serialized representation of all the IBResource elements within it, and thus can be persisted.
  */
-public interface IBResourceBuilderFactory<I> {
+public interface IBResourceBuilderFactory<I> extends ResponsiveToString {
   final static Logger log = LoggerFactory.getLogger(IBResourceBuilderFactory.class.getName());
   final static Tika tika = new Tika();
 

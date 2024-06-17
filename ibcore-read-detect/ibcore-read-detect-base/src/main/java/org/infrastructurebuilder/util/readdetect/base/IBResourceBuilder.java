@@ -19,18 +19,14 @@ package org.infrastructurebuilder.util.readdetect.base;
 
 import static java.util.Objects.requireNonNull;
 
-import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.util.core.Checksum;
-import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
-import org.infrastructurebuilder.util.core.PathAndChecksum;
+import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;

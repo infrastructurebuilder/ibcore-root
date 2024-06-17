@@ -17,8 +17,8 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import static org.infrastructurebuilder.util.core.GAV.BASIC_PACKAGING;
-import static org.infrastructurebuilder.util.core.GAV.SNAPSHOT_DESIGNATOR;
+import static org.infrastructurebuilder.util.versions.GAVBasic.BASIC_PACKAGING;
+import static org.infrastructurebuilder.util.versions.GAVBasic.SNAPSHOT_DESIGNATOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;

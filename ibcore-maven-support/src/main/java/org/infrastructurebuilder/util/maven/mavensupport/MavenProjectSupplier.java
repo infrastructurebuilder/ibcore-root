@@ -24,7 +24,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.apache.maven.project.MavenProject;
-import org.infrastructurebuilder.util.constants.IBConstants;
+import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.util.core.TSupplier;
 
 @Named(IBConstants.MAVEN)

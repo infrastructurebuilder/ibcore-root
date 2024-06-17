@@ -21,6 +21,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.UUID;
 
+import org.infrastructurebuilder.pathref.JSONBuilder;
 import org.json.JSONObject;
 
 public class AbstractUUIdentifiedAndWeighted extends AbstractUUIdentified implements UUIdentifiedAndWeighted {

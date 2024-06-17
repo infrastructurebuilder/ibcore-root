@@ -22,6 +22,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import java.util.Collections;
 import java.util.SortedSet;
 
+import org.infrastructurebuilder.pathref.JSONOutputEnabled;
+import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
+import org.infrastructurebuilder.util.core.NameDescribed;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
@@ -37,19 +40,6 @@ class DefaultEmptyTest {
     }.getRelativeRoot().isPresent());
   }
 
-  @Test
-  void testGetStructuredSupplyTypeClassName() {
-    assertFalse(new TypeToExtensionMapper() {
-      @Override
-      public SortedSet<String> reverseMapFromExtension(String extension) {
-        return Collections.emptySortedSet();
-      }
-
-      public String getExtensionForType(String type) {
-        return null;
-      }
-    }.getStructuredSupplyTypeClassName(null).isPresent());
-  }
 
   @Test
   void testNameDescribed() {

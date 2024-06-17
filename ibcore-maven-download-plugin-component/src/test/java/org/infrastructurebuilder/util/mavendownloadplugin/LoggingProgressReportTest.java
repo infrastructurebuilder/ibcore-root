@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.net.URI;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.core.TestingPathSupplier;
+import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;

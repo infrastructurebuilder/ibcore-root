@@ -22,7 +22,7 @@ import static java.util.Optional.ofNullable;
 
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.core.JSONBuilder;
+import org.infrastructurebuilder.pathref.JSONBuilder;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceSource;
 import org.json.JSONObject;
 

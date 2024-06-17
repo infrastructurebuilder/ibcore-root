@@ -27,7 +27,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
-import org.infrastructurebuilder.util.core.ChecksumBuilder;
+import org.infrastructurebuilder.pathref.ChecksumBuilder;
+import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
 import org.infrastructurebuilder.util.executor.ProcessExecution;
 import org.infrastructurebuilder.util.executor.ProcessExecutionResult;
 import org.infrastructurebuilder.util.executor.model.executor.model.utils.IBCoreExecutorModelUtils;
@@ -158,7 +159,7 @@ public class DefaultProcessExecutionResult implements ProcessExecutionResult {
   }
 
   public ChecksumBuilder getChecksumBuilder() {
-    return ChecksumBuilder.newInstance() //
+    return ChecksumBuilderFactory.newInstance() //
         .addJSONObject(getException()) //
         .addMapStringString(getExecutionEnvironment()) //
         .addInteger(getResultCode()) //

@@ -22,7 +22,6 @@ import static java.time.Instant.now;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
 
 import java.net.URI;
 import java.nio.file.Files;
@@ -33,14 +32,14 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Supplier;
 
+import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.constants.IBConstants;
-import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.RelativeRoot;
 import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.OptStream;
 import org.infrastructurebuilder.util.core.PathAndChecksum;
-import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.base.IBResource;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory;

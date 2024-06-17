@@ -17,6 +17,7 @@
  */
 package org.infrastructurebuilder.util.core;
 
+import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.util.versions.DefaultGAVBasic;
 
 public class FakeBasicGAV extends DefaultGAVBasic implements GAV {

@@ -19,11 +19,11 @@ package org.infrastructurebuilder.util.readdetect.base;
 
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
 import org.infrastructurebuilder.util.core.OptStream;
-import org.infrastructurebuilder.util.core.RelativeRoot;
-import org.infrastructurebuilder.util.core.TestingPathSupplier;
 import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathIBResourceBuilderFactory.AbstractIBResource;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 

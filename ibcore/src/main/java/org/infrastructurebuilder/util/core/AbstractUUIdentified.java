@@ -21,6 +21,7 @@ import static java.util.Optional.ofNullable;
 
 import java.util.UUID;
 
+import org.infrastructurebuilder.pathref.JSONBuilder;
 import org.json.JSONObject;
 
 public class AbstractUUIdentified implements UUIdentified {

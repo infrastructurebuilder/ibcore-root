@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.SortedSet;
 
+import org.infrastructurebuilder.pathref.PathSupplier;
+import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
 import org.infrastructurebuilder.util.credentials.basic.CredentialsFactory;
 import org.infrastructurebuilder.util.versions.IBVersionsSupplier;

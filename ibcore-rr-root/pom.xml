@@ -72,5 +72,11 @@
 			<classifier>debug</classifier>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
+    <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore-pathref</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+	</dependencies> 
 </project>

@@ -17,7 +17,7 @@
  */
 package org.infrastructurebuilder.util.readdetect.base;
 
-import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_ZIP;
+import static org.infrastructurebuilder.constants.IBConstants.APPLICATION_ZIP;
 import static org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory.toType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -31,13 +31,13 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.UUID;
 
+import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.constants.IBConstants;
-import org.infrastructurebuilder.util.core.AbsolutePathRelativeRoot;
-import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.pathref.AbsolutePathRelativeRoot;
+import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
-import org.infrastructurebuilder.util.core.RelativeRoot;
-import org.infrastructurebuilder.util.core.TestingPathSupplier;
 import org.infrastructurebuilder.util.readdetect.base.IBResource;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathIBResourceBuilderFactory;

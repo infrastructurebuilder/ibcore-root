@@ -35,8 +35,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.core.TestingPathSupplier;
 import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.GeneratedProcessExecution;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;

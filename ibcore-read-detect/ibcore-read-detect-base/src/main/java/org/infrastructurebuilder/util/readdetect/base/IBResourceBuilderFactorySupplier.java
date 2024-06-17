@@ -20,9 +20,9 @@ package org.infrastructurebuilder.util.readdetect.base;
 import java.util.Optional;
 import java.util.Set;
 
+import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.RelativeRootFactory;
 import org.infrastructurebuilder.util.core.NameDescribed;
-import org.infrastructurebuilder.util.core.RelativeRoot;
-import org.infrastructurebuilder.util.core.RelativeRootFactory;
 
 /**
  * An IBResourceBuilderFactorySupplier is used to map {@link RelativeRoot} identifiers supplied by a

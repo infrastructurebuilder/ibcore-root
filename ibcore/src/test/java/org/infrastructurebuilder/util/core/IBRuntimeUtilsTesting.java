@@ -20,6 +20,9 @@ package org.infrastructurebuilder.util.core;
 import java.util.Collections;
 import java.util.List;
 
+import org.infrastructurebuilder.pathref.PathSupplier;
+import org.infrastructurebuilder.pathref.TestingPathSupplier;
+import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.credentials.FakeCredentialsFactory;
 import org.infrastructurebuilder.util.credentials.basic.CredentialsFactory;
 import org.infrastructurebuilder.util.versions.IBVersionsSupplier;

@@ -46,10 +46,10 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.pathref.JSONOutputEnabled;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.ConfigMapBuilder;
 import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.core.JSONOutputEnabled;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

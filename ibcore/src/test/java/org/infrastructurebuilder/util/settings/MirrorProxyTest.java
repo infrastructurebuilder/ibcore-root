@@ -17,7 +17,6 @@
  */
 package org.infrastructurebuilder.util.settings;
 
-import static java.util.stream.Collectors.toList;
 import static org.infrastructurebuilder.util.settings.Layout.DEFAULT;
 import static org.infrastructurebuilder.util.settings.Layout.LEGACY;
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -21,6 +21,7 @@ import static java.time.Duration.ofMinutes;
 import static java.time.Duration.ofSeconds;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+import static org.infrastructurebuilder.pathref.IBChecksumUtils.deletePath;
 import static org.infrastructurebuilder.util.core.IBUtils.isWindows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -37,9 +38,9 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.core.TestingPathSupplier;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -82,12 +83,12 @@ public class ProcessRunnerTest {
 
   @AfterEach
   public void tearDown() {
-    IBUtils.deletePath(scratchDir);
+    deletePath(scratchDir);
   }
 
   @Test
   public void testAddlConstructors1() {
-    IBUtils.deletePath(scratchDir);
+    deletePath(scratchDir);
     Optional<PrintStream> addl = empty();
     assertNotNull(new DefaultProcessRunner(scratchDir, addl));
     logger.info("I totally ran!");
@@ -95,7 +96,7 @@ public class ProcessRunnerTest {
 
   @Test
   public void testAddlConstructors2() {
-    IBUtils.deletePath(scratchDir);
+    deletePath(scratchDir);
     Optional<PrintStream> addl = empty();
     assertNotNull(new DefaultProcessRunner(scratchDir, addl, of(logger)));
     logger.info("I totally ran!");

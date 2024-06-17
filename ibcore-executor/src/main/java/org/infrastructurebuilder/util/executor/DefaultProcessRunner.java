@@ -25,7 +25,6 @@ import static java.time.Instant.now;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
-import static org.infrastructurebuilder.util.core.IBUtils.deletePath;
 import static org.infrastructurebuilder.util.executor.ProcessException.pet;
 
 import java.io.IOException;
@@ -46,6 +45,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
+import org.infrastructurebuilder.pathref.IBChecksumUtils;
 import org.infrastructurebuilder.util.logging.NOOPLogger;
 import org.slf4j.Logger;
 import org.zeroturnaround.exec.InvalidExitValueException;
@@ -104,7 +104,7 @@ public class DefaultProcessRunner implements ProcessRunner {
   @Override
   public void close() throws Exception {
     if (!isKeepScratchDir()) {
-      deletePath(scratchDir);
+      IBChecksumUtils.deletePath(scratchDir);
     }
   }
 

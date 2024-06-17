@@ -27,7 +27,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.infrastructurebuilder.util.core.TestingPathSupplier;
+import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

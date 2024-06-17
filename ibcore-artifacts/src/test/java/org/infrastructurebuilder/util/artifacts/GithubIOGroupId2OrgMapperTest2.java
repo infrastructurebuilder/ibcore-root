@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.constants.IBConstants;
+import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.util.core.DefaultGAV;
 import org.infrastructurebuilder.util.core.GAV;
 import org.junit.jupiter.api.BeforeEach;

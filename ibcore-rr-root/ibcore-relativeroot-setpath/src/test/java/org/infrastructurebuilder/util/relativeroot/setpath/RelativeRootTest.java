@@ -24,9 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.nio.file.Path;
 import java.util.Set;
 
-import org.infrastructurebuilder.util.core.RelativeRoot;
-import org.infrastructurebuilder.util.core.RelativeRootFactory;
-import org.infrastructurebuilder.util.core.TestingPathSupplier;
+import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.RelativeRootFactory;
+import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;

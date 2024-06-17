@@ -22,8 +22,9 @@ import static java.nio.file.Files.newOutputStream;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static java.util.UUID.randomUUID;
-import static java.util.stream.Collectors.toList;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
+import static org.infrastructurebuilder.pathref.IBChecksumUtils.copy;
+import static org.infrastructurebuilder.pathref.IBChecksumUtils.deletePath;
 import static org.infrastructurebuilder.util.core.IBUtils.XML_PREFIX;
 import static org.infrastructurebuilder.util.core.IBUtils.asIterator;
 import static org.infrastructurebuilder.util.core.IBUtils.asJSONObjectStream;
@@ -31,17 +32,11 @@ import static org.infrastructurebuilder.util.core.IBUtils.asOptFilesystemMap;
 import static org.infrastructurebuilder.util.core.IBUtils.asStream;
 import static org.infrastructurebuilder.util.core.IBUtils.asStringStream;
 import static org.infrastructurebuilder.util.core.IBUtils.cheapCopy;
-import static org.infrastructurebuilder.util.core.IBUtils.copy;
 import static org.infrastructurebuilder.util.core.IBUtils.copyAndDigest;
 import static org.infrastructurebuilder.util.core.IBUtils.copyToDeletedOnExitTempPath;
-import static org.infrastructurebuilder.util.core.IBUtils.deepCopy;
-import static org.infrastructurebuilder.util.core.IBUtils.deletePath;
-import static org.infrastructurebuilder.util.core.IBUtils.digestInputStream;
 import static org.infrastructurebuilder.util.core.IBUtils.forceDirectoryPath;
 import static org.infrastructurebuilder.util.core.IBUtils.generateRandomPassword;
 import static org.infrastructurebuilder.util.core.IBUtils.getDTS;
-import static org.infrastructurebuilder.util.core.IBUtils.getHex;
-import static org.infrastructurebuilder.util.core.IBUtils.getHexStringFromInputStream;
 import static org.infrastructurebuilder.util.core.IBUtils.getJSONArrayFromJSONOutputEnabled;
 import static org.infrastructurebuilder.util.core.IBUtils.getJSONObjectFromMapStringString;
 import static org.infrastructurebuilder.util.core.IBUtils.getMapStringStringFromJSONObject;
@@ -57,8 +52,6 @@ import static org.infrastructurebuilder.util.core.IBUtils.getZipFileSystem;
 import static org.infrastructurebuilder.util.core.IBUtils.hardMergeJSONObject;
 import static org.infrastructurebuilder.util.core.IBUtils.hasAll;
 import static org.infrastructurebuilder.util.core.IBUtils.hex8Digit;
-import static org.infrastructurebuilder.util.core.IBUtils.hexStringToByteArray;
-import static org.infrastructurebuilder.util.core.IBUtils.inputStreamFromHexString;
 import static org.infrastructurebuilder.util.core.IBUtils.isJarArchive;
 import static org.infrastructurebuilder.util.core.IBUtils.isZipArchive;
 import static org.infrastructurebuilder.util.core.IBUtils.joinFromMap;
@@ -129,8 +122,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 
+import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.constants.IBConstants;
+import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.IBChecksumUtils;
+import org.infrastructurebuilder.pathref.JSONOutputEnabled;
+import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.util.settings.ServerProxy;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -147,6 +144,7 @@ import org.w3c.dom.Document;
 @SuppressWarnings("unused")
 public class IBUtilsTest {
 
+  private static final String B_XML_CSUM = "5cd814bd44716a73c2e380c443f573aa3f0a4aaf881f70810ec9c9552035433f6cca4c64161ce460e97db0089eefb1aad4d09e7151c330afc7a4caf528a6f475";
   private static final String JUNIT_4_8_2_JAR = "junit-4.8.2.jar";
   private static final String C1_PROPERTY = "process.executor.interim.sleep";
   private static final String FAKEFILE = "FAKEFILE.zip";
@@ -154,7 +152,6 @@ public class IBUtilsTest {
   private static final String ABC = "ABC";
   private static final String ABC_CHECKSUM = "397118fdac8d83ad98813c50759c85b8c47565d8268bf10da483153b747a74743a58a90e85aa9f705ce6984ffc128db567489817e4092d050d8a1cc596ddc119";
   private static final String X_TXT = "X.txt";
-  public static final String TESTFILE_CHECKSUM = "0bd4468980d90ef4d5e1e39bf30b93670492d282c518da95334df7bcad7ba8e0afe377a97d8fd64b4b6fd452b5d60ee9ee665e2fa5ecb13d8d51db8794011f3e";
   public static final String TESTFILE = "rick.jpg";
   private static JSONObject jj;
   private static JSONObject jjNull;
@@ -463,8 +460,8 @@ public class IBUtilsTest {
     final Float f = 1.2F;
     final JSONObject j = new JSONObject().put("X", f);
     final JSONObject k = new JSONObject().put("X", d);
-    final JSONObject j1 = deepCopy.apply(j);
-    final JSONObject k1 = deepCopy.apply(k);
+    final JSONObject j1 = IBChecksumUtils.deepCopy.apply(j);
+    final JSONObject k1 = IBChecksumUtils.deepCopy.apply(k);
     JSONAssert.assertEquals(j, j1, true);
     JSONAssert.assertEquals(k, k1, true);
     JSONAssert.assertNotEquals(k, j1, true);
@@ -504,7 +501,7 @@ public class IBUtilsTest {
   @Test
   public void testDigestNullStream() {
     assertThrows(NullPointerException.class, () -> {
-      digestInputStream(null);
+      IBChecksumUtils.digestInputStream(null);
     });
 
   }
@@ -546,24 +543,6 @@ public class IBUtilsTest {
   }
 
   @Test
-  public void testFromHexString() throws IOException {
-    final String y = "XX YY ZZ";
-    final String x = getHex(y.getBytes(UTF_8));
-    InputStream i = null;
-    try {
-      i = inputStreamFromHexString(x);
-      final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      copy(i, bos);
-      assertEquals(y, bos.toString());
-      return;
-    } finally {
-      if (i != null) {
-        i.close();
-      }
-    }
-  }
-
-  @Test
   public void testGeneratRandomPassword() {
     final String x = generateRandomPassword();
     assertEquals(48, x.length());
@@ -589,42 +568,6 @@ public class IBUtilsTest {
       e.printStackTrace();
     }
     assertTrue(getDTS().compareTo(s) > 0);
-  }
-
-  @Test
-  public void testGetHex() {
-    final byte[] b = {
-        0x00, 0x01, 0x03, 0x0f
-    };
-    final String s = getHex(b);
-    assertEquals("0001030f", s);
-    assertTrue(Arrays.equals(b, hexStringToByteArray(s)));
-  }
-
-  @Test
-  public void testGetHexCharset() {
-    final byte[] b = {
-        0x00, 0x01, 0x03, 0x0f
-    };
-    final String s = getHex(b, IBConstants.UTF8);
-    assertEquals("0001030f", s);
-    assertTrue(Arrays.equals(b, hexStringToByteArray(s)));
-  }
-
-  @Test
-  public void testGetHexNull() {
-    assertNull(getHex(null));
-  }
-
-  @Test
-  public void testGetHexStringFromInputStream() throws IOException {
-    final byte[] b = {
-        0x00, 0x01, 0x03, 0x0f
-    };
-    final ByteArrayInputStream ins = new ByteArrayInputStream(b);
-    final String s = getHexStringFromInputStream(ins);
-    assertEquals("0001030f", s);
-    assertTrue(Arrays.equals(b, hexStringToByteArray(s)));
   }
 
   @Test
@@ -1304,7 +1247,7 @@ public class IBUtilsTest {
 
     Path cc = wps.get().resolve("file-sample_1MB.doc");
     try (OutputStream outs = newOutputStream(cc); InputStream ins = second.openStream()) {
-      IBUtils.copy(ins, outs);
+      copy(ins, outs);
     }
     assertEquals(
         "67d617a6ad2e286c46588284ddf63887c320bc30549471576f1937a9c49daefd669413d71b98b2cb42d29823d0c4acfae5abdc6dc01e05e03f200bfe13d6a15a",
@@ -1400,34 +1343,22 @@ public class IBUtilsTest {
   }
 
   @Test
-  public void testStripTrailingSlash() {
-    var f1 = "file://mylocation/bobo";
-    assertNull(IBUtils.stripTrailingSlash.apply(null));
-    assertEquals("", IBUtils.stripTrailingSlash.apply("/"));
-    assertEquals(".", IBUtils.stripTrailingSlash.apply("./"));
-    assertEquals(f1, IBUtils.stripTrailingSlash.apply(f1 + "/"));
-    assertEquals(f1, IBUtils.stripTrailingSlash.apply(f1));
-  }
-
-  @Test
-  public void testDeepMaptoOrderedString() {
-    String x = """
-            { "a" : "B",
-            "z" : 1,
-            "y" : 3
-            }
-        """.trim();
-    JSONObject j = new JSONObject(x);
-    var expected = """
-        a:"B",y:3,z:1
-        """.trim();
-    assertEquals(expected, IBUtils.deepMapJSONtoOrderedString.apply(j));
-  }
-
-  @Test
   public void testSize() {
     assertTrue(size(null).isEmpty());
     assertThrows(IBException.class, () -> size(this.testDir.resolve("bob")));
     assertEquals(22152L, size(this.testFile).get());
+  }
+
+  @Test
+  public void testReaderToInputStream() {
+    var q = wps.getTestClasses().resolve("b.xml");
+    String c;
+    try (InputStream ins = IBChecksumUtils.readerToInputStream(Files.newBufferedReader(q))) {
+      c = new Checksum(ins).toString();
+    } catch (IOException e) {
+      e.printStackTrace();
+      c = null;
+    }
+    assertEquals(B_XML_CSUM, c);
   }
 }

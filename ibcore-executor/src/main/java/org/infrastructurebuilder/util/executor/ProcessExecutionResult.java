@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
-import org.infrastructurebuilder.util.core.JSONAndChecksumEnabled;
-import org.infrastructurebuilder.util.core.JSONBuilder;
+import org.infrastructurebuilder.pathref.JSONAndChecksumEnabled;
+import org.infrastructurebuilder.pathref.JSONBuilder;
 import org.json.JSONObject;
 
 public interface ProcessExecutionResult extends JSONAndChecksumEnabled {

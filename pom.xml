@@ -36,6 +36,8 @@
 	<url>${github.url.base}/${project.artifactId}</url>
 
 	<modules>
+		<module>ibcore-constants</module>
+		<module>ibcore-pathref</module>
 		<module>ibcore</module>
 		<module>ibcore-default-extension-type-mapper</module>
 		<module>ibcore-files</module>

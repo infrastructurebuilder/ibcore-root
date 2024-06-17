@@ -29,7 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.constants.IBConstants;
+import org.infrastructurebuilder.constants.IBConstants;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

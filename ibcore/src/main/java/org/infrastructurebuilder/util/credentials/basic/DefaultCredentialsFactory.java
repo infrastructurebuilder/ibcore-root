@@ -17,7 +17,7 @@
  */
 package org.infrastructurebuilder.util.credentials.basic;
 
-import static org.infrastructurebuilder.util.constants.IBConstants.DEFAULT;
+import static org.infrastructurebuilder.constants.IBConstants.DEFAULT;
 import static org.infrastructurebuilder.util.core.Weighted.weighted;
 
 import java.util.List;

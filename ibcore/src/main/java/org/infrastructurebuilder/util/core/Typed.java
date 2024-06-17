@@ -18,5 +18,7 @@
 package org.infrastructurebuilder.util.core;
 
 public interface Typed {
+  public static final String TYPE = "type";
+
   String getType();
 }

@@ -23,8 +23,9 @@ import java.util.Optional;
 import java.util.SortedSet;
 import java.util.UUID;
 
-import org.infrastructurebuilder.util.core.ChecksumBuilder;
-import org.infrastructurebuilder.util.core.JSONBuilder;
+import org.infrastructurebuilder.pathref.ChecksumBuilder;
+import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
+import org.infrastructurebuilder.pathref.JSONBuilder;
 import org.json.JSONObject;
 
 public class DefaultCryptoIdentifier implements CryptoIdentifier {
@@ -36,7 +37,7 @@ public class DefaultCryptoIdentifier implements CryptoIdentifier {
   private final String validationIdentifier;
   private final String id;
   private final SortedSet<String> identifiers;
-  private final ChecksumBuilder checksumBuilder = ChecksumBuilder.newInstance();
+  private final ChecksumBuilder checksumBuilder = ChecksumBuilderFactory.newInstance();
 
   public DefaultCryptoIdentifier(String type, String id, SortedSet<String> identifiers,
       Optional<String> validationIdentifier)
@@ -62,7 +63,7 @@ public class DefaultCryptoIdentifier implements CryptoIdentifier {
 
 //  @Override
 //  public Checksum asChecksum() {
-//    return ChecksumBuilder.newInstance()
+//    return ChecksumBuilderImpl.newInstance()
 //        // ID
 //        .addString(getId())
 //        // Type

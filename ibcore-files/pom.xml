@@ -96,6 +96,12 @@
 <!--      <artifactId>bcel</artifactId>-->
 <!--      <version>6.7.0</version>-->
 <!--    </dependency>-->
+		<dependency>
+			<groupId>org.infrastructurebuilder</groupId>
+			<artifactId>ibcore-pathref</artifactId>
+			<scope>test</scope>
+			<type>test-jar</type>
+		</dependency>
   </dependencies>
 
   <build>

@@ -29,6 +29,8 @@ import java.util.UUID;
  *
  */
 public interface Identified {
+  public static final String ID = "id";
+
   public static java.util.Comparator<Identified> comparator() {
     return new java.util.Comparator<Identified>() {
       @Override

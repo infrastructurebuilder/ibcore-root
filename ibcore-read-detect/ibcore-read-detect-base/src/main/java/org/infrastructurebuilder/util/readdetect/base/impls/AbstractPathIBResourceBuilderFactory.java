@@ -17,44 +17,30 @@
  */
 package org.infrastructurebuilder.util.readdetect.base.impls;
 
-import static java.lang.String.format;
-import static java.time.Instant.now;
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
-import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
+import static org.infrastructurebuilder.constants.IBConstants.APPLICATION_OCTET_STREAM;
 
-import java.net.URI;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.function.Supplier;
 
-import javax.annotation.Nullable;
-
-import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.objectmapper.jackson.ObjectMapperUtils;
-import org.infrastructurebuilder.util.constants.IBConstants;
-import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.RelativeRoot;
 import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
 import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.core.OptStream;
 import org.infrastructurebuilder.util.core.PathAndChecksum;
-import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.base.AbstractIBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.base.AbstractIBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.base.IBResource;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory;
-import org.infrastructurebuilder.util.readdetect.base.IBResourceException;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
-import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel.IBResourceModelBuilder;
-import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel.IBResourceModelBuilderBase;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;

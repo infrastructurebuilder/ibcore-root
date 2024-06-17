@@ -20,7 +20,7 @@ package org.infrastructurebuilder.util.crypto;
 import java.util.Optional;
 import java.util.SortedSet;
 
-import org.infrastructurebuilder.util.core.JSONAndChecksumEnabled;
+import org.infrastructurebuilder.pathref.JSONAndChecksumEnabled;
 
 public interface CryptoIdentifier extends JSONAndChecksumEnabled {
 

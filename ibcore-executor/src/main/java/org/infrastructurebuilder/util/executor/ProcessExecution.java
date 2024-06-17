@@ -31,9 +31,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import org.infrastructurebuilder.util.core.JSONAndChecksumEnabled;
-import org.infrastructurebuilder.util.core.JSONBuilder;
-import org.infrastructurebuilder.util.core.RelativeRoot;
+import org.infrastructurebuilder.pathref.JSONAndChecksumEnabled;
+import org.infrastructurebuilder.pathref.JSONBuilder;
+import org.infrastructurebuilder.pathref.RelativeRoot;
 import org.json.JSONObject;
 import org.zeroturnaround.exec.ProcessExecutor;
 
@@ -110,6 +110,7 @@ public interface ProcessExecution extends JSONAndChecksumEnabled, AutoCloseable 
     command.addAll(getArguments().orElseGet(() -> new ArrayList<>()));
     List<Integer> l = getExitValuesAsIntegers().orElseGet(() -> new ArrayList<>());
     Integer[] exitValues = (Integer[]) l.toArray(new Integer[l.size()]);
+    @SuppressWarnings("resource") // FIXME
     final ProcessExecutor pe = new ProcessExecutor()
 
         .environment(getExecutionEnvironment())

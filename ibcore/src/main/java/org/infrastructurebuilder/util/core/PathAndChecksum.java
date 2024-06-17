@@ -22,6 +22,9 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.infrastructurebuilder.pathref.ChecksumEnabled;
+import org.infrastructurebuilder.pathref.RelativeRoot;
+
 public interface PathAndChecksum extends Supplier<Path>, ChecksumEnabled {
 
   default Optional<BasicFileAttributes> getAttributes() {

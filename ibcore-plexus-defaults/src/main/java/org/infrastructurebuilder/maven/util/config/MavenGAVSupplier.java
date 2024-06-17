@@ -18,7 +18,7 @@
 package org.infrastructurebuilder.maven.util.config;
 
 import static java.util.Optional.ofNullable;
-import static org.infrastructurebuilder.util.constants.IBConstants.MAVEN;
+import static org.infrastructurebuilder.constants.IBConstants.MAVEN;
 
 import java.util.Objects;
 import java.util.Optional;

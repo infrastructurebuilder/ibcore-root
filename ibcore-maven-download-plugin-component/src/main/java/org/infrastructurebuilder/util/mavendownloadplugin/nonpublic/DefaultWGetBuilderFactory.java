@@ -59,7 +59,8 @@ import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
 import org.codehaus.plexus.archiver.snappy.SnappyUnArchiver;
 import org.codehaus.plexus.archiver.xz.XZUnArchiver;
 import org.codehaus.plexus.components.io.filemappers.FileMapper;
-import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.IBChecksumUtils;
 import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.PathAndChecksum;
@@ -895,7 +896,7 @@ public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
         log.error("Error in cleanup()", e);
       }
       if (this.expandedRoot != null && Files.exists(this.expandedRoot))
-        IBUtils.deletePath(this.expandedRoot);
+        IBChecksumUtils.deletePath(this.expandedRoot);
     }
 
   }

@@ -26,6 +26,9 @@ import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.infrastructurebuilder.pathref.ChecksumBuilder;
+import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
+import org.infrastructurebuilder.pathref.RelativeRoot;
 import org.infrastructurebuilder.util.versions.DefaultGAVBasic;
 import org.infrastructurebuilder.util.versions.IBVersionsSupplier;
 import org.json.JSONObject;
@@ -46,7 +49,7 @@ public class DefaultGAV extends DefaultGAVBasic implements GAV {
         json.optString(GAV_CLASSIFIER, null), json.optString(GAV_VERSION, null),
         json.optString(GAV_EXTENSION, json.optString(GAV_TYPE, json.optString(GAV_PACKAGING, null))));
     path = ofNullable(json.optString(GAV_PATH, null)).map(Paths::get).orElse(null);
-    this.builder = ChecksumBuilder.newInstance(empty());
+    this.builder = ChecksumBuilderFactory.newInstance(empty());
   }
 
   public DefaultGAV(final JSONObject json, final String classifier) {
@@ -61,7 +64,7 @@ public class DefaultGAV extends DefaultGAVBasic implements GAV {
   public DefaultGAV(final String from) {
     super(from);
     this.path = null;
-    this.builder = ChecksumBuilder.newInstance(empty());
+    this.builder = ChecksumBuilderFactory.newInstance(empty());
   }
 
   public DefaultGAV(final String groupId, final String artifactId, final String version) {
@@ -90,7 +93,7 @@ public class DefaultGAV extends DefaultGAVBasic implements GAV {
   private DefaultGAV() {
     super();
     path = null;
-    this.builder = ChecksumBuilder.newInstance(empty());
+    this.builder = ChecksumBuilderFactory.newInstance(empty());
   }
 
   private DefaultGAV(final GAV gav, final Path path) {
@@ -100,7 +103,7 @@ public class DefaultGAV extends DefaultGAVBasic implements GAV {
     setClassifier(gav.getClassifier().orElse(null));
     setExtension(gav.getExtension());
     this.path = path;
-    this.builder = ChecksumBuilder.newInstance(empty());
+    this.builder = ChecksumBuilderFactory.newInstance(empty());
   }
 
   @Override
@@ -185,7 +188,7 @@ public class DefaultGAV extends DefaultGAVBasic implements GAV {
 
   @Override
   public GAV withRelativeRoot(RelativeRoot r) {
-    this.builder = ChecksumBuilder.newAlternateInstanceWithRelativeRoot(Optional.ofNullable(r));
+    this.builder = ChecksumBuilderFactory.newAlternateInstanceWithRelativeRoot(Optional.ofNullable(r));
     return this;
   }
 

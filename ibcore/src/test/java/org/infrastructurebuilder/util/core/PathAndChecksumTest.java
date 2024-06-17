@@ -17,12 +17,14 @@
  */
 package org.infrastructurebuilder.util.core;
 
+import static org.infrastructurebuilder.pathref.IBChecksumUtils.copy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
+import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -50,7 +52,7 @@ class PathAndChecksumTest {
   @BeforeEach
   void setUp() throws Exception {
     target = wp.resolve(B_XML);
-    IBUtils.copy(tRoot.resolve(B_XML), target);
+    copy(tRoot.resolve(B_XML), target);
   }
 
   @AfterEach

@@ -24,9 +24,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 
+import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.util.core.IBDirScan;
 import org.infrastructurebuilder.util.core.StringListSupplier;
-import org.infrastructurebuilder.util.core.TestingPathSupplier;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

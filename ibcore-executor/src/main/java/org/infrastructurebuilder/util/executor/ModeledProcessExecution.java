@@ -28,11 +28,12 @@ import java.util.TreeMap;
 import java.util.function.Function;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.core.AbsoluteURLRelativeRoot;
-import org.infrastructurebuilder.util.core.ChecksumBuilder;
-import org.infrastructurebuilder.util.core.JSONAndChecksumEnabled;
+import org.infrastructurebuilder.pathref.AbsoluteURLRelativeRoot;
+import org.infrastructurebuilder.pathref.ChecksumBuilder;
+import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
+import org.infrastructurebuilder.pathref.JSONAndChecksumEnabled;
+import org.infrastructurebuilder.pathref.RelativeRoot;
 import org.infrastructurebuilder.util.core.Modeled;
-import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.executor.model.executor.model.utils.IBCoreExecutorModelUtils;
 import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.Environment;
 import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.GeneratedProcessExecution;
@@ -43,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class ModeledProcessExecution extends GeneratedProcessExecution implements Modeled, JSONAndChecksumEnabled {
+  private static final long serialVersionUID = 92979582578090306L;
   private final static Logger log = LoggerFactory.getLogger(ModeledProcessExecution.class);
   public final static Function<Environment, Optional<SortedMap<String, String>>> envToMapSS = (e) -> {
     return requireNonNull(e).getEnvEntry().map(es -> es.stream().collect(toMap(k -> k.getKey(), v -> v.getValue(), //
@@ -99,7 +101,7 @@ public class ModeledProcessExecution extends GeneratedProcessExecution implement
 
   @Override
   public ChecksumBuilder getChecksumBuilder() {
-    return ChecksumBuilder.newAlternateInstanceWithRelativeRoot(this.getRelativeRoot()).addString(getModelVersion()) //
+    return ChecksumBuilderFactory.newAlternateInstanceWithRelativeRoot(this.getRelativeRoot()).addString(getModelVersion()) //
         .addString(getId()) //
         .addString(getExecutable()) //
         .addListString(getArguments()) //

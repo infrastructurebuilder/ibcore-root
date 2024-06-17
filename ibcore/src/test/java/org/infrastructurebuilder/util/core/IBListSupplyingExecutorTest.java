@@ -17,7 +17,6 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -30,6 +29,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

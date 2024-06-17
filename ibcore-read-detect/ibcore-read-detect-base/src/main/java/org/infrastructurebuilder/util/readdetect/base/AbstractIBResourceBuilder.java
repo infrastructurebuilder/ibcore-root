@@ -19,7 +19,7 @@ package org.infrastructurebuilder.util.readdetect.base;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
-import static org.infrastructurebuilder.util.constants.IBConstants.NO_PATH_SUPPLIED;
+import static org.infrastructurebuilder.constants.IBConstants.NO_PATH_SUPPLIED;
 import static org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory.extracted;
 import static org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory.toType;
 
@@ -29,11 +29,10 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.core.Checksum;
-import org.infrastructurebuilder.util.core.RelativeRoot;
+import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel.IBMetadataModelBuilderBase;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;

@@ -17,18 +17,18 @@
  */
 package org.infrastructurebuilder.util.extensionmapper.basic;
 
-import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_XML;
-import static org.infrastructurebuilder.util.constants.IBConstants.DEFAULT_EXTENSION;
-import static org.infrastructurebuilder.util.constants.IBConstants.ORG_W3C_DOM_NODE;
-import static org.infrastructurebuilder.util.constants.IBConstants.VIDEO_AVI_1;
-import static org.infrastructurebuilder.util.constants.IBConstants.XML;
+import static org.infrastructurebuilder.constants.IBConstants.APPLICATION_XML;
+import static org.infrastructurebuilder.constants.IBConstants.DEFAULT_EXTENSION;
+import static org.infrastructurebuilder.constants.IBConstants.ORG_W3C_DOM_NODE;
+import static org.infrastructurebuilder.constants.IBConstants.VIDEO_AVI_1;
+import static org.infrastructurebuilder.constants.IBConstants.XML;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.SortedSet;
 
-import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
+import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

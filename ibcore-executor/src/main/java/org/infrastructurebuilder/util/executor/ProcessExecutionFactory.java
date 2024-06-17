@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.pathref.Checksum;
 
 /**
  * A {@code ProcessExecutionFactory} must, by contract, supply the work directory as a {@link Path}, a runner-unique id

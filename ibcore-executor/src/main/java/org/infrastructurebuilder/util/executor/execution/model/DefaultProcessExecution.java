@@ -33,9 +33,10 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.infrastructurebuilder.util.core.AbsolutePathRelativeRoot;
-import org.infrastructurebuilder.util.core.ChecksumBuilder;
-import org.infrastructurebuilder.util.core.RelativeRoot;
+import org.infrastructurebuilder.pathref.AbsolutePathRelativeRoot;
+import org.infrastructurebuilder.pathref.ChecksumBuilder;
+import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
+import org.infrastructurebuilder.pathref.RelativeRoot;
 import org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream;
 import org.infrastructurebuilder.util.executor.ModeledProcessExecution;
 import org.infrastructurebuilder.util.executor.ProcessException;
@@ -61,7 +62,7 @@ public class DefaultProcessExecution implements ProcessExecution {
   private ProcessExecutor executor;
   private ListCapturingLogOutputStream stdErr;// = new ListCapturingLogOutputStream(empty(), empty());
   private ListCapturingLogOutputStream stdOut;// = new ListCapturingLogOutputStream(empty(), empty());
-  private final ChecksumBuilder builder = ChecksumBuilder.newInstance();
+  private final ChecksumBuilder builder = ChecksumBuilderFactory.newInstance();
 
   public DefaultProcessExecution() {
     this.addl = null;

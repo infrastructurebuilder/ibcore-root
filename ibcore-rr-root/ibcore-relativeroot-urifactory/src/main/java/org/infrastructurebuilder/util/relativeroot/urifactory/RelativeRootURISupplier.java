@@ -36,10 +36,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.core.AbstractBaseRelativeRoot;
+import org.infrastructurebuilder.pathref.AbstractBaseRelativeRoot;
+import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.RelativeRootSupplier;
 import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.core.RelativeRoot;
-import org.infrastructurebuilder.util.core.RelativeRootSupplier;
 import org.infrastructurebuilder.util.relativeroot.base.AbstractRelativeRootBasicPathPropertiesSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,7 +116,10 @@ public class RelativeRootURISupplier implements RelativeRootSupplier {
   public Optional<RelativeRoot> getRelativeRoot(Object data) {
     if (data instanceof URL x) {
       withPath(x);
-      return Optional.empty();
+      return getRelativeRoot();
+    } else if (data instanceof String s) {
+      withPath(cet.returns(() -> new URL(s)));
+      return getRelativeRoot();
     } else {
       log.error("Data must be a URL " + data);
       return Optional.empty();
@@ -131,7 +134,6 @@ public class RelativeRootURISupplier implements RelativeRootSupplier {
 
     protected RelativeRootURI(String u) {
       super(u);
-      // TODO Auto-generated constructor stub
     }
 
     @Override

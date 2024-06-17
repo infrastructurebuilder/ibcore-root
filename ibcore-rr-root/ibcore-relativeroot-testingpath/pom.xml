@@ -40,5 +40,11 @@
 			<groupId>org.infrastructurebuilder.relativeroot</groupId>
 			<artifactId>ibcore-relativeroot-base</artifactId>
 		</dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore-pathref</artifactId>
+      <type>test-jar</type>
+      <scope>compile</scope>
+    </dependency>
 	</dependencies>
 </project>

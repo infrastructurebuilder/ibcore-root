@@ -27,6 +27,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.ChecksumBuilder;
+import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
+import org.infrastructurebuilder.pathref.RelativeRoot;
 
 public class DefaultPathAndChecksum implements PathAndChecksum {
 
@@ -74,7 +78,7 @@ public class DefaultPathAndChecksum implements PathAndChecksum {
 
   @Override
   public ChecksumBuilder getChecksumBuilder() {
-    return ChecksumBuilder.flatInstance(this.checksum);
+    return ChecksumBuilderFactory.flatInstance(this.checksum);
   }
 
   @Override

@@ -19,9 +19,9 @@ package org.infrastructurebuilder.util.readdetect.avro;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Objects.requireNonNull;
-import static org.infrastructurebuilder.util.constants.IBConstants.DATE_FORMATTER;
-import static org.infrastructurebuilder.util.constants.IBConstants.TIMESTAMP_FORMATTER;
-import static org.infrastructurebuilder.util.constants.IBConstants.TIME_FORMATTER;
+import static org.infrastructurebuilder.constants.IBConstants.DATE_FORMATTER;
+import static org.infrastructurebuilder.constants.IBConstants.TIMESTAMP_FORMATTER;
+import static org.infrastructurebuilder.constants.IBConstants.TIME_FORMATTER;
 
 import java.time.format.DateTimeFormatter;
 

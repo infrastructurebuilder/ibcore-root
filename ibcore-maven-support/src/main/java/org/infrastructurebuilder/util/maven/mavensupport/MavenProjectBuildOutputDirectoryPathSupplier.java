@@ -26,7 +26,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.apache.maven.project.MavenProject;
-import org.infrastructurebuilder.util.core.PathSupplier;
+import org.infrastructurebuilder.pathref.PathSupplier;
 
 @Named(MavenProjectBuildOutputDirectoryPathSupplier.NAME)
 @Singleton

@@ -23,10 +23,10 @@ import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.Properties;
 
-import org.infrastructurebuilder.util.core.AbsolutePathRelativeRoot;
-import org.infrastructurebuilder.util.core.AbstractBaseRelativeRoot;
-import org.infrastructurebuilder.util.core.RelativeRoot;
-import org.infrastructurebuilder.util.core.RelativeRootSupplier;
+import org.infrastructurebuilder.pathref.AbsolutePathRelativeRoot;
+import org.infrastructurebuilder.pathref.AbstractBaseRelativeRoot;
+import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.RelativeRootSupplier;
 import org.slf4j.Logger;
 
 abstract public class AbstractRelativeRootBasicPathPropertiesSupplier implements RelativeRootSupplier {

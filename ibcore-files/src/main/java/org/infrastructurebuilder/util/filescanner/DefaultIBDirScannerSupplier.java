@@ -30,11 +30,11 @@ import java.util.function.BooleanSupplier;
 
 import javax.inject.Named;
 
+import org.infrastructurebuilder.pathref.PathSupplier;
 import org.infrastructurebuilder.util.core.AbstractBaseIBDirScan;
 import org.infrastructurebuilder.util.core.IBDirScan;
 import org.infrastructurebuilder.util.core.IBDirScanner;
 import org.infrastructurebuilder.util.core.IBDirScannerSupplier;
-import org.infrastructurebuilder.util.core.PathSupplier;
 import org.infrastructurebuilder.util.core.StringListSupplier;
 
 @Named

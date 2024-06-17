@@ -25,9 +25,10 @@ import java.nio.file.Path;
 
 import org.apache.maven.model.Build;
 import org.apache.maven.project.MavenProject;
+import org.infrastructurebuilder.pathref.IBChecksumUtils;
+import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.core.RelativeRoot;
-import org.infrastructurebuilder.util.core.TestingPathSupplier;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,7 +58,7 @@ class MavenBackedRelativeRootProtocolTest {
     target = tps.get();
 
     var xfile = target.resolve(XTXT);
-    IBUtils.copy(tps.getTestClasses().resolve(XTXT), xfile);
+    IBChecksumUtils.copy(tps.getTestClasses().resolve(XTXT), xfile);
     project = new MavenProject();
     Build b = new Build();
 

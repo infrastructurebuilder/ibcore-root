@@ -23,6 +23,8 @@ package org.infrastructurebuilder.util.mavendownloadplugin.cache;
  * (including Java serialization changes, or even moving to a different serialization mechanism (JSON, XML, etc.).</p>
  */
 class IncompatibleIndexException extends Exception {
+    private static final long serialVersionUID = -7428088362523122344L;
+
     IncompatibleIndexException(Exception cause) {
         super(cause);
     }

@@ -17,7 +17,7 @@
  */
 package org.infrastructurebuilder.util.readdetect.base;
 
-import static org.infrastructurebuilder.util.constants.IBConstants.IMAGE_JPG;
+import static org.infrastructurebuilder.constants.IBConstants.IMAGE_JPG;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -29,13 +29,14 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.infrastructurebuilder.util.constants.IBConstants;
-import org.infrastructurebuilder.util.core.AbsolutePathRelativeRoot;
-import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.constants.IBConstants;
+import org.infrastructurebuilder.pathref.AbsolutePathRelativeRoot;
+import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.IBChecksumUtils;
+import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.OptStream;
-import org.infrastructurebuilder.util.core.RelativeRoot;
-import org.infrastructurebuilder.util.core.TestingPathSupplier;
 import org.infrastructurebuilder.util.readdetect.base.IBResource;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathIBResourceBuilderFactory;
@@ -64,7 +65,7 @@ public class IBResourceModelTest {
     source = wps.getTestClasses().resolve("rick.jpg");
     root = wps.get();
     path = wps.get().resolve(UUID.randomUUID().toString());
-    IBUtils.copy(source, path);
+    IBChecksumUtils.copy(source, path);
     lc = new Checksum(source);
     rrs = new AbsolutePathRelativeRoot(root);
     f = new AbsolutePathIBResourceBuilderFactory();

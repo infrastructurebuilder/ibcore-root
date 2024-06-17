@@ -19,6 +19,7 @@ package org.infrastructurebuilder.util.core;
 
 import java.util.List;
 
+import org.infrastructurebuilder.pathref.JSONAndChecksumEnabled;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

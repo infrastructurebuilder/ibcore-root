@@ -20,16 +20,15 @@ package org.infrastructurebuilder.util.readdetect.base;
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static java.nio.file.StandardOpenOption.READ;
 import static java.util.Objects.hash;
-import static java.util.Optional.empty;
-import static org.infrastructurebuilder.util.constants.IBConstants.CREATE_DATE;
-import static org.infrastructurebuilder.util.constants.IBConstants.MIME_TYPE;
-import static org.infrastructurebuilder.util.constants.IBConstants.MOST_RECENT_READ_TIME;
-import static org.infrastructurebuilder.util.constants.IBConstants.PATH;
-import static org.infrastructurebuilder.util.constants.IBConstants.PATH_CHECKSUM;
-import static org.infrastructurebuilder.util.constants.IBConstants.SIZE;
-import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_NAME;
-import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_URL;
-import static org.infrastructurebuilder.util.constants.IBConstants.UPDATE_DATE;
+import static org.infrastructurebuilder.constants.IBConstants.CREATE_DATE;
+import static org.infrastructurebuilder.constants.IBConstants.MIME_TYPE;
+import static org.infrastructurebuilder.constants.IBConstants.MOST_RECENT_READ_TIME;
+import static org.infrastructurebuilder.constants.IBConstants.PATH;
+import static org.infrastructurebuilder.constants.IBConstants.PATH_CHECKSUM;
+import static org.infrastructurebuilder.constants.IBConstants.SIZE;
+import static org.infrastructurebuilder.constants.IBConstants.SOURCE_NAME;
+import static org.infrastructurebuilder.constants.IBConstants.SOURCE_URL;
+import static org.infrastructurebuilder.constants.IBConstants.UPDATE_DATE;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -42,17 +41,18 @@ import java.util.Optional;
 import java.util.StringJoiner;
 
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
-import org.infrastructurebuilder.util.constants.IBConstants;
-import org.infrastructurebuilder.util.core.Checksum;
-import org.infrastructurebuilder.util.core.ChecksumBuilder;
-import org.infrastructurebuilder.util.core.ChecksumEnabled;
+import org.infrastructurebuilder.constants.IBConstants;
+import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.ChecksumBuilder;
+import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
+import org.infrastructurebuilder.pathref.ChecksumEnabled;
+import org.infrastructurebuilder.pathref.JSONBuilder;
+import org.infrastructurebuilder.pathref.JSONOutputEnabled;
+import org.infrastructurebuilder.pathref.RelativeRoot;
 import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.core.JSONBuilder;
-import org.infrastructurebuilder.util.core.JSONOutputEnabled;
 import org.infrastructurebuilder.util.core.Modeled;
 import org.infrastructurebuilder.util.core.NameDescribed;
 import org.infrastructurebuilder.util.core.OptStream;
-import org.infrastructurebuilder.util.core.RelativeRoot;
 import org.infrastructurebuilder.util.readdetect.base.impls.IBURLPlexusIOResource;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
@@ -317,7 +317,7 @@ public interface IBResource extends JSONOutputEnabled, ChecksumEnabled, NameDesc
   IBResourceModel copyModel();
 
   default ChecksumBuilder getChecksumBuilder() {
-    return ChecksumBuilder.newInstance(this.getRelativeRoot())
+    return ChecksumBuilderFactory.newInstance(this.getRelativeRoot())
         .addChecksum(new Checksum(copyModel().getStreamChecksum()));
   }
 

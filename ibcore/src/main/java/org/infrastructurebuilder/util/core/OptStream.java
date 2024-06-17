@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
+import org.infrastructurebuilder.pathref.Checksum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

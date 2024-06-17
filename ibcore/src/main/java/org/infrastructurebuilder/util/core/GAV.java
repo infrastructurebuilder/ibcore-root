@@ -22,6 +22,11 @@ import static java.util.Optional.empty;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import org.infrastructurebuilder.pathref.ChecksumBuilder;
+import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
+import org.infrastructurebuilder.pathref.JSONAndChecksumEnabled;
+import org.infrastructurebuilder.pathref.JSONBuilder;
+import org.infrastructurebuilder.pathref.RelativeRoot;
 import org.infrastructurebuilder.util.versions.GAVBasic;
 import org.json.JSONObject;
 
@@ -45,7 +50,7 @@ public interface GAV extends GAVBasic, JSONAndChecksumEnabled {
   }
 
   default ChecksumBuilder getDefaultChecksumBuilder() {
-    return ChecksumBuilder.newInstance() //
+    return ChecksumBuilderFactory.newInstance() //
         .addString(getGroupId()) //
         .addString(getArtifactId()) //
         .addString(getVersion()) //

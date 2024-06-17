@@ -24,9 +24,9 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.util.core.Checksum;
-import org.infrastructurebuilder.util.core.RelativeRoot;
-import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
+import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceCacheModel;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
@@ -55,6 +55,11 @@ abstract public class AbstractIBResourceBuilderFactory<I> extends IBResourceCach
   }
 
   abstract protected Supplier<? extends IBResourceBuilder<I>> getBuilder();
+
+  @Override
+  public boolean respondsTo(String input) {
+    return getName().equals(input);
+  }
 
   @Override
   public final RelativeRoot getRelativeRoot() {

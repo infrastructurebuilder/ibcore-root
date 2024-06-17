@@ -17,7 +17,7 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
-import static org.infrastructurebuilder.util.constants.IBConstants.GITHUB;
+import static org.infrastructurebuilder.constants.IBConstants.GITHUB;
 
 import java.util.Arrays;
 import java.util.Collections;

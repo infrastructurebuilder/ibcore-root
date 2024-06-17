@@ -22,8 +22,8 @@ import static java.util.Objects.requireNonNull;
 import java.util.Optional;
 import java.util.Set;
 
-import org.infrastructurebuilder.util.core.RelativeRoot;
-import org.infrastructurebuilder.util.core.RelativeRootFactory;
+import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.RelativeRootFactory;
 
 abstract public class AbstractIBResourceBuilderFactorySupplier implements IBResourceBuilderFactorySupplier {
   private final RelativeRootFactory root;

@@ -22,6 +22,7 @@ import static java.util.Collections.emptyList;
 import java.nio.file.Path;
 import java.util.List;
 
+import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.credentials.basic.CredentialsFactory;
 
 /**

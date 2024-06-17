@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.SortedSet;
 
+import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
+
 public class FakeTypeToExtensionMapper implements TypeToExtensionMapper {
 
   public FakeTypeToExtensionMapper() {

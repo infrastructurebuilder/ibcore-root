@@ -20,8 +20,7 @@ package org.infrastructurebuilder.util.readdetect.base;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.util.core.PathAndChecksum;
-import org.infrastructurebuilder.util.core.RelativeRoot;
+import org.infrastructurebuilder.pathref.RelativeRoot;
 
 public class DefaultEmptyIBResourceBuilder extends AbstractIBResourceBuilder<Void> {
 

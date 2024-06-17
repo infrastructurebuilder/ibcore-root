@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel;
-import org.json.JSONObject;
 
 public interface IBResourceCacheBuilder {
   // TODO this might need to be set automatically

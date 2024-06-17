@@ -28,6 +28,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.codehaus.plexus.logging.console.ConsoleLogger;
+import org.infrastructurebuilder.pathref.IBChecksumUtils;
 import org.infrastructurebuilder.util.config.ConfigMapBuilder;
 import org.infrastructurebuilder.util.config.ConfigMapBuilderSupplier;
 import org.infrastructurebuilder.util.config.impl.DefaultConfigMapBuilderSupplier;
@@ -59,7 +60,7 @@ public class DefaultProcessRunnerSupplierTest {
 
   @AfterAll
   public static void tearDownAfterClass() throws Exception {
-    IBUtils.deletePath(random_target);
+    IBChecksumUtils.deletePath(random_target);
   }
 
   private ConfigMapBuilder cms, cms2;

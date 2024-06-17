@@ -23,15 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
-import org.infrastructurebuilder.util.constants.IBConstants;
-import org.infrastructurebuilder.util.core.AbstractIBRuntimeUtils;
-import org.infrastructurebuilder.util.core.DefaultGAV;
-import org.infrastructurebuilder.util.core.GAV;
-import org.infrastructurebuilder.util.core.IBArtifactVersionMapper;
-import org.infrastructurebuilder.util.core.TestingPathSupplier;
+import org.infrastructurebuilder.constants.IBConstants;
+import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
 import org.infrastructurebuilder.util.credentials.basic.CredentialsFactory;
 import org.infrastructurebuilder.util.credentials.basic.DefaultBasicCredentials;

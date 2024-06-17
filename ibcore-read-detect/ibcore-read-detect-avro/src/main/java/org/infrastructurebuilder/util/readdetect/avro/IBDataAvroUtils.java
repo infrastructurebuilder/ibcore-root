@@ -19,12 +19,12 @@ package org.infrastructurebuilder.util.readdetect.avro;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
+import static org.infrastructurebuilder.constants.IBConstants.FILE_PREFIX;
+import static org.infrastructurebuilder.constants.IBConstants.HTTPS_PREFIX;
+import static org.infrastructurebuilder.constants.IBConstants.HTTP_PREFIX;
+import static org.infrastructurebuilder.constants.IBConstants.JAR_PREFIX;
+import static org.infrastructurebuilder.constants.IBConstants.ZIP_PREFIX;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
-import static org.infrastructurebuilder.util.constants.IBConstants.FILE_PREFIX;
-import static org.infrastructurebuilder.util.constants.IBConstants.HTTPS_PREFIX;
-import static org.infrastructurebuilder.util.constants.IBConstants.HTTP_PREFIX;
-import static org.infrastructurebuilder.util.constants.IBConstants.JAR_PREFIX;
-import static org.infrastructurebuilder.util.constants.IBConstants.ZIP_PREFIX;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,11 +41,11 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.generic.MapProxyGenericData;
+import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.pathref.RelativeRoot;
 import org.infrastructurebuilder.util.config.ConfigMapBuilder;
-import org.infrastructurebuilder.util.constants.IBConstants;
 import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.core.RelativeRoot;
 
 public interface IBDataAvroUtils {
   public static final String NO_SCHEMA_CONFIG_FOR_MAPPER = "No schema config for mapper";

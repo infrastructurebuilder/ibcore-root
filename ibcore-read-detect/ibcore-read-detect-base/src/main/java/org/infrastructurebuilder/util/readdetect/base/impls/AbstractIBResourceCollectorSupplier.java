@@ -19,15 +19,11 @@ package org.infrastructurebuilder.util.readdetect.base.impls;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
-import static org.infrastructurebuilder.exceptions.IBException.cet;
-import static org.infrastructurebuilder.util.constants.IBConstants.CACHEDIR;
-import static org.infrastructurebuilder.util.constants.IBConstants.FILEMAPPERS;
-import static org.infrastructurebuilder.util.constants.IBConstants.WORKINGDIR;
+import static org.infrastructurebuilder.constants.IBConstants.CACHEDIR;
+import static org.infrastructurebuilder.constants.IBConstants.FILEMAPPERS;
+import static org.infrastructurebuilder.constants.IBConstants.WORKINGDIR;
 
-import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -35,34 +31,28 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.maven.wagon.proxy.ProxyInfoProvider;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.components.io.filemappers.FileMapper;
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.pathref.AbsolutePathRelativeRoot;
+import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.PathSupplier;
+import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.config.ConfigMap;
-import org.infrastructurebuilder.util.constants.IBConstants;
-import org.infrastructurebuilder.util.core.AbsolutePathRelativeRoot;
-import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.Configurable;
 import org.infrastructurebuilder.util.core.HeadersSupplier;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.LoggerSupplier;
-import org.infrastructurebuilder.util.core.PathAndChecksum;
-import org.infrastructurebuilder.util.core.PathSupplier;
-import org.infrastructurebuilder.util.core.RelativeRoot;
-import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
-import org.infrastructurebuilder.util.mavendownloadplugin.WGetBuilder;
 import org.infrastructurebuilder.util.mavendownloadplugin.WGetBuilderFactory;
 import org.infrastructurebuilder.util.mavendownloadplugin.nonpublic.DefaultWGetBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.base.IBResource;
-import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceCollector;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceCollectorSupplier;
-import org.infrastructurebuilder.util.readdetect.base.IBResourceException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 

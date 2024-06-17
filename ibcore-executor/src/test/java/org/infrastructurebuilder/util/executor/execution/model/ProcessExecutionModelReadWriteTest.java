@@ -31,7 +31,7 @@ import java.util.Properties;
 import java.util.UUID;
 
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.infrastructurebuilder.util.constants.IBConstants;
+import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.Environment;
 import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.GeneratedProcessExecutionResult;
 import org.junit.jupiter.api.AfterAll;

@@ -17,7 +17,7 @@
  */
 package org.infrastructurebuilder.maven.util.config;
 
-import static org.infrastructurebuilder.util.constants.IBConstants.MAVEN;
+import static org.infrastructurebuilder.constants.IBConstants.MAVEN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

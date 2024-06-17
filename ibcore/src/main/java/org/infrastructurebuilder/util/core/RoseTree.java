@@ -21,13 +21,17 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.ChecksumBuilder;
+import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
+import org.infrastructurebuilder.pathref.JSONAndChecksumEnabled;
 
 public interface RoseTree<A extends JSONAndChecksumEnabled> extends JSONAndChecksumEnabled {
 
   @Override
   default Checksum asChecksum() {
     return IBException.cet.returns(() -> {
-      final ChecksumBuilder b = ChecksumBuilder.newInstance().addChecksumEnabled(getValue());
+      final ChecksumBuilder b = ChecksumBuilderFactory.newInstance().addChecksumEnabled(getValue());
       getChildren().stream()
 
           .sorted((lhs, rhs) -> lhs.asChecksum().compareTo(rhs.asChecksum()))

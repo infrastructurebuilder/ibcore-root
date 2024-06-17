@@ -18,7 +18,7 @@
 package org.infrastructurebuilder.util.artifacts;
 
 import static java.util.stream.Collectors.toList;
-import static org.infrastructurebuilder.util.constants.IBConstants.DEFAULT;
+import static org.infrastructurebuilder.constants.IBConstants.DEFAULT;
 
 import java.util.List;
 import java.util.Map;

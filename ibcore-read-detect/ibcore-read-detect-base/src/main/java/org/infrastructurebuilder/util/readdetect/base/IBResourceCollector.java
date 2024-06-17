@@ -20,7 +20,7 @@ package org.infrastructurebuilder.util.readdetect.base;
 import java.util.List;
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
 import org.json.JSONObject;
 

@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.core.JSONOutputEnabled;
+import org.infrastructurebuilder.pathref.JSONOutputEnabled;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONPointer;
