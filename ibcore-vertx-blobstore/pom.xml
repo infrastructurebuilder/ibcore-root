@@ -60,8 +60,8 @@
 			<artifactId>vertx-codegen</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.infrastructurebuilder.relativeroot</groupId>
-			<artifactId>ibcore-relativeroot-setpath</artifactId>
+			<groupId>org.infrastructurebuilder.pathref</groupId>
+			<artifactId>ibcore-pathref-setpath</artifactId>
 		</dependency>
 		<!--
     <dependency>

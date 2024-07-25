@@ -122,10 +122,10 @@
 			<!--			<optional>true</optional>-->
 		</dependency>
 		<dependency>
-			<groupId>org.infrastructurebuilder</groupId>
+			<groupId>org.infrastructurebuilder.pathref</groupId>
 			<artifactId>ibcore-pathref</artifactId>
-			<scope>test</scope>
 			<type>test-jar</type>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

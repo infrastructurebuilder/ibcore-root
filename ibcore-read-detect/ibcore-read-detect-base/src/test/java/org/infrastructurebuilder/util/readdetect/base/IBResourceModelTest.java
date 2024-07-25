@@ -30,10 +30,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.infrastructurebuilder.constants.IBConstants;
-import org.infrastructurebuilder.pathref.AbsolutePathRelativeRoot;
+import org.infrastructurebuilder.pathref.AbsolutePathRef;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.IBChecksumUtils;
-import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.OptStream;
@@ -56,7 +56,7 @@ public class IBResourceModelTest {
   private Path root;
   private Path source;
   private Checksum lc;
-  private RelativeRoot rrs;
+  private PathRef rrs;
   private Optional<IBResource> r;
 
   @BeforeEach
@@ -67,7 +67,7 @@ public class IBResourceModelTest {
     path = wps.get().resolve(UUID.randomUUID().toString());
     IBChecksumUtils.copy(source, path);
     lc = new Checksum(source);
-    rrs = new AbsolutePathRelativeRoot(root);
+    rrs = new AbsolutePathRef(root);
     f = new AbsolutePathIBResourceBuilderFactory();
     AbstractPathIBResourceBuilder bb = f.getBuilder().get();
     checksum = new Checksum(source);

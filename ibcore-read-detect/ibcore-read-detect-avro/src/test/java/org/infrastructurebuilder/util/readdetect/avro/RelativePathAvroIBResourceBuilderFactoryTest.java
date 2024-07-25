@@ -25,7 +25,7 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.pathref.AbsolutePathRelativeRoot;
+import org.infrastructurebuilder.pathref.AbsolutePathRef;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.util.readdetect.base.IBResource;
@@ -51,7 +51,7 @@ class RelativePathAvroIBResourceBuilderFactoryTest {
   }
 
   private Path root;
-  private AbsolutePathRelativeRoot rr;
+  private AbsolutePathRef rr;
   private Supplier<? extends AbstractPathIBResourceBuilder> b;
   private Checksum rick;
 
@@ -59,7 +59,7 @@ class RelativePathAvroIBResourceBuilderFactoryTest {
   void setUp() throws Exception {
     this.root = tps.getTestClasses();
     this.rick = new Checksum(this.root.resolve(RICK_JPG));
-    this.rr = new AbsolutePathRelativeRoot(this.root);
+    this.rr = new AbsolutePathRef(this.root);
     this.b = new RelativePathAvroIBResourceBuilderFactory(this.rr)//
         .fromPath(Paths.get(RICK_JPG));
 

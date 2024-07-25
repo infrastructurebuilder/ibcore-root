@@ -40,8 +40,8 @@ public class FakeTSupplierResponsiveFactoryBuilder
   }
 
   @Override
-  public boolean respondsTo(String input) {
-    return Objects.requireNonNull(input).startsWith("X") && this.map.keySet().contains(input);
+  public int respondsTo(String input) {
+    return Objects.requireNonNull(input).startsWith("X") && this.map.keySet().contains(input) ? 0 : -1;
   }
 
 }

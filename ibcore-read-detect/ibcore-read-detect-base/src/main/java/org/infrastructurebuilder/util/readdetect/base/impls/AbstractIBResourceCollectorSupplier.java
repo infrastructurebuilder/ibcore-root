@@ -36,10 +36,10 @@ import org.apache.maven.wagon.proxy.ProxyInfoProvider;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.components.io.filemappers.FileMapper;
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.pathref.AbsolutePathRelativeRoot;
+import org.infrastructurebuilder.pathref.AbsolutePathRef;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.PathSupplier;
-import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.core.Configurable;
@@ -154,7 +154,7 @@ abstract public class AbstractIBResourceCollectorSupplier<I>
       this.wGetBldrFact = Objects.requireNonNull(wgs);
       Objects.requireNonNull(proxinfo).ifPresent(p -> {
       });
-      cf = getBuilderFactory(new AbsolutePathRelativeRoot(workingDir)).withTypeMapper(t2e);
+      cf = getBuilderFactory(new AbsolutePathRef(workingDir)).withTypeMapper(t2e);
       this.workingDir = requireNonNull(workingDir);
       this.mappers = fileMaprs.orElseGet(() -> new FileMapper[0]);
       log.info("Resource Collector created");
@@ -265,5 +265,5 @@ abstract public class AbstractIBResourceCollectorSupplier<I>
     }
   }
 
-  abstract public IBResourceBuilderFactory<I> getBuilderFactory(RelativeRoot rr);
+  abstract public IBResourceBuilderFactory<I> getBuilderFactory(PathRef rr);
 }

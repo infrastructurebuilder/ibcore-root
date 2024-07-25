@@ -33,10 +33,10 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.infrastructurebuilder.pathref.AbsolutePathRelativeRoot;
+import org.infrastructurebuilder.pathref.AbsolutePathRef;
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
-import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream;
 import org.infrastructurebuilder.util.executor.ModeledProcessExecution;
 import org.infrastructurebuilder.util.executor.ProcessException;
@@ -95,8 +95,7 @@ public class DefaultProcessExecution implements ProcessExecution {
         null, // Placeholders until we set the values below
         null, //
         null, //
-        relativeRoot.map(AbsolutePathRelativeRoot::new).flatMap(RelativeRoot::getUrl).map(URL::toExternalForm)
-            .orElse(null),
+        relativeRoot.map(AbsolutePathRef::new).flatMap(PathRef::getUrl).map(URL::toExternalForm).orElse(null),
         requireNonNull(environment).map(DefaultProcessExecution.toEnvironment::apply).map(Environment::new)
             .orElseGet(() -> new Environment()));
     this.gpe.setStdOutPath(getStdOut().getPath().map(Path::toString).orElse(null));
@@ -195,7 +194,7 @@ public class DefaultProcessExecution implements ProcessExecution {
     return gpe.getExitValues().map(ev -> ev.stream().map(Integer::parseInt).toList());
   }
 
-  public Optional<RelativeRoot> getRelativeRoot() {
+  public Optional<PathRef> getRelativeRoot() {
     return gpe.getRelativeRoot();
   }
 

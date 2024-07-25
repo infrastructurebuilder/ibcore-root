@@ -53,7 +53,7 @@ abstract public class AbstractIBResourceSource implements IBResourceSource {
     return this.weight;
   }
 
-  abstract protected JSONBuilder getJsonBuilder();// JSONBuilder.newInstance(getRelativeRoot().flatMap(RelativeRoot::getPath))
+  abstract protected JSONBuilder getJsonBuilder();// JSONBuilder.newInstance(getRelativeRoot().flatMap(PathRef::getPath))
 
   @Override
   public JSONObject asJSON() {

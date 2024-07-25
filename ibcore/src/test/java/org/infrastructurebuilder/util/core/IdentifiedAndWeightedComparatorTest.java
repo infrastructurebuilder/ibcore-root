@@ -47,8 +47,8 @@ public class IdentifiedAndWeightedComparatorTest {
     assertEquals(0, c.compare(i2, i2));
     assertTrue(c.compare(i1, i2) < 0);
     assertTrue(c.compare(i2, i1) > 0);
-    assertTrue(c.compare(i1, i3) < 0);
-    assertTrue(c.compare(i3, i1) > 0);
+    assertTrue(c.compare(i1, i3) > 0);
+    assertTrue(c.compare(i3, i1) < 0);
     assertEquals(Integer.valueOf(2), i3.getWeight());
     assertEquals("A", i3.getId());
     assertEquals(Integer.valueOf(0), i4.getWeight());

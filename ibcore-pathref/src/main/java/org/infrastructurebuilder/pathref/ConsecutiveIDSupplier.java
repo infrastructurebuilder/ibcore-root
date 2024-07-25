@@ -21,6 +21,8 @@ import java.util.EmptyStackException;
 import java.util.Stack;
 import java.util.UUID;
 
+import org.infrastructurebuilder.api.base.IdentifierSupplier;
+
 /**
  * TODO This isn't correct. I think I forgot to implement this properly
  *

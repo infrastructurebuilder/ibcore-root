@@ -49,7 +49,7 @@
 //import org.infrastructurebuilder.objectmapper.jackson.ObjectMapperUtils;
 //import org.infrastructurebuilder.util.core.Checksum;
 //import org.infrastructurebuilder.util.core.IBUtils;
-//import org.infrastructurebuilder.util.core.RelativeRoot;
+//import org.infrastructurebuilder.util.core.PathRef;
 //import org.infrastructurebuilder.util.readdetect.base.IBResource;
 //import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory;
 //import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel;
@@ -66,15 +66,15 @@
 //  protected final IBResourceModel m;
 //  protected Checksum checksum;
 //
-//  protected final RelativeRoot root;
+//  protected final PathRef root;
 //
-//  public AbstractIBResource(@Nullable RelativeRoot root, IBResourceModel model) {
+//  public AbstractIBResource(@Nullable PathRef root, IBResourceModel model) {
 //    this.root = root;
 //    this.m = model;
 //    log.info("AbstractIBResource with " + this.root + " " + this.m);
 //  }
 //
-//  public AbstractIBResource(@Nullable RelativeRoot root) {
+//  public AbstractIBResource(@Nullable PathRef root) {
 //    this(root, new IBResourceModel());
 //  }
 //
@@ -86,7 +86,7 @@
 //  }
 //
 //  @Override
-//  public Optional<RelativeRoot> getRelativeRoot() {
+//  public Optional<PathRef> getRelativeRoot() {
 //    return ofNullable(this.root);
 //  }
 //

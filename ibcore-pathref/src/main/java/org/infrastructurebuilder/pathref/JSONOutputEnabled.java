@@ -24,7 +24,7 @@ import org.json.JSONObject;
 public interface JSONOutputEnabled {
   JSONObject asJSON();
 
-  default Optional<RelativeRoot> getRelativeRoot() {
+  default Optional<PathRef> getRelativeRoot() {
     return Optional.empty();
   }
 }

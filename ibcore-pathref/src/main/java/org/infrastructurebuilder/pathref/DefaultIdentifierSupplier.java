@@ -21,6 +21,8 @@ import java.util.UUID;
 
 import javax.inject.Named;
 
+import org.infrastructurebuilder.api.base.IdentifierSupplier;
+
 /**
  * Supplies a random UUID string each call
  */

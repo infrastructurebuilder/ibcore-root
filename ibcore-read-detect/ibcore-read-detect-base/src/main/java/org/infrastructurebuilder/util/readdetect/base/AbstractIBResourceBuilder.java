@@ -32,7 +32,7 @@ import java.util.Optional;
 
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.Checksum;
-import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel.IBMetadataModelBuilderBase;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
@@ -53,9 +53,9 @@ abstract public class AbstractIBResourceBuilder<I> implements IBResourceBuilder<
   private boolean typeSet = false;
   protected Path sourcePath;
   private Path finalRestingPath;
-  private final RelativeRoot root;
+  private final PathRef root;
 
-  public AbstractIBResourceBuilder(RelativeRoot root) {
+  public AbstractIBResourceBuilder(PathRef root) {
     this.root = root;
   }
 
@@ -254,7 +254,7 @@ abstract public class AbstractIBResourceBuilder<I> implements IBResourceBuilder<
     return this;
   }
 
-  public Optional<RelativeRoot> getRoot() {
+  public Optional<PathRef> getRoot() {
     return Optional.ofNullable(root);
   }
 

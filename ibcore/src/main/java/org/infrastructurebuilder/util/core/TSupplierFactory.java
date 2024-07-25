@@ -20,6 +20,7 @@ package org.infrastructurebuilder.util.core;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.infrastructurebuilder.api.base.NameDescribed;
 import org.infrastructurebuilder.exceptions.IBException;
 
 public interface TSupplierFactory<T, C> extends Supplier<TSupplier<T>>, //

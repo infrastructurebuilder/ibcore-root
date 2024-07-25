@@ -17,12 +17,12 @@
  */
 package org.infrastructurebuilder.util.readdetect.base;
 
+import org.infrastructurebuilder.api.base.NameDescribed;
+import org.infrastructurebuilder.api.base.ResponsiveTo;
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
 import org.infrastructurebuilder.pathref.JSONAndChecksumEnabled;
 import org.infrastructurebuilder.util.core.IdentifiedAndWeighted;
-import org.infrastructurebuilder.util.core.NameDescribed;
-import org.infrastructurebuilder.util.core.ResponsiveTo;
 import org.json.JSONObject;
 
 public interface IBResourceSource

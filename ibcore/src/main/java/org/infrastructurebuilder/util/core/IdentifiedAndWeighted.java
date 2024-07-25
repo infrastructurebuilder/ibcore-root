@@ -17,6 +17,8 @@
  */
 package org.infrastructurebuilder.util.core;
 
+import org.infrastructurebuilder.api.Weighted;
+
 /**
  * Merge identified and weighted for a type of convenience since they often go together.
  *

@@ -80,12 +80,11 @@ public class ChecksumBuilderFactoryTest {
   public void setUp() throws Exception {
     optionalPath = Optional
         .of(Paths.get(ofNullable(System.getProperty(TARGET_DIR_PROPERTY)).orElse(MAVEN_TARGET_PATH)).toAbsolutePath());
-    sha512 = ChecksumBuilderFactory.newInstance(optionalPath.map(AbsolutePathRelativeRoot::new));
+    sha512 = ChecksumBuilderFactory.newInstance(optionalPath.map(AbsolutePathRef::new));
     map = new HashMap<>();
     m = new HashMap<>();
     t = new ChecksumEnabled() {
-      private ChecksumBuilder thisBuilder = ChecksumBuilderFactory
-          .newInstance(optionalPath.map(AbsolutePathRelativeRoot::new));
+      private ChecksumBuilder thisBuilder = ChecksumBuilderFactory.newInstance(optionalPath.map(AbsolutePathRef::new));
 
       @Override
       public ChecksumBuilder getChecksumBuilder() {
@@ -100,8 +99,8 @@ public class ChecksumBuilderFactoryTest {
 
   @Test
   public void sha1Test() {
-    assertNotNull(ChecksumBuilderFactory.newAlternateInstanceWithRelativeRoot("SHA-1",
-        optionalPath.map(AbsolutePathRelativeRoot::new)));
+    assertNotNull(
+        ChecksumBuilderFactory.newAlternateInstanceWithRelativeRoot("SHA-1", optionalPath.map(AbsolutePathRef::new)));
   }
 
   @Test

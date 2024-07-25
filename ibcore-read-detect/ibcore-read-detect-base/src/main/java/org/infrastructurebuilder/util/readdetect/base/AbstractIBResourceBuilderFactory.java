@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.pathref.Checksum;
-import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceCacheModel;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
@@ -40,11 +40,11 @@ abstract public class AbstractIBResourceBuilderFactory<I> extends IBResourceCach
 
   private final static Logger log = LoggerFactory.getLogger(AbstractIBResourceBuilderFactory.class);
 
-  private final RelativeRoot _root;
+  private final PathRef _root;
 
   private final AtomicReference<TypeToExtensionMapper> t2e = new AtomicReference<>();
 
-  public AbstractIBResourceBuilderFactory(RelativeRoot relRoot) {
+  public AbstractIBResourceBuilderFactory(PathRef relRoot) {
     super();
     this._root = relRoot;
 //    this.setModelEncoding(UTF_8);
@@ -57,12 +57,12 @@ abstract public class AbstractIBResourceBuilderFactory<I> extends IBResourceCach
   abstract protected Supplier<? extends IBResourceBuilder<I>> getBuilder();
 
   @Override
-  public boolean respondsTo(String input) {
-    return getName().equals(input);
+  public int respondsTo(String input) {
+    return getName().equals(input) ? 0 : -1;
   }
 
   @Override
-  public final RelativeRoot getRelativeRoot() {
+  public final PathRef getRelativeRoot() {
     return this._root;
   }
 

@@ -41,6 +41,7 @@ import java.util.Optional;
 import java.util.StringJoiner;
 
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
+import org.infrastructurebuilder.api.base.NameDescribed;
 import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
@@ -48,10 +49,9 @@ import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
 import org.infrastructurebuilder.pathref.ChecksumEnabled;
 import org.infrastructurebuilder.pathref.JSONBuilder;
 import org.infrastructurebuilder.pathref.JSONOutputEnabled;
-import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.Modeled;
-import org.infrastructurebuilder.util.core.NameDescribed;
 import org.infrastructurebuilder.util.core.OptStream;
 import org.infrastructurebuilder.util.readdetect.base.impls.IBURLPlexusIOResource;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
@@ -64,7 +64,7 @@ import org.json.JSONObject;
  * It may be possible for a consumer to read that stream, if the IBResource is "realized". It may be possible to acquire
  * the stream from a URL if the type of the URL has a protocol that can be read from the running JVM.
  *
- * Realized IBResource instances are <u>always</u> stored under a RelativeRoot (hereafter "the relroot") on the local
+ * Realized IBResource instances are <u>always</u> stored under a PathRef (hereafter "the relroot") on the local
  * filesystem.
  *
  * All IBResource instances must have a source that is expected to be the location from which the stream would or did
@@ -248,7 +248,7 @@ public interface IBResource extends JSONOutputEnabled, ChecksumEnabled, NameDesc
   Optional<Long> size();
 
   default JSONObject asJSON() {
-    return new JSONBuilder(getRelativeRoot().flatMap(RelativeRoot::getPath))
+    return new JSONBuilder(getRelativeRoot().flatMap(PathRef::getPath))
 
         .addChecksum(PATH_CHECKSUM, getTChecksum())
 
@@ -286,13 +286,13 @@ public interface IBResource extends JSONOutputEnabled, ChecksumEnabled, NameDesc
   }
 
   /**
-   * @return true if this file was cached, which means the path is based on a RelativeRoot
+   * @return true if this file was cached, which means the path is based on a PathRef
    */
   default boolean isCached() {
     return false;
   }
 
-  default Optional<RelativeRoot> getRelativeRoot() {
+  default Optional<PathRef> getRelativeRoot() {
     return Optional.empty();
   }
 

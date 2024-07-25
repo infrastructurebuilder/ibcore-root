@@ -32,7 +32,7 @@ public interface IBResourceCache {
   String getModelVersion();
 
   /**
-   * A URL-like for the RelativeRoot of the cache. (Required)
+   * A URL-like for the PathRef of the cache. (Required)
    *
    */
   String getRoot();

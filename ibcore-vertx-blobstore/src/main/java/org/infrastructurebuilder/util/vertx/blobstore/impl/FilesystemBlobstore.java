@@ -44,7 +44,7 @@ import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
 import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.core.RelativeRoot;
+import org.infrastructurebuilder.util.core.PathRef;
 import org.infrastructurebuilder.util.core.RelativeRootFactory;
 import org.infrastructurebuilder.util.core.RelativeRootSupplier;
 import org.infrastructurebuilder.util.readdetect.base.IBResource;
@@ -70,7 +70,7 @@ public class FilesystemBlobstore implements Blobstore<VertxIBResource> {
   private final static Logger log = LoggerFactory.getLogger(FilesystemBlobstore.class);
   private final static FileSystem fs = Vertx.vertx().fileSystem();
 
-  private final RelativeRoot root;
+  private final PathRef root;
   private final Path metadata;
 
   private final AtomicLong size = new AtomicLong(0);
@@ -79,7 +79,7 @@ public class FilesystemBlobstore implements Blobstore<VertxIBResource> {
   private IBResourceBuilderFactory<Optional<IBResource>> rcf;
 
   public FilesystemBlobstore(RelativeRootSupplier rrs, Long size) {
-    this.root = requireNonNull(requireNonNull(rrs, "RelativeRootSupplier").getRelativeRoot(), "RelativeRoot")
+    this.root = requireNonNull(requireNonNull(rrs, "RelativeRootSupplier").getRelativeRoot(), "PathRef")
         .orElseThrow(() -> new IBException("No relative root"));
     this.rcf = new DefaultIBResourceBuilderFactorySupplier(new RelativeRootFactory(Set.of(rrs))).get(rrs.getName())
         .getRelativeRoot();
@@ -95,7 +95,7 @@ public class FilesystemBlobstore implements Blobstore<VertxIBResource> {
     maxBytes = requireNonNull(size);
   }
 
-//  public final Optional<RelativeRoot> getRelativeRoot() {
+//  public final Optional<PathRef> getRelativeRoot() {
 //    if (this.relRoot == null)
 //      this.relRoot = this.root.get().orElse(null);
 //    return Optional.ofNullable(relRoot);
@@ -139,7 +139,7 @@ public class FilesystemBlobstore implements Blobstore<VertxIBResource> {
         .collect(Collectors.summingLong(IBResource::size));
   }
 
-  public RelativeRoot getRelativeRoot() {
+  public PathRef getRelativeRoot() {
     return this.root;
   }
 

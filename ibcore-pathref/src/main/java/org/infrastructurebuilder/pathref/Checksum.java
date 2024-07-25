@@ -45,8 +45,7 @@ import org.json.JSONObject;
  * Checksums are used extensively within InfrastructureBuilder code
  *
  * They are, by convention, SHA-512 sums of portable values. This is often metadata, but is frequently done by
- * specifying a {@link RelativeRoot} and using {@link ChecksumBuilder} and {@link JSONBuilder} to manage metadata
- * specifics.
+ * specifying a {@link PathRef} and using {@link ChecksumBuilder} and {@link JSONBuilder} to manage metadata specifics.
  */
 public class Checksum extends AbstractChecksum {
 

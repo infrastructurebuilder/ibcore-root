@@ -41,7 +41,7 @@ import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.ChecksumBuilder;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.OptStream;
-import org.infrastructurebuilder.util.core.RelativeRoot;
+import org.infrastructurebuilder.util.core.PathRef;
 import org.infrastructurebuilder.util.readdetect.base.IBResource;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory;
@@ -65,11 +65,11 @@ public class VertxDefaultIBResource implements VertxIBResource {
   private final Path cachedPath;
   private Checksum checksum;
 
-  private final RelativeRoot root;
+  private final PathRef root;
 
   private final Vertx vertx;
 
-  public VertxDefaultIBResource(Vertx vertx, Optional<RelativeRoot> root, IBResourceModel m, Path sourcePath) {
+  public VertxDefaultIBResource(Vertx vertx, Optional<PathRef> root, IBResourceModel m, Path sourcePath) {
     this.vertx = Objects.requireNonNull(vertx);
     this.root = Objects.requireNonNull(root).orElse(null);
     this.cachedPath = sourcePath;
@@ -86,11 +86,11 @@ public class VertxDefaultIBResource implements VertxIBResource {
     });
   }
 
-  public VertxDefaultIBResource(Vertx vertx, Optional<RelativeRoot> root, IBResourceModel m) {
+  public VertxDefaultIBResource(Vertx vertx, Optional<PathRef> root, IBResourceModel m) {
     this(vertx, root, m, null);
   }
 
-  public VertxDefaultIBResource(Vertx vertx, Optional<RelativeRoot> root, JSONObject j) {
+  public VertxDefaultIBResource(Vertx vertx, Optional<PathRef> root, JSONObject j) {
     this.vertx = Objects.requireNonNull(vertx);
     this.root = Objects.requireNonNull(root).orElse(null);
     m = IBResourceBuilder.modelFromJSON.apply(j).get();
@@ -100,7 +100,7 @@ public class VertxDefaultIBResource implements VertxIBResource {
 //    this.originalPath = ofNullable(j.optString(IBConstants.ORIGINAL_PATH, null)).map(extracted).orElse(null);
   }
 
-  public VertxDefaultIBResource(Vertx vertx, Optional<RelativeRoot> root, Path path, Checksum checksum,
+  public VertxDefaultIBResource(Vertx vertx, Optional<PathRef> root, Path path, Checksum checksum,
       Optional<String> type, Optional<Properties> addlProps)
   {
     this.vertx = Objects.requireNonNull(vertx);
@@ -121,11 +121,11 @@ public class VertxDefaultIBResource implements VertxIBResource {
     requireNonNull(type).ifPresent(t -> m.setStreamType(t));
   }
 
-  public VertxDefaultIBResource(Vertx vertx, Optional<RelativeRoot> root, Path path, Checksum checksum) {
+  public VertxDefaultIBResource(Vertx vertx, Optional<PathRef> root, Path path, Checksum checksum) {
     this(vertx, root, path, checksum, empty(), empty());
   }
 
-  public VertxDefaultIBResource(Vertx vertx, Optional<RelativeRoot> root, Path p2, Optional<String> name,
+  public VertxDefaultIBResource(Vertx vertx, Optional<PathRef> root, Path p2, Optional<String> name,
       Optional<String> desc, Checksum checksum, Optional<Properties> addlProps)
   {
     this(vertx, root, p2, checksum, of(IBResourceBuilderFactory.toType.apply(p2)), addlProps);
@@ -133,14 +133,14 @@ public class VertxDefaultIBResource implements VertxIBResource {
     this.m.setDescription(requireNonNull(desc).orElse(null));
   }
 
-  public VertxDefaultIBResource(Vertx vertx, Optional<RelativeRoot> root, Path path, Checksum checksum,
+  public VertxDefaultIBResource(Vertx vertx, Optional<PathRef> root, Path path, Checksum checksum,
       Optional<String> type)
   {
     this(vertx, root, path, checksum, type, empty());
   }
 
   @Override
-  public Optional<RelativeRoot> getRelativeRoot() {
+  public Optional<PathRef> getRelativeRoot() {
     return ofNullable(this.root);
   }
 

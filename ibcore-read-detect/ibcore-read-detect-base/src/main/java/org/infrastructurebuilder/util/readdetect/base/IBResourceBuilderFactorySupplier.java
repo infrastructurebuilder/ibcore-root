@@ -20,16 +20,16 @@ package org.infrastructurebuilder.util.readdetect.base;
 import java.util.Optional;
 import java.util.Set;
 
-import org.infrastructurebuilder.pathref.RelativeRoot;
-import org.infrastructurebuilder.pathref.RelativeRootFactory;
-import org.infrastructurebuilder.util.core.NameDescribed;
+import org.infrastructurebuilder.api.base.NameDescribed;
+import org.infrastructurebuilder.pathref.PathRef;
+import org.infrastructurebuilder.pathref.PathRefFactory;
 
 /**
- * An IBResourceBuilderFactorySupplier is used to map {@link RelativeRoot} identifiers supplied by a
- * {@link RelativeRootFactory} to instances of an {@link IBResourceBuilderFactory}
+ * An IBResourceBuilderFactorySupplier is used to map {@link PathRef} identifiers supplied by a {@link PathRefFactory}
+ * to instances of an {@link IBResourceBuilderFactory}
  *
  * This may seem unnecessarily complex as a means to obtain a factory-of-builders, but being able to indicate the actual
- * location of a {@link RelativeRoot} by its identifier rather than its path allows us to fit in between an immovable
+ * location of a {@link PathRef} by its identifier rather than its path allows us to fit in between an immovable
  * location and an unknown identifier when attempting to validate values later.
  *
  *
@@ -39,7 +39,7 @@ public interface IBResourceBuilderFactorySupplier extends NameDescribed {
 
   Set<String> getAvailableNames();
 
-  Optional<RelativeRoot> getRoot(String id);
+  Optional<PathRef> getRoot(String id);
 
   /**
    * Get a builder with this relative root

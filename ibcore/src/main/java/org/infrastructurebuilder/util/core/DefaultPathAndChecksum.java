@@ -30,13 +30,13 @@ import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
-import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.PathRef;
 
 public class DefaultPathAndChecksum implements PathAndChecksum {
 
   private final Path path;
   private final Checksum checksum;
-  private RelativeRoot root;
+  private PathRef root;
 
   public DefaultPathAndChecksum(Path p) {
     this(p, null);
@@ -46,11 +46,11 @@ public class DefaultPathAndChecksum implements PathAndChecksum {
     this(Optional.empty(), p, s);
   }
 
-  public DefaultPathAndChecksum(Optional<RelativeRoot> root, Path p) {
+  public DefaultPathAndChecksum(Optional<PathRef> root, Path p) {
     this(root, p, null);
   }
 
-  public DefaultPathAndChecksum(Optional<RelativeRoot> root, Path p, Checksum s) {
+  public DefaultPathAndChecksum(Optional<PathRef> root, Path p, Checksum s) {
     this.path = Objects.requireNonNull(p);
     this.root = ofNullable(root).orElse(Optional.empty()).orElse(null);
     if (!this.path.isAbsolute() && this.root == null)
@@ -64,7 +64,7 @@ public class DefaultPathAndChecksum implements PathAndChecksum {
   }
 
   @Override
-  public final Optional<RelativeRoot> getRoot() {
+  public final Optional<PathRef> getRoot() {
     return ofNullable(this.root);
   }
 
@@ -73,7 +73,7 @@ public class DefaultPathAndChecksum implements PathAndChecksum {
   }
 
   private Path resolvePath() {
-    return isAbsolute() ? get() : getRoot().get().resolvePath(get().toString()).get();
+    return isAbsolute() ? get() : getRoot().get().toResolvedPath(get().toString()).get();
   }
 
   @Override

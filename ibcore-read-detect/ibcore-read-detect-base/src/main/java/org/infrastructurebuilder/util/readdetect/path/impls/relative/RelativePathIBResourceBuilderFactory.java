@@ -35,7 +35,7 @@ import java.util.function.Supplier;
 import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.Checksum;
-import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.OptStream;
@@ -54,7 +54,7 @@ public class RelativePathIBResourceBuilderFactory extends AbstractPathIBResource
 
   private static final long serialVersionUID = -7034230288330677232L;
 
-  public RelativePathIBResourceBuilderFactory(RelativeRoot r) {
+  public RelativePathIBResourceBuilderFactory(PathRef r) {
     super(Objects.requireNonNull(r));
   }
 
@@ -67,7 +67,7 @@ public class RelativePathIBResourceBuilderFactory extends AbstractPathIBResource
   public static class RelativePathIBResourceBuilder extends AbstractPathIBResourceBuilder {
     private final static Logger log = LoggerFactory.getLogger(RelativePathIBResourceBuilder.class);
 
-    public RelativePathIBResourceBuilder(RelativeRoot r) {
+    public RelativePathIBResourceBuilder(PathRef r) {
       super(r);
     }
 
@@ -93,8 +93,8 @@ public class RelativePathIBResourceBuilderFactory extends AbstractPathIBResource
      * <li>The output must be backed by an <b><i>ABSOLUTE</i></b> <code>java.nio.file.Path</code></li>
      * <li>It's <code>get()</code> method returns an <code>Optional InputStream</code>, which will probably be present
      * based on the availability of the FileSystem that backs the Path.</li>
-     * <li>It's <code>RelativeRoot</code> instance <i>may</i> be null, allowing for no relative paths. This could affect
-     * any ability to persist the metadata.</li>
+     * <li>It's <code>PathRef</code> instance <i>may</i> be null, allowing for no relative paths. This could affect any
+     * ability to persist the metadata.</li>
      *
      * </ol>
      */
@@ -108,11 +108,11 @@ public class RelativePathIBResourceBuilderFactory extends AbstractPathIBResource
 
       }
 
-      public RelativePathIBResource(RelativeRoot r, IBResourceModel m, Path sourcePath) {
+      public RelativePathIBResource(PathRef r, IBResourceModel m, Path sourcePath) {
         this(m, new DefaultPathAndChecksum(of(r), sourcePath));
       }
 
-      public RelativePathIBResource(RelativeRoot r, IBResourceModel m) {
+      public RelativePathIBResource(PathRef r, IBResourceModel m) {
         this(m,
             new DefaultPathAndChecksum(of(r),
                 Paths
@@ -120,13 +120,13 @@ public class RelativePathIBResourceBuilderFactory extends AbstractPathIBResource
                 new Checksum(m.getStreamChecksum())));
       }
 
-      public RelativePathIBResource(RelativeRoot r, JSONObject j) {
+      public RelativePathIBResource(PathRef r, JSONObject j) {
         this(r, IBResourceBuilder.modelFromJSON.apply(j).get()); // TODO Convert?
         if (!validate(true))
           throw new IBResourceException("Resource did not pass validation");
       }
 
-      public RelativePathIBResource(RelativeRoot r, Path path, Checksum checksum, Optional<String> type,
+      public RelativePathIBResource(PathRef r, Path path, Checksum checksum, Optional<String> type,
           Optional<Properties> addlProps)
       {
         this(new IBResourceModel(), new DefaultPathAndChecksum(of(r), path, checksum));
@@ -141,7 +141,7 @@ public class RelativePathIBResourceBuilderFactory extends AbstractPathIBResource
           throw new IBResourceException("Resource did not pass validation");
       }
 
-      public RelativePathIBResource(RelativeRoot r, Path path, Checksum checksum, Optional<String> type) {
+      public RelativePathIBResource(PathRef r, Path path, Checksum checksum, Optional<String> type) {
         this(r, path, checksum, type, empty());
       }
 

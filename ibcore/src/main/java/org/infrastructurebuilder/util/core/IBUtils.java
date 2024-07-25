@@ -373,7 +373,6 @@ public class IBUtils {
     }
   }
 
-
   public static Path copyTree(final Path in, final Path out) throws IOException {
     walkFileTree(in, new SimpleFileVisitor<Path>() {
 
@@ -973,7 +972,6 @@ public class IBUtils {
   }
 
   // non-static but possibly memory intensive methods
-
 
   public static boolean isParent(Path targetDir, Path sourcePath) {
     return Objects.requireNonNull(targetDir).startsWith(sourcePath);

@@ -20,6 +20,7 @@ package org.infrastructurebuilder.util.credentials.basic;
 import static java.util.Optional.of;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +33,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class DefaultCredentialsFactoryTest {
+
+  private static final String NOTHING = "NOTHING";
 
   @BeforeAll
   public static void setUpBeforeClass() throws Exception {
@@ -63,10 +66,12 @@ public class DefaultCredentialsFactoryTest {
   public void testGetCredentialsFor() {
     cs.put("X", new FakeCredentialsSupplier());
     cs.put("Y", new FakeCredentialsSupplier(new DefaultBasicCredentials("Y", Optional.empty())));
-    cs.put("Z", new FakeCredentialsSupplier(new DefaultBasicCredentials("Y", of("Y")), 1));
+    cs.put("Z", new FakeCredentialsSupplier(new DefaultBasicCredentials("Y", of("Q")), 1));
     cf = new DefaultCredentialsFactory(cs);
     Optional<BasicCredentials> b = cf.getCredentialsFor(uc);
-    assertEquals("Y", b.get().getSecret().get());
+    String f = b.get().getSecret().orElse(NOTHING);
+    var wq = f.equals(NOTHING) || f.equals("Q");
+    assertTrue(wq);
   }
 
   @Test

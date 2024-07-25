@@ -33,7 +33,7 @@ import java.util.function.Supplier;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Checksum;
 import org.infrastructurebuilder.util.core.PathAndChecksum;
-import org.infrastructurebuilder.util.core.RelativeRoot;
+import org.infrastructurebuilder.util.core.PathRef;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceException;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
@@ -52,10 +52,10 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
   private Checksum targetChecksum;
   private Path sourcePath;
   private Path finalRestingPath;
-  private RelativeRoot root;
+  private PathRef root;
   private final Vertx vertx;
 
-  public DefaultVertxIBResourceBuilder(Vertx vertx, RelativeRoot root) {
+  public DefaultVertxIBResourceBuilder(Vertx vertx, PathRef root) {
     this.vertx = requireNonNull(vertx);
     this.root = requireNonNull(root);
   }
@@ -263,7 +263,7 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
     return this;
   }
 
-  public Optional<RelativeRoot> getRoot() {
+  public Optional<PathRef> getRoot() {
     return Optional.of(root);
   }
 

@@ -21,8 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
 
-import org.infrastructurebuilder.pathref.AbsolutePathRelativeRoot;
-import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.AbsolutePathRef;
+import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.util.readdetect.path.impls.relative.RelativePathIBResourceBuilderFactory;
 import org.junit.jupiter.api.AfterAll;
@@ -43,14 +43,14 @@ class AbsolutePathAvroIBResourceBuilderTest {
     tps.finalize();
   }
 
-  private RelativeRoot rrs;
+  private PathRef rrs;
   private RelativePathIBResourceBuilderFactory rcf;
   private Path avdl, avro, avsc, csv, empty;
 
   @BeforeEach
   void setUp() throws Exception {
     var tr = tps.getTestClasses();
-    rrs = new AbsolutePathRelativeRoot(tps.get());
+    rrs = new AbsolutePathRef(tps.get());
     this.rcf = new RelativePathIBResourceBuilderFactory(rrs);
     this.avdl = tr.resolve("ba.avdl");
     this.avro = tr.resolve("ba.avro");

@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.infrastructurebuilder.api.base.IdentifierSupplier;
 
 @Named(IncrementingDatedWorkingPathSupplier.NAME)
 @Singleton

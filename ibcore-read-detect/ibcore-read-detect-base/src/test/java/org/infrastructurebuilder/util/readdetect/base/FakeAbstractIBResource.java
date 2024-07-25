@@ -20,7 +20,7 @@ package org.infrastructurebuilder.util.readdetect.base;
 import java.util.Optional;
 
 import org.infrastructurebuilder.pathref.Checksum;
-import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
 import org.infrastructurebuilder.util.core.OptStream;
@@ -30,7 +30,7 @@ import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 public class FakeAbstractIBResource extends AbstractIBResource {
   private final static TestingPathSupplier tps = new TestingPathSupplier();
 
-  public FakeAbstractIBResource(RelativeRoot root, IBResourceModel model) {
+  public FakeAbstractIBResource(PathRef root, IBResourceModel model) {
     super(model, new DefaultPathAndChecksum(Optional.ofNullable(root), tps.getTestClasses().resolve("rick.jpg")));
   }
 

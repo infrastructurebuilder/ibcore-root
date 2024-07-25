@@ -28,11 +28,11 @@ import java.util.TreeMap;
 import java.util.function.Function;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.pathref.AbsoluteURLRelativeRoot;
+import org.infrastructurebuilder.pathref.URLPathRef;
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
 import org.infrastructurebuilder.pathref.JSONAndChecksumEnabled;
-import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.util.core.Modeled;
 import org.infrastructurebuilder.util.executor.model.executor.model.utils.IBCoreExecutorModelUtils;
 import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.Environment;
@@ -95,13 +95,14 @@ public class ModeledProcessExecution extends GeneratedProcessExecution implement
   }
 
   @Override
-  public Optional<RelativeRoot> getRelativeRoot() {
-    return getRelativeRootURL().map(AbsoluteURLRelativeRoot::new);
+  public Optional<PathRef> getRelativeRoot() {
+    return getRelativeRootURL().map(URLPathRef::new);
   }
 
   @Override
   public ChecksumBuilder getChecksumBuilder() {
-    return ChecksumBuilderFactory.newAlternateInstanceWithRelativeRoot(this.getRelativeRoot()).addString(getModelVersion()) //
+    return ChecksumBuilderFactory.newAlternateInstanceWithRelativeRoot(this.getRelativeRoot())
+        .addString(getModelVersion()) //
         .addString(getId()) //
         .addString(getExecutable()) //
         .addListString(getArguments()) //

@@ -20,7 +20,6 @@ package org.infrastructurebuilder.pathref;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-
 @Named(SingletonIncrementingDatedStringSupplier.NAME)
 @Singleton
 public class SingletonIncrementingDatedStringSupplier extends IncrementingDatedStringSupplier {

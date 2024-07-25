@@ -36,6 +36,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.infrastructurebuilder.api.base.IdentifierSupplier;
 
 @Named(WorkingPathSupplier.WORKING)
 public class WorkingPathSupplier implements PathSupplier {

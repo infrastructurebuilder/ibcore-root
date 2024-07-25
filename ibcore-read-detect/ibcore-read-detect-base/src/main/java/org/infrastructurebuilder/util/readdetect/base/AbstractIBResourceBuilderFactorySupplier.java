@@ -22,13 +22,13 @@ import static java.util.Objects.requireNonNull;
 import java.util.Optional;
 import java.util.Set;
 
-import org.infrastructurebuilder.pathref.RelativeRoot;
-import org.infrastructurebuilder.pathref.RelativeRootFactory;
+import org.infrastructurebuilder.pathref.PathRef;
+import org.infrastructurebuilder.pathref.PathRefFactory;
 
 abstract public class AbstractIBResourceBuilderFactorySupplier implements IBResourceBuilderFactorySupplier {
-  private final RelativeRootFactory root;
+  private final PathRefFactory root;
 
-  public AbstractIBResourceBuilderFactorySupplier(RelativeRootFactory rrf) {
+  public AbstractIBResourceBuilderFactorySupplier(PathRefFactory rrf) {
     super();
     this.root = requireNonNull(rrf);
   }
@@ -39,7 +39,7 @@ abstract public class AbstractIBResourceBuilderFactorySupplier implements IBReso
   }
 
   @Override
-  public Optional<RelativeRoot> getRoot(String name) {
+  public Optional<PathRef> getRoot(String name) {
     return root.get(name);
   }
 

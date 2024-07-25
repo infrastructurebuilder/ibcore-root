@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.pathref.ChecksumEnabled;
-import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.PathRef;
 
 public interface PathAndChecksum extends Supplier<Path>, ChecksumEnabled {
 
@@ -35,5 +35,5 @@ public interface PathAndChecksum extends Supplier<Path>, ChecksumEnabled {
 
   OptStream asOptStream();
 
-  Optional<RelativeRoot> getRoot();
+  Optional<PathRef> getRoot();
 }

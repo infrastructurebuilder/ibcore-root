@@ -122,7 +122,7 @@ public interface ChecksumBuilder extends ChecksumEnabled {
 
   Checksum asChecksum();
 
-  Optional<RelativeRoot> getRelativeRoot();
+  Optional<PathRef> getRelativeRoot();
 
   ChecksumBuilder getChecksumBuilder();
 

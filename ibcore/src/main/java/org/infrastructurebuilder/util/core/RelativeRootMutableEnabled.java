@@ -17,10 +17,10 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import org.infrastructurebuilder.pathref.RelativeRoot;
-import org.infrastructurebuilder.pathref.RelativeRootEnabled;
+import org.infrastructurebuilder.pathref.PathRef;
+import org.infrastructurebuilder.pathref.PathRefEnabled;
 
-public interface RelativeRootMutableEnabled extends RelativeRootEnabled {
-  <T> T withRelativeRoot(RelativeRoot r);
+public interface RelativeRootMutableEnabled extends PathRefEnabled {
+  <T> T withRelativeRoot(PathRef r);
 
 }

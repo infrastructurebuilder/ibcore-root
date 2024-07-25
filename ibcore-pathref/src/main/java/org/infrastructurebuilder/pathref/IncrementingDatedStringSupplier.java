@@ -23,6 +23,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Named;
 
+import org.infrastructurebuilder.api.base.IdentifierSupplier;
+
 @Named(IncrementingDatedStringSupplier.NAME)
 public class IncrementingDatedStringSupplier implements IdentifierSupplier {
   public static final String NAME = "incrementing-dated-string-supplier";

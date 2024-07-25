@@ -20,7 +20,7 @@ package org.infrastructurebuilder.pathref;
 import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-public class RoseX  implements JSONAndChecksumEnabled {
+public class RoseX implements JSONAndChecksumEnabled {
   private final JSONObject a;
   private final JSONObject json;
 

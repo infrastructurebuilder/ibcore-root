@@ -24,6 +24,7 @@ import static org.infrastructurebuilder.exceptions.IBException.cet;
 import static org.infrastructurebuilder.pathref.IBChecksumUtils.getBytes;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.time.Duration;
 import java.time.Instant;
@@ -50,14 +51,14 @@ public final class ChecksumBuilderFactory {
   }
 
   public static ChecksumBuilder newAlternateInstanceWithRelativeRoot(final String t,
-      final Optional<RelativeRoot> relativeRoot) {
+      final Optional<PathRef> relativeRoot) {
     return cet.returns(() -> {
       return new ChecksumBuilderImpl(t, relativeRoot, MessageDigest.getInstance(requireNonNull(t)));
     });
 
   }
 
-  public static ChecksumBuilder newAlternateInstanceWithRelativeRoot(final Optional<RelativeRoot> relativeRoot) {
+  public static ChecksumBuilder newAlternateInstanceWithRelativeRoot(final Optional<PathRef> relativeRoot) {
     return cet.returns(() -> {
       return new ChecksumBuilderImpl(IBConstants.DIGEST_TYPE, relativeRoot,
           MessageDigest.getInstance(requireNonNull(IBConstants.DIGEST_TYPE)));
@@ -69,7 +70,7 @@ public final class ChecksumBuilderFactory {
     return newAlternateInstance(IBConstants.DIGEST_TYPE);
   }
 
-  public static ChecksumBuilder newInstance(final Optional<RelativeRoot> relativeRoot) {
+  public static ChecksumBuilder newInstance(final Optional<PathRef> relativeRoot) {
     return newAlternateInstanceWithRelativeRoot(IBConstants.DIGEST_TYPE, relativeRoot);
   }
 
@@ -81,22 +82,22 @@ public final class ChecksumBuilderFactory {
 
     private final AtomicReference<Checksum> checksum = new AtomicReference<>(null);
     private final MessageDigest md;
-    private final Optional<RelativeRoot> relativeRoot;
+    private final Optional<PathRef> relativeRoot;
     private final String type;
 
-  private ChecksumBuilderImpl(final String t, final Optional<RelativeRoot> rr, final MessageDigest digestType) {
-    this.type = requireNonNull(t);
-    this.md = requireNonNull(digestType);
-    this.relativeRoot = requireNonNull(rr);
+    private ChecksumBuilderImpl(final String t, final Optional<PathRef> rr, final MessageDigest digestType) {
+      this.type = requireNonNull(t);
+      this.md = requireNonNull(digestType);
+      this.relativeRoot = requireNonNull(rr);
 
-  }
+    }
 
-  private ChecksumBuilderImpl(Checksum csum) {
-    this.checksum.set(csum);
-    this.type = IBConstants.DIGEST_TYPE;
-    this.md = cet.returns(() -> MessageDigest.getInstance(requireNonNull(this.type)));
-    this.relativeRoot = Optional.empty();
-  }
+    private ChecksumBuilderImpl(Checksum csum) {
+      this.checksum.set(csum);
+      this.type = IBConstants.DIGEST_TYPE;
+      this.md = cet.returns(() -> MessageDigest.getInstance(requireNonNull(this.type)));
+      this.relativeRoot = Optional.empty();
+    }
 
     @Override
     public ChecksumBuilder addBoolean(final Boolean s) {
@@ -349,9 +350,7 @@ public final class ChecksumBuilderFactory {
 
     @Override
     public ChecksumBuilder addPathAsString(final String s) {
-      var str = relativeRoot.map(rel -> rel.relativize(requireNonNull(s))).orElse(s);
-      if (str.endsWith("/"))
-        str = str.substring(0, str.length() - 1);
+      var str = relativeRoot.flatMap(rel -> rel.relativize(requireNonNull(s))).orElse(Paths.get(s)).toString();
       return this.addString(str);
     }
 
@@ -411,7 +410,7 @@ public final class ChecksumBuilderFactory {
     }
 
     @Override
-    public Optional<RelativeRoot> getRelativeRoot() {
+    public Optional<PathRef> getRelativeRoot() {
       return this.relativeRoot;
     }
 

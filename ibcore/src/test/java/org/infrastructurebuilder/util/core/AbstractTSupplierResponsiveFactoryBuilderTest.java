@@ -60,8 +60,8 @@ class AbstractTSupplierResponsiveFactoryBuilderTest {
   @Test
   void test() {
     assertEquals("fake", this.fake.getHint());
-    assertTrue(this.fake.respondsTo("X"));
-    assertFalse(this.fake.respondsTo("Y"));
+    assertTrue(this.fake.respondsTo("X") >= 0);
+    assertFalse(this.fake.respondsTo("Y") >= 0);
     assertEquals(this.fake.get("X").get(), "Y");
   }
 

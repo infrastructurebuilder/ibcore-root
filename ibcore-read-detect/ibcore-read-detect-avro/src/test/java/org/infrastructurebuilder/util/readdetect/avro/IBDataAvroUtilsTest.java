@@ -36,8 +36,8 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericData.Record;
 import org.apache.avro.generic.GenericRecord;
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.pathref.AbsolutePathRelativeRoot;
-import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.AbsolutePathRef;
+import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.util.config.impl.DefaultConfigMapBuilder;
 import org.junit.jupiter.api.AfterAll;
@@ -121,7 +121,7 @@ public class IBDataAvroUtilsTest {
   public void testFromMapAndWpNulled() {
     assertThrows(IBException.class, () -> {
       Path path = wps.getTestClasses();
-      RelativeRoot rr = new AbsolutePathRelativeRoot(path);
+      PathRef rr = new AbsolutePathRef(path);
       IBDataAvroUtils.fromMapAndWP.apply(rr, new DefaultConfigMapBuilder());
     });
   }

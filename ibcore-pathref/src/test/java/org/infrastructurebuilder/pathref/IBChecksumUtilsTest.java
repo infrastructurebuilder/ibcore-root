@@ -58,6 +58,7 @@ class IBChecksumUtilsTest {
   @AfterEach
   void tearDown() throws Exception {
   }
+
   @Test
   public void testDeepMaptoOrderedString() {
     String x = """
@@ -82,7 +83,6 @@ class IBChecksumUtilsTest {
     assertEquals(f1, stripTrailingSlash.apply(f1 + "/"));
     assertEquals(f1, stripTrailingSlash.apply(f1));
   }
-
 
   @Test
   public void testFromHexString() throws IOException {

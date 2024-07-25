@@ -43,7 +43,7 @@ import org.infrastructurebuilder.util.core.ChecksumEnabled;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.JSONBuilder;
 import org.infrastructurebuilder.util.core.JSONOutputEnabled;
-import org.infrastructurebuilder.util.core.RelativeRoot;
+import org.infrastructurebuilder.util.core.PathRef;
 import org.infrastructurebuilder.util.core.UUIdentified;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -78,11 +78,11 @@ public final class JsonBuilder implements JsonOutputEnabled {
   };
   private static final String RELATIVE_ROOT = "__relative##_root";
 
-  public static JsonBuilder addOn(final JSONObject j, final Optional<RelativeRoot> relativeRoot) {
+  public static JsonBuilder addOn(final JSONObject j, final Optional<PathRef> relativeRoot) {
     return new JsonBuilder(new JsonObject(j.toString()), relativeRoot);
   }
 
-  public static JsonBuilder addOn(final JsonObject j, final Optional<RelativeRoot> relativeRoot) {
+  public static JsonBuilder addOn(final JsonObject j, final Optional<PathRef> relativeRoot) {
     return new JsonBuilder(j, relativeRoot);
   }
 
@@ -90,26 +90,26 @@ public final class JsonBuilder implements JsonOutputEnabled {
     return JsonBuilder.newInstance(Optional.empty());
   }
 
-  public static JsonBuilder newInstance(final Optional<RelativeRoot> relativeRoot) {
+  public static JsonBuilder newInstance(final Optional<PathRef> relativeRoot) {
     return new JsonBuilder(relativeRoot);
   }
 
-  public static JsonBuilder newInstance(final JsonObject j, final Optional<RelativeRoot> relativeRoot) {
+  public static JsonBuilder newInstance(final JsonObject j, final Optional<PathRef> relativeRoot) {
     return new JsonBuilder(j, relativeRoot);
   }
 
   private final JsonObject json;
 
-  private final Optional<RelativeRoot> relativeRoot;
+  private final Optional<PathRef> relativeRoot;
 
   @Override
-  public Optional<RelativeRoot> getJsonRelativeRoot() {
+  public Optional<PathRef> getJsonRelativeRoot() {
     return this.relativeRoot;
   }
 
-  public JsonBuilder(final JsonObject j, final Optional<RelativeRoot> relativeRoot) {
+  public JsonBuilder(final JsonObject j, final Optional<PathRef> relativeRoot) {
     json = new JsonObject(requireNonNull(j).encode());
-    RelativeRoot rr = null;
+    PathRef rr = null;
     if (j.containsKey(RELATIVE_ROOT)) {
       json.remove(RELATIVE_ROOT);
       try {
@@ -122,7 +122,7 @@ public final class JsonBuilder implements JsonOutputEnabled {
                                                                                       // supplied
   }
 
-  public JsonBuilder(final Optional<RelativeRoot> root) {
+  public JsonBuilder(final Optional<PathRef> root) {
     this(new JsonObject(), root);
   }
 

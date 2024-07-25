@@ -26,9 +26,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.infrastructurebuilder.api.Weighted;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.GAV;
-import org.infrastructurebuilder.util.core.Weighted;
 
 /**
  * ArtifactServices instances produce access to an artifact repository.

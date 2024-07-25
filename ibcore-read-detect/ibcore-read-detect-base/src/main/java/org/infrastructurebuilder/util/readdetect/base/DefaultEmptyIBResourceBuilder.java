@@ -20,11 +20,11 @@ package org.infrastructurebuilder.util.readdetect.base;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.PathRef;
 
 public class DefaultEmptyIBResourceBuilder extends AbstractIBResourceBuilder<Void> {
 
-  public DefaultEmptyIBResourceBuilder(RelativeRoot root) {
+  public DefaultEmptyIBResourceBuilder(PathRef root) {
     super(null);
   }
 

@@ -32,11 +32,11 @@ import java.util.function.Function;
 
 import org.apache.tika.Tika;
 import org.apache.tika.metadata.TikaCoreProperties;
+import org.infrastructurebuilder.api.base.ResponsiveToString;
 import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
-import org.infrastructurebuilder.util.core.ResponsiveToString;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * source locations, such as {@link Path}s, {@link URL}s, and URL-like strings (given appropriate processors within a
  * given builder).
  *
- * A given IBResourceBuilderFactory may or may not have a {@link RelativeRoot}. If it does not, then all values are
+ * A given IBResourceBuilderFactory may or may not have a {@link PathRef}. If it does not, then all values are
  * considered to be purely reference values
  *
  * @param
@@ -109,12 +109,12 @@ public interface IBResourceBuilderFactory<I> extends ResponsiveToString {
   };
 
   /**
-   * The RelativeRoot is not optional
+   * The PathRef is not optional
    *
    * @return
    */
 
-  RelativeRoot getRelativeRoot();
+  PathRef getRelativeRoot();
 
   Optional<IBResourceBuilder<I>> fromModel(IBResourceModel model);
 

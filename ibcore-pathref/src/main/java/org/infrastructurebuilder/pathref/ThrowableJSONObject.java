@@ -65,44 +65,45 @@ public class ThrowableJSONObject implements JSONOutputEnabled {
     this.jsonObject = getThrowableJson(t);
   }
 
-  public ThrowableJSONObject(JSONObject j) {
-    this.jsonObject = Objects.requireNonNull(j);
-    var cname = j.optString(CLASS);
-    var msg = Optional.ofNullable(j.optString(MESSAGE));
-    Optional<JSONObject> c = Optional.ofNullable(j.optString(CAUSE)).map(JSONObject::new);
-    Optional<ThrowableJSONObject> cause = c.map(ThrowableJSONObject::new);
-
-    Throwable tt;
-    try {
-      if (UNKNOWN_THROWABLE_CLASS.equals(cname))
-        tt = new IBException("Unknown throwable class (null, most likely)");
-      else {
-        var clazz = Class.forName(cname);
-        Constructor<?> cons;
-        if (msg.isPresent()) {
-          if (cause.isPresent()) {
-            cons = clazz.getConstructor(String.class, Throwable.class);
-            tt = (Throwable) cons.newInstance(msg.get(), cause.get().getThrowable());
-          } else {
-            cons = clazz.getConstructor(String.class);
-            tt = (Throwable) cons.newInstance(msg.get());
-          }
-        } else {
-          if (cause.isPresent()) {
-            cons = clazz.getConstructor(Throwable.class);
-            tt = (Throwable) cons.newInstance(cause.get().getThrowable());
-          } else {
-            cons = clazz.getConstructor();
-            tt = (Throwable) cons.newInstance();
-          }
-        }
-      }
-      this.t = tt;
-    } catch (Throwable e) {
-      throw new IBException("Could not find class " + cname, e);
-    }
-  }
-
+//
+//  public ThrowableJSONObject(JSONObject j) {
+//    this.jsonObject = Objects.requireNonNull(j);
+//    var cname = j.optString(CLASS);
+//    var msg = Optional.ofNullable(j.optString(MESSAGE));
+//    Optional<JSONObject> c = Optional.ofNullable(j.optString(CAUSE)).map(JSONObject::new);
+//    Optional<ThrowableJSONObject> cause = c.map(ThrowableJSONObject::new);
+//
+//    Throwable tt;
+//    try {
+//      if (UNKNOWN_THROWABLE_CLASS.equals(cname))
+//        tt = new IBException("Unknown throwable class (null, most likely)");
+//      else {
+//        var clazz = Class.forName(cname);
+//        Constructor<?> cons;
+//        if (msg.isPresent()) {
+//          if (cause.isPresent()) {
+//            cons = clazz.getConstructor(String.class, Throwable.class);
+//            tt = (Throwable) cons.newInstance(msg.get(), cause.get().getThrowable());
+//          } else {
+//            cons = clazz.getConstructor(String.class);
+//            tt = (Throwable) cons.newInstance(msg.get());
+//          }
+//        } else {
+//          if (cause.isPresent()) {
+//            cons = clazz.getConstructor(Throwable.class);
+//            tt = (Throwable) cons.newInstance(cause.get().getThrowable());
+//          } else {
+//            cons = clazz.getConstructor();
+//            tt = (Throwable) cons.newInstance();
+//          }
+//        }
+//      }
+//      this.t = tt;
+//    } catch (Throwable e) {
+//      throw new IBException("Could not find class " + cname, e);
+//    }
+//  }
+//
   public final Throwable getThrowable() {
     return this.t;
   }

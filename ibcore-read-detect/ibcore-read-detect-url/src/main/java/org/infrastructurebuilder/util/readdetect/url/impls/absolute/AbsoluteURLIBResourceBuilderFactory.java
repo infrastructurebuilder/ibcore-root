@@ -103,7 +103,7 @@ public class AbsoluteURLIBResourceBuilderFactory extends AbstractPathIBResourceB
      * <li>The output must be backed by an <b><i>ABSOLUTE</i></b> <code>java.nio.file.Path</code></li>
      * <li>It's <code>get()</code> method returns an <code>Optional InputStream</code>, which will probably be present
      * based on the availability of the FileSystem that backs the Path.</li>
-     * <li>It's <code>RelativeRoot</code> instance <i>may</i> be null, allowing for no relative paths. This could affect
+     * <li>It's <code>PathRef</code> instance <i>may</i> be null, allowing for no relative paths. This could affect
      * any ability to persist the metadata.</li>
      *
      * </ol>

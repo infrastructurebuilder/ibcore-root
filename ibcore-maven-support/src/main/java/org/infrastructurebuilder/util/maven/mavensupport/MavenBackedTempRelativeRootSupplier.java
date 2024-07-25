@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 @Named(MavenBackedTempRelativeRootSupplier.NAME)
 // NOT A SINGLETON, but returns an immutable value
-public class MavenBackedTempRelativeRootSupplier extends MavenBackedRelativeRootSupplier {
+public class MavenBackedTempRelativeRootSupplier extends MavenBackedPathRefProducer {
   private static final Logger log = LoggerFactory.getLogger(MavenBackedTempRelativeRootSupplier.class);
 
   static final String NAME = "maven-temp";

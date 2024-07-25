@@ -28,7 +28,7 @@ import org.apache.avro.file.SeekableFileInput;
 import org.apache.avro.file.SeekableInput;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.Checksum;
-import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.util.core.PathAndChecksum;
 import org.infrastructurebuilder.util.readdetect.base.IBResource;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 public class RelativePathAvroIBResourceBuilderFactory extends RelativePathIBResourceBuilderFactory {
   private static final long serialVersionUID = 8394943566089224494L;
 
-  public RelativePathAvroIBResourceBuilderFactory(RelativeRoot relRoot) {
+  public RelativePathAvroIBResourceBuilderFactory(PathRef relRoot) {
     super(relRoot);
   }
 
@@ -51,7 +51,7 @@ public class RelativePathAvroIBResourceBuilderFactory extends RelativePathIBReso
   public static class RelativePathAvroIBResourceBuilder extends RelativePathIBResourceBuilder {
     private final static Logger log = LoggerFactory.getLogger(RelativePathAvroIBResourceBuilder.class);
 
-    public RelativePathAvroIBResourceBuilder(RelativeRoot root) {
+    public RelativePathAvroIBResourceBuilder(PathRef root) {
       super(root);
     }
 
@@ -73,7 +73,7 @@ public class RelativePathAvroIBResourceBuilderFactory extends RelativePathIBReso
         super(m, sourcePath);
       }
 
-      public RelativePathIBResourceAvro(RelativeRoot root, Path path, Checksum checksum, Optional<String> type,
+      public RelativePathIBResourceAvro(PathRef root, Path path, Checksum checksum, Optional<String> type,
           Optional<Properties> addlProps)
       {
         super(root, path, checksum, type, addlProps);

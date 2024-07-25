@@ -26,7 +26,7 @@ import java.nio.file.Path;
 import org.apache.maven.model.Build;
 import org.apache.maven.project.MavenProject;
 import org.infrastructurebuilder.pathref.IBChecksumUtils;
-import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.junit.jupiter.api.AfterAll;
@@ -49,7 +49,7 @@ class MavenBackedRelativeRootProtocolTest {
   }
 
   MavenProject project;
-  MavenBackedRelativeRootSupplier p;
+  MavenBackedPathRefProducer p;
   MavenBackedTempRelativeRootSupplier t;
   Path target;
 
@@ -67,16 +67,16 @@ class MavenBackedRelativeRootProtocolTest {
     project.setFile(xfile.toFile());
 
     MavenProjectSupplier p2 = new MavenProjectSupplier(project);
-    p = new MavenBackedRelativeRootSupplier(p2);
+    p = new MavenBackedPathRefProducer(p2);
     t = new MavenBackedTempRelativeRootSupplier(p2);
   }
 
   @Test
   void test() {
-    RelativeRoot rr = p.getRelativeRoot().get();
+    PathRef rr = p.with(null).get();
     assertTrue(rr.isPath());
     assertEquals(target, rr.getPath().get());
-    RelativeRoot rr2 = t.getRelativeRoot().get();
+    PathRef rr2 = t.with(null).get();
     assertTrue(rr2.isPath());
     assertEquals(target, rr2.getPath().get().getParent());
     assertTrue(Files.isDirectory(rr2.getPath().get()));

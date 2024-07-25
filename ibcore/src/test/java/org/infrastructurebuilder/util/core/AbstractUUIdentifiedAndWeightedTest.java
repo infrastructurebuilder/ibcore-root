@@ -53,7 +53,7 @@ public class AbstractUUIdentifiedAndWeightedTest {
   public void testCompare() {
     var c = UUIdentifiedAndWeighted.comparator;
     assertEquals(0, c.compare(w1, w1));
-    assertTrue(c.compare(w2, w1) > 0);
+    assertTrue(c.compare(w2, w1) < 0);
     assertEquals(0, c.compare(s1, s2));
   }
 

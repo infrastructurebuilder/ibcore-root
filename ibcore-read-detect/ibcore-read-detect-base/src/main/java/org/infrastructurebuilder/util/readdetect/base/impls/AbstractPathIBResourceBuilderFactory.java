@@ -30,7 +30,7 @@ import java.util.function.Supplier;
 
 import org.infrastructurebuilder.objectmapper.jackson.ObjectMapperUtils;
 import org.infrastructurebuilder.pathref.Checksum;
-import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.PathAndChecksum;
@@ -56,7 +56,7 @@ abstract public class AbstractPathIBResourceBuilderFactory extends AbstractIBRes
     this(null);
   }
 
-  public AbstractPathIBResourceBuilderFactory(RelativeRoot root) {
+  public AbstractPathIBResourceBuilderFactory(PathRef root) {
     super(root);
   }
 
@@ -95,7 +95,7 @@ abstract public class AbstractPathIBResourceBuilderFactory extends AbstractIBRes
       this(null);
     }
 
-    public AbstractPathIBResourceBuilder(RelativeRoot root) {
+    public AbstractPathIBResourceBuilder(PathRef root) {
       super(root);
     }
 
@@ -170,7 +170,7 @@ abstract public class AbstractPathIBResourceBuilderFactory extends AbstractIBRes
 //     * <li>The output must be backed by an <b><i>ABSOLUTE</i></b> <code>java.nio.file.Path</code></li>
 //     * <li>It's <code>get()</code> method returns an <code>Optional InputStream</code>, which will probably be present
 //     * based on the availability of the FileSystem that backs the Path.</li>
-//     * <li>It's <code>RelativeRoot</code> instance <i>may</i> be null, allowing for no relative paths. This could affect
+//     * <li>It's <code>PathRef</code> instance <i>may</i> be null, allowing for no relative paths. This could affect
 //     * any ability to persist the metadata.</li>
 //     *
 //     * </ol>
@@ -296,7 +296,7 @@ abstract public class AbstractPathIBResourceBuilderFactory extends AbstractIBRes
     }
 
     @Override
-    public Optional<RelativeRoot> getRelativeRoot() {
+    public Optional<PathRef> getRelativeRoot() {
       return this.path.getRoot();
     }
 

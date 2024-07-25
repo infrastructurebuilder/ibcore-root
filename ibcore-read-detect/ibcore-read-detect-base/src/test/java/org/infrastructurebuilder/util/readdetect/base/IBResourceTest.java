@@ -33,9 +33,9 @@ import java.util.UUID;
 
 import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.pathref.AbsolutePathRelativeRoot;
+import org.infrastructurebuilder.pathref.AbsolutePathRef;
 import org.infrastructurebuilder.pathref.Checksum;
-import org.infrastructurebuilder.pathref.RelativeRoot;
+import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
 import org.infrastructurebuilder.util.readdetect.base.IBResource;
@@ -57,7 +57,7 @@ public class IBResourceTest {
 
   private AbsolutePathIBResourceBuilderFactory rcf;
   private Path root;
-  private RelativeRoot rrs;
+  private PathRef rrs;
   private IBResource r;
   private AbstractPathIBResourceBuilder bb;
 
@@ -66,7 +66,7 @@ public class IBResourceTest {
     this.wps = new TestingPathSupplier();
     testFile = this.wps.getTestClasses().resolve(TFILE_TEST);
     this.root = this.wps.get();
-    this.rrs = new AbsolutePathRelativeRoot(this.root);
+    this.rrs = new AbsolutePathRef(this.root);
     this.rcf = new AbsolutePathIBResourceBuilderFactory();
     bb = this.rcf.getBuilder().get();
 

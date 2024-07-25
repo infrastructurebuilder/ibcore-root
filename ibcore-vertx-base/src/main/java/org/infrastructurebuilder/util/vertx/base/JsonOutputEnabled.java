@@ -21,7 +21,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.core.RelativeRoot;
+import org.infrastructurebuilder.util.core.PathRef;
 
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
@@ -44,7 +44,7 @@ public interface JsonOutputEnabled {
    */
   JsonObject toJson();
 
-  default Optional<RelativeRoot> getJsonRelativeRoot() {
+  default Optional<PathRef> getJsonRelativeRoot() {
     return Optional.empty();
   }
 

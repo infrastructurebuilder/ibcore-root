@@ -32,7 +32,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.infrastructurebuilder.util.core.Checksum;
-import org.infrastructurebuilder.util.core.RelativeRoot;
+import org.infrastructurebuilder.util.core.PathRef;
 import org.infrastructurebuilder.util.core.Timestamped;
 import org.infrastructurebuilder.util.core.UUIdentified;
 import org.infrastructurebuilder.util.core.UUIdentifiedAndTimestamped;
@@ -73,7 +73,7 @@ public class IBVertxUtils {
    * @param u
    * @return
    */
-  public static JsonBuilder uuidentifiedJsonBuilder(UUIdentified u, RelativeRoot p) {
+  public static JsonBuilder uuidentifiedJsonBuilder(UUIdentified u, PathRef p) {
     return JsonBuilder.newInstance(ofNullable(p)).addString(UUIdentified.ID, u.getId().toString());
   }
 

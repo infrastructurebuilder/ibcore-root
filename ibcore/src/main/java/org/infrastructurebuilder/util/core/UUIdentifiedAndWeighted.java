@@ -19,6 +19,8 @@ package org.infrastructurebuilder.util.core;
 
 import java.util.Comparator;
 
+import org.infrastructurebuilder.api.Weighted;
+
 public interface UUIdentifiedAndWeighted extends UUIdentified, Weighted, Comparable<UUIdentifiedAndWeighted> {
   public static Comparator<UUIdentifiedAndWeighted> comparator = new Comparator<UUIdentifiedAndWeighted>() {
     @Override

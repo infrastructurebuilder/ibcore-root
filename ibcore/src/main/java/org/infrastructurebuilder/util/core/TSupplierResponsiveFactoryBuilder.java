@@ -19,6 +19,8 @@ package org.infrastructurebuilder.util.core;
 
 import java.util.Optional;
 
+import org.infrastructurebuilder.api.base.NameDescribed;
+import org.infrastructurebuilder.api.base.ResponsiveTo;
 import org.infrastructurebuilder.exceptions.IBException;
 
 public interface TSupplierResponsiveFactoryBuilder<R, T, C> extends ResponsiveTo<R>, //

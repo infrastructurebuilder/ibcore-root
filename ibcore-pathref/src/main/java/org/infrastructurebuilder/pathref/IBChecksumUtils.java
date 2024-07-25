@@ -91,9 +91,6 @@ public final class IBChecksumUtils {
 
   }
 
-
-
-
   public static byte[] digestInputStream(final String type, final InputStream ins) throws IOException {
     final byte[] buf = new byte[BUFFER_SIZE];
     try (DigestInputStream sink = new DigestInputStream(ins, cet.returns(() -> MessageDigest.getInstance(type)))) {
@@ -215,6 +212,7 @@ public final class IBChecksumUtils {
     }
     return digit;
   }
+
   public final static Function<JSONObject, String> deepMapJSONtoOrderedString = j -> {
     return new IBChecksumUtils()._deepMapJSONtoOrderedString(j);
   };

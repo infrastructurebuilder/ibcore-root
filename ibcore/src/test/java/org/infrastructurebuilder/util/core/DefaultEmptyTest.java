@@ -22,9 +22,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import java.util.Collections;
 import java.util.SortedSet;
 
+import org.infrastructurebuilder.api.base.NameDescribed;
 import org.infrastructurebuilder.pathref.JSONOutputEnabled;
 import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
-import org.infrastructurebuilder.util.core.NameDescribed;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
@@ -39,7 +39,6 @@ class DefaultEmptyTest {
       }
     }.getRelativeRoot().isPresent());
   }
-
 
   @Test
   void testNameDescribed() {

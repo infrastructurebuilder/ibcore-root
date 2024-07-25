@@ -20,6 +20,8 @@ package org.infrastructurebuilder.pathref;
 import java.nio.file.Path;
 import java.util.Map;
 
+import org.infrastructurebuilder.api.base.IdentifierSupplier;
+
 public class TestingPathSupplier extends WorkingPathSupplier {
 
   public TestingPathSupplier() {

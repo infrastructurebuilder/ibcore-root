@@ -43,7 +43,7 @@
 		<module>ibcore-files</module>
 		<module>ibcore-plexus-defaults</module>
 		<module>ibcore-maven-support</module>
-		<module>ibcore-rr-root</module>
+		<module>ibcore-pathref-impls</module>
 		<module>ibcore-read-detect</module>
 		<module>ibcore-config</module>
 		<module>ibcore-artifacts</module>

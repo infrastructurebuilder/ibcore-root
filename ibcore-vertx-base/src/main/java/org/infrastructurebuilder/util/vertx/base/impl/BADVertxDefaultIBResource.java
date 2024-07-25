@@ -68,7 +68,7 @@
 //import org.infrastructurebuilder.util.constants.IBConstants;
 //import org.infrastructurebuilder.util.core.Checksum;
 //import org.infrastructurebuilder.util.core.IBUtils;
-//import org.infrastructurebuilder.util.core.RelativeRoot;
+//import org.infrastructurebuilder.util.core.PathRef;
 //import org.infrastructurebuilder.util.readdetect.IBResource;
 //import org.infrastructurebuilder.util.readdetect.impl.AbsolutePathIBResource;
 //import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
@@ -96,9 +96,9 @@
 //  private Path p;
 //  private Path originalPath;
 //
-//  private final RelativeRoot root;
+//  private final PathRef root;
 //
-//  public Optional<RelativeRoot> getRoot() {
+//  public Optional<PathRef> getRoot() {
 //    return Optional.of(this.root);
 //  }
 //
@@ -127,7 +127,7 @@
 //    return Vertx.vertx().executeBlocking(ss.apply(path));
 //  };
 //
-//  public BADVertxDefaultIBResource(Optional<RelativeRoot> root) {
+//  public BADVertxDefaultIBResource(Optional<PathRef> root) {
 //    this(root, new IBResourceModel());
 //  }
 //
@@ -161,7 +161,7 @@
 ////    m.setMostRecentReadTime(mostRecentRead);
 ////  }
 ////
-//  public BADVertxDefaultIBResource(Optional<RelativeRoot> root, IBResourceModel m) {
+//  public BADVertxDefaultIBResource(Optional<PathRef> root, IBResourceModel m) {
 //    this.root = requireNonNull(root).orElse(null);
 //    this.m = requireNonNull(m);
 //    this.vertx = Vertx.vertx();
@@ -255,7 +255,7 @@
 //    return new VertxDefaultIBResource(Optional.empty(),p, c, Optional.of(type));
 //  }
 //
-//  public BADVertxDefaultIBResource(Optional<RelativeRoot> root, Path path, Checksum checksum, Optional<String> type) {
+//  public BADVertxDefaultIBResource(Optional<PathRef> root, Path path, Checksum checksum, Optional<String> type) {
 //    this(root);
 //    this.originalPath = requireNonNull(path);
 //    m.setFilePath(this.originalPath.toAbsolutePath().toString());
@@ -269,7 +269,7 @@
 //    requireNonNull(type).ifPresent(t -> m.setType(t));
 //  }
 //
-//  public BADVertxDefaultIBResource(Optional<RelativeRoot> root, Path path, Checksum checksum) {
+//  public BADVertxDefaultIBResource(Optional<PathRef> root, Path path, Checksum checksum) {
 //    this(root, path, checksum, Optional.empty());
 //  }
 //
