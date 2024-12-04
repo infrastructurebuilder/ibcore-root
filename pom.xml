@@ -28,7 +28,7 @@
 	</parent>
 
 	<artifactId>ibcore-root</artifactId>
-	<version>0.30.0</version>
+	<version>0.30.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>${project.artifactId}</name>
@@ -61,7 +61,7 @@
 		<connection>scm:git:${git.url}</connection>
 		<url>scm:git:${git.url}</url>
 		<developerConnection>scm:git:${git.url}</developerConnection>
-		<tag>ibcore-root-0.30.0</tag>
+		<tag>HEAD</tag>
 	</scm>
 	<distributionManagement>
 		<site>
