@@ -74,7 +74,7 @@
 		<iblog.version>0.14.4</iblog.version>
 		<ib.exceptions.version>103</ib.exceptions.version>
 		<ibcore.executor.model.version>1.0.0</ibcore.executor.model.version>
-		<ibcore.read.detect.model.version>1.0.0-SNAPSHOT</ibcore.read.detect.model.version>
+		<ibcore.read.detect.model.version>1.0.0</ibcore.read.detect.model.version>
 	</properties>
 
 	<dependencyManagement>
