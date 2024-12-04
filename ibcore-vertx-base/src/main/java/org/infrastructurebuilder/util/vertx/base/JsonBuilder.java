@@ -37,13 +37,21 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 
-import org.infrastructurebuilder.util.core.AbsolutePathRelativeRoot;
-import org.infrastructurebuilder.util.core.Checksum;
-import org.infrastructurebuilder.util.core.ChecksumEnabled;
+import org.infrastructurebuilder.pathref.AbsolutePathRef;
+import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.ChecksumEnabled;
+import org.infrastructurebuilder.pathref.IBChecksumUtils;
+import org.infrastructurebuilder.pathref.JSONBuilder;
+import org.infrastructurebuilder.pathref.JSONOutputEnabled;
+import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.core.JSONBuilder;
-import org.infrastructurebuilder.util.core.JSONOutputEnabled;
-import org.infrastructurebuilder.util.core.PathRef;
+//import org.infrastructurebuilder.util.core.AbsolutePathRelativeRoot;
+//import org.infrastructurebuilder.util.core.Checksum;
+//import org.infrastructurebuilder.util.core.ChecksumEnabled;
+//import org.infrastructurebuilder.util.core.IBUtils;
+//import org.infrastructurebuilder.util.core.JSONBuilder;
+//import org.infrastructurebuilder.util.core.JSONOutputEnabled;
+//import org.infrastructurebuilder.util.core.PathRef;
 import org.infrastructurebuilder.util.core.UUIdentified;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -113,7 +121,7 @@ public final class JsonBuilder implements JsonOutputEnabled {
     if (j.containsKey(RELATIVE_ROOT)) {
       json.remove(RELATIVE_ROOT);
       try {
-        rr = new AbsolutePathRelativeRoot(Paths.get(j.getString(RELATIVE_ROOT)));
+        rr = new AbsolutePathRef(Paths.get(j.getString(RELATIVE_ROOT)));
       } catch (Throwable t) {
         log.warn("Unable to get path from JSON for RR (" + j.getString(RELATIVE_ROOT) + ")");
       }
@@ -147,7 +155,7 @@ public final class JsonBuilder implements JsonOutputEnabled {
   }
 
   public JsonBuilder addBytes(final String key, final byte[] b) {
-    json.put(requireNonNull(key), IBUtils.getHex(b));
+    json.put(requireNonNull(key), IBChecksumUtils.getHex(b));
     return this;
   }
 

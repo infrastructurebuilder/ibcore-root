@@ -20,8 +20,8 @@ package org.infrastructurebuilder.util.vertx.base;
 import static java.time.Instant.ofEpochSecond;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
-import static org.infrastructurebuilder.util.constants.IBConstants.INSTANT;
-import static org.infrastructurebuilder.util.core.ChecksumEnabled.CHECKSUM;
+import static org.infrastructurebuilder.constants.IBConstants.INSTANT;
+import static org.infrastructurebuilder.pathref.ChecksumEnabled.CHECKSUM;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -31,8 +31,8 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import org.infrastructurebuilder.util.core.Checksum;
-import org.infrastructurebuilder.util.core.PathRef;
+import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.util.core.Timestamped;
 import org.infrastructurebuilder.util.core.UUIdentified;
 import org.infrastructurebuilder.util.core.UUIdentifiedAndTimestamped;

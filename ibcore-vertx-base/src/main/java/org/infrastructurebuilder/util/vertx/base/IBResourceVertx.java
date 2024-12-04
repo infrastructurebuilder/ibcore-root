@@ -20,17 +20,17 @@ package org.infrastructurebuilder.util.vertx.base;
 import static io.vertx.core.Future.succeededFuture;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
-import static org.infrastructurebuilder.util.constants.IBConstants.CREATE_DATE;
-import static org.infrastructurebuilder.util.constants.IBConstants.DESCRIPTION;
-import static org.infrastructurebuilder.util.constants.IBConstants.MIME_TYPE;
-import static org.infrastructurebuilder.util.constants.IBConstants.MOST_RECENT_READ_TIME;
-import static org.infrastructurebuilder.util.constants.IBConstants.ORIGINAL_PATH;
-import static org.infrastructurebuilder.util.constants.IBConstants.PATH;
-import static org.infrastructurebuilder.util.constants.IBConstants.SIZE;
-import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_NAME;
-import static org.infrastructurebuilder.util.constants.IBConstants.SOURCE_URL;
-import static org.infrastructurebuilder.util.constants.IBConstants.UPDATE_DATE;
-import static org.infrastructurebuilder.util.core.ChecksumEnabled.CHECKSUM;
+import static org.infrastructurebuilder.constants.IBConstants.CREATE_DATE;
+import static org.infrastructurebuilder.constants.IBConstants.DESCRIPTION;
+import static org.infrastructurebuilder.constants.IBConstants.MIME_TYPE;
+import static org.infrastructurebuilder.constants.IBConstants.MOST_RECENT_READ_TIME;
+import static org.infrastructurebuilder.constants.IBConstants.ORIGINAL_PATH;
+import static org.infrastructurebuilder.constants.IBConstants.PATH;
+import static org.infrastructurebuilder.constants.IBConstants.SIZE;
+import static org.infrastructurebuilder.constants.IBConstants.SOURCE_NAME;
+import static org.infrastructurebuilder.constants.IBConstants.SOURCE_URL;
+import static org.infrastructurebuilder.constants.IBConstants.UPDATE_DATE;
+import static org.infrastructurebuilder.pathref.ChecksumEnabled.CHECKSUM;
 
 import java.io.IOException;
 import java.net.URL;
@@ -42,14 +42,13 @@ import java.util.StringJoiner;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.readdetect.base.IBResource;
 
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
-import io.vertx.core.buffer.Buffer;
 import io.vertx.core.file.OpenOptions;
 import io.vertx.core.json.JsonObject;
 

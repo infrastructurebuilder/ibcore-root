@@ -22,7 +22,7 @@ import static io.vertx.core.Future.succeededFuture;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
-import static org.infrastructurebuilder.util.constants.IBConstants.NOT_FOUND;
+import static org.infrastructurebuilder.constants.IBConstants.*;
 
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -78,7 +78,7 @@ public class InMemoryBlobstore implements Blobstore<FutureStream> {
   }
 
   public Long size() {
-    return resources.values().parallelStream().collect(Collectors.summingLong(e -> e.size()));
+    return resources.values().parallelStream().collect(Collectors.summingLong(e -> e.size().orElse(0L)));
   }
 
   @Override

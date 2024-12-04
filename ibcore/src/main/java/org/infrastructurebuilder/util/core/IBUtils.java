@@ -852,12 +852,12 @@ public class IBUtils {
 
   public static String toInternalSignaturePath(final GAV gav) {
     return gav.getGroupId() + ":" + gav.getArtifactId() + ":" + gav.getClassifier().orElse("") + ":"
-        + gav.getVersion().orElse("___") + ":" + gav.getExtension();
+        + gav.getVersion().orElse("___") + ":" + gav.getExtension().get();
   }
 
   public static String getArtifactFilenamePath(final GAV art) {
     return String.format("%s%s%s.%s", art.getArtifactId(), art.getVersion().map(sv -> "-" + sv).orElse(""),
-        art.getClassifier().map(cls -> "-" + cls).orElse(""), art.getExtension());
+        art.getClassifier().map(cls -> "-" + cls).orElse(""), art.getExtension().get());
   }
 
   public static boolean _matcher(final String pattern, final String value) {

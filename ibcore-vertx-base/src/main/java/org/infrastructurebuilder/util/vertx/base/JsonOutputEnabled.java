@@ -21,7 +21,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.core.PathRef;
+import org.infrastructurebuilder.pathref.PathRef;
 
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;

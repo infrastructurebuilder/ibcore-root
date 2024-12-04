@@ -21,8 +21,8 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
-import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
-import static org.infrastructurebuilder.util.constants.IBConstants.NO_PATH_SUPPLIED;
+import static org.infrastructurebuilder.constants.IBConstants.APPLICATION_OCTET_STREAM;
+import static org.infrastructurebuilder.constants.IBConstants.NO_PATH_SUPPLIED;
 import static org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory.extracted;
 
 import java.net.URL;
@@ -34,14 +34,15 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 
+import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.objectmapper.jackson.ObjectMapperUtils;
-import org.infrastructurebuilder.util.constants.IBConstants;
-import org.infrastructurebuilder.util.core.Checksum;
-import org.infrastructurebuilder.util.core.ChecksumBuilder;
+import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.ChecksumBuilder;
+import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
+import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.OptStream;
-import org.infrastructurebuilder.util.core.PathRef;
 import org.infrastructurebuilder.util.readdetect.base.IBResource;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory;
@@ -282,10 +283,10 @@ public class VertxDefaultIBResource implements VertxIBResource {
 
   @Override
   public ChecksumBuilder getChecksumBuilder() {
-    return ChecksumBuilder.newAlternateInstanceWithRelativeRoot(this.getRelativeRoot())
+    return ChecksumBuilderFactory.newAlternateInstanceWithRelativeRoot(this.getRelativeRoot())
         .addChecksum(new Checksum(m.getStreamChecksum()));
   }
-  
+
   @Override
   public OptStream get() {
     // TODO Auto-generated method stub

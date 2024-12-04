@@ -22,15 +22,14 @@ import static io.vertx.core.Future.succeededFuture;
 import static java.nio.file.Files.readString;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
-import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
-import static org.infrastructurebuilder.util.constants.IBConstants.BLOBSTORE_NO_MAXBYTES;
-import static org.infrastructurebuilder.util.constants.IBConstants.METADATA_DIR_NAME;
-import static org.infrastructurebuilder.util.core.Checksum.ofPath;
+import static org.infrastructurebuilder.constants.IBConstants.*;
+import static org.infrastructurebuilder.pathref.Checksum.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
@@ -41,12 +40,11 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.PathRef;
+import org.infrastructurebuilder.pathref.PathRefEnabled;
 import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
 import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.core.PathRef;
-import org.infrastructurebuilder.util.core.RelativeRootFactory;
-import org.infrastructurebuilder.util.core.RelativeRootSupplier;
 import org.infrastructurebuilder.util.readdetect.base.IBResource;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory;
@@ -78,12 +76,12 @@ public class FilesystemBlobstore implements Blobstore<VertxIBResource> {
   private final long maxBytes;
   private IBResourceBuilderFactory<Optional<IBResource>> rcf;
 
-  public FilesystemBlobstore(RelativeRootSupplier rrs, Long size) {
-    this.root = requireNonNull(requireNonNull(rrs, "RelativeRootSupplier").getRelativeRoot(), "PathRef")
+  public FilesystemBlobstore(PathRefEnabled rrs, Long size) {
+    this.root = requireNonNull(requireNonNull(rrs, "RelativeRootSupplier").getPathRef(), "PathRef")
         .orElseThrow(() -> new IBException("No relative root"));
     this.rcf = new DefaultIBResourceBuilderFactorySupplier(new RelativeRootFactory(Set.of(rrs))).get(rrs.getName())
         .getRelativeRoot();
-    this.metadata = getRelativeRoot().resolvePath(METADATA_DIR_NAME).map(Path::toAbsolutePath)
+    this.metadata = getRelativeRoot().toResolvedPath(Paths.get(METADATA_DIR_NAME))
         .orElseThrow(() -> new IBResourceException("No path"));
     try {
       Files.createDirectories(this.metadata);
@@ -110,7 +108,7 @@ public class FilesystemBlobstore implements Blobstore<VertxIBResource> {
             .flatMap(IBResourceBuilder::build);
         res.ifPresent(r -> {
           resources.add(u.toString());
-          size.addAndGet(r.size());
+          r.size().ifPresent(size::addAndGet);
         });
       } catch (Throwable e) {
         getLog().error("{} was not a metadata file {}", p, e);
@@ -136,7 +134,7 @@ public class FilesystemBlobstore implements Blobstore<VertxIBResource> {
 
         .flatMap(Optional::stream)
 
-        .collect(Collectors.summingLong(IBResource::size));
+        .collect(Collectors.summingLong(r -> r.size().orElse(0L)));
   }
 
   public PathRef getRelativeRoot() {
@@ -179,7 +177,7 @@ public class FilesystemBlobstore implements Blobstore<VertxIBResource> {
           // File written
           .compose(v -> readChecksum(blobFile))
           // Checksum read
-          .compose(csum -> writeMetadata(blobFile, csum, originalFilename, ofNullable(desc), cDate, uDate, addlProps));
+          .compose(csum -> writeMetadata(blobFile, csum, originalFilename, Optional.ofNullable(desc), cDate, uDate, addlProps));
     } catch (IOException e) {
       log.error("Error creating temp file in {}", this.root, e);
       return failedFuture("error.creating.tempfile.for.putblob");

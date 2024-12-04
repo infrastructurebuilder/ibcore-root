@@ -203,7 +203,7 @@ public class GAVTest {
 
   @Test
   public void testGetPackaging() {
-    assertEquals(gav.getExtension(), BASIC_PACKAGING);
+    assertEquals(BASIC_PACKAGING, gav.getExtension().orElse(null));
   }
 
   @Test

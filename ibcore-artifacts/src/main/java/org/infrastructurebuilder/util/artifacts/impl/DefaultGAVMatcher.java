@@ -107,7 +107,7 @@ public class DefaultGAVMatcher implements GAVMatcher {
     }
     matches = matches && getGroupId().map(g -> g.matcher(target.getGroupId()).matches()).orElse(true)
         && getArtifactId().map(a -> a.matcher(target.getArtifactId()).matches()).orElse(true)
-        && getExtension().map(t -> t.matcher(target.getExtension()).matches()).orElse(true);
+        && getExtension().map(t -> t.matcher(target.getExtension().orElse(null)).matches()).orElse(true);
 
     return matches;
   }

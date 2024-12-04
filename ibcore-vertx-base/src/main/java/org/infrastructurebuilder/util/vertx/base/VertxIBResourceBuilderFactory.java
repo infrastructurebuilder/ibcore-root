@@ -25,8 +25,8 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.core.Checksum;
-import org.infrastructurebuilder.util.core.PathRef;
+import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;

@@ -17,8 +17,8 @@
  */
 package org.infrastructurebuilder.util.vertx.base;
 
-import org.infrastructurebuilder.util.core.Checksum;
-import org.infrastructurebuilder.util.core.ChecksumEnabled;
+import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.ChecksumEnabled;
 import org.json.JSONObject;
 
 public interface JsonAndChecksumEnabled extends JsonOutputEnabled, ChecksumEnabled {

@@ -105,7 +105,7 @@ public class CoordinateSetTest {
 
   @Test
   public void testgetExtension() {
-    assertEquals("E", l.getExtension());
+    assertEquals("E", l.getExtension().get());
   }
 
   @Test
@@ -115,7 +115,7 @@ public class CoordinateSetTest {
 
   @Test
   public void testGetType() {
-    assertEquals(ArtifactServices.BASIC_PACKAGING, l1.getExtension());
+    assertEquals(ArtifactServices.BASIC_PACKAGING, l1.getExtension().get());
   }
 
   @Test
@@ -140,7 +140,7 @@ public class CoordinateSetTest {
   @Test
   public void testSetExtension() {
     l.setExtension("X");
-    assertEquals("X", l.getExtension());
+    assertEquals("X", l.getExtension().get());
   }
 
   @Test
@@ -152,7 +152,7 @@ public class CoordinateSetTest {
   @Test
   public void testSetNullExtension() {
     l.setExtension(null);
-    assertEquals(DefaultGAV.BASIC_PACKAGING, l.getExtension());
+    assertEquals(DefaultGAV.BASIC_PACKAGING, l.getExtension().get());
   }
 
 }

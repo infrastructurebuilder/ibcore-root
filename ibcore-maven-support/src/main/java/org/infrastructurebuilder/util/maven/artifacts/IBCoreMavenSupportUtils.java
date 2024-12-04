@@ -33,7 +33,7 @@ public class IBCoreMavenSupportUtils {
     return ofNullable(gab).flatMap(g -> {
       return ofNullable(h).map(gav -> {
         return new DefaultArtifact(g.getGroupId(), g.getArtifactId(), g.getVersion().orElse(null), JavaScopes.COMPILE,
-            g.getExtension(), g.getClassifier().orElse(null), h);
+            g.getExtension().orElse(null), g.getClassifier().orElse(null), h);
 
       });
     });

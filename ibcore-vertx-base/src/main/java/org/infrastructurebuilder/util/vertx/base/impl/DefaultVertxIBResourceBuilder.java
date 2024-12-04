@@ -19,7 +19,7 @@ package org.infrastructurebuilder.util.vertx.base.impl;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
-import static org.infrastructurebuilder.util.constants.IBConstants.NO_PATH_SUPPLIED;
+import static org.infrastructurebuilder.constants.IBConstants.NO_PATH_SUPPLIED;
 import static org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory.extracted;
 import static org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory.toType;
 
@@ -31,9 +31,9 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.core.Checksum;
-import org.infrastructurebuilder.util.core.PathAndChecksum;
-import org.infrastructurebuilder.util.core.PathRef;
+import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.PathRef;
+import org.infrastructurebuilder.util.readdetect.base.IBResource;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceException;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
@@ -80,17 +80,23 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
   }
 
   @Override
-  public IBResourceBuilder<Future<VertxIBResource>> fromPathAndChecksum(PathAndChecksum path) {
-    this.sourcePath = requireNonNull(path).get();
+	public Optional<IBResource> build(boolean hard) {
+		// TODO Auto-generated method stub
+		throw new IBException("Not implemented");//return Optional.empty();
+	}
 
-    return this
-
-        .withFilePath(path.toString())
-
-        .withName(this.sourcePath.getFileName().toString())
-
-        .withSource(this.sourcePath.toUri().toASCIIString());
-  }
+//  @Override
+//  public IBResourceBuilder<Future<VertxIBResource>> fromPathAndChecksum(PathAndChecksum path) {
+//    this.sourcePath = requireNonNull(path).get();
+//
+//    return this
+//
+//        .withFilePath(path.toString())
+//
+//        .withName(this.sourcePath.getFileName().toString())
+//
+//        .withSource(this.sourcePath.toUri().toASCIIString());
+//  }
 
   @Override
   public IBResourceBuilder<Future<VertxIBResource>> withFilePath(String path) {

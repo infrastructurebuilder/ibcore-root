@@ -17,7 +17,7 @@
  */
 package org.infrastructurebuilder.util.vertx.base;
 
-import static org.infrastructurebuilder.util.constants.IBConstants.DIGEST_TYPE;
+import static org.infrastructurebuilder.constants.IBConstants.DIGEST_TYPE;
 
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -25,7 +25,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.pathref.Checksum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

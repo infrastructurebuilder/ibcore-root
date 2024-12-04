@@ -20,7 +20,7 @@ package org.infrastructurebuilder.util.vertx.base.impl;
 import static io.vertx.core.Future.failedFuture;
 import static io.vertx.core.Future.succeededFuture;
 import static java.util.Objects.requireNonNull;
-import static org.infrastructurebuilder.util.constants.IBConstants.APPLICATION_OCTET_STREAM;
+import static org.infrastructurebuilder.constants.IBConstants.APPLICATION_OCTET_STREAM;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -35,17 +35,20 @@ import java.util.function.Supplier;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.infrastructurebuilder.util.core.Checksum;
+import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.PathRefEnabled;
+import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.PathAndChecksum;
-import org.infrastructurebuilder.util.core.RelativeRootSupplier;
-import org.infrastructurebuilder.util.core.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.readdetect.base.AbstractIBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceException;
+import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.infrastructurebuilder.util.vertx.base.VertxIBResource;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,10 +74,10 @@ public class VertxIBResourceBuilderFactoryImpl extends AbstractIBResourceBuilder
   private final TypeToExtensionMapper typeMapper;
 
   @Inject
-  public VertxIBResourceBuilderFactoryImpl(Vertx vertx, RelativeRootSupplier relRootSupplier,
+  public VertxIBResourceBuilderFactoryImpl(Vertx vertx, PathRefEnabled relRootSupplier,
       TypeToExtensionMapper typeMapper)
   {
-    super(requireNonNull(relRootSupplier).getRelativeRoot().orElseThrow(() -> new IBResourceException("No root")));
+    super(requireNonNull(relRootSupplier).getPathRef().orElseThrow(() -> new IBResourceException("No pathref")));
     this.typeMapper = Objects.requireNonNull(typeMapper);
     this.vertx = Objects.requireNonNull(vertx);
     // Delivers a new builder from the relative root each time
@@ -93,16 +96,7 @@ public class VertxIBResourceBuilderFactoryImpl extends AbstractIBResourceBuilder
   }
 
   public Optional<IBResourceBuilder<Future<VertxIBResource>>> fromPathAndChecksum(PathAndChecksum p) {
-    return Optional.of(getBuilder().get().fromPathAndChecksum(p));
-//    log.debug("Getting stream from {}", p);
-//
-//    var c = getRelativeRoot()
-//
-//        .map(rr -> cacheIt(p, type))
-//
-//        .orElseGet(() -> readIt(p, type));
-//
-//    return Optional.ofNullable(c.result());
+	  return Optional.of(new DefaultVertxIBResourceBuilder(vertx,getRelativeRoot()));
   }
 
   private Future<IBResourceBuilder<Future<VertxIBResource>>> readIt(Path p, String type) {
@@ -149,12 +143,13 @@ public class VertxIBResourceBuilderFactoryImpl extends AbstractIBResourceBuilder
       return succeededFuture(out);
     }).compose(outfile -> {
       Path target = Paths.get(copied.result()).toAbsolutePath();
+      var url = target.toUri().toASCIIString();
       // Get path to copied file
       // File is copied?
       IBResourceBuilder<Future<VertxIBResource>> builder = new DefaultVertxIBResourceBuilder(this.vertx,
           this.getRelativeRoot())
-          // From the file
-          .fromPath(target);
+
+    		  .fromURL(url);
       return succeededFuture(builder);
     });
 
@@ -194,7 +189,11 @@ public class VertxIBResourceBuilderFactoryImpl extends AbstractIBResourceBuilder
     var pandc = new DefaultPathAndChecksum(p, checksum);
     var m = this.builder.get()
 
-        .fromPathAndChecksum(pandc) // sets filepath and name (and source?)
+    		.withChecksum(checksum)
+
+    		.withFilePath(p.toString())
+
+//        .fromPathAndChecksum(pandc) // sets filepath and name (and source?)
 
         .withChecksum(checksum)
 
@@ -217,5 +216,17 @@ public class VertxIBResourceBuilderFactoryImpl extends AbstractIBResourceBuilder
     // TODO Auto-generated method stub
     return Optional.empty();
   }
+
+@Override
+protected Optional<Future<VertxIBResource>> extractFromModel(IBResourceModel model) {
+	// TODO Auto-generated method stub
+	throw new IBException("unimplemented"); //return Optional.empty();
+}
+
+@Override
+protected Optional<Future<VertxIBResource>> extractFromJSON(JSONObject json) {
+	// TODO Auto-generated method stub
+	throw new IBException("Unimplemented");//return Optional.empty();
+}
 
 }

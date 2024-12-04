@@ -37,7 +37,7 @@ public class DefaultGAV extends DefaultGAVBasic implements GAV {
 
   public static DefaultGAV copyFromSpec(final GAV hs) {
     return (DefaultGAV) new DefaultGAV(hs.getGroupId(), hs.getArtifactId(), hs.getClassifier().orElse(null),
-        hs.getVersion().orElse(null), hs.getExtension()).withFile(hs.getFile().orElse(null));
+        hs.getVersion().orElse(null), hs.getExtension().orElse(null)).withFile(hs.getFile().orElse(null));
   }
 
   private final Path path;
@@ -101,7 +101,7 @@ public class DefaultGAV extends DefaultGAVBasic implements GAV {
     setArtifactId(gav.getArtifactId());
     setVersion(gav.getVersion().orElse(null));
     setClassifier(gav.getClassifier().orElse(null));
-    setExtension(gav.getExtension());
+    setExtension(gav.getExtension().orElse(null));
     this.path = path;
     this.builder = ChecksumBuilderFactory.newInstance(empty());
   }

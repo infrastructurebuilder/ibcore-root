@@ -23,7 +23,6 @@ import org.infrastructurebuilder.util.readdetect.base.IBResource;
 
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
-import io.vertx.core.file.AsyncFile;
 import io.vertx.core.file.OpenOptions;
 
 public interface VertxIBResource extends IBResource {

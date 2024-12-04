@@ -19,7 +19,7 @@ package org.infrastructurebuilder.util.vertx.base;
 
 import java.util.Objects;
 
-import org.infrastructurebuilder.util.core.ThrowableJSONObject;
+import org.infrastructurebuilder.pathref.ThrowableJSONObject;
 
 import io.vertx.core.json.JsonObject;
 
