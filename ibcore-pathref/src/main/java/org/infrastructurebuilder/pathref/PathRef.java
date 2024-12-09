@@ -22,8 +22,8 @@ import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.pathref.IBChecksumUtils.stripTrailingSlash;
 
+import java.io.Closeable;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -114,7 +114,7 @@ import org.slf4j.LoggerFactory;
  * always available.
  *
  */
-public interface PathRef extends JSONAndChecksumEnabled {
+public interface PathRef extends JSONAndChecksumEnabled , AutoCloseable{
   final static String RELATIVE_ROOT_URLLIKE = "URL";
   final static Logger log = LoggerFactory.getLogger(PathRef.class);
 
@@ -277,4 +277,9 @@ public interface PathRef extends JSONAndChecksumEnabled {
 //  Optional<Path> extendPath(Path p);
 
   Optional<InputStream> getInputStreamFrom(String path);
+
+  @Override
+  default void close() throws Exception {
+
+  }
 }

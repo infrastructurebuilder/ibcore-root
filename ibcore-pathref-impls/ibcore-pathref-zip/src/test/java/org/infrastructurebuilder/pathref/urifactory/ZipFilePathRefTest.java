@@ -22,11 +22,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.Set;
 
+import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.PathRefFactory;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
@@ -37,7 +41,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class RelativeRootTest {
+class ZipFilePathRefTest {
 
   private static TestingPathSupplier tps;
 
@@ -54,6 +58,7 @@ class RelativeRootTest {
   private PathRefFactory rrp;
   private ZipFilePathRefProducer h;
   private Path tp;
+  private Path zipfile;
 
   @BeforeEach
   void setUp() throws Exception {
@@ -61,6 +66,7 @@ class RelativeRootTest {
     tp = tps.get();
     h = new ZipFilePathRefProducer();
     rrp = new PathRefFactory(Set.of(this.h));
+   zipfile = tps.getTestClasses().resolve("X.zip");
   }
 
   @AfterEach
@@ -69,7 +75,7 @@ class RelativeRootTest {
 
   @Test
   void testRR() throws MalformedURLException {
-    var q = rrp.get(NAME, tp.toUri().toURL());
+    var q = rrp.get(NAME, tp.toUri().toURL().toExternalForm());
     assertNotNull(q);
   }
 
@@ -78,7 +84,13 @@ class RelativeRootTest {
   }
 
   @Test
-  void testWithPath() throws MalformedURLException {
+  void testWithPath() throws Exception {
+    try (PathRef q = h.with(zipfile.toAbsolutePath().toString()).get()) {
+      Optional<InputStream> r = q.getInputStreamFrom("X/Y/rick.jpg");
+      assertTrue(r.isPresent());
+      Checksum c = new Checksum(r.get());
+      assertEquals("abc", c.toString());
+    }
   }
 
 }

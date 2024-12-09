@@ -17,6 +17,6 @@
  */
 package org.infrastructurebuilder.api.base;
 
-public interface ResponsiveWith<T, R> extends ResponsiveTo<T>, With<T, R> {
+public interface ResponsiveWith<R> extends ResponsiveToString, WithString<R> {
 
 }

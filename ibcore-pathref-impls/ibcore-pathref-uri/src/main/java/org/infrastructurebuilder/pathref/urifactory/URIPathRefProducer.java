@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 
 @Named(URIPathRefProducer.NAME)
 // NOT a singleton
-public class URIPathRefProducer implements PathRefProducer<String> {
+public class URIPathRefProducer implements PathRefProducer {
   private static final Logger log = LoggerFactory.getLogger(URIPathRefProducer.class);
   public static final String NAME = "uri-supplier";
 
@@ -62,12 +62,7 @@ public class URIPathRefProducer implements PathRefProducer<String> {
   public URIPathRefProducer() {
   }
 
-  @Override
-  public Class<? extends String> withClass() {
-    return String.class;
-  }
-
-  public Optional<PathRef> with(Object data) {
+  public Optional<PathRef> with(String data) {
     if (data == null || !(data instanceof String))
       return empty();
     try {

@@ -99,8 +99,20 @@ public final class IBChecksumUtils {
     }
   }
 
+  public static byte[] digestReader(final String type, final Reader ins) throws IOException {
+    final char[] buf = new char[BUFFER_SIZE];
+    try (DigestReader sink = new DigestReader(ins, cet.returns(() -> MessageDigest.getInstance(type)))) {
+      while (sink.read(buf) > 0) {}
+      return sink.getMessageDigest().digest();
+    }
+  }
+
   public static byte[] digestInputStream(final InputStream ins) throws IOException {
     return digestInputStream(DIGEST_TYPE, ins);
+  }
+
+  public static byte[] digestReader(final Reader ins) throws IOException {
+    return digestReader(DIGEST_TYPE, ins);
   }
 
   public static String getHex(final byte[] raw) {
@@ -147,18 +159,6 @@ public final class IBChecksumUtils {
     final ByteArrayOutputStream bos = new ByteArrayOutputStream();
     copy(ins, bos);
     return getHex(bos.toByteArray());
-  }
-
-  /**
-   * Do not use this to process large files!
-   *
-   * @param ins
-   * @return
-   * @throws IOException
-   * @throws NoSuchAlgorithmException
-   */
-  public static byte[] digestReader(final Reader ins) throws IOException {
-    return digestInputStream(readerToInputStream(ins));
   }
 
   /**

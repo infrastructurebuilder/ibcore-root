@@ -18,8 +18,6 @@
 package org.infrastructurebuilder.pathref;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
-import static java.util.Optional.ofNullable;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
@@ -46,15 +44,14 @@ import org.slf4j.LoggerFactory;
 public class PathRefFactory {
   private final static Logger log = LoggerFactory.getLogger(PathRefFactory.class);
 
-  private Map<String, PathRefProducer<? extends Object>> suppliers;
+  private Map<String, PathRefProducer> suppliers;
 
   @SuppressWarnings("unchecked")
   @Inject
-  public PathRefFactory(Collection<PathRefProducer<? extends Object>> s) {
+  public PathRefFactory(Collection<PathRefProducer> s) {
     log.info("Got list with names: {}", s.stream().map(PathRefProducer::getName).toList().toString());
     this.suppliers = requireNonNull(s).stream() //
         .filter(s2 -> String.class.isAssignableFrom(s2.withClass())) //
-        .map(s3 -> (PathRefProducer<String>) s3) // Checked
         .collect(toMap(k -> k.getName(), identity()));
     log.info("Injected the following names: {}", this.suppliers.keySet().toString());
   }
@@ -71,15 +68,15 @@ public class PathRefFactory {
     return get(name, null);
   }
 
-  public final Optional<PathRef> get(String name, Object config) {
+  public final Optional<PathRef> get(String name, String config) {
     if (!suppliers.keySet().contains(name))
       log.warn("PathRefProducer {} not available", name);
-    PathRefProducer<? extends Object> q = suppliers.get(name);
+    PathRefProducer q = suppliers.get(name);
     return q.with(config);
   }
 
-  public final Optional<PathRef> getUnspecified(Object config) {
-    Optional<PathRefProducer<? extends Object>> qq = suppliers.values().stream().sorted(Weighted.weighted)
+  public final Optional<PathRef> getUnspecified(String config) {
+    Optional<PathRefProducer> qq = suppliers.values().stream().sorted(Weighted.weighted)
         .filter(v -> v.withClass().equals(config.getClass())).findFirst();
     return qq.flatMap(ff -> ff.with(config));
   }

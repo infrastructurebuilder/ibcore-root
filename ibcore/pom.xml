@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE project>
 <!--
 
     @formatter:off
@@ -18,96 +18,98 @@
     @formatter:on
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="https://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.infrastructurebuilder</groupId>
-		<artifactId>ibcore-root</artifactId>
-		<version>0.30.1-SNAPSHOT</version>
-	</parent>
+  <parent>
+    <groupId>org.infrastructurebuilder</groupId>
+    <artifactId>ibcore-root</artifactId>
+    <version>0.30.1-SNAPSHOT</version>
+  </parent>
 
-	<artifactId>ibcore</artifactId>
-	<packaging>jar</packaging>
+  <artifactId>ibcore</artifactId>
+  <packaging>jar</packaging>
 
-	<name>${project.artifactId}</name>
-	<description>Lightly encumberd Standard interfaces (and exceptions) for
+  <name>${project.artifactId}</name>
+  <description>Lightly encumberd Standard interfaces (and exceptions) for
 		JVM-based applications within IB codebases</description>
 	<!-- URL for site gen -->
-	<url>${github.url.base}/${project.artifactId}</url>
+  <url>${github.url.base}/${project.artifactId}</url>
 
-	<properties>
+  <properties>
 
-		<hashicorp.boundary.download.skip>false</hashicorp.boundary.download.skip>
-		<hashicorp.consul.download.skip>false</hashicorp.consul.download.skip>
-		<hashicorp.nomad.download.skip>false</hashicorp.nomad.download.skip>
-		<hashicorp.packer.download.skip>false</hashicorp.packer.download.skip>
-		<hashicorp.sentinel.download.skip>false</hashicorp.sentinel.download.skip>
-		<hashicorp.terraform.download.skip>false</hashicorp.terraform.download.skip>
-		<hashicorp.vault.download.skip>false</hashicorp.vault.download.skip>
-		<hashicorp.vagrant.download.skip>true</hashicorp.vagrant.download.skip>
-		<hashicorp.waypoint.download.skip>false</hashicorp.waypoint.download.skip>
+    <hashicorp.boundary.download.skip>false</hashicorp.boundary.download.skip>
+    <hashicorp.consul.download.skip>false</hashicorp.consul.download.skip>
+    <hashicorp.nomad.download.skip>false</hashicorp.nomad.download.skip>
+    <hashicorp.packer.download.skip>false</hashicorp.packer.download.skip>
+    <hashicorp.sentinel.download.skip>false</hashicorp.sentinel.download.skip>
+    <hashicorp.terraform.download.skip>false</hashicorp.terraform.download.skip>
+    <hashicorp.vault.download.skip>false</hashicorp.vault.download.skip>
+    <hashicorp.vagrant.download.skip>true</hashicorp.vagrant.download.skip>
+    <hashicorp.waypoint.download.skip>false</hashicorp.waypoint.download.skip>
 
 
-		<test.coverage.percentage.required>86</test.coverage.percentage.required>
-		<jacoco.max.missed.classes>0</jacoco.max.missed.classes>
-	</properties>
+    <test.coverage.percentage.required>86</test.coverage.percentage.required>
+    <jacoco.max.missed.classes>0</jacoco.max.missed.classes>
+  </properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.avaje</groupId>
-			<artifactId>javax.inject</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.avaje</groupId>
-			<artifactId>avaje-jsr305</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.infrastructurebuilder.usurped</groupId>
-			<artifactId>semver4j</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.jooq</groupId>
-			<artifactId>joor</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<scope>test</scope>
-		</dependency>
+  <dependencies>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.avaje</groupId>
+      <artifactId>javax.inject</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.avaje</groupId>
+      <artifactId>avaje-jsr305</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder.usurped</groupId>
+      <artifactId>semver4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jooq</groupId>
+      <artifactId>joor</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.infrastructurebuilder.usurped</groupId>
-			<artifactId>jsonassert</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.infrastructurebuilder</groupId>
-			<artifactId>ibcore-constants</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.infrastructurebuilder.pathref</groupId>
-			<artifactId>ibcore-pathref</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.infrastructurebuilder.pathref</groupId>
-			<artifactId>ibcore-pathref</artifactId>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder.usurped</groupId>
+      <artifactId>jsonassert</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore-constants</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder.pathref</groupId>
+      <artifactId>ibcore-pathref</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder.pathref</groupId>
+      <artifactId>ibcore-pathref</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>

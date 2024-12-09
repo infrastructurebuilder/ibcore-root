@@ -17,41 +17,54 @@
  */
 package org.infrastructurebuilder.pathref;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.infrastructurebuilder.api.base.IdentifierSupplier;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Optional;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class SingletonIncrementingDatedStringSupplierTest {
+class IncrementingTimestampedWorkingPathSupplierTest {
+
+  IncrementingTimestampedStringSupplier ids = new SingletonIncrementingTimestampedStringSupplier();
+  WorkingPathSupplier wps;
+  Path p;
+  Path p2;
 
   @BeforeAll
-  public static void setUpBeforeClass() throws Exception {
+  static void setUpBeforeClass() throws Exception {
   }
 
   @AfterAll
-  public static void tearDownAfterClass() throws Exception {
+  static void tearDownAfterClass() throws Exception {
   }
 
-  private IdentifierSupplier s;
-
   @BeforeEach
-  public void setUp() throws Exception {
-    s = new SingletonIncrementingDatedStringSupplier();
+  void setUp() throws Exception {
+    wps = new IncrementingDatedWorkingPathSupplier(ids);
   }
 
   @AfterEach
-  public void tearDown() throws Exception {
+  void tearDown() throws Exception {
   }
 
   @Test
-  public void testGet() {
-    String x = s.get();
-    assertTrue(x.endsWith("000"));
-    assertTrue(s.get().endsWith("001"));
+  void testIncrementingDatedWorkingPathSupplier() throws InterruptedException, IOException {
+    p = wps.get(); // Exercised but not validated
+    assertTrue(Files.isDirectory(p));
+    Thread.sleep(500L);
+    p2 = wps.get();
+    assertTrue(Files.isDirectory(p2));
+    assertNotEquals(p,p2);
+    Files.delete(p);
+    Files.delete(p2);
   }
 
 }

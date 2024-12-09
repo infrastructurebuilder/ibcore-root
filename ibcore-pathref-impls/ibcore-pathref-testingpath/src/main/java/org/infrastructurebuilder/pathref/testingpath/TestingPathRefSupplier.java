@@ -57,9 +57,13 @@ public class TestingPathRefSupplier implements PathRefProducer<String> {
     return NAME;
   }
 
+  public void finalization()  throws Throwable {
+    this.tps.finalize();
+  }
+
   @Override
   protected void finalize() throws Throwable {
-    this.tps.finalize();
+    finalization();
   }
 
   @Override

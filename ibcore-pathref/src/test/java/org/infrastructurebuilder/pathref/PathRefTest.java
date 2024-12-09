@@ -26,9 +26,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -90,26 +90,16 @@ class PathRefTest {
     fileUrl = u.toExternalForm();
 
     prr = new URLPathRef(u);
-    rrp = new PathRefFactory(Set.of(new PathRefProducer<String>() {
+    rrp = new PathRefFactory(Set.of(new PathRefProducer() {
       @Override
       public String getName() {
         return "ABS";
       }
 
       @Override
-      public Optional<PathRef> with(Object t) {
+      public Optional<PathRef> with(String t) {
         return Optional.of(prr);
       }
-
-      @Override
-      public Class<? extends String> withClass() {
-        return String.class;
-      }
-
-//      @Override
-//      public Optional<PathRef> getPathRef() {
-//        return Optional.of(prr);
-//      }
 
     }));
   }
@@ -121,6 +111,15 @@ class PathRefTest {
   @Test
   void testWithParam() {
     assertEquals(prr, rrp.get("ABS", "xyz").get());
+  }
+
+  @Test
+  void testGetUnspecified() {
+    Optional<PathRef> x = rrp.getUnspecified(ABC);
+    assertTrue(x.isPresent());
+    PathRef q = x.get();
+    Path r = q.getPath().get();
+    assertEquals(tp,r);
   }
 
   @Test
@@ -271,5 +270,18 @@ class PathRefTest {
   public void testExtend() {
     assertFalse(prr.extendAsPathRef(null).isPresent());
     assertFalse(prr.extendAsPathRef(aPath).isPresent());
+  }
+
+  @Test
+  public void testStatics() throws URISyntaxException {
+    assertTrue(AbstractBasePathRef.checkAbsolute(ssPath).isEmpty());
+    assertTrue(AbstractBasePathRef.checkAbsolute(ssPath.toAbsolutePath()).isPresent());
+    assertFalse(AbstractBasePathRef.fromURI(new URI("harf://jarba")).isPresent());
+    assertTrue(AbstractBasePathRef.fromURI(new URI("file:.")).isPresent());
+  }
+
+  @Test
+  public void testExtensions() {
+
   }
 }

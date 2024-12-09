@@ -74,7 +74,7 @@ abstract public class AbstractBasePathRef<T> implements PathRef {
     return Optional.ofNullable(_uri);
   }
 
-  public final static Optional<URL> fromURL(URI u) {
+  public final static Optional<URL> fromURI(URI u) {
     URL _url = null;
     try {
       _url = requireNonNull(u).toURL();

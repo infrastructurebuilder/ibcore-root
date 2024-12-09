@@ -18,15 +18,26 @@
 package org.infrastructurebuilder.pathref.urifactory;
 
 import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.AbstractBasePathRef;
 import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.PathRefProducer;
@@ -39,7 +50,7 @@ import org.slf4j.LoggerFactory;
  */
 @Named(ZipFilePathRefProducer.NAME)
 // NOT a singleton
-public class ZipFilePathRefProducer implements PathRefProducer<String> {
+public class ZipFilePathRefProducer implements PathRefProducer {
   private static final Logger log = LoggerFactory.getLogger(ZipFilePathRefProducer.class);
   public static final String NAME = "uri-supplier";
   private final AtomicReference<String> path = new AtomicReference<>();
@@ -56,20 +67,21 @@ public class ZipFilePathRefProducer implements PathRefProducer<String> {
   public ZipFilePathRefProducer() {
   }
 
-  @Override
-  public Class<String> withClass() {
-    return String.class;
-  }
-
   protected Logger getLog() {
     return log;
   }
 
-  public Optional<PathRef> with(Object data) {
-    if (data == null || !(data instanceof String))
+  public Optional<PathRef> with(String data) {
+
+    if (data == null )
+      return empty();
+    Path path = Paths.get(data).toAbsolutePath();
+    String s = path.toString().toLowerCase();
+    if (!s.endsWith(".zip") && !s.endsWith(".jar"))
       return empty();
     try {
-      return Optional.of(new ZipFilePathRef((String) data));
+      String u = "zip:"+path.toUri().toURL().toExternalForm();
+      return of(new ZipFilePathRef(u));
     } catch (Throwable t) {
       log.error(String.format("Error creating ZipFilePathRef from {}", data), t);
       return empty();
@@ -78,14 +90,37 @@ public class ZipFilePathRefProducer implements PathRefProducer<String> {
 
   public final static class ZipFilePathRef extends AbstractBasePathRef<Path> {
 
+    private FileSystem fs;
+
     protected ZipFilePathRef(String u) {
       super(u);
+      URI uri = URI.create(u);
+
+      Map<String, ?> env = new HashMap<>();
+      try {
+
+        fs = FileSystems.newFileSystem(uri, env);
+      } catch (IOException e) {
+        log.error("Error making filesystem", e);
+        throw new IBException(e);
+      }
     }
 
     @Override
     public Optional<InputStream> getInputStreamFrom(String path) {
-      // TODO Auto-generated method stub
-      return Optional.empty();
+      Path p = fs.getPath(path);
+       try {
+        return of(Files.newInputStream(p, StandardOpenOption.READ));
+      } catch (IOException e) {
+        log.error("Error opening path {} ", path, e);
+        return empty();
+      }
+    }
+
+    @Override
+    public void close() throws Exception {
+      fs.close();
+      super.close();
     }
 
   }

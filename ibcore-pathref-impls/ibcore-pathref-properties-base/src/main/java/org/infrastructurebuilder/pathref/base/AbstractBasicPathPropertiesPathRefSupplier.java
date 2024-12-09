@@ -29,17 +29,17 @@ import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.PathRefProducer;
 import org.slf4j.Logger;
 
-abstract public class AbstractBasicPathPropertiesPathRefSupplier implements PathRefProducer<String> {
+abstract public class AbstractBasicPathPropertiesPathRefSupplier implements PathRefProducer {
 
   @Override
-  public Optional<PathRef> with(Object data) {
+  public Optional<PathRef> with(String data) {
 //    if (data == null || !(data instanceof String))
 //      return Optional.empty();
     return getProperty().flatMap(pStr -> {
       try {
         return AbstractBasePathRef.checkAbsolute(Paths.get(pStr)).map(ap -> new AbsolutePathRef(ap));
       } catch (Throwable t) {
-        getLog().warn("No RR created due to path failure of {}", pStr);
+        getLog().warn("No pathref created due to path failure of {}", pStr);
         return Optional.empty();
       }
     });
@@ -65,7 +65,7 @@ abstract public class AbstractBasicPathPropertiesPathRefSupplier implements Path
   }
 
   @Override
-  public Class<? extends String> withClass() {
+  public final Class<String> withClass() {
     return String.class;
   }
 }

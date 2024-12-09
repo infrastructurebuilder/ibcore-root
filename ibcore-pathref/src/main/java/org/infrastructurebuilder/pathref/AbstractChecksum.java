@@ -24,9 +24,11 @@ import static java.util.UUID.nameUUIDFromBytes;
 import static org.infrastructurebuilder.constants.IBConstants.DIGEST_TYPE;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
 import static org.infrastructurebuilder.pathref.IBChecksumUtils.digestInputStream;
+import static org.infrastructurebuilder.pathref.IBChecksumUtils.digestReader;
 import static org.infrastructurebuilder.pathref.IBChecksumUtils.getHex;
 
 import java.io.InputStream;
+import java.io.Reader;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
@@ -66,15 +68,27 @@ abstract class AbstractChecksum implements Comparable<AbstractChecksum>, Supplie
 
   protected AbstractChecksum(String digestType, final InputStream ins) {
     try {
-      b = ins == null ? null : cet.returns(() -> digestInputStream(digestType, ins));
       this.digestType = requireNonNull(digestType);
+      b = ins == null ? null : cet.returns(() -> digestInputStream(digestType, ins));
     } finally {
       if (ins != null)
         cet.translate(() -> ins.close());
     }
   }
 
+  protected AbstractChecksum(String digestType, final Reader ins) {
+    try {
+      this.digestType = requireNonNull(digestType);
+      b = ins == null ? null : cet.returns(() -> digestReader(digestType, ins));
+    } finally {
+      if (ins != null)
+        cet.translate(() -> ins.close());
+    }
+  }
   protected AbstractChecksum(final InputStream ins) {
+    this(DIGEST_TYPE, ins);
+  }
+  protected AbstractChecksum(final Reader ins) {
     this(DIGEST_TYPE, ins);
   }
 

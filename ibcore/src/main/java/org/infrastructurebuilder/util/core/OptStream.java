@@ -19,14 +19,15 @@ package org.infrastructurebuilder.util.core;
 
 import static java.util.Optional.ofNullable;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Optional;
 
 import javax.annotation.Nullable;
 
 import org.infrastructurebuilder.pathref.Checksum;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class OptStream implements AutoCloseable {
   private final InputStream stream;
@@ -47,6 +48,10 @@ public class OptStream implements AutoCloseable {
 
   public final Optional<InputStream> getStream() {
     return ofNullable(this.stream);
+  }
+
+  public final Optional<Reader> getReader() {
+    return getStream().map(InputStreamReader::new).map(BufferedReader::new);
   }
 
   public Optional<Checksum> getChecksum() {

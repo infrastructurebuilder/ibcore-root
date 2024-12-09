@@ -15,4 +15,14 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.vertx.base.impl;
+package org.infrastructurebuilder.pathref;
+
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+@Named(SingletonIncrementingTimestampedStringSupplier.NAME)
+@Singleton
+public class SingletonIncrementingTimestampedStringSupplier extends IncrementingTimestampedStringSupplier {
+  static public final String NAME = "singleton-incrementing-timestamped-string-supplier";
+
+}

@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Named(ClasspathPathRefSupplier.NAME)
-public class ClasspathPathRefSupplier implements PathRefProducer<String> {
+public class ClasspathPathRefSupplier implements PathRefProducer {
   private static final Logger log = LoggerFactory.getLogger(ClasspathPathRefSupplier.class);
 
   public static final String NAME = "classpath:/";
@@ -43,12 +43,7 @@ public class ClasspathPathRefSupplier implements PathRefProducer<String> {
   }
 
   @Override
-  public Class<String> withClass() {
-    return String.class;
-  }
-
-  @Override
-  public Optional<PathRef> with(Object data) {
+  public Optional<PathRef> with(String data) {
     return Optional.of(new AbstractBasePathRef<String>(NAME) {
       @Override
       public Optional<PathRef> extendAsPathRef(Path newPath) {

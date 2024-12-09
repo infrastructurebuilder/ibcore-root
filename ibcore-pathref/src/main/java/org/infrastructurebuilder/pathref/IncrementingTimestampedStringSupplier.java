@@ -25,21 +25,21 @@ import javax.inject.Named;
 
 import org.infrastructurebuilder.api.base.IdentifierSupplier;
 
-@Named(IncrementingDatedStringSupplier.NAME)
-public class IncrementingDatedStringSupplier implements IdentifierSupplier {
+@Named(IncrementingTimestampedStringSupplier.NAME)
+public class IncrementingTimestampedStringSupplier implements IdentifierSupplier {
   public static final String NAME = "incrementing-dated-string-supplier";
-  public static final String DEFAULT_DATE_FORMAT = "yyyyMMdd";
-  private final AtomicInteger i = new AtomicInteger();
-  private String today;
+  public static final String DEFAULT_DATE_FORMAT = "yyyyMMddHHmm";
+  private final AtomicInteger i = new AtomicInteger(0);
+  private String format;
 
   @Override
   public synchronized String get() {
     String now= new SimpleDateFormat(DEFAULT_DATE_FORMAT).format(new Date()) + "-%05d";
-    if (!now.equals(today)) {
-      today = now;
+    if (!now.equals(format)) {
+      format = now;
       i.set(-1);
     }
 
-    return String.format(today, i.addAndGet(1));
+    return String.format(format, i.addAndGet(1));
   }
 }

@@ -26,7 +26,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class SingletonIncrementingDatedStringSupplierTest {
+public class SingletonIncrementingTimestampedStringSupplierTest {
 
   @BeforeAll
   public static void setUpBeforeClass() throws Exception {
@@ -40,7 +40,7 @@ public class SingletonIncrementingDatedStringSupplierTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    s = new SingletonIncrementingDatedStringSupplier();
+    s = new SingletonIncrementingTimestampedStringSupplier();
   }
 
   @AfterEach
@@ -51,7 +51,8 @@ public class SingletonIncrementingDatedStringSupplierTest {
   public void testGet() {
     String x = s.get();
     assertTrue(x.endsWith("000"));
-    assertTrue(s.get().endsWith("001"));
+    String y = s.get();
+    assertTrue(y.endsWith("001"));
   }
 
 }

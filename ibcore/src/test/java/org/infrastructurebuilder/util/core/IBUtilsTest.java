@@ -88,7 +88,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -371,6 +375,21 @@ public class IBUtilsTest {
   }
 
   @Test
+  public void testCopyAndDigestReader() throws IOException, NoSuchAlgorithmException {
+    final String x = ABC;
+    Checksum y;
+    final Checksum expected = new Checksum(ABC_CHECKSUM);
+    try (ByteArrayInputStream bis = new ByteArrayInputStream(x.getBytes(UTF_8));
+        Reader r2 = new InputStreamReader(bis);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        Writer w2 = new OutputStreamWriter(bos)) {
+      y = copyAndDigest(r2,w2);
+    }
+    expected.equals(y);
+    assertEquals(expected, y, "Set the hex stream to " + expected);
+  }
+
+  @Test
   public void testCopyPaths() throws IOException {
     final Path a = wps.get();
     final Path b = a.resolve(randomUUID().toString());
@@ -450,7 +469,13 @@ public class IBUtilsTest {
   @Test
   public void testCopyAndDigestNullStream() throws NullPointerException {
     assertThrows(NullPointerException.class, () -> {
-      copyAndDigest(null, null);
+      copyAndDigest((InputStream)null, (OutputStream) null);
+    });
+  }
+  @Test
+  public void testCopyAndDigestNullReader() throws NullPointerException {
+    assertThrows(NullPointerException.class, () -> {
+      copyAndDigest((Reader)null, (Writer)null);
     });
   }
 

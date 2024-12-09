@@ -26,10 +26,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import static org.infrastructurebuilder.pathref.DigestReaderTest.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 import org.infrastructurebuilder.constants.IBConstants;
@@ -136,6 +146,18 @@ class IBChecksumUtilsTest {
     final String s = getHexStringFromInputStream(ins);
     assertEquals("0001030f", s);
     assertTrue(Arrays.equals(b, hexStringToByteArray(s)));
+  }
+
+  @Test
+  public void testReaders() throws NoSuchAlgorithmException, IOException {
+    try (ByteArrayInputStream bis = new ByteArrayInputStream(ABC.getBytes(UTF_8));
+        Reader r = new InputStreamReader(bis)) {
+      assertEquals(ABC_CHECKSUM, new Checksum(IBChecksumUtils.digestReader( r)).toString());
+    }
+    try (ByteArrayInputStream bis = new ByteArrayInputStream(ABC.getBytes(UTF_8))) {
+      assertEquals(ABC_CHECKSUM, new Checksum(IBChecksumUtils.digestInputStream( bis)).toString());
+    }
+
   }
 
 }

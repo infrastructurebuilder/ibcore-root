@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE project>
 <!--
 
     @formatter:off
@@ -18,88 +18,90 @@
     @formatter:on
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="https://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.infrastructurebuilder</groupId>
-		<artifactId>ibcore-root</artifactId>
-		<version>0.30.1-SNAPSHOT</version>
-	</parent>
+  <parent>
+    <groupId>org.infrastructurebuilder</groupId>
+    <artifactId>ibcore-root</artifactId>
+    <version>0.30.1-SNAPSHOT</version>
+  </parent>
 
-	<artifactId>ibcore-artifacts</artifactId>
-	<packaging>jar</packaging>
+  <artifactId>ibcore-artifacts</artifactId>
+  <packaging>jar</packaging>
 
-	<name>${project.artifactId}</name>
-	<description>Artifact management for IB</description>
+  <name>${project.artifactId}</name>
+  <description>Artifact management for IB</description>
 	<!-- URL for site gen -->
-	<url>${github.url.base}/${project.artifactId}</url>
+  <url>${github.url.base}/${project.artifactId}</url>
 
-	<properties>
-		<test.coverage.percentage.required>74</test.coverage.percentage.required>
-		<jacoco.max.missed.classes>3</jacoco.max.missed.classes>
-	</properties>
+  <properties>
+    <test.coverage.percentage.required>74</test.coverage.percentage.required>
+    <jacoco.max.missed.classes>3</jacoco.max.missed.classes>
+  </properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.infrastructurebuilder</groupId>
-			<artifactId>ibcore-config</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.infrastructurebuilder</groupId>
-			<artifactId>ibcore-config</artifactId>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.infrastructurebuilder</groupId>
-			<artifactId>ibcore</artifactId>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
+  <dependencies>
+    <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore-config</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore-config</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>io.avaje</groupId>
-			<artifactId>javax.inject</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>io.avaje</groupId>
+      <artifactId>javax.inject</artifactId>
+    </dependency>
 		<!--
     <dependency>
       <groupId>org.eclipse.sisu</groupId>
       <artifactId>org.eclipse.sisu.inject</artifactId>
     </dependency>
      -->
-		<dependency>
-			<groupId>org.eclipse.sisu</groupId>
-			<artifactId>org.eclipse.sisu.plexus</artifactId>
-		</dependency>
-		<dependency><!--       <groupId>com.vdurmont</groupId> -->
-			<groupId>org.infrastructurebuilder.usurped</groupId>
-			<artifactId>semver4j</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.jooq</groupId>
-			<artifactId>joor</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<scope>test</scope>
-		</dependency>
+    <dependency>
+      <groupId>org.eclipse.sisu</groupId>
+      <artifactId>org.eclipse.sisu.plexus</artifactId>
+    </dependency>
+    <dependency><!--       <groupId>com.vdurmont</groupId> -->
+      <groupId>org.infrastructurebuilder.usurped</groupId>
+      <artifactId>semver4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jooq</groupId>
+      <artifactId>joor</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<scope>test</scope>
-		</dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
 		<!--
     <dependency>
       <groupId>junit</groupId>
@@ -107,19 +109,19 @@
       <scope>test</scope>
     </dependency>
      -->
-		<dependency><!--       <groupId>org.skyscreamer</groupId> -->
-			<groupId>org.infrastructurebuilder.usurped</groupId>
-			<artifactId>jsonassert</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+    <dependency><!--       <groupId>org.skyscreamer</groupId> -->
+      <groupId>org.infrastructurebuilder.usurped</groupId>
+      <artifactId>jsonassert</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.eclipse.sisu</groupId>
-				<artifactId>sisu-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.sisu</groupId>
+        <artifactId>sisu-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 </project>

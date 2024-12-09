@@ -17,7 +17,6 @@
  */
 package org.infrastructurebuilder.pathref.setpath;
 
-import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 
 import java.nio.file.Path;
@@ -54,10 +53,6 @@ public class SetValuePathRefSupplier extends AbstractBasicPathPropertiesPathRefS
   public SetValuePathRefSupplier() {
   }
 
-  public SetValuePathRefSupplier(Path p) {
-    this.withPath(p);
-  }
-
   public final SetValuePathRefSupplier withPath(Path p) {
     boolean set = this.path.compareAndSet(null, ofNullable(p) //
         .map(Path::toAbsolutePath) //
@@ -76,5 +71,6 @@ public class SetValuePathRefSupplier extends AbstractBasicPathPropertiesPathRefS
   protected Logger getLog() {
     return log;
   }
+
 
 }

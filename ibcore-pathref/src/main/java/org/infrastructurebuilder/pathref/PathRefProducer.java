@@ -25,6 +25,6 @@ import org.infrastructurebuilder.api.base.ResponsiveWith;
  * Provides an (Optional) PathRef instance. The Optional part is for the case where the PathRef cannot be
  * configured/created, such as if pointed to a remote blobstore that was inaccessible for whatever reason.
  */
-public interface PathRefProducer<T> extends NameDescribed, ResponsiveWith<T, PathRef>, Weighted {
+public interface PathRefProducer extends NameDescribed, ResponsiveWith<PathRef>, Weighted {
 
 }

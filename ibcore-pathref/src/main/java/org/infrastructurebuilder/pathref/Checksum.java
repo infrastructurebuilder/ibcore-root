@@ -124,7 +124,7 @@ public class Checksum extends AbstractChecksum {
   }
 
   public Checksum(final Reader ins) {
-    this(readerToInputStream(ins), DIGEST_TYPE);
+    this(ins, DIGEST_TYPE);
   }
 
   public Checksum(final Reader ins, String digestType) {

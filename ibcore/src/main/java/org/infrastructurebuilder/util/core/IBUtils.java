@@ -53,6 +53,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
@@ -115,6 +116,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.DigestReader;
 import org.infrastructurebuilder.pathref.IBChecksumUtils;
 import org.infrastructurebuilder.pathref.JSONOutputEnabled;
 import org.json.JSONArray;
@@ -407,7 +409,6 @@ public class IBUtils {
     try (DigestInputStream sink = new DigestInputStream(ins, MessageDigest.getInstance(requireNonNull(type)))) {
       IBChecksumUtils.copy(sink, target);
       final Checksum d = new Checksum(sink.getMessageDigest().digest());
-
       return d;
     }
 
@@ -416,6 +417,18 @@ public class IBUtils {
   public static Checksum copyAndDigest(final InputStream ins, final OutputStream target)
       throws IOException, NoSuchAlgorithmException {
     return copyAndDigest(DIGEST_TYPE, ins, target);
+  }
+
+  public static Checksum copyAndDigest(String type, final Reader ins, Writer sink)
+      throws NoSuchAlgorithmException, IOException {
+    try (DigestReader faucet = new DigestReader(ins, type)) {
+      faucet.transferTo(sink);
+      return new Checksum(faucet.getMessageDigest().digest());
+    }
+  }
+
+  public static Checksum copyAndDigest(final Reader ins, Writer sink) throws NoSuchAlgorithmException, IOException {
+    return copyAndDigest(DIGEST_TYPE, ins, sink);
   }
 
   public final static Path copyToDeletedOnExitTempPath(String prefix, String suffix, final InputStream source)

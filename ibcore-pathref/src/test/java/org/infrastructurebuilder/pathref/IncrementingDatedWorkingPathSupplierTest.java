@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 
 class IncrementingDatedWorkingPathSupplierTest {
 
-  IncrementingDatedStringSupplier ids = new IncrementingDatedStringSupplier();
+  IncrementingDatedStringSupplier ids = new SingletonIncrementingDatedStringSupplier();
   WorkingPathSupplier wps;
 
   @BeforeAll

@@ -24,13 +24,19 @@ import java.nio.file.Path;
 import java.util.Objects;
 import java.util.function.Function;
 
+import org.infrastructurebuilder.exceptions.IBException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class AbsolutePathRef extends URLPathRef {
+  public static final String NOT_ABSOLUTE_PATH = "NotAbsolutePath";
   private static final Logger log = LoggerFactory.getLogger(AbsolutePathRef.class);
   private final static Function<Path, URL> toURL = (p) -> {
     log.info("toURL for " + Objects.requireNonNull(p));
+    if (!p.isAbsolute()) {
+      log.error("Failed to provide absolute path to AbsolutePathRef {}",p);
+      throw new IBException(NOT_ABSOLUTE_PATH);
+    }
     return cet.returns(() -> p.toUri().toURL());
   };
 

@@ -70,7 +70,7 @@ class RelativeRootTest {
 
   @Test
   void testRR() throws MalformedURLException {
-    var q = rrp.get(NAME, tp.toUri());
+    var q = rrp.get(NAME, tp.toUri().toASCIIString());
     assertNotNull(q);
   }
 

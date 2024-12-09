@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.Set;
 
 import org.infrastructurebuilder.pathref.PathRef;
@@ -74,7 +75,7 @@ class PathRefTest {
   @Test
   void testNoReset() {
     Path p2 = tps.get();
-    SetValuePathRefSupplier s2 = new SetValuePathRefSupplier(tp);
+    SetValuePathRefSupplier s2 = new SetValuePathRefSupplier().withPath(tp);
     assertEquals(tp, s2.getProperty().map(Paths::get).get());
     s2 = s2.withPath(p2);
     assertNotEquals(p2, s2.getProperty().map(Paths::get).get());
@@ -82,9 +83,10 @@ class PathRefTest {
 
   @Test
   void testWithPath() {
-    var v = new SetValuePathRefSupplier(tp);
+    var v = new SetValuePathRefSupplier().withPath(tp);
     assertNotNull(v);
-    assertEquals(tp, v.with(null).get().getPath().get());
+    Optional<Path> q = v.with(null).flatMap(PathRef::getPath);
+    assertEquals(tp, q.get());
   }
 
 }
