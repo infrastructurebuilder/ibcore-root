@@ -26,6 +26,7 @@ import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
 import org.infrastructurebuilder.pathref.JSONAndChecksumEnabled;
 import org.infrastructurebuilder.pathref.JSONBuilder;
+import org.infrastructurebuilder.pathref.JSONBuilderFactory;
 import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.util.versions.GAVBasic;
 import org.json.JSONObject;
@@ -46,24 +47,24 @@ public interface GAV extends GAVBasic, JSONAndChecksumEnabled {
 
   @Override
   default JSONObject asJSON() {
-    return getJSONBuilder().asJSON();
+    return getJSONBuilderFactory().asJSON();
   }
 
-  default ChecksumBuilder getDefaultChecksumBuilder() {
-    return ChecksumBuilderFactory.newInstance() //
+  default Optional<ChecksumBuilder> getDefaultChecksumBuilder() {
+    return Optional.of(ChecksumBuilderFactory.newInstance() //
         .addString(getGroupId()) //
         .addString(getArtifactId()) //
         .addString(getVersion()) //
         .addString(getClassifier()) //
-        .addString(getExtension());
+        .addString(getExtension()));
   }
 
   default Optional<Path> getFile() {
     return empty();
   }
 
-  default JSONBuilder getJSONBuilder() {
-    return new JSONBuilder(empty())
+  default JSONBuilder getJSONBuilderFactory() {
+    return JSONBuilderFactory.newInstance()
 
         .addString(GAV_GROUPID, getGroupId())
 

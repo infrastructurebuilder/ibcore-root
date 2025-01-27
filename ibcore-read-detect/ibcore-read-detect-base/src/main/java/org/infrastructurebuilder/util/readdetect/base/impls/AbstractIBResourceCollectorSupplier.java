@@ -38,11 +38,11 @@ import org.codehaus.plexus.components.io.filemappers.FileMapper;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.AbsolutePathRef;
 import org.infrastructurebuilder.pathref.Checksum;
-import org.infrastructurebuilder.pathref.PathSupplier;
 import org.infrastructurebuilder.pathref.PathRef;
+import org.infrastructurebuilder.pathref.PathSupplier;
 import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.config.ConfigMap;
-import org.infrastructurebuilder.util.core.Configurable;
+import org.infrastructurebuilder.util.config.ConfigMapConfigurable;
 import org.infrastructurebuilder.util.core.HeadersSupplier;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.LoggerSupplier;
@@ -57,7 +57,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 
 abstract public class AbstractIBResourceCollectorSupplier<I>
-    implements IBResourceCollectorSupplier, Configurable<ConfigMap> {
+    implements IBResourceCollectorSupplier, ConfigMapConfigurable {
 
   @Inject
   private final ArchiverManager archiverManager;

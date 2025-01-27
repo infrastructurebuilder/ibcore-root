@@ -93,7 +93,7 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>ibcore-read-detect-model</artifactId>
+			<artifactId>ibpathref-metadata-model</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.plexus</groupId>

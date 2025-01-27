@@ -15,16 +15,9 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.api.base;
+package org.infrastructurebuilder.pathref;
 
-import java.util.Optional;
-
-import javax.annotation.Nullable;
-
-public interface ResponsiveWith<R> extends ResponsiveToString {
-  Optional<R> with(@Nullable String t);
-  default Class<String> withClass() {
-    return String.class;
-  }
+public enum IBPathRefExpectedSpeed {
+  VERYFAST, FAST, DEFAULT, SLOW, LIMITED;
 
 }

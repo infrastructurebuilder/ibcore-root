@@ -21,7 +21,7 @@ import static java.util.Optional.ofNullable;
 
 import java.util.UUID;
 
-import org.infrastructurebuilder.pathref.JSONBuilder;
+import org.infrastructurebuilder.pathref.JSONBuilderFactory;
 import org.json.JSONObject;
 
 public class AbstractUUIdentified implements UUIdentified {
@@ -41,7 +41,7 @@ public class AbstractUUIdentified implements UUIdentified {
   }
 
   public JSONObject getLocalJSON() {
-    return JSONBuilder.newInstance().addString(ID, getId().toString()).asJSON();
+    return JSONBuilderFactory.newInstance().addString(ID, getId().toString()).asJSON();
   }
 
 }

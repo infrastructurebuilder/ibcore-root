@@ -20,8 +20,12 @@ package org.infrastructurebuilder.util.maven.mavensupport;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 
+import java.net.URI;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -32,12 +36,13 @@ import org.apache.maven.project.MavenProject;
 import org.infrastructurebuilder.pathref.AbsolutePathRef;
 import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.PathRefProducer;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Named(MavenBackedPathRefProducer.NAME)
 @Singleton
-public class MavenBackedPathRefProducer implements PathRefProducer<String> {
+public class MavenBackedPathRefProducer implements PathRefProducer {
   private static final Logger log = LoggerFactory.getLogger(MavenBackedPathRefProducer.class);
 
   public static final String NAME = "maven-basedir";
@@ -50,11 +55,6 @@ public class MavenBackedPathRefProducer implements PathRefProducer<String> {
   }
 
   @Override
-  public Class<? extends String> withClass() {
-    return String.class;
-  }
-
-  @Override
   public String getName() {
     return NAME;
   }
@@ -62,7 +62,10 @@ public class MavenBackedPathRefProducer implements PathRefProducer<String> {
   protected Optional<Path> getPathFromProject(MavenProject project) {
     Path t = null;
     try {
-      t = Paths.get(requireNonNull(project, "null.project").getBasedir().toString()).toAbsolutePath();
+      Map<String, ?> env = new HashMap<>();
+      URI uri = URI.create(PathRefPath.PATHREF_TEMPLATE.formatted(Paths.get(requireNonNull(project, "null.project").getBasedir().toString()).toAbsolutePath().toUri()));
+      t = FileSystems.newFileSystem(uri , env).getRootDirectories().iterator().next();
+
     } catch (Throwable thr) {
       getLog().warn("Error getting " + NAME + " RelativeRootProtocol with value " + t, thr);
     }
@@ -75,7 +78,7 @@ public class MavenBackedPathRefProducer implements PathRefProducer<String> {
   }
 
   @Override
-  public Optional<PathRef> with(Object data) {
+  public Optional<PathRef> with(String data) {
     return this.path.map(AbsolutePathRef::new);
   }
 

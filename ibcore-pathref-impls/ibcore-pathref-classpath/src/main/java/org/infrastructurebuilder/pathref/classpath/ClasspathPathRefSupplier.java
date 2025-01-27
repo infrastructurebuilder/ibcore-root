@@ -44,16 +44,17 @@ public class ClasspathPathRefSupplier implements PathRefProducer {
 
   @Override
   public Optional<PathRef> with(String data) {
-    return Optional.of(new AbstractBasePathRef<String>(NAME) {
+    return Optional.of(new AbstractBasePathRef(NAME) {
       @Override
       public Optional<PathRef> extendAsPathRef(Path newPath) {
-        return Optional.of(this); // "extend" doesn't work for classpath types
+        return Optional.empty(); // "extend" doesn't work for classpath types
       }
 
       @Override
       public Optional<InputStream> getInputStreamFrom(String path) {
         return ofNullable(this.getClass().getResourceAsStream(path)); // TODO is this OK?
       }
+
     });
 
   }

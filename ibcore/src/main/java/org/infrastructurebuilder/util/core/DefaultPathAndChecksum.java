@@ -55,7 +55,8 @@ public class DefaultPathAndChecksum implements PathAndChecksum {
     this.root = ofNullable(root).orElse(Optional.empty()).orElse(null);
     if (!this.path.isAbsolute() && this.root == null)
       throw new IBException("Relative.path.no.root|" + this.path);
-    this.checksum = (s == null) ? new Checksum(resolvePath()) : s;
+    Path rp = resolvePath();
+    this.checksum = (s == null) ? new Checksum(rp) : s;
   }
 
   @Override
@@ -77,8 +78,8 @@ public class DefaultPathAndChecksum implements PathAndChecksum {
   }
 
   @Override
-  public ChecksumBuilder getChecksumBuilder() {
-    return ChecksumBuilderFactory.flatInstance(this.checksum);
+  public Optional<ChecksumBuilder> getChecksumBuilder() {
+    return Optional.of(ChecksumBuilderFactory.flatInstance(this.checksum));
   }
 
   @Override

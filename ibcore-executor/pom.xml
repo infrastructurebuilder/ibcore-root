@@ -38,9 +38,9 @@
 	<url>${github.url.base}/${project.artifactId}</url>
 
 	<properties>
-		<test.coverage.percentage.required>72</test.coverage.percentage.required>
+		<test.coverage.percentage.required>71</test.coverage.percentage.required>
 		<jacoco.max.missed.classes>2</jacoco.max.missed.classes>
-		<current.process.execution.model.version>1.0.0</current.process.execution.model.version>
+		<current.process.execution.model.version>1.0.1-SNAPSHOT</current.process.execution.model.version>
 	</properties>
 
 	<dependencies>

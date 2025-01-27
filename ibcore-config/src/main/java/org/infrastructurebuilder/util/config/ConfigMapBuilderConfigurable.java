@@ -15,25 +15,10 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.pathref;
+package org.infrastructurebuilder.util.config;
 
-import static java.util.Objects.requireNonNull;
-import static org.infrastructurebuilder.exceptions.IBException.cet;
+import org.infrastructurebuilder.util.core.Configurable;
 
-import java.net.URL;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-public class URLPathRef extends AbstractBasePathRef<URL> {
-  public static final Logger log = LoggerFactory.getLogger(URLPathRef.class);
-
-  public URLPathRef(String u) {
-    this(cet.returns(() -> new URL(requireNonNull(u))));
-  }
-
-  public URLPathRef(URL u) {
-    super(cet.returns(() -> requireNonNull(u).toURI()));
-  }
+public interface ConfigMapBuilderConfigurable extends Configurable<ConfigMapBuilder> {
 
 }

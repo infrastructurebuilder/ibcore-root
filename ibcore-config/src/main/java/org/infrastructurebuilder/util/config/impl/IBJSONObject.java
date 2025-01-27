@@ -20,7 +20,6 @@ package org.infrastructurebuilder.util.config.impl;
 import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElseGet;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toList;
 
 import java.io.BufferedReader;
 import java.io.IOException;

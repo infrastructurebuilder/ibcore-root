@@ -35,7 +35,7 @@ import org.infrastructurebuilder.pathref.TestingPathSupplier;
  */
 @Named(TestingPathRefSupplier.NAME)
 // Not a singleton, so be careful
-public class TestingPathRefSupplier implements PathRefProducer<String> {
+public class TestingPathRefSupplier implements PathRefProducer {
   public final static String NAME = "testing-path-supplier";
   private final TestingPathSupplier tps;
 
@@ -67,12 +67,8 @@ public class TestingPathRefSupplier implements PathRefProducer<String> {
   }
 
   @Override
-  public Optional<PathRef> with(Object arg0) {
+  public Optional<PathRef> with(String arg0) {
     return Optional.of(new AbsolutePathRef(getTps().get()));
   }
 
-  @Override
-  public Class<? extends String> withClass() {
-    return String.class;
-  }
 }

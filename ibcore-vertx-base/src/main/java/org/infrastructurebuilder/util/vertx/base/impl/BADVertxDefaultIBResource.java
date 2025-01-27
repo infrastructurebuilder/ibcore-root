@@ -71,7 +71,7 @@
 //import org.infrastructurebuilder.util.core.PathRef;
 //import org.infrastructurebuilder.util.readdetect.IBResource;
 //import org.infrastructurebuilder.util.readdetect.impl.AbsolutePathIBResource;
-//import org.infrastructurebuilder.util.readdetect.model.IBResourceModel;
+//import org.infrastructurebuilder.util.ibpathref.metadata.model.IBResourceModel;
 //import org.infrastructurebuilder.util.vertx.base.IBResourceVertx;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;

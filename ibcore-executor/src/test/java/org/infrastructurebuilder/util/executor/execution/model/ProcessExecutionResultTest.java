@@ -33,11 +33,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.URI;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,7 +50,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.executor.DefaultProcessExecutionResultBag;
 import org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream;
@@ -134,15 +140,37 @@ public class ProcessExecutionResultTest {
     stdErr = Arrays.asList("Hi", "there");
     stdOut = Arrays.asList("hello", "gentlepersons");
     scratchDir = wps.get();
+    var uri = URI.create(PathRefPath.PATHREF_TEMPLATE.formatted(scratchDir.toUri()));
 
-    stdOutPth = IBUtils.touchFile(scratchDir.resolve("extraStdOut"));
+    PathRefFileSystem prfs = (PathRefFileSystem) FileSystems.newFileSystem(uri, new HashMap<>());
+    Path sd = prfs.getRootDirectories().iterator().next();
 
-    stdErrPth = IBUtils.touchFile(scratchDir.resolve("extraStdErr"));
+    stdOutPth = IBUtils.touchFile(sd.resolve("extraStdOut"));
+
+    stdErrPth = IBUtils.touchFile(sd.resolve("extraStdErr"));
     lpaoO = new OverrideListCapturingOutputStream(of(stdOutPth), stdOut);
     lpaoE = new OverrideListCapturingOutputStream(of(stdErrPth), stdErr);
 
-    pe = new DefaultProcessExecution(ID, EXEC, ARGS, empty(), empty(), scratchDir, false, empty(), of(scratchDir),
-        empty(), empty(), false, lpaoO, lpaoE);
+    Optional<Path> rr = of(scratchDir);
+    Optional<Path> sin = empty();
+    Optional<Duration> timeout = empty();
+    boolean optional = false;
+    Optional<Map<String, String>> env = empty();
+    pe = new DefaultProcessExecution(ID, // id
+        EXEC, // executable
+        ARGS, // arguments
+        timeout, // timeout
+        sin, // stdin
+        scratchDir, // workDirectory
+        optional, // optional
+        env, // environment
+        empty(), // rr, // relativeRoot
+        empty(), // exit values
+        empty(), // addl
+        false, // background
+        lpaoO, // stdout
+        lpaoE // stderr
+    );
 
     res = new DefaultProcessExecutionResult(pe, Optional.of(0), empty(), ofEpochMilli(100L), ofMillis(100L));
     res3 = new DefaultProcessExecutionResult(pe, of(0), empty(), ofEpochMilli(100L), ofMillis(100L));
@@ -157,11 +185,25 @@ public class ProcessExecutionResultTest {
     String se = e.getString("stderr");
     String so = e.getString("stdout");
     final String t = "{\n" + "  \"execution\": {\n" + "    \"environment\": {},\n"
-        + "    \"stdout\": \"extraStdOut\",\n" + "    \"arguments\": [\"-version\"],\n" + "    \"optional\": false,\n"
-        + "    \"id\": \"default\",\n" + "    \"stderr\": \"extraStdErr\",\n" + "    \"executable\": \"java\"\n"
-        + "  },\n" + "  \"std-out\": [\n" + "    \"hello\",\n" + "    \"gentlepersons\"\n" + "  ],\n"
-        + "  \"start\": \"1970-01-01T00:00:00.100000000Z\",\n" + "  \"result-code\": 0,\n"
-        + "  \"runtime\": \"PT0.1S\",\n" + "  \"std-err\": [\n" + "    \"Hi\",\n" + "    \"there\"\n" + "  ]\n" + "}";
+        + "    \"stdout\": \"/extraStdOut\",\n" //
+        + "    \"arguments\": [\"-version\"],\n" //
+        + "    \"optional\": false,\n" //
+        + "    \"id\": \"default\",\n" //
+        + "    \"stderr\": \"/extraStdErr\",\n" //
+        + "    \"executable\": \"java\"\n" //
+        + "  },\n" //
+        + "  \"std-out\": [\n" //
+        + "    \"hello\",\n" //
+        + "    \"gentlepersons\"\n" //
+        + "  ],\n" //
+        + "  \"start\": \"1970-01-01T00:00:00.100000000Z\",\n" //
+        + "  \"result-code\": 0,\n" //
+        + "  \"runtime\": \"PT0.1S\",\n" //
+        + "  \"std-err\": [\n" //
+        + "    \"Hi\",\n" //
+        + "    \"there\"\n" //
+        + "  ]\n" //
+        + "}";
     final JSONObject target = new JSONObject(t);
     var q = a.toString(2);
     JSONAssert.assertEquals(target, a, true);

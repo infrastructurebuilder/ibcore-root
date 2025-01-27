@@ -98,16 +98,16 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.infrastructurebuilder</groupId>
-      <artifactId>ibcore-constants</artifactId>
+	<groupId>org.infrastructurebuilder.pathref</groupId>
+      <artifactId>ibpathref-api</artifactId>
     </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.infrastructurebuilder.pathref</groupId>-->
+<!--      <artifactId>ibcore-pathref</artifactId>-->
+<!--    </dependency>-->
     <dependency>
       <groupId>org.infrastructurebuilder.pathref</groupId>
-      <artifactId>ibcore-pathref</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.infrastructurebuilder.pathref</groupId>
-      <artifactId>ibcore-pathref</artifactId>
+      <artifactId>ibpathref-api</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>

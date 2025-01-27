@@ -20,11 +20,11 @@ package org.infrastructurebuilder.util.readdetect.base.impls;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.infrastructurebuilder.util.ibpathref.metadata.model.v1_0.IBMetadataModel;
+import org.infrastructurebuilder.util.ibpathref.metadata.model.v1_0.IBResourceCacheModel;
+import org.infrastructurebuilder.util.ibpathref.metadata.model.v1_0.IbcoreReadDetectModelVersioning;
 import org.infrastructurebuilder.util.readdetect.base.IBResource;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceCacheBuilder;
-import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel;
-import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceCacheModel;
-import org.infrastructurebuilder.util.readdetect.model.v1_0.IbcoreReadDetectModelVersioning;
 
 abstract public class AbstractIBResourceCacheBuilder implements IBResourceCacheBuilder {
   protected final IBResourceCacheModel model;

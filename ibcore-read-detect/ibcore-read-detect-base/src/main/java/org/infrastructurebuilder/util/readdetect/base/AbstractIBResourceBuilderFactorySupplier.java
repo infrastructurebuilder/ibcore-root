@@ -40,7 +40,7 @@ abstract public class AbstractIBResourceBuilderFactorySupplier implements IBReso
 
   @Override
   public Optional<PathRef> getRoot(String name) {
-    return root.get(name);
+    return root.getPathRef(name);
   }
 
 }

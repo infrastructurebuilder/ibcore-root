@@ -50,6 +50,12 @@ public final class ChecksumBuilderFactory {
     });
   }
 
+  public static ChecksumBuilder newAlternateInstanceWithPathRef(final String t,
+      final Optional<PathRef> relativeRoot) {
+    return newAlternateInstanceWithRelativeRoot(t,relativeRoot);
+  }
+
+  @Deprecated
   public static ChecksumBuilder newAlternateInstanceWithRelativeRoot(final String t,
       final Optional<PathRef> relativeRoot) {
     return cet.returns(() -> {
@@ -58,6 +64,11 @@ public final class ChecksumBuilderFactory {
 
   }
 
+  public static ChecksumBuilder newAlternateInstanceWithPathRef(final Optional<PathRef> relativeRoot) {
+    return newAlternateInstanceWithRelativeRoot(relativeRoot);
+  }
+
+  @Deprecated
   public static ChecksumBuilder newAlternateInstanceWithRelativeRoot(final Optional<PathRef> relativeRoot) {
     return cet.returns(() -> {
       return new ChecksumBuilderImpl(IBConstants.DIGEST_TYPE, relativeRoot,
@@ -71,7 +82,7 @@ public final class ChecksumBuilderFactory {
   }
 
   public static ChecksumBuilder newInstance(final Optional<PathRef> relativeRoot) {
-    return newAlternateInstanceWithRelativeRoot(IBConstants.DIGEST_TYPE, relativeRoot);
+    return newAlternateInstanceWithPathRef(IBConstants.DIGEST_TYPE, relativeRoot);
   }
 
   public final static ChecksumBuilder flatInstance(Checksum csum) {
@@ -217,7 +228,7 @@ public final class ChecksumBuilderFactory {
 
     @Override
     public ChecksumBuilder addJSONArray(final JSONArray j) {
-      final ChecksumBuilder jBuilder = ChecksumBuilderFactory.newAlternateInstanceWithRelativeRoot(type, relativeRoot);
+      final ChecksumBuilder jBuilder = ChecksumBuilderFactory.newAlternateInstanceWithPathRef(type, relativeRoot);
       jBuilder.addString("[");
       requireNonNull(j).forEach(o -> {
         addJObjectToBuilder(this, o);
@@ -228,7 +239,7 @@ public final class ChecksumBuilderFactory {
     @Override
     public ChecksumBuilder addJSONObject(final JSONObject j) {
 
-      final ChecksumBuilder jBuilder = ChecksumBuilderFactory.newAlternateInstanceWithRelativeRoot(type, relativeRoot);
+      final ChecksumBuilder jBuilder = ChecksumBuilderFactory.newAlternateInstanceWithPathRef(type, relativeRoot);
       jBuilder.addString("{");
       final List<String> keys = requireNonNull(j).keySet().stream().sorted().toList();
       for (final String key : keys) {
@@ -410,7 +421,7 @@ public final class ChecksumBuilderFactory {
     }
 
     @Override
-    public Optional<PathRef> getRelativeRoot() {
+    public Optional<PathRef> getPathRef() {
       return this.relativeRoot;
     }
 

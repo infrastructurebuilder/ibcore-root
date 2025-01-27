@@ -32,7 +32,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Future;
 
-import org.infrastructurebuilder.pathref.JSONBuilder;
+import org.infrastructurebuilder.pathref.JSONBuilderFactory;
 import org.infrastructurebuilder.pathref.JSONOutputEnabled;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -126,7 +126,7 @@ public interface ProcessExecutionResultBag extends JSONOutputEnabled {
 
   @Override
   default JSONObject asJSON() {
-    return JSONBuilder.newInstance()
+    return JSONBuilderFactory.newInstance()
 
         .addJSONArray(EXECUTION_IDS, new JSONArray(getExecutedIds()))
 

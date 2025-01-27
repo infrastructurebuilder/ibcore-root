@@ -29,6 +29,7 @@ import java.util.function.Function;
 
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
+import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.util.executor.ProcessExecution;
 import org.infrastructurebuilder.util.executor.ProcessExecutionResult;
 import org.infrastructurebuilder.util.executor.model.executor.model.utils.IBCoreExecutorModelUtils;
@@ -75,8 +76,11 @@ public class DefaultProcessExecutionResult implements ProcessExecutionResult {
 
   private final ProcessExecution processExecution;
 
+  private final PathRef pr;
+
   public DefaultProcessExecutionResult(GeneratedProcessExecutionResult gper) {
     this.gper = requireNonNull(gper);
+    this.pr = null;
     this.processExecution = null;
   }
 
@@ -85,7 +89,7 @@ public class DefaultProcessExecutionResult implements ProcessExecutionResult {
   {
 
     this.processExecution = requireNonNull(pe);
-    ;
+    this.pr = pe.getRelativePathRef().orElse(null);
     this.gper = GeneratedProcessExecutionResult.builder() //
         .withEnvironment(new Environment()) //
         .withStart(startTime) //
@@ -158,8 +162,8 @@ public class DefaultProcessExecutionResult implements ProcessExecutionResult {
     return this.gper.getStdOut();
   }
 
-  public ChecksumBuilder getChecksumBuilder() {
-    return ChecksumBuilderFactory.newInstance() //
+  public Optional<ChecksumBuilder> getChecksumBuilder() {
+    return Optional.of(ChecksumBuilderFactory.newInstance() //
         .addJSONObject(getException()) //
         .addMapStringString(getExecutionEnvironment()) //
         .addInteger(getResultCode()) //
@@ -168,7 +172,13 @@ public class DefaultProcessExecutionResult implements ProcessExecutionResult {
         .addListString(getStdErr()) //
         .addListString(getStdOut()) //
         .addChecksumEnabled(getExecution()) //
+)
     ;
+  }
+
+  @Override
+  public Optional<PathRef> getRelativePathRef() {
+    return Optional.ofNullable(pr);
   }
 
 }

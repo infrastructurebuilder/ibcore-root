@@ -18,6 +18,8 @@
 package org.infrastructurebuilder.pathref;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.infrastructurebuilder.pathref.DigestReaderTest.ABC;
+import static org.infrastructurebuilder.pathref.DigestReaderTest.ABC_CHECKSUM;
 import static org.infrastructurebuilder.pathref.IBChecksumUtils.getHex;
 import static org.infrastructurebuilder.pathref.IBChecksumUtils.getHexStringFromInputStream;
 import static org.infrastructurebuilder.pathref.IBChecksumUtils.hexStringToByteArray;
@@ -26,19 +28,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import static org.infrastructurebuilder.pathref.DigestReaderTest.*;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.Writer;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 

@@ -17,6 +17,8 @@
  */
 package org.infrastructurebuilder.util.core;
 
+import java.util.Optional;
+
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.util.versions.DefaultGAVBasic;
 
@@ -32,7 +34,7 @@ public class FakeBasicGAV extends DefaultGAVBasic implements GAV {
   }
 
   @Override
-  public ChecksumBuilder getChecksumBuilder() {
+  public Optional<ChecksumBuilder> getChecksumBuilder() {
     return getDefaultChecksumBuilder();
   }
 

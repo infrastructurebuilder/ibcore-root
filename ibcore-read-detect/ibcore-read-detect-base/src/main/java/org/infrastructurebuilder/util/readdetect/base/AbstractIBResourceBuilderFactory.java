@@ -27,7 +27,7 @@ import java.util.function.Supplier;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
-import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceCacheModel;
+import org.infrastructurebuilder.util.ibpathref.metadata.model.v1_0.IBResourceCacheModel;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -47,7 +47,6 @@ abstract public class AbstractIBResourceBuilderFactory<I> extends IBResourceCach
   public AbstractIBResourceBuilderFactory(PathRef relRoot) {
     super();
     this._root = relRoot;
-//    this.setModelEncoding(UTF_8);
     String r = Optional.ofNullable(relRoot)
         .map(rr -> rr.getPath().map(Path::toAbsolutePath).map(Path::toString).orElse(null)).orElse(null);
     this.setRoot(r);

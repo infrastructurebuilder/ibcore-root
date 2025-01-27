@@ -19,6 +19,7 @@ package org.infrastructurebuilder.util.core;
 
 import org.slf4j.Logger;
 
-public interface LoggerConfigurable {
+@Deprecated
+public interface LoggerConfigurable extends LoggerEnabled {
   <T> T withLogger(Logger logger);
 }

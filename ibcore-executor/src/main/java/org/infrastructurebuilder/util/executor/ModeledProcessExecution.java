@@ -28,7 +28,7 @@ import java.util.TreeMap;
 import java.util.function.Function;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.pathref.URLPathRef;
+import org.infrastructurebuilder.pathref.URIPathRef;
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
 import org.infrastructurebuilder.pathref.JSONAndChecksumEnabled;
@@ -80,6 +80,7 @@ public class ModeledProcessExecution extends GeneratedProcessExecution implement
   {
     super(modelVersion, id, executable, arguments, timeout, optional, background, workDirectory, exitValues, stdOutPath,
         stdErrPath, stdInPath, relativeRootURL, environment);
+
   }
 
   @Override
@@ -95,13 +96,13 @@ public class ModeledProcessExecution extends GeneratedProcessExecution implement
   }
 
   @Override
-  public Optional<PathRef> getRelativeRoot() {
-    return getRelativeRootURL().map(URLPathRef::new);
+  public Optional<PathRef> getRelativePathRef() {
+    return getRelativeRootURL().map(URIPathRef::new);
   }
 
   @Override
-  public ChecksumBuilder getChecksumBuilder() {
-    return ChecksumBuilderFactory.newAlternateInstanceWithRelativeRoot(this.getRelativeRoot())
+  public Optional<ChecksumBuilder> getChecksumBuilder() {
+    return Optional.of(ChecksumBuilderFactory.newAlternateInstanceWithPathRef(this.getRelativePathRef())
         .addString(getModelVersion()) //
         .addString(getId()) //
         .addString(getExecutable()) //
@@ -115,7 +116,7 @@ public class ModeledProcessExecution extends GeneratedProcessExecution implement
         .addPathAsString(getStdErrPath()) //
         .addPathAsString(getStdInPath()) //
 //    .addPathAsString(getRelativeRootURL()) // Never add RR to Checksum
-        .addMapStringString(getEnvironment().flatMap(ModeledProcessExecution.envToMapSS));
+        .addMapStringString(getEnvironment().flatMap(ModeledProcessExecution.envToMapSS)));
   }
 
 }

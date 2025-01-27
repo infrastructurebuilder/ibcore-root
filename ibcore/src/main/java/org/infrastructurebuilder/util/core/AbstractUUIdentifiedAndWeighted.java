@@ -21,7 +21,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.UUID;
 
-import org.infrastructurebuilder.pathref.JSONBuilder;
+import org.infrastructurebuilder.pathref.JSONBuilderFactory;
 import org.json.JSONObject;
 
 public class AbstractUUIdentifiedAndWeighted extends AbstractUUIdentified implements UUIdentifiedAndWeighted {
@@ -45,7 +45,7 @@ public class AbstractUUIdentifiedAndWeighted extends AbstractUUIdentified implem
   }
 
   public JSONObject getLocalJSON() {
-    return JSONBuilder.newInstance().addString(ID, getId().toString()).addInteger(WEIGHT, getWeight()).asJSON();
+    return JSONBuilderFactory.newInstance().addString(ID, getId().toString()).addInteger(WEIGHT, getWeight()).asJSON();
   }
 
 }

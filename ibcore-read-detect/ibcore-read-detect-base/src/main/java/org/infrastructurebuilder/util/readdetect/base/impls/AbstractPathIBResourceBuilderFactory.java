@@ -34,12 +34,12 @@ import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.PathAndChecksum;
+import org.infrastructurebuilder.util.ibpathref.metadata.model.v1_0.IBMetadataModel;
 import org.infrastructurebuilder.util.readdetect.base.AbstractIBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.base.AbstractIBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.base.IBResource;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory;
-import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -296,7 +296,7 @@ abstract public class AbstractPathIBResourceBuilderFactory extends AbstractIBRes
     }
 
     @Override
-    public Optional<PathRef> getRelativeRoot() {
+    public Optional<PathRef> getRelativePathRef() {
       return this.path.getRoot();
     }
 

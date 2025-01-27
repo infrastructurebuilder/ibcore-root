@@ -100,7 +100,7 @@ public class ChecksumBuilderFactoryTest {
   @Test
   public void sha1Test() {
     assertNotNull(
-        ChecksumBuilderFactory.newAlternateInstanceWithRelativeRoot("SHA-1", optionalPath.map(AbsolutePathRef::new)));
+        ChecksumBuilderFactory.newAlternateInstanceWithPathRef("SHA-1", optionalPath.map(AbsolutePathRef::new)));
   }
 
   @Test
@@ -240,7 +240,7 @@ public class ChecksumBuilderFactoryTest {
 
   @Test
   public void testAddPath() {
-    final Path pp = sha512.getRelativeRoot().get().getPath().get().toAbsolutePath();
+    final Path pp = sha512.getPathRef().get().getPath().get().toAbsolutePath();
     assertEquals(pp, optionalPath.get().toAbsolutePath()); // RR path remains constant
     final Path p = optionalPath.map(ppp -> ppp.resolve("generated-sources")).get();
     final Path rel = optionalPath.get().relativize(p);

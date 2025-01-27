@@ -17,7 +17,7 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
 

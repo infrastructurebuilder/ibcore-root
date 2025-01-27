@@ -40,5 +40,9 @@
 			<groupId>org.infrastructurebuilder.pathref</groupId>
 			<artifactId>ibcore-pathref-properties-base</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-vfs2</artifactId>
+		</dependency>
 	</dependencies>
 </project>

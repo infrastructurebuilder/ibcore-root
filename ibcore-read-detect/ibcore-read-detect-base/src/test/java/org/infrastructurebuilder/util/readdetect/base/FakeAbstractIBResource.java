@@ -19,7 +19,6 @@ package org.infrastructurebuilder.util.readdetect.base;
 
 import java.util.Optional;
 
-import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;

@@ -43,7 +43,7 @@ public abstract class CapturingLogOutputStream extends LogOutputStream {
   public CapturingLogOutputStream(final Optional<Path> p, boolean flushEveryLine) {
     path = requireNonNull(p).map(Path::toAbsolutePath);
     path.ifPresent(path -> cet.translate(() -> createDirectories(path.getParent())));
-    os = cet.returns(() -> ofNullable(p.isPresent() ? newBufferedWriter(p.get()) : null));
+    os = p.map(g -> cet.returns(() -> newBufferedWriter(g)));
     this.flushEveryLine = flushEveryLine;
   }
 

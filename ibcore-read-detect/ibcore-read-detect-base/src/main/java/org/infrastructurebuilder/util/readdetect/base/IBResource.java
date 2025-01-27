@@ -47,7 +47,7 @@ import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
 import org.infrastructurebuilder.pathref.ChecksumEnabled;
-import org.infrastructurebuilder.pathref.JSONBuilder;
+import org.infrastructurebuilder.pathref.JSONBuilderFactory;
 import org.infrastructurebuilder.pathref.JSONOutputEnabled;
 import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.util.core.IBUtils;
@@ -248,7 +248,7 @@ public interface IBResource extends JSONOutputEnabled, ChecksumEnabled, NameDesc
   Optional<Long> size();
 
   default JSONObject asJSON() {
-    return new JSONBuilder(getRelativeRoot().flatMap(PathRef::getPath))
+    return JSONBuilderFactory.newInstance(getRelativePathRef().flatMap(PathRef::getPath))
 
         .addChecksum(PATH_CHECKSUM, getTChecksum())
 
@@ -292,7 +292,7 @@ public interface IBResource extends JSONOutputEnabled, ChecksumEnabled, NameDesc
     return false;
   }
 
-  default Optional<PathRef> getRelativeRoot() {
+  default Optional<PathRef> getRelativePathRef() {
     return Optional.empty();
   }
 
@@ -316,9 +316,9 @@ public interface IBResource extends JSONOutputEnabled, ChecksumEnabled, NameDesc
    */
   IBResourceModel copyModel();
 
-  default ChecksumBuilder getChecksumBuilder() {
-    return ChecksumBuilderFactory.newInstance(this.getRelativeRoot())
-        .addChecksum(new Checksum(copyModel().getStreamChecksum()));
+  default Optional<ChecksumBuilder> getChecksumBuilder() {
+    return Optional.of(ChecksumBuilderFactory.newInstance(this.getRelativePathRef())
+        .addChecksum(new Checksum(copyModel().getStreamChecksum())));
   }
 
   default PlexusIoResource asPlexusIOResource() {

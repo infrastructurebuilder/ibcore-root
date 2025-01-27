@@ -188,12 +188,12 @@ public class DefaultGAV extends DefaultGAVBasic implements GAV {
 
   @Override
   public GAV withRelativeRoot(PathRef r) {
-    this.builder = ChecksumBuilderFactory.newAlternateInstanceWithRelativeRoot(Optional.ofNullable(r));
+    this.builder = ChecksumBuilderFactory.newAlternateInstanceWithPathRef(Optional.ofNullable(r));
     return this;
   }
 
   @Override
-  public ChecksumBuilder getChecksumBuilder() {
+  public Optional<ChecksumBuilder> getChecksumBuilder() {
     return getDefaultChecksumBuilder();
   }
 }

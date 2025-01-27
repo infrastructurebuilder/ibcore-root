@@ -24,7 +24,12 @@ import org.json.JSONObject;
 public interface JSONOutputEnabled {
   JSONObject asJSON();
 
-  default Optional<PathRef> getRelativeRoot() {
+  default Optional<PathRef> getRelativePathRef() {
     return Optional.empty();
+  }
+
+  @Deprecated
+  default Optional<PathRef> getRelativeRoot() {
+    return getRelativePathRef();
   }
 }

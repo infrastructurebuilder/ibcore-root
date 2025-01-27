@@ -15,16 +15,15 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.api.base;
+package org.infrastructurebuilder.util.core;
 
-import java.util.Optional;
-
-import javax.annotation.Nullable;
-
-public interface ResponsiveWith<R> extends ResponsiveToString {
-  Optional<R> with(@Nullable String t);
-  default Class<String> withClass() {
-    return String.class;
-  }
+/**
+ * StringConfigurable is the most commonly-used type of Configurable within IB where the string provided is possibly a
+ * yaml or json document, a DOM, or just a URI.
+ *
+ * The individual implementations have to document what they expect and what will happen when the withConfig() call is
+ * applied.
+ */
+public interface StringConfigurable extends Configurable<String> {
 
 }

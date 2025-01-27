@@ -85,14 +85,14 @@ class RelativeRootTest {
   void testUserHome() {
     System.setProperty(h.getPropertyName(), p.toString());
     Path root = tps.getRoot();
-    PathRef t = rrp.get(h.getName()).get();
+    PathRef t = rrp.getPathRef(h.getName()).get();
     assertEquals(root, t.getPath().get().getParent());
   }
 
   @Test
   void testFakeProperty() {
     System.setProperty(h.getPropertyName(), "\0000");
-    assertTrue(rrp.get(h.getName()).isEmpty());
+    assertTrue(rrp.getPathRef(h.getName()).isEmpty());
 
   }
 

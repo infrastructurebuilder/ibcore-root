@@ -60,11 +60,7 @@ public class PathRefFactory {
     return suppliers.keySet();
   }
 
-//  public final Optional<PathRef> get(String name) {
-//    return get(name, null);
-//  }
-
-  public final Optional<PathRef> get(String name) {
+  public final Optional<PathRef> getPathRef(String name) {
     return get(name, null);
   }
 

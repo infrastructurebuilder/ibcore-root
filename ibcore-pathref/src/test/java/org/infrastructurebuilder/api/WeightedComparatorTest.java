@@ -20,8 +20,6 @@ package org.infrastructurebuilder.api;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.infrastructurebuilder.api.Weighted;
-import org.infrastructurebuilder.api.WeightedComparator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

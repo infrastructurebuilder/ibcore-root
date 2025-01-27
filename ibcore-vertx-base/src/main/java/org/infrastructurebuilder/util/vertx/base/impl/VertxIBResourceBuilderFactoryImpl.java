@@ -46,7 +46,7 @@ import org.infrastructurebuilder.util.readdetect.base.AbstractIBResourceBuilderF
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceException;
-import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
+import org.infrastructurebuilder.util.ibpathref.metadata.model.v1_0.IBResourceModel;
 import org.infrastructurebuilder.util.vertx.base.VertxIBResource;
 import org.json.JSONObject;
 import org.slf4j.Logger;

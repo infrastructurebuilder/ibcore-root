@@ -52,8 +52,8 @@
 //import org.infrastructurebuilder.util.core.PathRef;
 //import org.infrastructurebuilder.util.readdetect.base.IBResource;
 //import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory;
-//import org.infrastructurebuilder.util.readdetect.model.v1_0.IBMetadataModel;
-//import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
+//import org.infrastructurebuilder.util.ibpathref.metadata.model.v1_0.IBMetadataModel;
+//import org.infrastructurebuilder.util.ibpathref.metadata.model.v1_0.IBResourceModel;
 //import org.json.JSONException;
 //import org.json.JSONObject;
 //import org.slf4j.Logger;

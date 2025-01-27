@@ -17,7 +17,6 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
-import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.URL;

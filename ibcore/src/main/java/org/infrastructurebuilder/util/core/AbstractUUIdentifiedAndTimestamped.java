@@ -21,7 +21,7 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.infrastructurebuilder.pathref.JSONBuilder;
+import org.infrastructurebuilder.pathref.JSONBuilderFactory;
 import org.json.JSONObject;
 
 abstract public class AbstractUUIdentifiedAndTimestamped extends AbstractUUIdentified
@@ -47,7 +47,7 @@ abstract public class AbstractUUIdentifiedAndTimestamped extends AbstractUUIdent
   }
 
   public JSONObject getLocalJSON() {
-    return JSONBuilder.newInstance().addString(ID, getId().toString()).addInstant(TIMESTAMP, getTimestamp()).asJSON();
+    return JSONBuilderFactory.newInstance().addString(ID, getId().toString()).addInstant(TIMESTAMP, getTimestamp()).asJSON();
   }
 
 }

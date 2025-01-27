@@ -31,16 +31,12 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.UUID;
 
-import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.AbsolutePathRef;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
-import org.infrastructurebuilder.util.readdetect.base.IBResource;
-import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory;
-import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathIBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathIBResourceBuilderFactory.AbstractPathIBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.path.impls.absolute.AbsolutePathIBResourceBuilderFactory;
 import org.junit.jupiter.api.BeforeEach;

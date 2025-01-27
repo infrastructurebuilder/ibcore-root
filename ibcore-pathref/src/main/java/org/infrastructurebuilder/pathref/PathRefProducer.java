@@ -27,4 +27,17 @@ import org.infrastructurebuilder.api.base.ResponsiveWith;
  */
 public interface PathRefProducer extends NameDescribed, ResponsiveWith<PathRef>, Weighted {
 
+  default IBPathRefProximity getDefaultProximity() {
+    return IBPathRefProximity.LOCAL;
+  }
+
+  default IBPathRefExpectedSpeed getDefaultExpectedSpeed() {
+    return IBPathRefExpectedSpeed.DEFAULT;
+  }
+
+  default IBPathRefExpectedSpeed getDefaultExpectedInitialRetrievalSpeed() {
+    return IBPathRefExpectedSpeed.DEFAULT;
+  }
+
+
 }

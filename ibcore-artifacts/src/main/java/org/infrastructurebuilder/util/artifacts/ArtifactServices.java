@@ -17,8 +17,6 @@
  */
 package org.infrastructurebuilder.util.artifacts;
 
-import static java.util.stream.Collectors.toList;
-
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.List;

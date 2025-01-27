@@ -15,16 +15,10 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.api.base;
+package org.infrastructurebuilder.util.config;
 
-import java.util.Optional;
+import org.infrastructurebuilder.util.core.Configurable;
 
-import javax.annotation.Nullable;
-
-public interface ResponsiveWith<R> extends ResponsiveToString {
-  Optional<R> with(@Nullable String t);
-  default Class<String> withClass() {
-    return String.class;
-  }
+public interface ConfigMapConfigurable extends Configurable<ConfigMap> {
 
 }

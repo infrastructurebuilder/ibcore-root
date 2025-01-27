@@ -75,7 +75,7 @@ class RelativeRootTest {
 
   @Test
   void testClasspath() {
-    PathRef cprr = rrp.get(HOME).get();
+    PathRef cprr = rrp.getPathRef(HOME).get();
     assertNotNull(cprr);
     Path home = cprr.getPath().get();
     assertTrue(home.isAbsolute());

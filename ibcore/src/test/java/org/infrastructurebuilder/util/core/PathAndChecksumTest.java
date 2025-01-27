@@ -30,8 +30,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class PathAndChecksumTest {
+  private final Logger log = LoggerFactory.getLogger(PathAndChecksumTest.class);
   private static final String CSUM = "5cd814bd44716a73c2e380c443f573aa3f0a4aaf881f70810ec9c9552035433f6cca4c64161ce460e97db0089eefb1aad4d09e7151c330afc7a4caf528a6f475";
   private static final String B_XML = "b.xml";
   private final static TestingPathSupplier tps = new TestingPathSupplier();
@@ -62,6 +65,9 @@ class PathAndChecksumTest {
   @Test
   void testGetAttributes() {
     PathAndChecksum pandc = new DefaultPathAndChecksum(target);
+    log.info("The PathAndChecksum is %s".formatted(pandc));
+    OptStream path = pandc.asOptStream();
+    assertNotNull(path);
     var checksum = pandc.asChecksum();
     assertEquals(CSUM, checksum.toString());
     var a = pandc.getAttributes().get();

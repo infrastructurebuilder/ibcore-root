@@ -32,7 +32,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.infrastructurebuilder.pathref.JSONAndChecksumEnabled;
-import org.infrastructurebuilder.pathref.JSONBuilder;
+import org.infrastructurebuilder.pathref.JSONBuilderFactory;
 import org.infrastructurebuilder.pathref.PathRef;
 import org.json.JSONObject;
 import org.zeroturnaround.exec.ProcessExecutor;
@@ -74,7 +74,7 @@ public interface ProcessExecution extends JSONAndChecksumEnabled, AutoCloseable 
 
   @Override
   default JSONObject asJSON() {
-    return JSONBuilder.newInstance(this.getRelativeRoot().flatMap(PathRef::getPath))
+    return JSONBuilderFactory.newInstanceFromPathRef(this.getRelativePathRef())
 
         .addString(ID, getId())
 

@@ -33,7 +33,7 @@ abstract public class AbstractBasicPathPropertiesPathRefSupplier implements Path
 
   @Override
   public Optional<PathRef> with(String data) {
-//    if (data == null || !(data instanceof String))
+//    if (data == null )
 //      return Optional.empty();
     return getProperty().flatMap(pStr -> {
       try {
@@ -65,7 +65,7 @@ abstract public class AbstractBasicPathPropertiesPathRefSupplier implements Path
   }
 
   @Override
-  public final Class<String> withClass() {
+  public final Class<String> usingClass() {
     return String.class;
   }
 }

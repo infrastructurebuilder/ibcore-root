@@ -22,16 +22,14 @@ import java.util.function.Supplier;
 
 import org.infrastructurebuilder.api.base.NameDescribed;
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.core.Configurable;
 import org.infrastructurebuilder.util.core.Hinted;
 import org.infrastructurebuilder.util.core.IdentifiedAndWeighted;
-import org.infrastructurebuilder.util.core.LoggerConfigurable;
 import org.infrastructurebuilder.util.core.LoggerEnabled;
 import org.infrastructurebuilder.util.core.TSupplier;
 
 public interface TSupplierConfigurableFactory<T> extends Supplier<TSupplier<T>>, //
-    Configurable<ConfigMapBuilder>, //
-    NameDescribed, Hinted, LoggerEnabled, LoggerConfigurable, IdentifiedAndWeighted {
+    ConfigMapBuilderConfigurable, //
+    NameDescribed, Hinted, LoggerEnabled, IdentifiedAndWeighted {
   Optional<TSupplier<T>> build();
 
   default TSupplier<T> get() {

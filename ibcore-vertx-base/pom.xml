@@ -111,8 +111,7 @@
     </dependency>
     <dependency>
     	<groupId>org.infrastructurebuilder</groupId>
-    	<artifactId>ibcore-constants</artifactId>
-    	<version>0.30.1-SNAPSHOT</version>
+    	<artifactId>ibconstants</artifactId>
     </dependency>
   </dependencies>
 </project>

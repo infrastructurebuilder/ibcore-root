@@ -17,31 +17,42 @@
  */
 package org.infrastructurebuilder.pathref;
 
+import static java.util.Objects.requireNonNull;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
 
+import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.Objects;
-import java.util.function.Function;
+import java.util.Optional;
 
-import org.infrastructurebuilder.exceptions.IBException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AbsolutePathRef extends URIPathRef {
-  public static final String NOT_ABSOLUTE_PATH = "NotAbsolutePath";
-  private static final Logger log = LoggerFactory.getLogger(AbsolutePathRef.class);
-  private final static Function<Path, URL> toURL = (p) -> {
-    log.info("toURL for " + Objects.requireNonNull(p));
-    if (!p.isAbsolute()) {
-      log.error("Failed to provide absolute path to AbsolutePathRef {}",p);
-      throw new IBException(NOT_ABSOLUTE_PATH);
-    }
-    return cet.returns(() -> p.toUri().toURL());
-  };
+public class URIPathRef extends AbstractBasePathRef {
+  public static final Logger log = LoggerFactory.getLogger(URIPathRef.class);
 
-  public AbsolutePathRef(Path p) {
-    super(toURL.apply(p));
+  public URIPathRef(String u) {
+    this(cet.returns(() -> URI.create(u)));
+  }
+
+  public URIPathRef(URL u) {
+    this(cet.returns(() -> requireNonNull(u).toURI()));
+  }
+
+  public URIPathRef(URI u) {
+    super(requireNonNull(u));
+  }
+
+  @Override
+  public Optional<Path> toResolvedPath(String p) {
+    // TODO Auto-generated method stub
+    return Optional.empty();
+  }
+
+  @Override
+  public Optional<PathRef> extendAsPathRef(Path newPath) {
+    return Optional.ofNullable(newPath).filter(p -> !p.isAbsolute()).map(Path::toString).map(this.getUri()::resolve)
+        .map(URIPathRef::new);
   }
 
 }

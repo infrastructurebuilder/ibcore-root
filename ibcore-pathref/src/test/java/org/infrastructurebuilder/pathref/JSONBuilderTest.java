@@ -51,7 +51,7 @@ public class JSONBuilderTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    jb = JSONBuilder.newInstance();
+    jb = JSONBuilderFactory.newInstance();
     target = Paths.get(Optional.ofNullable(System.getProperty("target")).orElse("./target")).toRealPath()
         .toAbsolutePath();
 
@@ -59,7 +59,7 @@ public class JSONBuilderTest {
 
   @Test
   public void testMinorStringParse() {
-    DateTimeFormatter dtf = JSONBuilder.getDateFormat();
+    DateTimeFormatter dtf = JSONBuilderFactory.getDateFormat();
     var q = dtf.parse("2023-12-28T19:39:38.000000000Z");
 
     assertNotNull(Instant.from(q));
@@ -69,9 +69,9 @@ public class JSONBuilderTest {
   public void testInstantParser() {
     Instant i = Instant.now();
 
-    final JSONObject k = JSONBuilder.newInstance().addInstant("X", i).asJSON();
-    assertTrue(JSONBuilder.instantFromJSON.apply(null).isEmpty());
-    assertTrue(JSONBuilder.instantFromJSON.apply(k.getString("X")).get().compareTo(i) == 0);
+    final JSONObject k = JSONBuilderFactory.newInstance().addInstant("X", i).asJSON();
+    assertTrue(JSONBuilderFactory.instantFromJSON.apply(null).isEmpty());
+    assertTrue(JSONBuilderFactory.instantFromJSON.apply(k.getString("X")).get().compareTo(i) == 0);
   }
 
   @Test
@@ -130,7 +130,7 @@ public class JSONBuilderTest {
 
   @Test
   public void testAddInstantStringInstant() {
-    var f = DateTimeFormatter.ofPattern(JSONBuilder.TIMESTAMP).withZone(ZoneId.from(ZoneOffset.UTC));
+    var f = DateTimeFormatter.ofPattern(JSONBuilderFactory.TIMESTAMP).withZone(ZoneId.from(ZoneOffset.UTC));
     final Instant now = Instant.now();
     final JSONObject j = new JSONObject().put("X", f.format(now));
     final JSONObject k = jb.addInstant("X", Optional.of(now)).asJSON();
@@ -233,7 +233,7 @@ public class JSONBuilderTest {
 
   @Test
   public void testAddOn() {
-    final JSONBuilder jb2 = JSONBuilder.addOn(jb.addString("A", "A").asJSON(), Optional.empty());
+    final JSONBuilder jb2 = JSONBuilderFactory.addOn(jb.addString("A", "A").asJSON(), Optional.empty());
     JSONAssert.assertEquals(new JSONObject().put("A", "A").put("B", "B"), jb2.addString("B", "B").asJSON(), true);
   }
 
@@ -257,7 +257,8 @@ public class JSONBuilderTest {
 
   @Test
   public void testAddPAth2() {
-    jb = JSONBuilder.newInstance(Optional.of(target));
+    var fs= target.getFileSystem();
+    jb = JSONBuilderFactory.newInstance(Optional.of(target));
     final Path l = target.resolve("ABC");
     final JSONObject j = new JSONObject().put("X", l);
     final JSONObject j2 = new JSONObject().put("X", target.relativize(l).toString());

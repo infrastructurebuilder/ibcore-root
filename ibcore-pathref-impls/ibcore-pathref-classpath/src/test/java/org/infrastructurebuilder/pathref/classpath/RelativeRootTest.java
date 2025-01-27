@@ -79,8 +79,8 @@ class RelativeRootTest {
 
   @Test
   void testClasspath() {
-    PathRef cprr = rrp.get(ClasspathPathRefSupplier.NAME).get();
-    assertEquals(cprr, cprr.extendAsPathRef(Paths.get(MYFILE_XML)).get());
+    PathRef cprr = rrp.getPathRef(ClasspathPathRefSupplier.NAME).get();
+    assertTrue(cprr.extendAsPathRef(Paths.get(MYFILE_XML)).isEmpty());
     String k = cprr.relativize(ClasspathPathRefSupplier.NAME + MYFILE_XML).map(Path::toString).get();
     String q = cprr.getUrl().get().toExternalForm();
     assertEquals(q, ClasspathPathRefSupplier.NAME);

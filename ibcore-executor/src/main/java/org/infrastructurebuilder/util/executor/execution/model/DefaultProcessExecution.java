@@ -21,7 +21,9 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.UUID.randomUUID;
 
+import java.io.File;
 import java.io.PrintStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -95,7 +97,7 @@ public class DefaultProcessExecution implements ProcessExecution {
         null, // Placeholders until we set the values below
         null, //
         null, //
-        relativeRoot.map(AbsolutePathRef::new).flatMap(PathRef::getUrl).map(URL::toExternalForm).orElse(null),
+        relativeRoot.map(AbsolutePathRef::new).map(AbsolutePathRef::toString).orElse(null),
         requireNonNull(environment).map(DefaultProcessExecution.toEnvironment::apply).map(Environment::new)
             .orElseGet(() -> new Environment()));
     this.gpe.setStdOutPath(getStdOut().getPath().map(Path::toString).orElse(null));
@@ -195,7 +197,7 @@ public class DefaultProcessExecution implements ProcessExecution {
   }
 
   public Optional<PathRef> getRelativeRoot() {
-    return gpe.getRelativeRoot();
+    return gpe.getRelativePathRef();
   }
 
   @Override
@@ -219,8 +221,8 @@ public class DefaultProcessExecution implements ProcessExecution {
     return new DefaultProcessExecution(this);
   }
 
-  public ChecksumBuilder getChecksumBuilder() {
-    return this.builder;
+  public Optional<ChecksumBuilder> getChecksumBuilder() {
+    return Optional.ofNullable(this.builder);
   }
 
 }

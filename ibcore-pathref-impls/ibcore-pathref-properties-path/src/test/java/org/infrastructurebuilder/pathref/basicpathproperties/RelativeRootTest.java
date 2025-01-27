@@ -69,7 +69,7 @@ class RelativeRootTest {
   void testUserHome() {
     assertNotNull(h.getLog());
     Path root = tps.getRoot();
-    PathRef t = rrp.get(h.getName()).get();
+    PathRef t = rrp.getPathRef(h.getName()).get();
     assertEquals(root, t.getPath().get().getParent());
   }
 

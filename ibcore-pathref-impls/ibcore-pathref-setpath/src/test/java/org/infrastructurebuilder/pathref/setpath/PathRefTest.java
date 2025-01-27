@@ -68,7 +68,7 @@ class PathRefTest {
 
   @Test
   void testRR() {
-    PathRef rr = rrp.get(SetValuePathRefSupplier.NAME).get();
+    PathRef rr = rrp.getPathRef(SetValuePathRefSupplier.NAME).get();
     assertEquals(tp, rr.getPath().get());
   }
 

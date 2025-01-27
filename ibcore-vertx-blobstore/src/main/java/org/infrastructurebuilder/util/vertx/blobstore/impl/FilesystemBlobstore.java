@@ -77,7 +77,7 @@ public class FilesystemBlobstore implements Blobstore<VertxIBResource> {
   private IBResourceBuilderFactory<Optional<IBResource>> rcf;
 
   public FilesystemBlobstore(PathRefEnabled rrs, Long size) {
-    this.root = requireNonNull(requireNonNull(rrs, "RelativeRootSupplier").getPathRef(), "PathRef")
+    this.root = requireNonNull(requireNonNull(rrs, "RelativeRootSupplier").getPathRef())
         .orElseThrow(() -> new IBException("No relative root"));
     this.rcf = new DefaultIBResourceBuilderFactorySupplier(new RelativeRootFactory(Set.of(rrs))).get(rrs.getName())
         .getRelativeRoot();

@@ -22,9 +22,9 @@ import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.pathref.IBChecksumUtils.stripTrailingSlash;
 
-import java.io.Closeable;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.FileSystem;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -114,34 +114,36 @@ import org.slf4j.LoggerFactory;
  * always available.
  *
  */
-public interface PathRef extends JSONAndChecksumEnabled , AutoCloseable{
+public interface PathRef extends JSONAndChecksumEnabled, AutoCloseable {
   final static String RELATIVE_ROOT_URLLIKE = "URL";
   final static Logger log = LoggerFactory.getLogger(PathRef.class);
 
   default ChecksumBuilder getChecksumBuilder() {
-    return ChecksumBuilderFactory.newAlternateInstanceWithRelativeRoot(Optional.of(this));
+    return ChecksumBuilderFactory.newAlternateInstanceWithPathRef(Optional.of(this));
   }
+//
+//  default boolean isPath() {
+//    return getPath().isPresent();
+//  }
+//
+//  default boolean isURL() {
+//    return getUrl().isPresent();
+//  }
+//
+//  default boolean isURLLike() {
+//    return !(isPath() || isURL());
+//  }
+//
+//  default Optional<Path> getPath() {
+//    return empty();
+//  }
 
-  default boolean isPath() {
-    return getPath().isPresent();
-  }
-
-  default boolean isURL() {
-    return getUrl().isPresent();
-  }
-
-  default boolean isURLLike() {
-    return !(isPath() || isURL());
-  }
-
-  default Optional<Path> getPath() {
-    return empty();
-  }
-
+  @Deprecated
   default Optional<URL> getUrl() {
     return empty();
   }
 
+  @Deprecated
   default Optional<String> getUrlLike() {
     return empty();
   }
@@ -154,22 +156,23 @@ public interface PathRef extends JSONAndChecksumEnabled , AutoCloseable{
     return or.startsWith(sr) && !(or.equals(sr));
   }
 
+  @Deprecated
   default boolean isParentOf(Path p) {
-    if (p.isAbsolute())
-      return getPath().map(path -> {
-        return p.startsWith(path);
-      }).orElse(false);
+//    if (p.isAbsolute())
+//      return getPath().map(path -> {
+//        return p.startsWith(path);
+//      }).orElse(false);
     return false;
   }
 
-  /**
-   * Resolving a path may not always has a result, because although stringroot always exists, some PathRef
-   * implementations may return empty for absolute paths because they always expect relative paths.
-   *
-   * @param p
-   * @return
-   */
-  Optional<String> resolvePath(Path p);
+//  /**
+//   * Resolving a path may not always has a result, because although stringroot always exists, some PathRef
+//   * implementations may return empty for absolute paths because they always expect relative paths.
+//   *
+//   * @param p
+//   * @return
+//   */
+//  Optional<String> resolvePath(Path p);
 
   default Optional<Path> toResolvedPath(Path p) {
     if (p == null || p.isAbsolute())
@@ -178,20 +181,11 @@ public interface PathRef extends JSONAndChecksumEnabled , AutoCloseable{
   }
 
   default Optional<Path> toResolvedPath(String p) {
-    return getPath().flatMap(thisPath -> {
-      return ofNullable(p).flatMap(pStr -> {
-        Path v = null;
-        try {
-          Path resPath = Paths.get(pStr);
-          if (!resPath.isAbsolute())
-            v = thisPath.resolve(resPath);
-        } catch (Throwable t) {
-          // Do nothing
-          log.warn("{} not a path", pStr);
-        }
-        return ofNullable(v);
-      });
-    });
+    return Optional.empty(); // This needs to be overridden for items that return actual paths
+  }
+
+  default Optional<Path> sourceRelativize(String o) {
+    return relativize(o);
   }
 
   /**
@@ -199,10 +193,10 @@ public interface PathRef extends JSONAndChecksumEnabled , AutoCloseable{
    * PathRef. A given PathRef must determine (by type) if the supplied object is viable and if it's possible to
    * relativize it.
    *
-   * @param p Some object that is somehow referencable within the scope of this PathRef
+   * @param p String representation of an object that is somehow referencable within the scope of this PathRef
    * @return a Path (that can be used to reference the Object
    */
-  Optional<Path> relativize(Object p);
+  Optional<Path> relativize(String p);
 
   /**
    * Create a new PathRef by appending the provided path to the existing path of the PathRef. The new PathRef is not
@@ -213,7 +207,7 @@ public interface PathRef extends JSONAndChecksumEnabled , AutoCloseable{
    * from it directly. IF THAT FILE IS NOT AN ARCHIVE, the extension will STILL WORK!
    *
    * @param newPath <i>RELATIVE</i> <code>java.nio.Path</code> instance
-   * @return a new PathRef if possible or <code>empty()</code> if not possible/newPath was absolute
+   * @return a new PathRef if possible or <code>empty()</code> if not possible or if newPath was absolute
    */
   Optional<PathRef> extendAsPathRef(Path newPath);
 
@@ -224,6 +218,18 @@ public interface PathRef extends JSONAndChecksumEnabled , AutoCloseable{
    */
   default boolean isReadOnly() {
     return true;
+  }
+
+  default IBPathRefProximity getProximity() {
+    return IBPathRefProximity.LOCAL;
+  }
+
+  default IBPathRefExpectedSpeed getExpectedAccessSpeed() {
+    return IBPathRefExpectedSpeed.DEFAULT;
+  }
+
+  default IBPathRefExpectedSpeed getExpectedInitialRetrievalSpeed() {
+    return IBPathRefExpectedSpeed.DEFAULT;
   }
 
   /**
@@ -281,5 +287,9 @@ public interface PathRef extends JSONAndChecksumEnabled , AutoCloseable{
   @Override
   default void close() throws Exception {
 
+  }
+
+  default Optional<FileSystem> getNIOFS() {
+    return Optional.empty();
   }
 }

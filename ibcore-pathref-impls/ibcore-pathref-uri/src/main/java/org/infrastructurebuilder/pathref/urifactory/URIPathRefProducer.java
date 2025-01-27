@@ -29,6 +29,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -36,6 +37,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.http.client.utils.URIBuilder;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.AbstractBasePathRef;
 import org.infrastructurebuilder.pathref.PathRef;
@@ -77,10 +79,24 @@ public class URIPathRefProducer implements PathRefProducer {
     return log;
   }
 
-  public final static class URIPathRef extends AbstractBasePathRef<URI> {
+  public final static class URIPathRef extends AbstractBasePathRef {
 
     protected URIPathRef(URI u) {
       super(u);
+    }
+
+    @Override
+    public Optional<PathRef> extendAsPathRef(Path newPath) {
+      // If you try to send in an absolute path or null, you get nothing
+      if (newPath== null || newPath.isAbsolute())
+        return empty();
+      URIBuilder b = new URIBuilder(getUri());
+      b.setPathSegments(List.of(getUri().getPath(), newPath.toString()));
+
+      URI u = getUri();
+      String p = u.getPath();
+      // TODO Auto-generated method stub
+      return Optional.empty();
     }
 
   }

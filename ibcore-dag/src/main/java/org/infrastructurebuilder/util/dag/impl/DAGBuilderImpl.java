@@ -17,8 +17,6 @@
  */
 package org.infrastructurebuilder.util.dag.impl;
 
-import static java.util.stream.Collectors.toList;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;

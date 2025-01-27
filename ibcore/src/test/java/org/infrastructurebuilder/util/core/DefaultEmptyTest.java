@@ -37,7 +37,7 @@ class DefaultEmptyTest {
       public JSONObject asJSON() {
         return new JSONObject();
       }
-    }.getRelativeRoot().isPresent());
+    }.getRelativePathRef().isPresent());
   }
 
   @Test

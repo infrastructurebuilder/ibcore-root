@@ -26,7 +26,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.pathref.JSONBuilder;
+import org.infrastructurebuilder.pathref.JSONBuilderFactory;
 import org.infrastructurebuilder.pathref.JSONOutputEnabled;
 import org.infrastructurebuilder.util.core.Identified;
 import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
@@ -106,7 +106,7 @@ public class ServerProxy implements Identified, JSONOutputEnabled, Supplier<Basi
 
   @Override
   public JSONObject asJSON() {
-    return JSONBuilder.newInstance()
+    return JSONBuilderFactory.newInstance()
         // id
         .addString(ID_STRING, getId())
         //

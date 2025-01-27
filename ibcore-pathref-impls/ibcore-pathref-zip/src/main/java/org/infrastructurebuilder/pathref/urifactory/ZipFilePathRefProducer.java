@@ -23,6 +23,7 @@ import static java.util.Optional.of;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -45,8 +46,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This is (mostly) a testing instance of RelativeRootSupplier, allowing for the creation of RelativeRootSupplier
- * instances in the same manner as the Named instances
+ * This producer uses a ZipFileSystem to retrieve items stored within an archive file.
+ *
+ * There are multiple ways to do this, including expanding the file for direct access to a local directory, etc. That
+ * would obviously increase the access time and reduce the initial retrieval time.
+ *
  */
 @Named(ZipFilePathRefProducer.NAME)
 // NOT a singleton
@@ -54,7 +58,7 @@ public class ZipFilePathRefProducer implements PathRefProducer {
   private static final Logger log = LoggerFactory.getLogger(ZipFilePathRefProducer.class);
   public static final String NAME = "uri-supplier";
   private final AtomicReference<String> path = new AtomicReference<>();
-  private AtomicReference<Path> localPath = new AtomicReference<>();
+  private final AtomicReference<Path> localPath = new AtomicReference<>();
 
   public String getName() {
     return NAME;
@@ -73,22 +77,22 @@ public class ZipFilePathRefProducer implements PathRefProducer {
 
   public Optional<PathRef> with(String data) {
 
-    if (data == null )
-      return empty();
-    Path path = Paths.get(data).toAbsolutePath();
-    String s = path.toString().toLowerCase();
-    if (!s.endsWith(".zip") && !s.endsWith(".jar"))
-      return empty();
-    try {
-      String u = "zip:"+path.toUri().toURL().toExternalForm();
-      return of(new ZipFilePathRef(u));
-    } catch (Throwable t) {
-      log.error(String.format("Error creating ZipFilePathRef from {}", data), t);
-      return empty();
-    }
+    return Optional.ofNullable(data).map(s -> {
+      var lsc = s.toLowerCase();
+      if (!lsc.endsWith(".zip") && !lsc.endsWith(".jar"))
+        return null;
+      PathRef n;
+      try {
+        n = new ZipFilePathRef(s);
+      } catch (Throwable t) {
+        log.error(String.format("Error creating ZipFilePathRef from {}", data), t);
+        n = null;
+      }
+      return n;
+    });
   }
 
-  public final static class ZipFilePathRef extends AbstractBasePathRef<Path> {
+  public final static class ZipFilePathRef extends AbstractBasePathRef {
 
     private FileSystem fs;
 
@@ -109,7 +113,7 @@ public class ZipFilePathRefProducer implements PathRefProducer {
     @Override
     public Optional<InputStream> getInputStreamFrom(String path) {
       Path p = fs.getPath(path);
-       try {
+      try {
         return of(Files.newInputStream(p, StandardOpenOption.READ));
       } catch (IOException e) {
         log.error("Error opening path {} ", path, e);
@@ -123,6 +127,12 @@ public class ZipFilePathRefProducer implements PathRefProducer {
       super.close();
     }
 
+    @Override
+    public Optional<PathRef> extendAsPathRef(Path newPath) {
+      // Zip files are their own root and that's that
+      return Optional.empty();
+    }
   }
+
 
 }
