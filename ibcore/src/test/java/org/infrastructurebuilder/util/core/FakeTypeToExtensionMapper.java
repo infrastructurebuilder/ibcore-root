@@ -18,10 +18,11 @@
 package org.infrastructurebuilder.util.core;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.SortedSet;
 
-import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
+import org.infrastructurebuilder.pathref.api.TypeToExtensionMapper;
 
 public class FakeTypeToExtensionMapper implements TypeToExtensionMapper {
 
@@ -39,7 +40,7 @@ public class FakeTypeToExtensionMapper implements TypeToExtensionMapper {
   }
 
   @Override
-  public Optional<String> getStructuredSupplyTypeClassName(String type) {
+  public Optional<List<String>> getStructuredSupplyTypeClassName(String type) {
     return Optional.empty();
   }
 

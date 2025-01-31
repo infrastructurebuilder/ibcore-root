@@ -26,9 +26,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
 import java.util.SortedSet;
 
-import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
+import org.infrastructurebuilder.pathref.api.TypeToExtensionMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -56,7 +57,8 @@ public class DefaultTypeToExtensionMapperTest {
 
   @Test
   public void testStructuredType() {
-    assertEquals(ORG_W3C_DOM_NODE, t2e.getStructuredSupplyTypeClassName(APPLICATION_XML).get());
+    List<String> v = t2e.getStructuredSupplyTypeClassName(APPLICATION_XML).get();
+    assertEquals(ORG_W3C_DOM_NODE, v.get(0));
     assertFalse(t2e.getStructuredSupplyTypeClassName(VIDEO_AVI_1).isPresent());
   }
 

@@ -25,7 +25,7 @@ import static org.infrastructurebuilder.constants.IBConstants.TIME_FORMATTER;
 
 import java.time.format.DateTimeFormatter;
 
-import org.infrastructurebuilder.util.config.ConfigMap;
+import org.infrastructurebuilder.pathref.api.ConfigMap;
 
 public class Formatters {
   public final static String DEFAULT_TIME_FORMATTER = "HH:mm";

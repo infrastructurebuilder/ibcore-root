@@ -17,16 +17,21 @@
  */
 package org.infrastructurebuilder.util.config.impl;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElseGet;
 import static java.util.Optional.ofNullable;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -45,10 +50,8 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.pathref.JSONOutputEnabled;
-import org.infrastructurebuilder.util.config.ConfigMap;
-import org.infrastructurebuilder.util.config.ConfigMapBuilder;
-import org.infrastructurebuilder.util.core.IBUtils;
+import org.infrastructurebuilder.pathref.api.ConfigMap;
+import org.infrastructurebuilder.pathref.api.base.ConfigMapBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,10 +64,24 @@ public class IBJSONObject implements ConfigMap, ConfigMapBuilder {
   private static final Logger log = LoggerFactory.getLogger(IBJSONObject.class);
   protected final Stack<JSONObject> s = new Stack<JSONObject>();
 
-  private IBJSONObject(Stack<JSONObject> h, JSONOutputEnabled g) {
-    this(h);
-    this.s.add(g.asJSON());
+  public static JSONObject readToJSONObject(final InputStream ins) throws IOException {
+    return new JSONObject(readToString(requireNonNull(ins)));
   }
+
+  public static String readToString(final InputStream ins) throws IOException {
+    return readToString(ins, UTF_8);
+  }
+
+  public static String readToString(final InputStream ins, final Charset charset) throws IOException {
+    final ByteArrayOutputStream result = new ByteArrayOutputStream();
+    final byte[] buffer = new byte[2048];
+    int length;
+    while ((length = ins.read(buffer)) != -1) {
+      result.write(buffer, 0, length);
+    }
+    return result.toString(charset.name());
+  }
+
 
   private IBJSONObject(Stack<JSONObject> j) {
     ofNullable(j).ifPresent(j1 -> {
@@ -164,8 +181,9 @@ public class IBJSONObject implements ConfigMap, ConfigMapBuilder {
   @Override
   public ConfigMapBuilder withJSONResource(String file, boolean optional) {
 
-    try (InputStream ins = getClass().getResourceAsStream(file)) {
-      return withCopiedStack(new JSONObject(IBUtils.readToString(ins)));
+    try (InputStream ins = getClass().getResourceAsStream(file);
+        Reader r = new InputStreamReader(ins)) {
+      return withCopiedStack(readToJSONObject(ins));
     } catch (IOException e) {
       if (optional) {
         log.error("Unable to load JSON resource " + file, e);

@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE project>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE project>
 <!--
 
     @formatter:off
@@ -18,109 +19,126 @@
     @formatter:on
 
 -->
-<project xmlns="https://maven.apache.org/POM/4.0.0" xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="https://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>org.infrastructurebuilder</groupId>
-    <artifactId>ibcore-root</artifactId>
-    <version>0.30.1-SNAPSHOT</version>
-  </parent>
+	<parent>
+		<groupId>org.infrastructurebuilder</groupId>
+		<artifactId>ibcore-root</artifactId>
+		<version>0.30.1-SNAPSHOT</version>
+	</parent>
 
-  <artifactId>ibcore-maven-support</artifactId>
-  <packaging>jar</packaging>
+	<artifactId>ibcore-maven-support</artifactId>
+	<packaging>jar</packaging>
 
-  <name>${project.artifactId}</name>
-  <description>Types and resolvers relevant to Maven plugins</description>
-  <!-- URL for site gen -->
-  <url>${github.url.base}/${project.artifactId}</url>
+	<name>${project.artifactId}</name>
+	<description>Types and resolvers relevant to Maven plugins</description>
+	<!-- URL for site gen -->
+	<url>${github.url.base}/${project.artifactId}</url>
 
-  <properties>
-    <!-- CAN'T TEST DefaultInjectedResolver   [really, it's just too hard]  -->
-    <test.coverage.percentage.required>30</test.coverage.percentage.required>
-  </properties>
+	<properties>
+		<!-- CAN'T TEST DefaultInjectedResolver   [really, it's just too hard]  -->
+		<test.coverage.percentage.required>71</test.coverage.percentage.required>
+	</properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.infrastructurebuilder</groupId>
-      <artifactId>ibcore-plexus-defaults</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.infrastructurebuilder</groupId>
-      <artifactId>ibcore</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.infrastructurebuilder</groupId>
-      <artifactId>ibcore-config</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.infrastructurebuilder.util.logging</groupId>
-      <artifactId>iblogconfig</artifactId>
-      <classifier>debug</classifier>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.resolver</groupId>
-      <artifactId>maven-resolver-util</artifactId>
-    </dependency>
-    <dependency><!--       <groupId>org.skyscreamer</groupId> -->
-      <groupId>org.infrastructurebuilder.usurped</groupId>
-      <artifactId>jsonassert</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-plugin-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.plugin-testing</groupId>
-      <artifactId>maven-plugin-testing-harness</artifactId>
-      <scope>test</scope>
-    </dependency>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-core</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.infrastructurebuilder</groupId>
+			<artifactId>ibcore-plexus-defaults</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.infrastructurebuilder</groupId>
+			<artifactId>ibcore</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.infrastructurebuilder</groupId>
+			<artifactId>ibcore-config</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.infrastructurebuilder.util.logging</groupId>
+			<artifactId>iblogconfig</artifactId>
+			<classifier>debug</classifier>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.resolver</groupId>
+			<artifactId>maven-resolver-util</artifactId>
+		</dependency>
+		<dependency><!--       <groupId>org.skyscreamer</groupId> -->
+			<groupId>org.infrastructurebuilder.usurped</groupId>
+			<artifactId>jsonassert</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-plugin-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.plugin-testing</groupId>
+			<artifactId>maven-plugin-testing-harness</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.infrastructurebuilder.pathref</groupId>
-			<artifactId>ibcore-pathref</artifactId>
+			<artifactId>ibpathref-api</artifactId>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
-  </dependencies>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-project</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.infrastructurebuilder.pathref</groupId>
+			<artifactId>ibcore-pathref-properties-base</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>joor</artifactId>
+			<scope>test</scope>
+		</dependency>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-component-metadata</artifactId>
-        <executions>
-          <execution>
-            <id>classes</id>
-            <goals>
-              <goal>generate-metadata</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>test-classes</id>
-            <goals>
-              <goal>generate-test-metadata</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+	</dependencies>
 
-    </plugins>
-  </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.plexus</groupId>
+				<artifactId>plexus-component-metadata</artifactId>
+				<executions>
+					<execution>
+						<id>classes</id>
+						<goals>
+							<goal>generate-metadata</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>test-classes</id>
+						<goals>
+							<goal>generate-test-metadata</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
 </project>

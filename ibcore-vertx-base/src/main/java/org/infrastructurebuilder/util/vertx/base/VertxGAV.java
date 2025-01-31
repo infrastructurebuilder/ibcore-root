@@ -18,11 +18,13 @@
 package org.infrastructurebuilder.util.vertx.base;
 
 import org.infrastructurebuilder.util.core.GAV;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public interface VertxGAV extends GAV, JsonOutputEnabled {
+public interface VertxGAV extends GAV {
 
   static Logger log = LoggerFactory.getLogger(VertxGAV.class);
+
 
 }

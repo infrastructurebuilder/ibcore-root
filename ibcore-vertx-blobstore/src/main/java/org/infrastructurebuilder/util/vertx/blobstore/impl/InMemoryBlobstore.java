@@ -22,7 +22,7 @@ import static io.vertx.core.Future.succeededFuture;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
-import static org.infrastructurebuilder.constants.IBConstants.*;
+import static org.infrastructurebuilder.constants.IBConstants.NOT_FOUND;
 
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -36,7 +36,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.readdetect.base.IBResource;
+import org.infrastructurebuilder.util.readdetect.api.IBResource;
 import org.infrastructurebuilder.util.vertx.base.FutureStream;
 import org.infrastructurebuilder.util.vertx.blobstore.Blobstore;
 import org.slf4j.Logger;

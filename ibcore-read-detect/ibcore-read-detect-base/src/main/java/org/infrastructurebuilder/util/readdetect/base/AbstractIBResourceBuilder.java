@@ -19,23 +19,34 @@ package org.infrastructurebuilder.util.readdetect.base;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
-import static org.infrastructurebuilder.constants.IBConstants.NO_PATH_SUPPLIED;
-import static org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory.extracted;
-import static org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory.toType;
+//import static org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory.extracted;
+import static org.infrastructurebuilder.constants.IBConstants.APPLICATION_OCTET_STREAM;
+import static org.infrastructurebuilder.pathref.OptionalReflectionLoadingTikaDetector.toType;
 
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Supplier;
 
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.Checksum;
-import org.infrastructurebuilder.pathref.PathRef;
-import org.infrastructurebuilder.util.ibpathref.metadata.model.v1_0.IBMetadataModel;
-import org.infrastructurebuilder.util.ibpathref.metadata.model.v1_0.IBMetadataModel.IBMetadataModelBuilderBase;
-import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
+import org.infrastructurebuilder.pathref.api.ConfigMap;
+import org.infrastructurebuilder.pathref.api.base.ConfigMapConfigurable;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
+import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v1_0.IBMetadataModel;
+import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v1_0.IBMetadataModel.IBMetadataModelBuilderBase;
+import org.infrastructurebuilder.pathref.util.readdetect.model.v1_0.IBResourceModel;
+import org.infrastructurebuilder.util.readdetect.api.IBResource;
+import org.infrastructurebuilder.util.readdetect.api.IBResourceBuilder;
+import org.infrastructurebuilder.util.readdetect.api.IBResourceException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,27 +56,29 @@ import org.slf4j.LoggerFactory;
  *
  * @param
  */
-abstract public class AbstractIBResourceBuilder<I> implements IBResourceBuilder<I> {
+abstract public class AbstractIBResourceBuilder<I> //
+    implements IBResourceBuilder<I>, ConfigMapConfigurable {
 
   private final static Logger log = LoggerFactory.getLogger(AbstractIBResourceBuilder.class);
   protected IBResourceModel model = new IBResourceModel();
   private Checksum targetChecksum;
   private boolean typeSet = false;
   protected Path sourcePath;
-  private Path finalRestingPath;
-  private final PathRef root;
+  private final PathRefFileSystem root;
 
-  public AbstractIBResourceBuilder(PathRef root) {
+  public AbstractIBResourceBuilder(PathRefFileSystem root) {
     this.root = root;
   }
+
+  abstract protected Optional<ConfigMap> getConfig();
 
   @Override
   public IBResourceBuilder<I> fromJSON(JSONObject j) {
     model = IBResourceBuilder.modelFromJSON.apply(j)
         .orElseThrow(() -> new IBException("Unable to acquire model from json"));
-    String fp = model.getPath().orElseThrow(() -> new IBResourceException(NO_PATH_SUPPLIED));
+    URI fp = URI.create(model.getStreamSource());
     log.debug("Got %s from model", fp);
-    Path p = extracted.apply(fp);
+    Path p = Paths.get(fp);
     this.sourcePath = p;
     return this;
   }
@@ -89,22 +102,10 @@ abstract public class AbstractIBResourceBuilder<I> implements IBResourceBuilder<
   }
 
   @Override
-  public IBResourceBuilder<I> withFilePath(String path) {
-    this.model.setPath(path);
-    return this;
+  public IBResourceBuilder<I> withChecksumSupplier(Supplier<Checksum> csum) {
+    return withChecksum(csum.get());
   }
 
-  @Override
-  public IBResourceBuilder<I> withBasicFileAttributes(BasicFileAttributes a) {
-    return (a == null) ? this
-        : this.withCreateDate(a.creationTime().toInstant())
-
-            .withSize(a.size())
-
-            .withMostRecentAccess(a.lastAccessTime().toInstant())
-
-            .withLastUpdated(a.lastModifiedTime().toInstant());
-  }
 
   @Override
   public IBResourceBuilder<I> withAcquired(Instant acquired) {
@@ -126,10 +127,20 @@ abstract public class AbstractIBResourceBuilder<I> implements IBResourceBuilder<
 
   @Override
   public IBResourceBuilder<I> withType(String type) {
+    if (this.typeSet) {
+      log.warn("Type already set to {}", this.model.getStreamType());
+      return this;
+    }
     this.model.setStreamType(requireNonNull(type));
     this.typeSet = true;
     return this;
   }
+
+  @Override
+  public IBResourceBuilder<I> withTypeSupplier(Supplier<String> type) {
+    return withType(type.get());
+  }
+
 
   @Override
   public IBResourceBuilder<I> withMetadata(JSONObject p) {
@@ -148,8 +159,8 @@ abstract public class AbstractIBResourceBuilder<I> implements IBResourceBuilder<
   }
 
   @Override
-  public IBResourceBuilder<I> withSource(String source) {
-    this.model.setStreamSource(requireNonNull(source));
+  public IBResourceBuilder<I> withSource(URI source) {
+    this.model.setStreamSource(requireNonNull(source).toString());
     return this;
   }
 
@@ -172,6 +183,27 @@ abstract public class AbstractIBResourceBuilder<I> implements IBResourceBuilder<
   }
 
   @Override
+  public IBResourceBuilder<I> withGroup(String groupName) {
+    this.model.setGroup(groupName);
+    return this;
+  }
+
+  @Override
+  public IBResourceBuilder<I> withOwner(String ownerName) {
+    this.model.setOwner(ownerName);
+    return this;
+  }
+
+  @Override
+  public IBResourceBuilder<I> withPermissions(Set<String> perms) {
+    if (perms != null) {
+      this.model.setPermissions(PosixFilePermissions.toString(new HashSet<>(perms
+          .stream().map(PosixFilePermission::valueOf).toList())));
+    }
+    return this;
+  }
+
+  @Override
   public IBResourceBuilder<I> detectType() {
     if (this.typeSet) {
       // We've already set the type
@@ -182,11 +214,12 @@ abstract public class AbstractIBResourceBuilder<I> implements IBResourceBuilder<
   }
 
   protected Optional<Path> getActualFullPathToResource() {
+    // FIXME. ALSO, don't use this
     return (this.sourcePath.isAbsolute()) ? //
         Optional.of(this.sourcePath) //
         : //
         getRoot().flatMap(root -> {
-          return root.getPath().map(rPath -> rPath.resolve(this.sourcePath));
+          return Optional.of(IBException.cet.returns(() -> root.getRoot().toRealPath()));
         });
   }
 
@@ -217,7 +250,7 @@ abstract public class AbstractIBResourceBuilder<I> implements IBResourceBuilder<
       if (!this.typeSet)
         detectType();
       if (hard) {
-        var aType = toType.apply(this.sourcePath);
+        String aType = toType.apply(this.sourcePath).orElse(APPLICATION_OCTET_STREAM);
         if (this.typeSet) {
           if (!this.model.getStreamType().equals(aType)) {
             log.error("Expected type {} does not equal actual type {}", this.model.getStreamType(), aType);
@@ -235,7 +268,7 @@ abstract public class AbstractIBResourceBuilder<I> implements IBResourceBuilder<
       }
       if (this.model.getStreamType() == null) {
         log.warn("Type not available");
-        this.model.setStreamType(toType.apply(this.sourcePath));
+        this.model.setStreamType(toType.apply(this.sourcePath).orElse(APPLICATION_OCTET_STREAM));
       }
 
       // There has been no source path set.
@@ -248,13 +281,7 @@ abstract public class AbstractIBResourceBuilder<I> implements IBResourceBuilder<
 
   abstract public Optional<IBResource> build(boolean hard);
 
-//  @Override
-  private IBResourceBuilder<I> movedTo(Path path) {
-    this.finalRestingPath = path;
-    return this;
-  }
-
-  public Optional<PathRef> getRoot() {
+  public Optional<PathRefFileSystem> getRoot() {
     return Optional.ofNullable(root);
   }
 

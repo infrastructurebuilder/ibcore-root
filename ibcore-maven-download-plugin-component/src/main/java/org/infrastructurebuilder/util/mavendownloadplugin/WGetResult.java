@@ -17,17 +17,16 @@
  */
 package org.infrastructurebuilder.util.mavendownloadplugin;
 
-import java.nio.file.Path;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.core.PathAndChecksum;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
 
 public interface WGetResult {
-  
+
   /** {@link Instant} the download of {@link WGetResult#getOriginal() the downloaded file} started
-   * 
+   *
    * @return
    */
   Instant getAcquired();
@@ -36,24 +35,24 @@ public interface WGetResult {
    * Gets original file downloaded by Wget
    * @return
    */
-  PathAndChecksum getOriginal();
-  
+  PathRefPath getOriginal();
+
   /**
    * Gets the "root" path of the expanded list
    * @return
    */
-  Optional<Path> getExpandedRoot();
+  PathRefPath getExpandedRoot();
 
   /**
    * Get optional directory of expanded files from the archive
    * that is returned by {@link WGetResult#getOriginal() the downloaded file}
    * @return
    */
-  Optional<List<PathAndChecksum>> getExpanded();
+  Optional<List<PathRefPath>> getExpanded();
 
   /**
    * SIDE EFFECTS: Deletes everything that is in this result
-   * 
+   *
    */
   void cleanup();
 

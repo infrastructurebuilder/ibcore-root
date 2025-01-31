@@ -24,7 +24,6 @@ import static java.nio.file.Files.createFile;
 import static java.nio.file.Files.exists;
 import static java.nio.file.Files.isRegularFile;
 import static java.nio.file.Files.isWritable;
-import static java.nio.file.Files.readAttributes;
 import static java.nio.file.Files.walkFileTree;
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
@@ -33,7 +32,6 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.util.Comparator.nullsFirst;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
-import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.Spliterator.ORDERED;
 import static java.util.stream.Collectors.toMap;
@@ -43,8 +41,6 @@ import static org.infrastructurebuilder.exceptions.IBException.cet;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -91,8 +87,6 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.Spliterators;
-import java.util.StringJoiner;
-import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -119,6 +113,7 @@ import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.DigestReader;
 import org.infrastructurebuilder.pathref.IBChecksumUtils;
 import org.infrastructurebuilder.pathref.JSONOutputEnabled;
+import org.infrastructurebuilder.pathref.fs.attribute.PathRefFileAttributes;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -146,7 +141,7 @@ public class IBUtils {
       isJar = false;
     }
     if (!isJar && !isZip)
-      throw new IBException("THIS JVM CANNOT HANDLE ARCHIVES.  IBDATA WILL NOT WORK");
+      throw new IBException("THIS JVM CANNOT HANDLE ARCHIVES.");
   }
 
   public final static Function<String, Optional<BigInteger>> getIntValue = (s) -> {
@@ -186,14 +181,24 @@ public class IBUtils {
     return writer.toString();
   }
 
-  public final static Function<Path, Optional<BasicFileAttributes>> getAttributes = (i) -> {
-    Optional<BasicFileAttributes> retVal = empty();
+  public final static Function<Path, Optional<? extends BasicFileAttributes>> getBasicAttributes = (i) -> {
+    BasicFileAttributes retVal = null;
     try {
-      retVal = of(readAttributes(requireNonNull(i), BasicFileAttributes.class));
+      retVal = Files.readAttributes(requireNonNull(i), BasicFileAttributes.class);
     } catch (IOException e) {
       // log.error("Error reading basic attributes " + i, e);
     }
-    return retVal;
+    return Optional.ofNullable(retVal);
+  };
+
+  public final static Function<Path, Optional<PathRefFileAttributes>> getAttributes = (i) -> {
+    PathRefFileAttributes retVal = null;
+    try {
+      retVal = Files.readAttributes(requireNonNull(i), PathRefFileAttributes.class);
+    } catch (IOException | UnsupportedOperationException e) {
+      // log.error("Error reading basic attributes " + i, e);
+    }
+    return Optional.ofNullable(retVal);
   };
 
   public final static Function<String, Optional<Document>> strToDoc = (xmlString) -> {
@@ -225,8 +230,8 @@ public class IBUtils {
   public final static java.util.Comparator<java.time.Instant> nullSafeInstantComparator = nullsFirst(
       java.time.Instant::compareTo);
 
-  public final static Function<String, Optional<URL>> nullSafeURLMapper = (s) -> {
-    return ofNullable(s).map(u -> cet.returns(() -> translateToWorkableArchiveURL(u)));
+  public final static Function<String, Optional<URI>> nullSafeURLMapper = (s) -> {
+    return ofNullable(s).map(u -> cet.returns(() -> translateToWorkableArchiveURI(u)));
   };
 
   public final static Function<Object, Optional<String>> nullSafeObjectToString = (o) -> {
@@ -242,8 +247,8 @@ public class IBUtils {
     return p;
   };
 
-  public final static URL reURL(String url) {
-    return ofNullable(url).map(u -> cet.returns(() -> translateToWorkableArchiveURL(u))).orElse(null);
+  public final static URI reURL(String uri) {
+    return ofNullable(uri).map(u -> cet.returns(() -> translateToWorkableArchiveURI(u))).orElse(null);
   }
 
   public final static Function<JSONObject, JSONObject> cheapCopy = j -> {
@@ -367,9 +372,9 @@ public class IBUtils {
     return stream(iterable.spliterator(), false);
   }
 
-  public static final Optional<URL> asURL(final String url) {
+  public static final Optional<URI> asURI(final String uri) {
     try {
-      return Optional.of(translateToWorkableArchiveURL(url));
+      return Optional.of(translateToWorkableArchiveURI(uri));
     } catch (final IBException e) {
       return Optional.empty();
     }
@@ -540,7 +545,7 @@ public class IBUtils {
   }
 
   public final static Optional<Boolean> getOptBoolean(final JSONObject j, final String key) {
-    return ofNullable(j.has(key) ? j.getBoolean(key) : null);
+    return ofNullable(j.has(key) ? (Boolean) j.getBoolean(key) : null);
   }
 
   public final static Optional<Integer> getOptInteger(final JSONObject orig, final String key) {
@@ -613,8 +618,8 @@ public class IBUtils {
     return j;
   }
 
-  public static URL mapStringToURLOrNull(final Optional<String> urlString) {
-    return urlString.map(IBUtils::translateToWorkableArchiveURL).orElse(null);
+  public static URI mapStringToURIOrNull(final Optional<String> urlString) {
+    return urlString.map(IBUtils::translateToWorkableArchiveURI).orElse(null);
 
   }
 
@@ -773,24 +778,6 @@ public class IBUtils {
     return new JSONObject(readFile(jsonFile));
   }
 
-  public static JSONObject readToJSONObject(final InputStream ins) throws IOException {
-    return new JSONObject(readToString(requireNonNull(ins)));
-  }
-
-  public static String readToString(final InputStream ins) throws IOException {
-    return readToString(ins, UTF_8);
-  }
-
-  public static String readToString(final InputStream ins, final Charset charset) throws IOException {
-    final ByteArrayOutputStream result = new ByteArrayOutputStream();
-    final byte[] buffer = new byte[2048];
-    int length;
-    while ((length = ins.read(buffer)) != -1) {
-      result.write(buffer, 0, length);
-    }
-    return result.toString(charset.name());
-  }
-
   public static Map<String, String> splitToMap(final JSONObject json) {
     return json.toMap().entrySet().stream().collect(toMap(k -> k.getKey(), v -> v.getValue().toString()));
   }
@@ -836,9 +823,9 @@ public class IBUtils {
     return path;
   }
 
-  public static Optional<URL> zipEntryToUrl(final Optional<URL> p, final ZipEntry e) {
+  public static Optional<URI> zipEntryToUrl(final Optional<URI> p, final ZipEntry e) {
     return requireNonNull(p)
-        .map(u -> cet.returns(() -> translateToWorkableArchiveURL("jar:" + u.toExternalForm() + "!/" + e.getName())));
+        .map(u -> cet.returns(() -> translateToWorkableArchiveURI("jar:" + u.toString() + "!/" + e.getName())));
   }
 
   private static boolean _match(final JSONObject metadata, final Pattern key, final Pattern value) {
@@ -849,10 +836,6 @@ public class IBUtils {
       final Pattern vPattern) {
     return (kPattern == null || kPattern.matcher(key).matches())
         && (vPattern == null || vPattern.matcher(val).matches());
-  }
-
-  public static Optional<IBVersion> apiVersion(final GAV gav) {
-    return requireNonNull(gav).getVersion().map(DefaultIBVersion::new).map(DefaultIBVersion::apiVersion);
   }
 
   // public final static Function<Artifact, GAV> artifactToGAV = (art) -> {
@@ -915,10 +898,6 @@ public class IBUtils {
   // .withFile(Optional.ofNullable(a.getFile()).map(File::toPath).orElse(null));
   // }
 
-  public static Optional<IBVersion> getVersion(final GAV art) {
-    return art.getVersion().map(DefaultIBVersion::new);
-  }
-
   // public static VersionScheme getVersionScheme() {
   // return new org.eclipse.aether.util.version.GenericVersionScheme();
   // }
@@ -939,15 +918,15 @@ public class IBUtils {
   // _versionmatcher(art, pattern);
   // }
 
-  public static URL translateToWorkableArchiveURL(String url) {
-    requireNonNull(url);
-    String retVal = url;
-    if (url.startsWith("jar:") && !isJar)
-      retVal = "zip:" + url.substring(4);
-    if (url.startsWith("zip:") && !isZip)
-      retVal = "jar:" + url.substring(4);
+  public static URI translateToWorkableArchiveURI(String uri) {
+    requireNonNull(uri);
+    String retVal = uri;
+    if (uri.startsWith("jar:") && !isJar)
+      retVal = "zip:" + uri.substring(4);
+    if (uri.startsWith("zip:") && !isZip)
+      retVal = "jar:" + uri.substring(4);
     final String f = retVal;
-    return cet.returns(() -> new URL(f));
+    return cet.returns(() -> URI.create(f));
 
   }
 
@@ -978,7 +957,9 @@ public class IBUtils {
           throw new IBException("File " + path.toAbsolutePath() + " is not available to write");
         return path;
       } else {
-        createDirectories(path.getParent());
+        Path a = path;
+        Path p = a.getParent();
+        createDirectories(p);
       }
       return createFile(path);
     });

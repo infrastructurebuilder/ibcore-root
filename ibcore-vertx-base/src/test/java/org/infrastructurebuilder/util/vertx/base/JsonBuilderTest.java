@@ -32,7 +32,7 @@ public class JsonBuilderTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    jb = JsonBuilder.newInstance();
+    jb = JsonBuilderFactory.newInstance();
     target = Paths.get(ofNullable(getProperty("target")).orElse("./target")).toRealPath().toAbsolutePath();
 
   }

@@ -60,6 +60,11 @@
 			<artifactId>plexus-io</artifactId>
 			<version>3.5.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.infrastructurebuilder.util</groupId>
+			<artifactId>ibcore-urlclasspath</artifactId>
+			<version>1.0.2-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>

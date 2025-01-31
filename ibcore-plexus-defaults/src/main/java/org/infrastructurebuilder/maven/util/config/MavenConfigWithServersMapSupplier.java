@@ -32,7 +32,7 @@ import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Settings;
 import org.eclipse.sisu.Nullable;
-import org.infrastructurebuilder.util.config.ConfigMapBuilderSupplier;
+import org.infrastructurebuilder.pathref.api.base.ConfigMapBuilderSupplier;
 import org.json.JSONObject;
 
 @Named(ConfigMapBuilderSupplier.MAVEN_WITH_SERVERS)

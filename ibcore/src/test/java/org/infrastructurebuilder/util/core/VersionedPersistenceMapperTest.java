@@ -30,8 +30,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.StringJoiner;
 
-import org.infrastructurebuilder.util.core.DefaultIBVersion.DefaultIBVersionBoundedRange;
-import org.infrastructurebuilder.util.core.IBVersion.IBVersionBoundedRange;
+import org.infrastructurebuilder.pathref.api.Modeled;
+import org.infrastructurebuilder.util.version.DefaultIBVersion;
+import org.infrastructurebuilder.util.version.IBVersion;
+import org.infrastructurebuilder.util.version.DefaultIBVersion.DefaultIBVersionBoundedRange;
+import org.infrastructurebuilder.util.version.IBVersion.IBVersionBoundedRange;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;

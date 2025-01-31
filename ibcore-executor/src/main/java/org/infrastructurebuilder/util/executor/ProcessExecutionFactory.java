@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
 
 /**
  * A {@code ProcessExecutionFactory} must, by contract, supply the work directory as a {@link Path}, a runner-unique id
@@ -48,7 +50,7 @@ public interface ProcessExecutionFactory extends Supplier<ProcessExecution> {
 
   ProcessExecutionFactory withEnvironment(Map<String, String> env);
 
-  ProcessExecutionFactory withRelativeRoot(Path relativeRoot);
+  ProcessExecutionFactory withRelativeRoot(PathRefFileSystem relativeRoot);
 
   ProcessExecutionFactory withExitCodes(List<Integer> exitCodes);
 

@@ -18,6 +18,7 @@
 package org.infrastructurebuilder.util.core;
 
 import org.infrastructurebuilder.pathref.JSONOutputEnabled;
+import org.infrastructurebuilder.pathref.api.Modeled;
 import org.json.JSONObject;
 
 public class FakeModeled implements Modeled, JSONOutputEnabled {
@@ -41,6 +42,20 @@ public class FakeModeled implements Modeled, JSONOutputEnabled {
   @Override
   public String getModelVersion() {
     return "1.0";
+  }
+
+  @Override
+  public String getBuilderClass() {
+    return FakeBuilder.class.getCanonicalName();
+  }
+
+  public static class FakeBuilder {
+    public FakeBuilder() {
+    }
+    public FakeModeled build() {
+      return new FakeModeled();
+    }
+
   }
 
 }

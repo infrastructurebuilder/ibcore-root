@@ -19,7 +19,7 @@ package org.infrastructurebuilder.util.vertx.base;
 
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.core.LoggerEnabled;
+import org.infrastructurebuilder.pathref.api.LoggerEnabled;
 
 import io.vertx.core.json.JsonObject;
 

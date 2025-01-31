@@ -19,13 +19,15 @@
     @formatter:on
 
 -->
-<project>
+<project xmlns="https://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>org.infrastructurebuilder</groupId>
 		<artifactId>ibparent</artifactId>
-		<version>104-SNAPSHOT</version>
+		<version>106</version>
 	</parent>
 
 	<artifactId>ibcore-root</artifactId>
@@ -47,9 +49,9 @@
 		<module>ibcore-artifacts</module>
 		<module>ibcore-executor</module>
 		<module>ibcore-maven-download-plugin-component</module>
-		<!--
 		<module>ibcore-pathref-impls</module>
 		<module>ibcore-read-detect</module>
+		<!--
 		<module>ibcore-vertx-base</module>
 		<module>ibcore-vertx-blobstore</module>
 		<module>ibcore-vertx-dataobjects</module>
@@ -73,26 +75,21 @@
 		<iblog.version>0.14.4</iblog.version>
 		<ibcore.executor.model.version>1.0.0</ibcore.executor.model.version>
 		<ibcore.read.detect.model.version>1.0.1-SNAPSHOT</ibcore.read.detect.model.version>
-		<ibpathref.api.version>0.31.0-SNAPSHOT</ibpathref.api.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>org.infrastructurebuilder.pathref</groupId>
-				<artifactId>ibpathref-api</artifactId>
-				<version>${ibpathref.api.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.infrastructurebuilder.pathref</groupId>
-				<artifactId>ibpathref-api</artifactId>
-				<version>${ibpathref.api.version}</version>
-				<type>test-jar</type>
-			</dependency>
-			<dependency>
 				<groupId>org.infrastructurebuilder</groupId>
 				<artifactId>maven-import-bom</artifactId>
 				<version>${maven.bom.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.infrastructurebuilder.util</groupId>
+				<artifactId>ibcore-bom</artifactId>
+	<version>0.30.1.0-SNAPSHOT</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -251,6 +248,14 @@
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
+		<dependency>
+			<groupId>org.infrastructurebuilder</groupId>
+			<artifactId>ibexceptions</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.infrastructurebuilder</groupId>
+			<artifactId>ibconstants</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>

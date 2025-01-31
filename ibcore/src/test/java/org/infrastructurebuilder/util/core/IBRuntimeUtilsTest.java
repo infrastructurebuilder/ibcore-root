@@ -89,7 +89,7 @@ public class IBRuntimeUtilsTest {
       }
 
       @Override
-      public Optional<String> getStructuredSupplyTypeClassName(String type) {
+      public Optional<List<String>> getStructuredSupplyTypeClassName(String type) {
         return empty();
       }
 

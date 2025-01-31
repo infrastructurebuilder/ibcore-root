@@ -20,8 +20,12 @@ package org.infrastructurebuilder.util.core;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.api.base.NameDescribed;
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.pathref.api.Hinted;
+import org.infrastructurebuilder.pathref.api.IdentifiedAndWeighted;
+import org.infrastructurebuilder.pathref.api.LoggerEnabled;
+import org.infrastructurebuilder.pathref.api.base.Configurable;
+import org.infrastructurebuilder.pathref.api.base.NameDescribed;
 
 public interface TSupplierFactory<T, C> extends Supplier<TSupplier<T>>, //
     Configurable<C>, //

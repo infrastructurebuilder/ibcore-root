@@ -22,21 +22,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 import org.infrastructurebuilder.constants.IBConstants;
-import org.infrastructurebuilder.pathref.AbsolutePathRef;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.IBChecksumUtils;
-import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
-import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathIBResourceBuilderFactory.AbstractPathIBResourceBuilder;
-import org.infrastructurebuilder.util.readdetect.path.impls.absolute.AbsolutePathIBResourceBuilderFactory;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystemProvider;
+import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
+import org.infrastructurebuilder.util.readdetect.api.IBResource;
+import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathRefPathIBResourceBuilderFactory.AbstractPathIBResourceBuilder;
+import org.infrastructurebuilder.util.readdetect.base.impls.PathRefPathIBResourceBuilderFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,34 +49,38 @@ public class IBResourceModelTest {
 
   private TestingPathSupplier wps;
   private IBResource c1, c2;
-  private Path path;
+  private Path c1path;
   private Checksum checksum;
-  private AbsolutePathIBResourceBuilderFactory f;
-  private Path root;
-  private Path source;
+  private PathRefPathIBResourceBuilderFactory f;
+  private Path _root;
+  private Path c2source;
   private Checksum lc;
-  private PathRef rrs;
+  private PathRefFileSystem rrs;
   private Optional<IBResource> r;
+  private String testFsId;
 
   @BeforeEach
   public void setUp() throws Exception {
+    PathRefFileSystemProvider.reset();
     wps = new TestingPathSupplier();
-    source = wps.getTestClasses().resolve("rick.jpg");
-    root = wps.get();
-    path = wps.get().resolve(UUID.randomUUID().toString());
-    IBChecksumUtils.copy(source, path);
-    lc = new Checksum(source);
-    rrs = new AbsolutePathRef(root);
-    f = new AbsolutePathIBResourceBuilderFactory();
+    c2source = wps.getTestClasses().resolve("rick.jpg");
+    _root = wps.get();
+    testFsId = UUID.randomUUID().toString();
+    c1path = _root.resolve(UUID.randomUUID().toString()+".jpg");
+    IBChecksumUtils.copy(c2source, c1path);
+    lc = new Checksum(c2source);
+    rrs = PathRefPathIF.getOrCreatePRFS(_root).get();
+    f = new PathRefPathIBResourceBuilderFactory(rrs);
     AbstractPathIBResourceBuilder bb = f.getBuilder().get();
-    checksum = new Checksum(source);
-    c2 = f.getBuilder().get().accept(() -> source).withType("ABC").build().get();
+    checksum = new Checksum(c2source);
+    Supplier<? extends AbstractPathIBResourceBuilder> qqq = f.getBuilder();
+    c2 = qqq.get().accept(() -> c1path).withType("ABC").build().get();
     assertNotNull(c2.getChecksum());
 //    c2 = new AbsolutePathIBResource(path, checksum);
-    c1 = f.getBuilder().get().accept(() -> path).withType(IBConstants.IMAGE_JPG).build().get();
+    c1 = f.getBuilder().get().accept(() -> c1path).withType(IBConstants.IMAGE_JPG).build().get();
     assertNotNull(c1.getChecksum());
 
-    r = bb.accept(() -> path).build(false);
+    r = bb.accept(() -> c1path).build(false);
     assertNotNull(r);
 
   }
@@ -84,15 +92,19 @@ public class IBResourceModelTest {
 
   @Test
   public void testGetPath() {
-    assertEquals(path, c1.getPath().get());
-    assertEquals(source, c2.getPath().get());
+    var c1name = c1path.getFileName();
+    var c1nameGet = c1.getPath().get();
+    assertTrue(c1nameGet.toString().endsWith(c1name.toString()));
+    var c2name = c2source.getFileName().toString();
+    var c2nameGet = c2.getPath().get().toString();
+    assertTrue(c2nameGet.endsWith(c1name.getFileName().toString()));
   }
 
   @Test
   public void testGetChecksum() {
     assertEquals(c1.getChecksum(), c2.getChecksum());
-    assertEquals(checksum, c1.getTChecksum());
-    assertEquals(checksum, c2.getTChecksum());
+    assertEquals(checksum, c1.getByteStreamChecksum());
+    assertEquals(checksum, c2.getByteStreamChecksum());
   }
 
   @Test
@@ -102,21 +114,18 @@ public class IBResourceModelTest {
   }
 
   @Test
-  public void testGet() {
-    Optional<InputStream> ins = c1.get().getStream();
-    if (ins.isEmpty()) {
-      fail("No inputstream");
-    }
-    assertEquals(checksum, new Checksum(ins.get()));
+  public void testGet() throws IOException {
+    InputStream ins = Files.newInputStream(c1.get());
+    assertEquals(checksum, new Checksum(ins));
     assertEquals(Long.valueOf(22152), c1.size().get());
-    assertTrue(c1.getSourceURL().isPresent());
+    assertNotNull(c1.getSourceURI());
   }
 
   @Test
   public void testToString() {
     String v = c1.toString();
     assertTrue(v.contains(checksum.asUUID().get().toString()));
-    assertTrue(v.contains(path.toString()));
+    assertTrue(v.contains(c1path.getFileName().toString()));
     assertTrue(v.contains(IMAGE_JPG));
   }
 

@@ -28,7 +28,7 @@ public class DefaultTargetPlatform implements TargetPlatform {
   private final String os;
   private final String platformIdentifier;
 
-  public DefaultTargetPlatform() {
+  DefaultTargetPlatform() {
     this(UUID.randomUUID().toString(), null);
   }
 
@@ -55,9 +55,7 @@ public class DefaultTargetPlatform implements TargetPlatform {
 
   @Override
   public int hashCode() {
-    int result = 31 + ((os == null) ? 0 : os.hashCode());
-    result = 31 * result + platformIdentifier.hashCode();
-    return result;
+    return Objects.hash(os, platformIdentifier);
   }
 
   @Override
@@ -66,11 +64,16 @@ public class DefaultTargetPlatform implements TargetPlatform {
       return true;
     if (obj == null)
       return false;
-    if (!TargetPlatform.class.isAssignableFrom(obj.getClass()))
+    if (!TargetPlatform.class.isAssignableFrom(obj.getClass())) // Actual type is irrelevant
       return false;
     TargetPlatform other = (TargetPlatform) obj;
     return Objects.equals(getPlatformIdentifier(), other.getPlatformIdentifier())
         && Objects.equals(getOperatingSystem(), other.getOperatingSystem());
+  }
+
+  @Override
+  public int compareTo(TargetPlatform o) {
+    return TargetPlatform.tpcomparator.compare(this, o);
   }
 
 }

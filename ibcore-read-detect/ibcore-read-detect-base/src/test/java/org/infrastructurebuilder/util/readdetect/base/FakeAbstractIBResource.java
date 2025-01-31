@@ -18,24 +18,27 @@
 package org.infrastructurebuilder.util.readdetect.base;
 
 import java.util.Optional;
+import java.util.UUID;
 
-import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
-import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
-import org.infrastructurebuilder.util.core.OptStream;
-import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathIBResourceBuilderFactory.AbstractIBResource;
-import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
+import org.infrastructurebuilder.pathref.util.readdetect.model.v1_0.IBResourceModel;
+import org.infrastructurebuilder.util.readdetect.api.IBResourceException;
+import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathRefPathIBResourceBuilderFactory.AbstractIBResource;
 
 public class FakeAbstractIBResource extends AbstractIBResource {
   private final static TestingPathSupplier tps = new TestingPathSupplier();
 
-  public FakeAbstractIBResource(PathRef root, IBResourceModel model) {
-    super(model, new DefaultPathAndChecksum(Optional.ofNullable(root), tps.getTestClasses().resolve("rick.jpg")));
+  private FakeAbstractIBResource(PathRefPath root, IBResourceModel model) {
+    super(model,
+        PathRefPathIF.fromPath(tps.getTestClasses().resolve("rick.jpg"), Optional.of(UUID.randomUUID().toString()))
+            .orElseThrow(() -> new IBResourceException("Cannot create path")));
   }
 
   @Override
-  public OptStream get() {
-    return getPathAndChecksum().asOptStream();
+  public PathRefPath get() {
+    return (PathRefPath) this.path;
   }
 
   @Override

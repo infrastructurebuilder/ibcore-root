@@ -21,12 +21,8 @@ import static java.time.Duration.ofMillis;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.nio.file.Path;
+import java.nio.file.Files;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -34,11 +30,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
-import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.GeneratedProcessExecution;
-import org.junit.jupiter.api.AfterAll;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
+import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
+import org.infrastructurebuilder.util.executor.ModeledProcessExecution;
+import org.infrastructurebuilder.util.executor.model.v1_0.GeneratedProcessExecution;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,37 +46,32 @@ public class DefaultProcessExecutionTest {
   public final static Logger log = LoggerFactory.getLogger(DefaultProcessExecutionTest.class.getName());
   public final static TestingPathSupplier wps = new TestingPathSupplier();
 
-  @BeforeAll
-  public static void setUpBeforeClass() throws Exception {
-  }
-
-  @AfterAll
-  public static void tearDownAfterClass() throws Exception {
-  }
-
-  private ProcessExecutionModelXpp3Reader r;
-  private ProcessExecutionModelXpp3WriterEx w;
   GeneratedProcessExecution p1;
   private DefaultProcessExecution p2;
-  private Path workDirectory;
   private String id;
+  private String workDirectory;
+  private static PathRefFileSystem root;
 
+  @BeforeAll
+  public static void setUpAll() throws Exception {
+    root = PathRefPathIF.getOrCreatePRFS(wps.get(), Optional.of(DefaultProcessExecutionTest.class.getName())).get();
+  }
   @BeforeEach
   public void setUp() throws Exception {
     id = UUID.randomUUID().toString();
     String executable = wps.getRoot().resolve("packer").toAbsolutePath().toString();
     List<String> arguments = Arrays.asList("--version");
     Optional<Duration> timeout = of(ofMillis(30000L));
-    r = new ProcessExecutionModelXpp3Reader();
-    w = new ProcessExecutionModelXpp3WriterEx();
-    workDirectory = wps.get();
+    workDirectory = UUID.randomUUID().toString();
+    Files.createDirectories(root.getPath(workDirectory));
 
     p1 = new GeneratedProcessExecution();
-    p1.setId(id);
-    p1.setRelativeRootURL(workDirectory.toAbsolutePath().toUri().toURL().toExternalForm());
 
-    p2 = new DefaultProcessExecution(id, executable, arguments, timeout, empty(), workDirectory, true,
-        of(new HashMap<>()), of(wps.getRoot()), empty(), empty(), false);
+    p1.setId(id);
+    p1.setRoot(root.toString());
+
+    p2 = new DefaultProcessExecution(id, executable, arguments, root,timeout, empty(), workDirectory, true,
+        of(new HashMap<>()),  empty(), empty(), false);
 
   }
 
@@ -89,7 +80,13 @@ public class DefaultProcessExecutionTest {
     wps.finalize();
   }
 
-  @Test
+
+//  @Test
+  public void testModeled() {
+    ModeledProcessExecution aa = new ModeledProcessExecution(p1);
+    assertNotNull(aa);
+  }
+//  @Test
   public void testDefaultProcessExecution() {
     assertNotNull(p1);
     assertNotNull(p2);

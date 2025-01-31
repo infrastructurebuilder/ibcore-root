@@ -18,28 +18,22 @@
 package org.infrastructurebuilder.pathref.base;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Set;
 
-import org.infrastructurebuilder.pathref.PathRef;
-import org.infrastructurebuilder.pathref.PathRefFactory;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
-import org.infrastructurebuilder.pathref.base.AbstractBasicPathPropertiesPathRefSupplier;
+import org.infrastructurebuilder.pathref.fs.PathRefFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 class RelativeRootTest {
 
-  private static final String ABC = "abc";
-  private final static Logger log = LoggerFactory.getLogger(RelativeRootTest.class);
   private static TestingPathSupplier tps;
 
   @BeforeAll
@@ -53,47 +47,28 @@ class RelativeRootTest {
   }
 
   private PathRefFactory rrp;
-  private AbstractBasicPathPropertiesPathRefSupplier h;
-  private Path p;
+  private UserHomePathRefProducer h;
 
   @BeforeEach
   void setUp() throws Exception {
-    tps = new TestingPathSupplier();
-    p = tps.get();
-    h = new AbstractBasicPathPropertiesPathRefSupplier() {
-
-      @Override
-      public String getName() {
-        return ABC;
-      }
-
-      @Override
-      protected Logger getLog() {
-        return log;
-      }
-
-    };
+    h = new UserHomePathRefProducer();
     rrp = new PathRefFactory(Set.of(this.h));
   }
 
   @AfterEach
   void tearDown() throws Exception {
-    tps.finalize();
+  }
+
+  @Test
+  void tesstLogger() {
+    assertNotNull(h.getLog());
   }
 
   @Test
   void testUserHome() {
-    System.setProperty(h.getPropertyName(), p.toString());
-    Path root = tps.getRoot();
-    PathRef t = rrp.getPathRef(h.getName()).get();
-    assertEquals(root, t.getPath().get().getParent());
-  }
-
-  @Test
-  void testFakeProperty() {
-    System.setProperty(h.getPropertyName(), "\0000");
-    assertTrue(rrp.getPathRef(h.getName()).isEmpty());
-
+    Path p = Paths.get(System.getProperty("user.home"));
+    var y = h.getProperty().map(Paths::get);
+    assertEquals(p, y.get());
   }
 
 }

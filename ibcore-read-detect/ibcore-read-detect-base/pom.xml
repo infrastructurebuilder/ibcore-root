@@ -54,6 +54,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.infrastructurebuilder</groupId>
+			<artifactId>ibcore-read-detect-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.infrastructurebuilder</groupId>
 			<artifactId>ibcore-maven-support</artifactId>
 		</dependency>
 		<dependency>
@@ -92,7 +96,7 @@
 			<artifactId>tika-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
+			<groupId>org.infrastructurebuilder.pathref</groupId>
 			<artifactId>ibpathref-metadata-model</artifactId>
 		</dependency>
 		<dependency>
@@ -110,19 +114,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!--
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-archiver</artifactId>
-      <version>4.9.1</version>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.inject</groupId>
-          <artifactId>javax.inject</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    -->
 		<dependency>
 			<groupId>org.apache.maven.wagon</groupId>
 			<artifactId>wagon-provider-api</artifactId>

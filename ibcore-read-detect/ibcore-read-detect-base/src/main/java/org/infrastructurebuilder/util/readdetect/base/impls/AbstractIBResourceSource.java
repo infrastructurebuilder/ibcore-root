@@ -22,10 +22,11 @@ import static java.util.Optional.ofNullable;
 
 import java.util.Optional;
 
-import org.infrastructurebuilder.pathref.JSONBuilderFactory;
-import org.infrastructurebuilder.util.readdetect.base.IBResourceSource;
+import org.infrastructurebuilder.pathref.JSONBuilder;
+import org.infrastructurebuilder.util.readdetect.api.IBResourceSource;
 import org.json.JSONObject;
 
+@Deprecated
 abstract public class AbstractIBResourceSource implements IBResourceSource {
 
   private final String name;
@@ -53,7 +54,7 @@ abstract public class AbstractIBResourceSource implements IBResourceSource {
     return this.weight;
   }
 
-  abstract protected JSONBuilderFactory getJsonBuilder();// JSONBuilder.newInstance(getRelativeRoot().flatMap(PathRef::getPath))
+  abstract protected JSONBuilder getJsonBuilder();// JSONBuilder.newInstance(getRelativeRoot().flatMap(PathRef::getPath))
 
   @Override
   public JSONObject asJSON() {

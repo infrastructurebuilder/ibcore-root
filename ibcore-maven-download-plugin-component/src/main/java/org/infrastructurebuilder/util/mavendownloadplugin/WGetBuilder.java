@@ -23,8 +23,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 
+import org.apache.maven.wagon.proxy.ProxyInfoProvider;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.components.io.filemappers.FileMapper;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.slf4j.Logger;
 
 public interface WGetBuilder {
@@ -72,7 +74,7 @@ public interface WGetBuilder {
 
   WGetBuilder withReadTimeOut(int readTimeOut);
 
-  WGetBuilder withCacheDirectory(Path cacheDirectory);
+  WGetBuilder withCacheDirectory(PathRefFileSystem cacheDirectory);
 
   WGetBuilder withFailOnError(boolean failOnError);
 
@@ -95,5 +97,7 @@ public interface WGetBuilder {
   WGetBuilder withInsecure(boolean insecure);
 
   WGetBuilder withProgressReport(ProgressReport progressReport);
+
+  WGetBuilder withProxyInfoProvider(ProxyInfoProvider proxyInfoProvider);
 
 }

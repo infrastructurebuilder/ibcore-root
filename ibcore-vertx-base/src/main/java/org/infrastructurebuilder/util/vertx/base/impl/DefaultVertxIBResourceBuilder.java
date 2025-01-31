@@ -19,24 +19,29 @@ package org.infrastructurebuilder.util.vertx.base.impl;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
-import static org.infrastructurebuilder.constants.IBConstants.NO_PATH_SUPPLIED;
-import static org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory.extracted;
-import static org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory.toType;
+import static org.infrastructurebuilder.util.readdetect.api.IBResourceBuilderFactory.toType;
 
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.Checksum;
-import org.infrastructurebuilder.pathref.PathRef;
-import org.infrastructurebuilder.util.readdetect.base.IBResource;
-import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilder;
-import org.infrastructurebuilder.util.readdetect.base.IBResourceException;
-import org.infrastructurebuilder.util.ibpathref.metadata.model.v1_0.IBResourceModel;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.util.readdetect.model.v1_0.IBResourceModel;
+import org.infrastructurebuilder.util.readdetect.api.IBResource;
+import org.infrastructurebuilder.util.readdetect.api.IBResourceBuilder;
+import org.infrastructurebuilder.util.readdetect.api.IBResourceBuilderFactory;
+import org.infrastructurebuilder.util.readdetect.api.IBResourceException;
 import org.infrastructurebuilder.util.vertx.base.VertxIBResource;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -52,10 +57,10 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
   private Checksum targetChecksum;
   private Path sourcePath;
   private Path finalRestingPath;
-  private PathRef root;
+  private PathRefFileSystem root;
   private final Vertx vertx;
 
-  public DefaultVertxIBResourceBuilder(Vertx vertx, PathRef root) {
+  public DefaultVertxIBResourceBuilder(Vertx vertx, PathRefFileSystem root) {
     this.vertx = requireNonNull(vertx);
     this.root = requireNonNull(root);
   }
@@ -67,7 +72,8 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
   @Override
   public IBResourceBuilder<Future<VertxIBResource>> fromJSON(JSONObject j) {
     model = IBResourceBuilder.modelFromJSON.apply(j).get();
-    Path p = model.getPath().map(extracted).orElseThrow(() -> new IBResourceException(NO_PATH_SUPPLIED));
+    Path p = Optional.ofNullable(model.getStreamSource()).map(IBResourceBuilderFactory.extracted)
+        .orElseThrow(() -> new IBException("No source"));
     this.sourcePath = p;
     return this;
   }
@@ -80,10 +86,15 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
   }
 
   @Override
-	public Optional<IBResource> build(boolean hard) {
-		// TODO Auto-generated method stub
-		throw new IBException("Not implemented");//return Optional.empty();
-	}
+  public IBResourceBuilder<Future<VertxIBResource>> withChecksumSupplier(Supplier<Checksum> csum) {
+    return this.withChecksum(csum.get()); // FIXME
+  }
+
+  @Override
+  public Optional<IBResource> build(boolean hard) {
+    // TODO Auto-generated method stub
+    throw new IBException("Not implemented");// return Optional.empty();
+  }
 
 //  @Override
 //  public IBResourceBuilder<Future<VertxIBResource>> fromPathAndChecksum(PathAndChecksum path) {
@@ -98,15 +109,35 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
 //        .withSource(this.sourcePath.toUri().toASCIIString());
 //  }
 
+//  public IBResourceBuilder<Future<VertxIBResource>> withFilePath(String path) {
+//    this.model.setPath(path);
+//    return this;
+//  }
+//
   @Override
-  public IBResourceBuilder<Future<VertxIBResource>> withFilePath(String path) {
-    this.model.setPath(path);
+  public IBResourceBuilder<Future<VertxIBResource>> withAcquired(Instant acquired) {
+    this.model.setAcquired(acquired);
     return this;
   }
 
   @Override
-  public IBResourceBuilder<Future<VertxIBResource>> withAcquired(Instant acquired) {
-    this.model.setAcquired(acquired);
+  public IBResourceBuilder<Future<VertxIBResource>> withGroup(String groupName) {
+    this.model.setGroup(groupName);
+    return this;
+  }
+
+  @Override
+  public IBResourceBuilder<Future<VertxIBResource>> withOwner(String ownerName) {
+    this.model.setOwner(ownerName);
+    return this;
+  }
+
+  @Override
+  public IBResourceBuilder<Future<VertxIBResource>> withPermissions(Set<String> perms) {
+    if (perms != null) {
+      this.model.setPermissions(
+          PosixFilePermissions.toString(new HashSet<>(perms.stream().map(PosixFilePermission::valueOf).toList())));
+    }
     return this;
   }
 
@@ -131,6 +162,11 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
   @Override
   public IBResourceBuilder<Future<VertxIBResource>> withType(Optional<String> type) {
     return requireNonNull(type).map(t -> withType(t)).orElse(this);
+  }
+
+  @Override
+  public IBResourceBuilder<Future<VertxIBResource>> withTypeSupplier(Supplier<String> type) {
+    return withType(Optional.ofNullable(type.get()));
   }
 
   @Override
@@ -269,7 +305,7 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
     return this;
   }
 
-  public Optional<PathRef> getRoot() {
+  public Optional<PathRefFileSystem> getRoot() {
     return Optional.of(root);
   }
 
@@ -285,15 +321,15 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
   }
 
   @Override
-  public IBResourceBuilder<Future<VertxIBResource>> withBasicFileAttributes(BasicFileAttributes a) {
+  public IBResourceBuilder<Future<VertxIBResource>> accept(Supplier<Path> a) {
     // TODO Auto-generated method stub
-    return this;
+    throw new IBException("unimplemented"); // return this;
   }
 
   @Override
-  public IBResourceBuilder<Future<VertxIBResource>> accept(Supplier<Future<VertxIBResource>> a) {
+  public IBResourceBuilder<Future<VertxIBResource>> withSource(URI source) {
     // TODO Auto-generated method stub
-    return null;
+    throw new IBException("unimplemented"); // return this;
   }
 
 }

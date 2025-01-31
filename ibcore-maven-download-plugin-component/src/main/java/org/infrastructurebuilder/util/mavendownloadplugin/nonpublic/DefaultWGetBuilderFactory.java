@@ -24,9 +24,11 @@ import static java.util.stream.Collectors.toMap;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +53,7 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.ssl.SSLContexts;
+import org.apache.maven.wagon.proxy.ProxyInfoProvider;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.bzip2.BZip2UnArchiver;
 import org.codehaus.plexus.archiver.gzip.GZipUnArchiver;
@@ -59,11 +62,10 @@ import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
 import org.codehaus.plexus.archiver.snappy.SnappyUnArchiver;
 import org.codehaus.plexus.archiver.xz.XZUnArchiver;
 import org.codehaus.plexus.components.io.filemappers.FileMapper;
-import org.infrastructurebuilder.pathref.Checksum;
-import org.infrastructurebuilder.pathref.IBChecksumUtils;
-import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
-import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.core.PathAndChecksum;
+import org.infrastructurebuilder.pathref.fs.PathRefChecksumOptions;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
 import org.infrastructurebuilder.util.mavendownloadplugin.DownloadFailureException;
 import org.infrastructurebuilder.util.mavendownloadplugin.FileNameUtils;
 import org.infrastructurebuilder.util.mavendownloadplugin.HttpFileRequester;
@@ -86,7 +88,8 @@ import org.slf4j.LoggerFactory;
 public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
   private final static Logger logger = LoggerFactory.getLogger(DefaultWGetBuilderFactory.class);
   private ArchiverManager am;
-  private Path cacheDir;
+  private PathRefFileSystem cacheDir;
+  private ProxyInfoProvider proxyInfoProvider;
 
   @Inject
   public DefaultWGetBuilderFactory(ArchiverManager am) {
@@ -107,18 +110,25 @@ public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
         .withRetries(2) //
         .withSkipCache(false) //
         .withOverwrite(false) //
+        .withProxyInfoProvider(this.proxyInfoProvider) //
     ;
   }
 
   @Override
-  public WGetBuilderFactory withCacheDirectory(Path path) {
+  public WGetBuilderFactory withCacheDirectory(PathRefFileSystem path) {
     this.cacheDir = path;
+    return this;
+  }
+
+  @Override
+  public WGetBuilderFactory withProxyInfoProvider(ProxyInfoProvider p) {
+    this.proxyInfoProvider = p;
     return this;
   }
 
   /**
    * Will download a file from a web site using the standard HTTP protocol. Copied from work by:
-   * 
+   *
    * @author Marc-Andre Houle
    * @author Mickael Istria (Red Hat Inc)
    */
@@ -208,7 +218,7 @@ public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
     /**
      * The directory to use as a cache. Default is ${local-repo}/.cache/maven-download-plugin
      */
-    private Path cacheDirectory;
+    private PathRefFileSystem cacheFileSystem;
 
     /**
      * Flag to determine whether to fail on an unsuccessful download.
@@ -287,7 +297,7 @@ public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
     /**
      * A map of file locks by files to be downloaded. Ensures exclusive access to a target file.
      */
-    private static final Map<String, Lock> FILE_LOCKS = new ConcurrentHashMap<>();
+    private static final Map<Path, Lock> FILE_LOCKS = new ConcurrentHashMap<>();
 
     static {
       CONN_POOL = new PoolingHttpClientConnectionManager(
@@ -347,7 +357,7 @@ public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
     private DefaultWGetComponent(Logger log, URI uri, boolean overwrite, String outputFileName, Path outputDirectory,
         String md5, String sha1, String sha256, String sha512, boolean unpack, String username, String password,
         String ntlmDomain, String ntlmHost, String proxyHost, Integer proxyPort, int retries, int readTimeOut,
-        Path cacheDirectory, boolean failOnError, boolean alwaysVerifyChecksum, boolean followRedirects,
+        PathRefFileSystem cacheDirectory, boolean failOnError, boolean alwaysVerifyChecksum, boolean followRedirects,
         Map<String, String> headers, long maxLockWaitTime, FileMapper[] fileMappers, boolean preemptiveAuth,
         boolean insecure, ProgressReport progressReport, boolean skipCache, Path localRepoBaseDir,
         ArchiverManager archiverManager)
@@ -371,7 +381,7 @@ public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
       this.proxyPort = proxyPort;
       this.retries = retries;
       this.readTimeOut = readTimeOut;
-      this.cacheDirectory = cacheDirectory;
+      this.cacheFileSystem = cacheDirectory;
       this.failOnError = failOnError;
       this.alwaysVerifyChecksum = alwaysVerifyChecksum;
       this.followRedirects = followRedirects;
@@ -388,7 +398,7 @@ public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
 
     /**
      * Method call when the mojo is executed for the first time.
-     * 
+     *
      * @return
      *
      */
@@ -401,15 +411,19 @@ public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
 
       final Optional<DownloadCache> cache;
       if (!this.skipCache) {
-        if (this.cacheDirectory == null) {
-          this.cacheDirectory = this.localRepoBaseDir.resolve(".cache").resolve("download-maven-plugin");
-        } else if (Files.exists(cacheDirectory) && !(Files.isDirectory(this.cacheDirectory))) {
+        if (this.cacheFileSystem == null) {
+          Path cachePath = this.localRepoBaseDir.resolve(".cache") //
+              .resolve("download-maven-plugin");
+          this.cacheFileSystem = PathRefPathIF.getOrCreatePRFS(cachePath.toUri(), Optional.of("cachefs")) //
+              .orElseThrow(() -> new IBMavenDownloadPluginComponentException("Cannot create cache directory"));
+          ;
+        } else if (Files.exists(cacheFileSystem.getRoot()) && !(Files.isDirectory(this.cacheFileSystem.getRoot()))) {
           throw new IBMavenDownloadPluginComponentException(
-              String.format("cacheDirectory is not a directory: " + this.cacheDirectory.toAbsolutePath()));
+              String.format("cacheDirectory is not a directory: " + this.cacheFileSystem));
         }
-        this.log.debug("Cache is: " + this.cacheDirectory.toAbsolutePath());
-        cache = Optional.of(DOWNLOAD_CACHES.computeIfAbsent(cacheDirectory.toAbsolutePath().toString(),
-            directory -> new DownloadCache(this.cacheDirectory.toFile(), this.log)));
+        this.log.debug("Cache is: " + this.cacheFileSystem);
+        cache = Optional.of(DOWNLOAD_CACHES.computeIfAbsent(cacheFileSystem.toString(),
+            directory -> new DownloadCache(this.cacheFileSystem, this.log)));
       } else {
         this.log.debug("Cache is skipped");
         cache = Optional.empty();
@@ -430,8 +444,12 @@ public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
       if (this.outputFileName == null) {
         this.outputFileName = FileNameUtils.getOutputFileName(this.uri);
       }
-      final File outputFile = this.outputDirectory.resolve(this.outputFileName).toFile();
-      final Lock fileLock = FILE_LOCKS.computeIfAbsent(outputFile.getAbsolutePath(), ignored -> new ReentrantLock());
+      Map<String, Object> checksummap = Map.of(PathRefPath.CHECKSUMOPTIONS, PathRefChecksumOptions.ALWAYS);
+      PathRefFileSystem outputDirectoryFS = PathRefPathIF.getOrCreatePRFS(outputDirectory, checksummap) //
+          .orElseThrow(() -> new IBMavenDownloadPluginComponentException(
+              "Cannot create output fs from %s".formatted(outputDirectory)));
+      final PathRefPath outputFile = outputDirectoryFS.getPath(this.outputFileName);
+      final Lock fileLock = FILE_LOCKS.computeIfAbsent(outputFile, ignored -> new ReentrantLock());
 
       final DLChecksums checksums = new DLChecksums(this.md5, this.sha1, this.sha256, this.sha512, this.log);
       // DO
@@ -448,21 +466,21 @@ public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
             return Optional.empty();
           }
         }
-        boolean haveFile = outputFile.exists();
+        boolean haveFile = Files.exists(outputFile);
         if (haveFile) {
           boolean checksumMatch = true;
           if (this.alwaysVerifyChecksum) {
             try {
               checksums.validate(outputFile);
             } catch (final IBMavenDownloadPluginComponentException e) {
-              this.log
-                  .warn("The local version of file " + outputFile.getName() + " doesn't match the expected checksum. "
+              this.log.warn(
+                  "The local version of file " + outputFile.getFileName() + " doesn't match the expected checksum. "
                       + "You should consider checking the specified checksum is correctly set.");
               checksumMatch = false;
             }
           }
           if (!checksumMatch || this.overwrite) {
-            outputFile.delete();
+            Files.delete(outputFile);
             haveFile = false;
           } else {
             this.log.info("File already exist, skipping");
@@ -470,11 +488,11 @@ public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
         }
         AtomicReference<Instant> when = new AtomicReference<>(Instant.now());
         if (!haveFile) {
-          final Optional<File> cachedFile = cache.map(c -> c.getArtifact(this.uri, checksums));
-          if (cachedFile.map(File::exists).orElse(false)) {
-            var thePath = cachedFile.get().toPath();
+          final Optional<PathRefPath> cachedFile = cache.map(c -> c.getArtifact(this.uri, checksums));
+          if (cachedFile.map(Files::exists).orElse(false)) {
+            var thePath = cachedFile.get();
             this.log.debug("Got from cache: " + thePath.toAbsolutePath());
-            Files.copy(thePath, outputFile.toPath());
+            Files.copy(thePath, outputFile);
             Object i = Files.getAttribute(thePath, "jeff");
 
             when.set((Instant) i);
@@ -518,13 +536,7 @@ public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
         if (cache.isPresent()) {
           cache.get().install(this.uri, outputFile, checksums);
         }
-        boolean unpacked = false;
-        if (this.unpack) {
-          unpacked = unpack(outputFile);
-        }
-        var pandC = new DefaultPathAndChecksum(outputFile.toPath(),
-            Optional.ofNullable(this.sha512).map(Checksum::new).orElse(null));
-        return ofNullable(new DefaultWGetResult(when.get(), pandC, unpacked ? outputDirectory : null));
+        return ofNullable(new DefaultWGetResult(when.get(), outputFile, unpack(outputFile)));
       } catch (IBMavenDownloadPluginComponentException e) {
         throw e;
       } catch (IOException ex) {
@@ -540,24 +552,56 @@ public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
       }
     }
 
-    private boolean unpack(File outputFile) throws NoSuchArchiverException {
+    private Optional<List<Path>> unpack(PathRefPath _outputFile) throws NoSuchArchiverException {
+      if (!this.unpack) {
+        return Optional.empty();
+      }
+      final AtomicReference<List<Path>> retVal = new AtomicReference<>();
       if (this.archiverManager == null) {
         log.warn("Cannot expand - No ArchiverManager instance");
-        return false;
-      }
-
-      UnArchiver unarchiver = this.archiverManager.getUnArchiver(outputFile);
-      unarchiver.setSourceFile(outputFile);
-      if (isFileUnArchiver(unarchiver)) {
-        unarchiver.setDestFile(this.outputDirectory
-            .resolve(this.outputFileName.substring(0, this.outputFileName.lastIndexOf('.'))).toFile());
       } else {
-        unarchiver.setDestDirectory(this.outputDirectory.toFile());
+        try {
+          File outputFile = _outputFile.toFile();
+          UnArchiver unarchiver = this.archiverManager.getUnArchiver(outputFile);
+          unarchiver.setSourceFile(outputFile);
+          if (isFileUnArchiver(unarchiver)) {
+            String outputName = this.outputFileName.substring(0, this.outputFileName.lastIndexOf('.'));
+            Path outPath = this.outputDirectory.resolve(outputName);
+            if (!this.overwrite && Files.exists(outPath)) {
+              log.warn("Cannot unpack - File already exists and overwrite is false: {}", outPath);
+              return Optional.empty();
+            }
+            retVal.set(PathRefPath.fromUri(uri).map(outFile -> {
+              unarchiver.setDestFile(outFile.toFile());
+              List<Path> pp = new ArrayList<>(1);
+              pp.add(outFile);
+              return pp;
+            }).orElse(null));
+          } else {
+            unarchiver.setDestDirectory(this.outputDirectory.toFile());
+          }
+          var fm = new ArrayList<FileMapper>();
+          if (this.fileMappers != null)
+            fm.addAll(List.of(this.fileMappers));
+          TaggingFileMapper tfm = new TaggingFileMapper();
+          fm.add(tfm);
+
+          if (retVal.get() == null) {
+            unarchiver.setFileMappers(fm.toArray(new FileMapper[fm.size()]));
+            unarchiver.extract();
+          }
+          log.info("Unpacked {} to {}", _outputFile, tfm.getTagged());
+          if (!tfm.getTagged().isEmpty()) {
+            retVal.set(new ArrayList<>());
+            tfm.getTagged().forEach(p -> {
+              retVal.get().add(this.outputDirectory.resolve(p));
+            });
+          }
+        } catch (Throwable t) {
+          log.warn("Cannot unpack {}", _outputFile, t);
+        }
       }
-      unarchiver.setFileMappers(this.fileMappers);
-      unarchiver.extract();
-      return true;
-//      outputFile.delete(); // DefaultWGetResult contains this now
+      return Optional.ofNullable(retVal.get());
     }
 
     private boolean isFileUnArchiver(final UnArchiver unarchiver) {
@@ -565,7 +609,7 @@ public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
           || unarchiver instanceof SnappyUnArchiver || unarchiver instanceof XZUnArchiver;
     }
 
-    private void doGet(final File outputFile) throws IOException /* , MojoExecutionException */ {
+    private void doGet(final Path outputFile) throws IOException /* , MojoExecutionException */ {
       final HttpFileRequester.Builder fileRequesterBuilder = new HttpFileRequester.Builder();
 
       this.log.debug("providing custom authentication");
@@ -602,6 +646,9 @@ public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
 
   public static class Builder implements WGetBuilder {
     private final static Logger _log = LoggerFactory.getLogger(Builder.class);
+    private static final Map<String, Object> DEFAULT_PATHREF_CONFIG = Map.of( //
+        PathRefPath.CHECKSUMOPTIONS, PathRefChecksumOptions.ALWAYS //
+    );
     private Logger logger = _log;
     private URI uri;
     private boolean overwrite;
@@ -620,7 +667,7 @@ public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
     private Integer proxyPort;
     private int retries = 2;
     private int readTimeOut;
-    private Path cacheDirectory;
+    private PathRefFileSystem cacheDirectory;
     private boolean failOnError = true;
     private boolean alwaysVerifyChecksum;
     private boolean followRedirects;
@@ -633,6 +680,7 @@ public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
     private ProgressReport progressReport;
     private ArchiverManager archiverManager;
     private boolean skipCache;
+    private Map<String, ? extends Object> mapRefConfig = DEFAULT_PATHREF_CONFIG;
 
     @Override
     public final Optional<WGetResult> wget() {
@@ -646,6 +694,11 @@ public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
           , skipCache, localRepository, archiverManager);
       return wgc.get();
 
+    }
+
+    public final WGetBuilder withPathRefPathConfig(Map<String, Object> config) {
+      this.mapRefConfig = Optional.ofNullable(config).orElse(DEFAULT_PATHREF_CONFIG);
+      return this;
     }
 
     @Override
@@ -764,7 +817,7 @@ public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
     }
 
     @Override
-    public final WGetBuilder withCacheDirectory(Path cacheDirectory) {
+    public final WGetBuilder withCacheDirectory(PathRefFileSystem cacheDirectory) {
       this.cacheDirectory = cacheDirectory;
       return this;
     }
@@ -833,38 +886,45 @@ public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
       this.progressReport = progressReport;
       return this;
     }
+
+    @Override
+    public WGetBuilder withProxyInfoProvider(ProxyInfoProvider proxyInfoProvider) {
+      Optional.ofNullable(proxyInfoProvider).ifPresent(p -> {
+        Optional.ofNullable(this.uri).ifPresent(u -> {
+          Optional.ofNullable(p.getProxyInfo(u.getScheme())).ifPresent(pi -> {
+            this.proxyHost = pi.getHost();
+            this.proxyPort = pi.getPort();
+          });
+        });
+      });
+      return this;
+    }
   }
 
   private static class DefaultWGetResult implements WGetResult {
     private final static Logger log = LoggerFactory.getLogger(DefaultWGetResult.class);
 
-    private final PathAndChecksum original;
-    private final Path expandedRoot;
-    private final List<PathAndChecksum> expanded;
+    private final PathRefPath original;
+    private final List<PathRefPath> expanded;
     private final Instant acquired;
 
-    public DefaultWGetResult(Instant acquired, PathAndChecksum original, Path expandedRoot) {
+    public DefaultWGetResult(Instant acquired, PathRefPath original, Optional<List<Path>> unpacked) {
       this.acquired = Objects.requireNonNull(acquired);
       this.original = Objects.requireNonNull(original);
-      this.expandedRoot = expandedRoot;
-      var oPath = this.original.get().toAbsolutePath();
-      this.expanded = Optional.ofNullable(this.expandedRoot) //
-          .map(Path::toAbsolutePath) //
-          .map(in -> {
-            try (var q = Files.walk(in)) {
-              return q
+      this.expanded = unpacked.isEmpty() ? null : new ArrayList<>();
+      unpacked.ifPresent(up -> up.forEach(ppp -> addToExpanded(ppp)));
+    }
 
-                  .filter(f -> !Files.isDirectory(f))
+    private void addToExpanded(Path p) {
+      this.expanded.add((PathRefPath) p);
+      if (Files.isDirectory(p)) {
+        try (DirectoryStream<Path> ds = Files.newDirectoryStream(p)) {
+          ds.forEach(this::addToExpanded);
+        } catch (IOException e) {
+          throw new IBMavenDownloadPluginComponentException("Cannot list directory " + p, e);
+        }
+      }
 
-                  .filter(ex -> !ex.equals(oPath))
-
-                  .map(p -> (PathAndChecksum) new DefaultPathAndChecksum(/*in.relativize*/(p), new Checksum(p)))
-
-                  .toList();
-            } catch (IOException e) {
-              throw new IBMavenDownloadPluginComponentException("Failed to walk expanded", e);
-            }
-          }).orElse(null);
     }
 
     @Override
@@ -873,30 +933,35 @@ public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
     }
 
     @Override
-    public PathAndChecksum getOriginal() {
+    public PathRefPath getOriginal() {
       return original;
     }
 
     @Override
-    public Optional<List<PathAndChecksum>> getExpanded() {
-      return Optional.ofNullable(expanded);
+    public PathRefPath getExpandedRoot() {
+      return this.original.getFileSystem().getRoot();
     }
 
     @Override
-    public Optional<Path> getExpandedRoot() {
-      return Optional.ofNullable(this.expandedRoot);
+    public Optional<List<PathRefPath>> getExpanded() {
+      return Optional.ofNullable(this.expanded);
     }
 
     @Override
     public void cleanup() {
       try {
-        if (Files.exists(this.original.get()))
-          Files.delete(this.original.get());
+        if (Files.exists(this.original))
+          Files.delete(this.original);
       } catch (IOException e) {
         log.error("Error in cleanup()", e);
       }
-      if (this.expandedRoot != null && Files.exists(this.expandedRoot))
-        IBChecksumUtils.deletePath(this.expandedRoot);
+      getExpanded().ifPresent(l -> l.forEach(p -> {
+        try {
+          Files.delete(p);
+        } catch (IOException e) {
+          log.error("Error in cleanup() for {}", p, e);
+        }
+      }));
     }
 
   }

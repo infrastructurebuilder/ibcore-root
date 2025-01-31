@@ -36,10 +36,13 @@
 	<url>${github.url.base}/${project.artifactId}</url>
 
 	<modules>
+		<module>ibcore-read-detect-api</module>
 		<module>ibcore-read-detect-base</module>
-<!--		<module>ibcore-read-detect-url</module>-->
-		<module>ibcore-read-detect-avro</module>
+<!--
+		<module>ibcore-read-detect-url</module>
 		<module>ibcore-read-detect-path-cache</module>
+-->
+		<module>ibcore-read-detect-avro</module>
 	</modules>
 
 	<dependencies>
@@ -56,7 +59,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.infrastructurebuilder.pathref</groupId>
-			<artifactId>ibcore-pathref</artifactId>
+			<artifactId>ibpathref-api</artifactId>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>

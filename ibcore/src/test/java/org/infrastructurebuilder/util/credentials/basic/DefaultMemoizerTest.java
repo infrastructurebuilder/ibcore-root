@@ -23,7 +23,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.function.Function;
 
-import org.infrastructurebuilder.util.core.Memoize;
+import org.infrastructurebuilder.pathref.api.Memoize;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

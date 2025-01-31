@@ -20,13 +20,14 @@ package org.infrastructurebuilder.util.readdetect.base.impls;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
-import java.util.NoSuchElementException;
 
 import org.codehaus.plexus.components.io.resources.AbstractPlexusIoResource;
-import org.infrastructurebuilder.util.readdetect.base.IBResource;
+import org.infrastructurebuilder.util.readdetect.api.IBResource;
 
+// TODO Split this out to a separate dependency to extract direct need for plexus
 public class IBURLPlexusIOResource extends AbstractPlexusIoResource {
 
   private final IBResource r;
@@ -35,7 +36,7 @@ public class IBURLPlexusIOResource extends AbstractPlexusIoResource {
     super(r.getName(), // Name
         r.getLastUpdateDate().map(Instant::toEpochMilli)
             .orElseThrow(() -> new IllegalArgumentException("No last update")),
-        r.getBasicFileAttributes().map(BasicFileAttributes::size)
+        r.getFileAttributes().map(BasicFileAttributes::size)
             .orElseThrow(() -> new IllegalArgumentException("No file attributes")),
         true, false, true);
     this.r = r;
@@ -43,16 +44,12 @@ public class IBURLPlexusIOResource extends AbstractPlexusIoResource {
 
   @Override
   public InputStream getContents() throws IOException {
-    // FIXME This should use map instead of get()
-    return r.get().getStream().orElseThrow(
-        // This will cause us to return the "correct" exception
-        () -> new IOException(new NoSuchElementException("IBResource " + r.getName() + " provided no InputStream")));
+    return Files.newInputStream(r.get());
   }
 
   @Override
   public URL getURL() throws IOException {
     return null; // forces a call to getContents()
-//    return r.getPath().get().toUri().toURL();
   }
 
 }

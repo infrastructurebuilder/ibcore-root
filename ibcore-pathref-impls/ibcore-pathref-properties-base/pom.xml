@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE project>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE project>
 <!--
 
     @formatter:off
@@ -22,9 +23,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-	<groupId>org.infrastructurebuilder.pathref</groupId>
-	<artifactId>ibcore-pathref-impls</artifactId>
-	<version>0.30.1-SNAPSHOT</version>
+		<groupId>org.infrastructurebuilder.pathref</groupId>
+		<artifactId>ibcore-pathref-impls</artifactId>
+		<version>0.30.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>ibcore-pathref-properties-base</artifactId>
@@ -39,6 +40,10 @@
 		<dependency>
 			<groupId>org.infrastructurebuilder</groupId>
 			<artifactId>ibcore</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.infrastructurebuilder.pathref</groupId>
+			<artifactId>ibpathref-metadata-model</artifactId>
 		</dependency>
 	</dependencies>
 </project>

@@ -23,17 +23,22 @@ import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
+
 public interface VersionedProcessExecutionFactory {
 
-  ProcessExecutionFactory getDefaultFactory(Path workDirectory, String id, String executable);
+  ProcessExecutionFactory getDefaultFactory(String workDirectory, String id, String executable);
 
-  Optional<ProcessExecutionFactory> getFactoryForVersion(String version, Path workDirectory, String id,
+  Optional<ProcessExecutionFactory> getFactoryForVersion(String version, String workDirectory, String id,
       String executable);
 
   default Optional<PrintStream> getAddl() {
     return empty();
   }
 
-  Path getScratchDir();
+  PathRefFileSystem getRoot();
+
+  PathRefPath getScratchDir();
 
 }

@@ -17,13 +17,13 @@
  */
 package org.infrastructurebuilder.maven.util.config;
 
-import static org.infrastructurebuilder.util.config.ConfigMapBuilderSupplier.MAVEN_SETTINGS_SERVER_NAMESPACE;
+import static org.infrastructurebuilder.pathref.api.base.ConfigMapBuilderSupplier.MAVEN_SETTINGS_SERVER_NAMESPACE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
-import org.infrastructurebuilder.util.config.ConfigMap;
+import org.infrastructurebuilder.pathref.api.ConfigMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;

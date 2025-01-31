@@ -18,7 +18,7 @@
     @formatter:on
 
 -->
-<project>
+<project xmlns="https://maven.apache.org/POM/4.0.0" xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -38,14 +38,8 @@
 
 	<modules>
 		<module>ibcore-pathref-properties-base</module>
-		<module>ibcore-pathref-userhome</module>
 		<module>ibcore-pathref-classpath</module>
-		<module>ibcore-pathref-properties-envpath</module>
 		<module>ibcore-pathref-testingpath</module>
-		<module>ibcore-pathref-setpath</module>
-		<module>ibcore-pathref-properties-path</module>
-		<module>ibcore-pathref-uri</module>
-		<module>ibcore-pathref-zip</module>
 	</modules>
 
 	<properties>
@@ -75,7 +69,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.infrastructurebuilder.pathref</groupId>
-			<artifactId>ibcore-pathref</artifactId>
+			<artifactId>ibpathref-api</artifactId>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>

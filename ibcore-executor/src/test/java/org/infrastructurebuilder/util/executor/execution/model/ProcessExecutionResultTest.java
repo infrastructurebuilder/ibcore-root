@@ -33,28 +33,26 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.URI;
-import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.infrastructurebuilder.pathref.Checksum;
-import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.util.core.IBUtils;
+import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
 import org.infrastructurebuilder.util.executor.DefaultProcessExecutionResultBag;
 import org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream;
 import org.infrastructurebuilder.util.executor.MutableProcessExecutionResultBag;
@@ -65,6 +63,7 @@ import org.infrastructurebuilder.util.executor.ProcessExecutionResult;
 import org.infrastructurebuilder.util.executor.ProcessExecutionResultBag;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -94,21 +93,67 @@ public class ProcessExecutionResultTest {
 
   private ProcessExecutionResult res3;
 
-  private Path scratchDir;
 
-  private List<String> stdErr;
+  private List<String> stdErr = List.of("Hi", "there");
 
-  private List<String> stdOut;
+  private List<String> stdOut = List.of("hello", "gentlepersons");
 
-  private Path stdOutPth;
-
-  private Path stdErrPth;
+  private PathRefPath stdOutPth;
+  private PathRefPath stdErrPth;
   private DefaultProcessExecution pe2;
+  private String _workDir;
+  private PathRefPath workDir;
+  private static PathRefFileSystem root;
+
+  @BeforeAll
+  public static void setUpBeforeClass() throws Exception {
+    Path tp = wps.get();
+    root = PathRefPathIF.getOrCreatePRFS(tp, Optional.of(ProcessExecutionResultTest.class.getName())).get();
+    logger.debug(" Root dir is {}", root);
+  }
 
   @BeforeEach
   public void setUp() throws Exception {
     merb = new MutableProcessExecutionResultBag();
-    future = new Future<ProcessResult>() {
+    future = getFutureProcessResult();
+    _workDir = UUID.randomUUID().toString();
+    workDir = root.getPath(_workDir);
+
+    logger.info("Instance root is {}", workDir.toFullString());
+    Files.createDirectories(workDir);
+
+    stdOutPth = workDir.resolve("extraStdOut");
+    stdErrPth = workDir.resolve("extraStdErr");
+    lpaoO = new OverrideListCapturingOutputStream(of(stdOutPth), stdOut);
+    lpaoE = new OverrideListCapturingOutputStream(of(stdErrPth), stdErr);
+
+    Optional<String> sin = empty();
+    Optional<Duration> timeout = empty();
+    boolean optional = false;
+    Optional<Map<String, String>> env = empty();
+    pe = new DefaultProcessExecution(ID, // id
+        EXEC, // executable
+        ARGS, // arguments
+        root, // rr, // relativeRoot
+        timeout, // timeout
+        sin, // stdin
+        _workDir, // workDirectory
+        optional, // optional
+        env, // environment
+        empty(), // exit values
+        empty(), // addl
+        false, // background
+        lpaoO, // stdout
+        lpaoE // stderr
+    );
+
+    res = new DefaultProcessExecutionResult(pe, Optional.of(0), empty(), ofEpochMilli(100L), ofMillis(100L));
+    res3 = new DefaultProcessExecutionResult(pe, of(0), empty(), ofEpochMilli(100L), ofMillis(100L));
+    pr = new PrintStream(new ByteArrayOutputStream());
+  }
+
+  private Future<ProcessResult> getFutureProcessResult() {
+    return new Future<ProcessResult>() {
       @Override
       public boolean cancel(final boolean mayInterruptIfRunning) {
         return false;
@@ -136,45 +181,6 @@ public class ProcessExecutionResultTest {
       }
 
     };
-
-    stdErr = Arrays.asList("Hi", "there");
-    stdOut = Arrays.asList("hello", "gentlepersons");
-    scratchDir = wps.get();
-    var uri = URI.create(PathRefPath.PATHREF_TEMPLATE.formatted(scratchDir.toUri()));
-
-    PathRefFileSystem prfs = (PathRefFileSystem) FileSystems.newFileSystem(uri, new HashMap<>());
-    Path sd = prfs.getRootDirectories().iterator().next();
-
-    stdOutPth = IBUtils.touchFile(sd.resolve("extraStdOut"));
-
-    stdErrPth = IBUtils.touchFile(sd.resolve("extraStdErr"));
-    lpaoO = new OverrideListCapturingOutputStream(of(stdOutPth), stdOut);
-    lpaoE = new OverrideListCapturingOutputStream(of(stdErrPth), stdErr);
-
-    Optional<Path> rr = of(scratchDir);
-    Optional<Path> sin = empty();
-    Optional<Duration> timeout = empty();
-    boolean optional = false;
-    Optional<Map<String, String>> env = empty();
-    pe = new DefaultProcessExecution(ID, // id
-        EXEC, // executable
-        ARGS, // arguments
-        timeout, // timeout
-        sin, // stdin
-        scratchDir, // workDirectory
-        optional, // optional
-        env, // environment
-        empty(), // rr, // relativeRoot
-        empty(), // exit values
-        empty(), // addl
-        false, // background
-        lpaoO, // stdout
-        lpaoE // stderr
-    );
-
-    res = new DefaultProcessExecutionResult(pe, Optional.of(0), empty(), ofEpochMilli(100L), ofMillis(100L));
-    res3 = new DefaultProcessExecutionResult(pe, of(0), empty(), ofEpochMilli(100L), ofMillis(100L));
-    pr = new PrintStream(new ByteArrayOutputStream());
   }
 
   @Test
@@ -182,14 +188,16 @@ public class ProcessExecutionResultTest {
     final JSONObject a = res.asJSON();
     String start = a.getString(START);
     JSONObject e = a.getJSONObject(EXECUTION);
-    String se = e.getString("stderr");
+  String se = e.getString("stderr");
     String so = e.getString("stdout");
-    final String t = "{\n" + "  \"execution\": {\n" + "    \"environment\": {},\n"
-        + "    \"stdout\": \"/extraStdOut\",\n" //
+    final String t = "{\n" //
+        + "  \"execution\": {\n" //
+        + "    \"environment\": {},\n" //
+        + "    \"stdout\": \""+ stdOutPth.toFullString() +"\",\n" //
         + "    \"arguments\": [\"-version\"],\n" //
         + "    \"optional\": false,\n" //
         + "    \"id\": \"default\",\n" //
-        + "    \"stderr\": \"/extraStdErr\",\n" //
+        + "    \"stderr\": \""+ stdErrPth.toFullString() +"\",\n" //
         + "    \"executable\": \"java\"\n" //
         + "  },\n" //
         + "  \"std-out\": [\n" //
@@ -236,11 +244,11 @@ public class ProcessExecutionResultTest {
 
   @Test
   public void testEqualsObject() {
-    pe2 = new DefaultProcessExecution("abc", EXEC, ARGS,
+    pe2 = new DefaultProcessExecution("abc", EXEC, ARGS, root,
 
-        empty(), empty(), scratchDir,
+        empty(), empty(), _workDir,
 
-        false, empty(), of(scratchDir), empty(), empty(), false);
+        false, empty(), empty(), empty(), false);
     DefaultProcessExecutionResult res2 = new DefaultProcessExecutionResult(pe2, of(0),
 
         empty(), ofEpochMilli(100L), ofMillis(200L));
@@ -317,8 +325,8 @@ public class ProcessExecutionResultTest {
   @Test
   public void testNegativeDuration() throws Exception {
 
-    ProcessExecution vv = new DefaultProcessExecution(ID, EXEC, ARGS, of(ofHours(-1)), empty(), scratchDir, false,
-        empty(), of(scratchDir), empty(), empty(), false);
+    ProcessExecution vv = new DefaultProcessExecution(ID, EXEC, ARGS, root, of(ofHours(-1)), empty(), _workDir, false,
+        empty(), empty(), empty(), false);
     Assertions.assertThrows(ProcessException.class, () -> vv.getProcessExecutor());
     vv.close();
   }

@@ -22,9 +22,9 @@ import static io.vertx.core.Future.succeededFuture;
 import static java.nio.file.Files.readString;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
+import static org.infrastructurebuilder.constants.IBConstants.BLOBSTORE_NO_MAXBYTES;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
-import static org.infrastructurebuilder.constants.IBConstants.*;
-import static org.infrastructurebuilder.pathref.Checksum.*;
+import static org.infrastructurebuilder.pathref.Checksum.ofPath;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -35,20 +35,20 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.Checksum;
-import org.infrastructurebuilder.pathref.PathRef;
-import org.infrastructurebuilder.pathref.PathRefEnabled;
-import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.readdetect.base.IBResource;
-import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilder;
-import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory;
-import org.infrastructurebuilder.util.readdetect.base.IBResourceException;
+import org.infrastructurebuilder.util.readdetect.api.IBResource;
+import org.infrastructurebuilder.util.readdetect.api.IBResourceBuilder;
+import org.infrastructurebuilder.util.readdetect.api.IBResourceBuilderFactory;
+import org.infrastructurebuilder.util.readdetect.api.IBResourceException;
 import org.infrastructurebuilder.util.vertx.base.VertxIBResource;
 import org.infrastructurebuilder.util.vertx.blobstore.Blobstore;
 import org.json.JSONObject;
@@ -60,7 +60,6 @@ import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.file.FileSystem;
-import io.vertx.core.impl.ConcurrentHashSet;
 import io.vertx.core.json.JsonObject;
 
 public class FilesystemBlobstore implements Blobstore<VertxIBResource> {
@@ -68,7 +67,7 @@ public class FilesystemBlobstore implements Blobstore<VertxIBResource> {
   private final static Logger log = LoggerFactory.getLogger(FilesystemBlobstore.class);
   private final static FileSystem fs = Vertx.vertx().fileSystem();
 
-  private final PathRef root;
+  private final PathRefFileSystem root;
   private final Path metadata;
 
   private final AtomicLong size = new AtomicLong(0);
@@ -76,13 +75,12 @@ public class FilesystemBlobstore implements Blobstore<VertxIBResource> {
   private final long maxBytes;
   private IBResourceBuilderFactory<Optional<IBResource>> rcf;
 
-  public FilesystemBlobstore(PathRefEnabled rrs, Long size) {
-    this.root = requireNonNull(requireNonNull(rrs, "RelativeRootSupplier").getPathRef())
-        .orElseThrow(() -> new IBException("No relative root"));
-    this.rcf = new DefaultIBResourceBuilderFactorySupplier(new RelativeRootFactory(Set.of(rrs))).get(rrs.getName())
-        .getRelativeRoot();
-    this.metadata = getRelativeRoot().toResolvedPath(Paths.get(METADATA_DIR_NAME))
-        .orElseThrow(() -> new IBResourceException("No path"));
+  public FilesystemBlobstore(PathRefFileSystem rrs, Long size) {
+    this.root = requireNonNull(rrs, "RelativeRootSupplier");
+    this.rcf = null; //
+//    new DefaultIBResourceBuilderFactorySupplier(new RelativeRootFactory(Set.of(rrs))).get(rrs.getKey())
+//        .getRelativeRoot();
+    this.metadata = getRelativeRoot().getPath(IBConstants.METADATA_DIR_NAME);
     try {
       Files.createDirectories(this.metadata);
     } catch (IOException e) {
@@ -100,7 +98,7 @@ public class FilesystemBlobstore implements Blobstore<VertxIBResource> {
 //  }
 
   private Set<String> scanMetadata() {
-    Set<String> resources = new ConcurrentHashSet<>();
+    Set<String> resources = ConcurrentHashMap.newKeySet();
     cet.translate(() -> Files.newDirectoryStream(metadata).forEach(p -> {
       try {
         UUID u = UUID.fromString(p.getFileName().toString());
@@ -137,7 +135,7 @@ public class FilesystemBlobstore implements Blobstore<VertxIBResource> {
         .collect(Collectors.summingLong(r -> r.size().orElse(0L)));
   }
 
-  public PathRef getRelativeRoot() {
+  public PathRefFileSystem getRelativeRoot() {
     return this.root;
   }
 
@@ -168,7 +166,7 @@ public class FilesystemBlobstore implements Blobstore<VertxIBResource> {
     try {
       // Not really a temp file
       Path blobFile = Files
-          .createTempFile(this.getRelativeRoot().getPath().orElseThrow(() -> new IBResourceException("No path")),
+          .createTempFile(this.getRelativeRoot().getRoot(),
               "temp", ".blob")
           .toAbsolutePath();
       return requireNonNull(b)
@@ -199,34 +197,36 @@ public class FilesystemBlobstore implements Blobstore<VertxIBResource> {
 
   private Future<String> writeMetadata(Path blob, Checksum csum, String originalName, Optional<String> description,
       Instant createDate, Instant lastUpdated, Optional<Properties> addlProps) {
-    getLog().error("writeMetadata {}, {}, desc {}, {}, {}, {}", getRelativeRoot().relativize(blob).get(), originalName,
+    getLog().error("writeMetadata {}, {}, desc {}, {}, {}, {}", blob, originalName,
         description, createDate, lastUpdated, addlProps);
 
-    return rcf.fromPathAndChecksum(new DefaultPathAndChecksum(blob, csum)).map(builder -> {
+    return Future.failedFuture("Not implemented");
 
-      return builder
-
-          .withName(originalName)
-
-          .withDescription(description.orElse(null))
-
-          .withLastUpdated(lastUpdated)
-
-          .withCreateDate(createDate)
-
-          .build().map(bsm -> {
-            getLog().error("bsm is {}", bsm.asJSON().toString());
-            var id = bsm.getChecksum().asUUID().get().toString();
-            getLog().error("Writing metadata for {}", id);
-            return writeFile(getMetadataPath(id),
-                // Pull the buffer out of JSON
-                Buffer.buffer(new JsonObject(bsm.asJSON().toString()).encodePrettily())) //
-                .compose(v -> {
-                  log.info("Wrote metadata ");
-                  return succeededFuture(id);
-                });
-          }).orElse(Future.failedFuture("Could not build IBResource"));
-    }).orElse(Future.failedFuture("Could not build IBResourceBuilder"));
+//    return rcf.fromPathAndChecksum(new DefaultPathAndChecksum(blob, csum)).map(builder -> {
+//
+//      return builder
+//
+//          .withName(originalName)
+//
+//          .withDescription(description.orElse(null))
+//
+//          .withLastUpdated(lastUpdated)
+//
+//          .withCreateDate(createDate)
+//
+//          .build().map(bsm -> {
+//            getLog().error("bsm is {}", bsm.asJSON().toString());
+//            var id = bsm.getChecksum().asUUID().get().toString();
+//            getLog().error("Writing metadata for {}", id);
+//            return writeFile(getMetadataPath(id),
+//                // Pull the buffer out of JSON
+//                Buffer.buffer(new JsonObject(bsm.asJSON().toString()).encodePrettily())) //
+//                .compose(v -> {
+//                  log.info("Wrote metadata ");
+//                  return succeededFuture(id);
+//                });
+//          }).orElse(Future.failedFuture("Could not build IBResource"));
+//    }).orElse(Future.failedFuture("Could not build IBResourceBuilder"));
   }
 
   private Future<Void> writeFile(Path blobFile, Buffer buffer) {
@@ -266,7 +266,7 @@ public class FilesystemBlobstore implements Blobstore<VertxIBResource> {
     return getMetadata(id).compose(md -> succeededFuture(md.getDescription().orElse(null)));
   }
 
-  public final Future<VertxIBResource> getMetadata(String id) {
+  public final Future<IBResource> getMetadata(String id) {
     return fs
 
         .readFile(getMetadataPath(id).toString())
@@ -291,8 +291,7 @@ public class FilesystemBlobstore implements Blobstore<VertxIBResource> {
   }
 
   private Path getPath(String id) {
-    return this.getRelativeRoot().resolvePath(requireNonNull(id)).map(Path::toAbsolutePath)
-        .orElseThrow(() -> new IBException());
+    return this.getRelativeRoot().getPath(requireNonNull(id));
   }
 
   @Override

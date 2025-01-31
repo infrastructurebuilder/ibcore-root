@@ -33,8 +33,11 @@ import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.infrastructurebuilder.util.config.ConfigMap;
-import org.infrastructurebuilder.util.config.ConfigMapBuilderSupplier;
+import org.infrastructurebuilder.pathref.api.ConfigMap;
+import org.infrastructurebuilder.pathref.api.LoggerSupplier;
+import org.infrastructurebuilder.pathref.api.base.ConfigMapBuilderSupplier;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
+import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
 import org.infrastructurebuilder.util.executor.DefaultProcessRunner;
 import org.infrastructurebuilder.util.executor.ProcessException;
 import org.infrastructurebuilder.util.executor.ProcessRunner;
@@ -50,29 +53,33 @@ public class DefaultProcessRunnerSupplier implements ProcessRunnerSupplier {
   private final ConfigMap cfgMap;
   private final Optional<Long> interimSleep;
   private final Logger logger;
-  private final Optional<Path> relativeRoot;
-  private final Path scratchDir;
+  private final PathRefFileSystem root;
+  private final String scratchDir;
 
   @Inject
-  public DefaultProcessRunnerSupplier(final ConfigMapBuilderSupplier cms, final Logger logger) {
+  public DefaultProcessRunnerSupplier(final ConfigMapBuilderSupplier cms, final LoggerSupplier logger) {
     cfgMap = requireNonNull(cms, "ConfigMapBuilderSupplier to DefaultProcessRunnerSupplier").get().get();
-    this.logger = requireNonNull(logger);
+    this.logger = requireNonNull(logger.get());
 
     addl = cfgMap.optString(PROCESS_EXECUTOR_SYSTEM_OUT).map(Boolean::valueOf)
         .flatMap(b -> Optional.ofNullable(b ? System.out : null));
+    Path u = Paths.get(cfgMap.getString(PROCESS_TARGET));
     final Path p = Paths.get(cfgMap.getString(PROCESS_TARGET)).toAbsolutePath().normalize();
     if (!Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS))
       throw new ProcessException(
           format("%s is not a valid `%s` location", cfgMap.getString(PROCESS_TARGET), PROCESS_TARGET));
     buildDir = pet.returns(() -> Files.createDirectories(p));
-    scratchDir = buildDir.resolve("process-runner-" + UUID.randomUUID());
-    relativeRoot = cfgMap.optString(PROCESS_EXECUTOR_RELATIVE_ROOT).map(Paths::get);
+    String id = UUID.randomUUID().toString();
+    scratchDir = "process-runner-" + id;
+    Path volStr = Paths.get(cfgMap.getString(PROCESS_EXECUTOR_RELATIVE_ROOT));
+    root = PathRefPathIF.getOrCreatePRFS(volStr, Optional.of(id)) //
+        .orElseThrow(() -> new ProcessException("Cannot create PathRefFileSystem for " + volStr));
     interimSleep = cfgMap.optString(PROCESS_EXECUTOR_INTERIM_SLEEP).map(Long::valueOf);
   }
 
   @Override
   public ProcessRunner get() {
-    return new DefaultProcessRunner(scratchDir, addl, of(logger), relativeRoot, interimSleep);
+    return new DefaultProcessRunner(root, scratchDir, addl, of(logger), interimSleep);
   }
 
 }

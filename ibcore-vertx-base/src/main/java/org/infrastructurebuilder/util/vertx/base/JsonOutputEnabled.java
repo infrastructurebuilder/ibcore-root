@@ -19,41 +19,20 @@ package org.infrastructurebuilder.util.vertx.base;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.Optional;
-
-import org.infrastructurebuilder.pathref.PathRef;
+import org.infrastructurebuilder.pathref.XsonOutputEnabled;
 
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 
-public interface JsonOutputEnabled {
-  /**
-   * Deprecating in favor of toJson (for DataObject use)
-   *
-   * @return
-   */
-  @Deprecated
-  default JsonObject asJson() {
-    return toJson();
-  }
-
-  /**
-   * DataObject convenience method.
-   *
-   * @return
-   */
-  JsonObject toJson();
-
-  default Optional<PathRef> getJsonRelativeRoot() {
-    return Optional.empty();
-  }
+public interface JsonOutputEnabled extends XsonOutputEnabled<JsonObject>
+{
 
   default Future<JsonObject> toFutureJson() {
-    return Future.succeededFuture(toJson());
+    return Future.succeededFuture(asJSON());
   }
 
   static JsonObject serialize(JsonOutputEnabled f) {
-    return requireNonNull(f).toJson();
+    return requireNonNull(f).asJSON();
   }
 
 }

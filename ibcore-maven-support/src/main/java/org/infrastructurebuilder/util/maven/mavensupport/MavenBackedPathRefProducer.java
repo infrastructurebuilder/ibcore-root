@@ -21,11 +21,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 
 import java.net.URI;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -33,25 +29,27 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.apache.maven.project.MavenProject;
-import org.infrastructurebuilder.pathref.AbsolutePathRef;
-import org.infrastructurebuilder.pathref.PathRef;
-import org.infrastructurebuilder.pathref.PathRefProducer;
-import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.base.AbstractBasicPathPropertiesPathRefProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Named(MavenBackedPathRefProducer.NAME)
 @Singleton
-public class MavenBackedPathRefProducer implements PathRefProducer {
+public class MavenBackedPathRefProducer extends AbstractBasicPathPropertiesPathRefProducer {
   private static final Logger log = LoggerFactory.getLogger(MavenBackedPathRefProducer.class);
 
   public static final String NAME = "maven-basedir";
 
-  transient private final Optional<Path> path;
+  private transient final Optional<Path> path;
 
   @Inject
   public MavenBackedPathRefProducer(MavenProjectSupplier project) {
-    this.path = getPathFromProject(requireNonNull(project).get());
+    this.path = getPathFromProject(requireNonNull(project, "null.supplier").get());
+  }
+
+  @Override
+  public Optional<String> getProperty() {
+    return path.map(Path::toUri).map(URI::toString);
   }
 
   @Override
@@ -60,26 +58,11 @@ public class MavenBackedPathRefProducer implements PathRefProducer {
   }
 
   protected Optional<Path> getPathFromProject(MavenProject project) {
-    Path t = null;
-    try {
-      Map<String, ?> env = new HashMap<>();
-      URI uri = URI.create(PathRefPath.PATHREF_TEMPLATE.formatted(Paths.get(requireNonNull(project, "null.project").getBasedir().toString()).toAbsolutePath().toUri()));
-      t = FileSystems.newFileSystem(uri , env).getRootDirectories().iterator().next();
-
-    } catch (Throwable thr) {
-      getLog().warn("Error getting " + NAME + " RelativeRootProtocol with value " + t, thr);
-    }
-    return ofNullable(t);
-
+    return ofNullable(requireNonNull(project, "null.project").getBasedir().toPath().toAbsolutePath());
   }
 
   public Logger getLog() {
     return log;
-  }
-
-  @Override
-  public Optional<PathRef> with(String data) {
-    return this.path.map(AbsolutePathRef::new);
   }
 
 }

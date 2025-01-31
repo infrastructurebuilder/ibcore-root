@@ -19,41 +19,54 @@ package org.infrastructurebuilder.util.readdetect.base;
 
 import static java.util.Optional.of;
 
-import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.pathref.Checksum;
-import org.infrastructurebuilder.pathref.PathRef;
-import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
-import org.infrastructurebuilder.util.ibpathref.metadata.model.v1_0.IBResourceCacheModel;
-import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
+import org.infrastructurebuilder.pathref.api.ConfigMap;
+import org.infrastructurebuilder.pathref.api.TypeToExtensionMapper;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
+import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v1_0.IBResourceCacheModel;
+import org.infrastructurebuilder.pathref.util.readdetect.model.v1_0.IBResourceModel;
+import org.infrastructurebuilder.util.readdetect.api.IBResourceBuilder;
+import org.infrastructurebuilder.util.readdetect.api.IBResourceBuilderFactory;
+import org.infrastructurebuilder.util.readdetect.base.impls.IbcoreReadDetectBaseVersioning;
+import org.infrastructurebuilder.util.version.DefaultIBVersion;
+import org.infrastructurebuilder.util.version.IBVersion;
+import org.infrastructurebuilder.util.version.IBVersion.VersionDiff;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-abstract public class AbstractIBResourceBuilderFactory<I> extends IBResourceCacheModel
+abstract public class AbstractIBResourceBuilderFactory<I> //
+    extends IBResourceCacheModel //
     implements IBResourceBuilderFactory<I> {
 
   private static final long serialVersionUID = 1200177361527373141L;
 
   private final static Logger log = LoggerFactory.getLogger(AbstractIBResourceBuilderFactory.class);
 
-  private final PathRef _root;
+  private final PathRefFileSystem _root;
 
   private final AtomicReference<TypeToExtensionMapper> t2e = new AtomicReference<>();
 
-  public AbstractIBResourceBuilderFactory(PathRef relRoot) {
+  public AbstractIBResourceBuilderFactory(PathRefFileSystem relRoot) {
     super();
+    IBVersion ver = new DefaultIBVersion(IbcoreReadDetectBaseVersioning.apiVersion());
+    IBVersion modelVer = new DefaultIBVersion(getModelVersion());
+    VersionDiff diff = ver.diff(modelVer);
+//    if (diff == VersionDiff.MAJOR || diff == VersionDiff.MINOR)
+//      throw new IBResourceException(
+//          "Model version %s is not compatible with this implementation".formatted(getModelVersion()));
     this._root = relRoot;
-    String r = Optional.ofNullable(relRoot)
-        .map(rr -> rr.getPath().map(Path::toAbsolutePath).map(Path::toString).orElse(null)).orElse(null);
-    this.setRoot(r);
+    this.setRoot(relRoot.toString());
     log.debug("Root is {}", this.getRoot());
   }
 
   abstract protected Supplier<? extends IBResourceBuilder<I>> getBuilder();
+
+  abstract protected Optional<ConfigMap> getConfig();
 
   @Override
   public int respondsTo(String input) {
@@ -61,7 +74,7 @@ abstract public class AbstractIBResourceBuilderFactory<I> extends IBResourceCach
   }
 
   @Override
-  public final PathRef getRelativeRoot() {
+  public final PathRefFileSystem getRelativeRoot() {
     return this._root;
   }
 
@@ -86,7 +99,6 @@ abstract public class AbstractIBResourceBuilderFactory<I> extends IBResourceCach
     return Optional.ofNullable(model).map(m -> {
       return getBuilder().get()
           // TODO am I losing metadata somehow?
-          .withFilePath(m.getPath().orElse(null)) // Null path must be filled later
           // Taking some liberties here
           .withAcquired(m.getAcquired().orElse(null)) //
           .withChecksum(new Checksum(m.getStreamChecksum())) //

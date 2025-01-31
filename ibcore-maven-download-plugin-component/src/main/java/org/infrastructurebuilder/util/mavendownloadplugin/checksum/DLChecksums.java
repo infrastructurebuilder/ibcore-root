@@ -17,11 +17,12 @@
  */
 package org.infrastructurebuilder.util.mavendownloadplugin.checksum;
 
-//import com.googlecode.download.maven.plugin.internal.ChecksumUtils;
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.util.EnumMap;
 import java.util.Map;
+
 import javax.annotation.Nullable;
 
 import org.infrastructurebuilder.util.mavendownloadplugin.DLChecksumUtils;
@@ -56,8 +57,8 @@ public final class DLChecksums {
      * @return True if the file matches all supplied checksums
      *  or if no checksums were supplied.
      */
-    public boolean isValid(final File file) {
-        boolean valid = true;
+    public boolean isValid(final Path file) {
+        boolean valid = Files.isRegularFile(file);
         try {
             this.validate(file);
         } catch (final Exception ex) {
@@ -71,7 +72,7 @@ public final class DLChecksums {
      * @param file File to validate.
      * @throws Exception If the file didn't match any supplied checksum.
      */
-    public void validate(final File file) throws Exception {
+    public void validate(final Path file) throws Exception {
         for (final Map.Entry<DLChecksum, String> entry : this.supplied.entrySet()) {
             DLChecksumUtils.verifyChecksum(
                 file, entry.getValue(),

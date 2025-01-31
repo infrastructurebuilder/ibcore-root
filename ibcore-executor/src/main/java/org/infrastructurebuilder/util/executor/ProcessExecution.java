@@ -19,6 +19,8 @@ package org.infrastructurebuilder.util.executor;
 
 import static java.time.Duration.ofHours;
 
+import java.io.File;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,12 +34,16 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.infrastructurebuilder.pathref.JSONAndChecksumEnabled;
+import org.infrastructurebuilder.pathref.JSONBuilderBaseFactory;
 import org.infrastructurebuilder.pathref.JSONBuilderFactory;
-import org.infrastructurebuilder.pathref.PathRef;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zeroturnaround.exec.ProcessExecutor;
 
 public interface ProcessExecution extends JSONAndChecksumEnabled, AutoCloseable {
+  static final Logger log = LoggerFactory.getLogger(ProcessExecution.class);
 
   public static final String ARGUMENTS = "arguments";
   public static final List<Integer> DEFAULT_EXIT = Arrays.asList(0);
@@ -50,13 +56,15 @@ public interface ProcessExecution extends JSONAndChecksumEnabled, AutoCloseable 
   public static final String STD_OUT = "stdout";
   public final static Duration VERY_LONG = ofHours(2 * 24 * 365 + 12);
 
-  Optional<List<String>> getArguments();
+  String getId();
 
   String getExecutable();
 
-  Map<String, String> getExecutionEnvironment();
+  List<String> getArguments();
 
-  String getId();
+  PathRefFileSystem getRoot();
+
+  Map<String, String> getExecutionEnvironment();
 
   Optional<Path> getStdIn();
 
@@ -74,7 +82,7 @@ public interface ProcessExecution extends JSONAndChecksumEnabled, AutoCloseable 
 
   @Override
   default JSONObject asJSON() {
-    return JSONBuilderFactory.newInstanceFromPathRef(this.getRelativePathRef())
+    return JSONBuilderFactory.newInstanceFromRelativeRoot(this.getRoot())
 
         .addString(ID, getId())
 
@@ -107,22 +115,23 @@ public interface ProcessExecution extends JSONAndChecksumEnabled, AutoCloseable 
   default ProcessExecutor getProcessExecutor() {
     final List<String> command = new ArrayList<>();
     command.add(getExecutable());
-    command.addAll(getArguments().orElseGet(() -> new ArrayList<>()));
+    command.addAll(getArguments());
     List<Integer> l = getExitValuesAsIntegers().orElseGet(() -> new ArrayList<>());
     Integer[] exitValues = (Integer[]) l.toArray(new Integer[l.size()]);
-    @SuppressWarnings("resource") // FIXME
+    File w = getWorkDirectory().toFile();
+    log.debug("Working directory for {} is {}", getId(), w);
     final ProcessExecutor pe = new ProcessExecutor()
 
         .environment(getExecutionEnvironment())
 
-        .directory(getWorkDirectory().toFile())
+        .directory(w)
 
         .redirectError(getStdErr())
 
         .redirectOutput(getStdOut())
 
-        .redirectInput(
-            getStdIn().map(si -> ProcessException.pet.returns(() -> Files.newInputStream(si))).orElse(System.in))
+        .redirectInput(getStdIn().map(si -> ProcessException.pet.returns(() -> Files.newInputStream(si)))
+            .orElse(System.in))
 
         .exitValues(exitValues)
 

@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
+import io.vertx.core.file.AsyncFile;
 import io.vertx.core.file.OpenOptions;
 
 public class VertxChecksumFactory {
@@ -45,24 +46,25 @@ public class VertxChecksumFactory {
   public final static Future<Checksum> checksumFrom(Vertx v, Path p) {
     return Optional.ofNullable(v).map(vertx -> {
       Promise<Checksum> f = Promise.promise();
-      vertx.fileSystem().open(p.toString(), new OpenOptions().setWrite(false).setCreate(false), res -> {
-        if (res.succeeded()) {
-          final MessageDigest md;
-          try {
-            md = MessageDigest.getInstance(DIGEST_TYPE);
-          } catch (NoSuchAlgorithmException e) {
-            f.fail(e);
-            return;
-          }
-          res.result().setReadBufferSize(EIGHTK).handler(h -> {
-            md.update(h.getBytes());
-          }).endHandler(eh -> {
-            f.complete(new Checksum(md.digest()));
+      Future<AsyncFile> ff = vertx.fileSystem().open(p.toString(), //
+          new OpenOptions().setWrite(false).setCreate(false)).andThen(res -> {
+            if (res.succeeded()) {
+              final MessageDigest md;
+              try {
+                md = MessageDigest.getInstance(DIGEST_TYPE);
+              } catch (NoSuchAlgorithmException e) {
+                f.fail(e);
+                return;
+              }
+              res.result().setReadBufferSize(EIGHTK).handler(h -> {
+                md.update(h.getBytes());
+              }).endHandler(eh -> {
+                f.complete(new Checksum(md.digest()));
+              });
+            } else {
+              f.fail(res.cause());
+            }
           });
-        } else {
-          f.fail(res.cause());
-        }
-      });
       return f.future();
     }).orElse(Future.failedFuture("no.vertx"));
   }

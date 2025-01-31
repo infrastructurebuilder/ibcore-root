@@ -53,7 +53,8 @@ class MavenProjectBuildOutputDirectoryPathSupplierTest {
     build.setOutputDirectory(path.toString());
     p.setBuild(build);
 
-    mpbo = new MavenProjectBuildOutputDirectoryPathSupplier(p);
+    MavenProjectSupplier sp = new MavenProjectSupplier(p);
+    mpbo = new MavenProjectBuildOutputDirectoryPathSupplier(sp);
   }
 
   @AfterEach

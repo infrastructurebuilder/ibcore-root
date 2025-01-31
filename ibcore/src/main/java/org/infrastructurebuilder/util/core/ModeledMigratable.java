@@ -19,6 +19,8 @@ package org.infrastructurebuilder.util.core;
 
 import java.util.Optional;
 
+import org.infrastructurebuilder.pathref.api.Modeled;
+
 public interface ModeledMigratable extends Modeled {
   <T> Optional<T> fromEarlierModel(Object earlier);
 

@@ -38,6 +38,7 @@ import org.infrastructurebuilder.util.settings.ServerProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Deprecated
 public class S3FileSystem implements Supplier<Optional<FileSystem>>, Provider<Optional<FileSystem>> {
   private static final Logger logger = LoggerFactory.getLogger(S3FileSystem.class);
   private String accessKey;

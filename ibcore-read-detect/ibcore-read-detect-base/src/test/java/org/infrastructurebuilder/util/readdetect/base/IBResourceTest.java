@@ -18,52 +18,66 @@
 package org.infrastructurebuilder.util.readdetect.base;
 
 import static org.infrastructurebuilder.constants.IBConstants.APPLICATION_ZIP;
-import static org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory.toType;
+import static org.infrastructurebuilder.pathref.OptionalReflectionLoadingTikaDetector.toType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.pathref.AbsolutePathRef;
 import org.infrastructurebuilder.pathref.Checksum;
-import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
-import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
-import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathIBResourceBuilderFactory.AbstractPathIBResourceBuilder;
-import org.infrastructurebuilder.util.readdetect.path.impls.absolute.AbsolutePathIBResourceBuilderFactory;
+import org.infrastructurebuilder.pathref.api.ConfigMap;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
+import org.infrastructurebuilder.util.config.DefaultConfigMapBuilder;
+import org.infrastructurebuilder.util.readdetect.api.IBResource;
+import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathRefPathIBResourceBuilderFactory.AbstractPathIBResourceBuilder;
+import org.infrastructurebuilder.util.readdetect.base.impls.PathRefPathIBResourceBuilderFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class IBResourceTest {
 
-  private static final String CHECKSUMVAL = "11220f09966021668749276fdd1998f95937c85d07eb2d7f0deb15790bbcf325bfcdf07cfa35570b49ec197b872dfff7d68b6fd3b39bb11916757bff97d19f2d";
+  private static final String CHECKSUMVAL = "2608b19f09928b480ef36bb1493a6fab50e3ab40f2a28e77532f1f993ee2a006";
   private static final String TESTFILE_TEST = "testfile.test";
   private static final String TFILE_TEST = "tfile.zip";
   private static final String EXPECTED = "c9ad762d49d57970dde4d10a279fb98b8b7602f845a2ed3206d902fc85a176376eda2d63706ebd06bb319cecd7043dbfd61f2132825413f0879e1938d331b237";
   private TestingPathSupplier wps;
-  private Path testFile;
+  private PathRefPath testFile;
 
-  private AbsolutePathIBResourceBuilderFactory rcf;
+  private PathRefPathIBResourceBuilderFactory rcf;
   private Path root;
-  private PathRef rrs;
+  private PathRefPath rrs;
   private IBResource r;
   private AbstractPathIBResourceBuilder bb;
+  private PathRefFileSystem fs;
+  private ConfigMap cm;
 
   @BeforeEach
   public void setUp() throws Exception {
+    cm = new DefaultConfigMapBuilder();
     this.wps = new TestingPathSupplier();
-    testFile = this.wps.getTestClasses().resolve(TFILE_TEST);
+//    testFile = this.wps.getTestClasses().resolve(TFILE_TEST);
     this.root = this.wps.get();
-    this.rrs = new AbsolutePathRef(this.root);
-    this.rcf = new AbsolutePathIBResourceBuilderFactory();
+    this.fs = PathRefPathIF.getOrCreatePRFS(this.wps.getTestClasses(), Optional.of("testing")).get();
+    this.rrs = this.fs.getRoot();
+    testFile = this.rrs.resolve(TFILE_TEST);
+    this.rcf = new PathRefPathIBResourceBuilderFactory(this.fs)
+        .withConfig(cm);
     bb = this.rcf.getBuilder().get();
 
   }
@@ -81,7 +95,7 @@ public class IBResourceTest {
 
   @Test
   public void testFailOnNonFile() {
-    assertThrows(IBException.class, () -> toType.apply(Paths.get(".")));
+    assertFalse(toType.apply(Paths.get(".")).isPresent());
   }
 //https://file-examples.com/wp-content/uploads/2017/02/zip_2MB.zip
 
@@ -136,20 +150,22 @@ public class IBResourceTest {
     assertNotNull(r);
 
     var csum = new Checksum(testFile);
-    var pandc = new DefaultPathAndChecksum(testFile, csum);
+//    var pandc = new DefaultPathAndChecksum(testFile, csum);
 //    var builder = this.rcf.fromPathAndChecksum(pandc);
 //    var b1 = builder.get();
 //    var b2 = b1.build();
     IBResource cset = r;
     long d = Instant.now().toEpochMilli();
     var b3 = cset.get();
-    try (InputStream g = b3.getStream().get()) {
+    try (InputStream g = Files.newInputStream(b3, StandardOpenOption.READ)) {
       assertTrue(cset.getMostRecentReadTime().get().toEpochMilli() - d < 3);
     }
-    assertEquals(183, cset.getPath().get().toFile().length());
-    assertEquals(CHECKSUMVAL, cset.getTChecksum().toString());
+    PathRefPath v1 = cset.getPath().get();
+    File f = v1.toFile();
+    assertEquals(183, f.length());
+    assertEquals(CHECKSUMVAL, cset.getByteStreamChecksum().toString());
     assertEquals(APPLICATION_ZIP, cset.getType());
-    assertEquals(CHECKSUMVAL, new Checksum(cset.get().getStream().get()).toString());
+    assertEquals(CHECKSUMVAL, new Checksum(cset.get()).toString());
 
   }
 

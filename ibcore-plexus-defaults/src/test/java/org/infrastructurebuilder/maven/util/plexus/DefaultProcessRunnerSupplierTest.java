@@ -29,9 +29,9 @@ import java.util.UUID;
 
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.infrastructurebuilder.pathref.IBChecksumUtils;
-import org.infrastructurebuilder.util.config.ConfigMapBuilder;
-import org.infrastructurebuilder.util.config.ConfigMapBuilderSupplier;
-import org.infrastructurebuilder.util.config.impl.DefaultConfigMapBuilderSupplier;
+import org.infrastructurebuilder.pathref.api.base.ConfigMapBuilder;
+import org.infrastructurebuilder.pathref.api.base.ConfigMapBuilderSupplier;
+import org.infrastructurebuilder.util.config.DefaultConfigMapBuilderSupplier;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.executor.ProcessException;
 import org.infrastructurebuilder.util.logging.SLF4JFromMavenLogger;
@@ -74,7 +74,7 @@ public class DefaultProcessRunnerSupplierTest {
     DefaultConfigMapBuilderSupplier q = new DefaultConfigMapBuilderSupplier();
     cms = q.get().withPropertiesResource("/c1.properties", false);
     logger = new SLF4JFromMavenLogger(new ConsoleLogger(org.codehaus.plexus.logging.Logger.LEVEL_DEBUG, "name"));
-    prs = new DefaultProcessRunnerSupplier(() -> cms, logger);
+    prs = new DefaultProcessRunnerSupplier(() -> cms,() ->  logger);
     v = new DefaultConfigMapBuilderSupplier();
     cms2 = v.get().withPropertiesResource("/c4.properties", false);
   }
@@ -86,6 +86,6 @@ public class DefaultProcessRunnerSupplierTest {
 
   @Test
   public void testNonexistent() {
-    assertThrows(ProcessException.class, () -> new DefaultProcessRunnerSupplier(() -> cms2, logger));
+    assertThrows(ProcessException.class, () -> new DefaultProcessRunnerSupplier(() -> cms2,() ->  logger));
   }
 }

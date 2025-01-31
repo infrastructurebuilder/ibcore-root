@@ -20,17 +20,18 @@ package org.infrastructurebuilder.util.executor;
 import static java.nio.file.Files.createDirectories;
 import static java.nio.file.Files.newBufferedWriter;
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
 import org.zeroturnaround.exec.stream.LogOutputStream;
 
 public abstract class CapturingLogOutputStream extends LogOutputStream {
+  private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CapturingLogOutputStream.class);
 
   private final Optional<BufferedWriter> os;
   private final Optional<Path> path;
@@ -42,7 +43,16 @@ public abstract class CapturingLogOutputStream extends LogOutputStream {
 
   public CapturingLogOutputStream(final Optional<Path> p, boolean flushEveryLine) {
     path = requireNonNull(p).map(Path::toAbsolutePath);
-    path.ifPresent(path -> cet.translate(() -> createDirectories(path.getParent())));
+    path.ifPresent(path -> {
+      log.info("Checking path {}", path);
+      Path p2 = path.getParent();
+      if (!Files.exists(p2)) {
+        log.warn("Parent directory of {} ({}) does not exist", path, p2);
+        ProcessException.pet.translate(() -> Files.createDirectories(p2));
+      }
+      if (!Files.isDirectory(p2))
+        throw new ProcessException("Parent directory of " + path + " (" + p2 + ") is not a directory");
+    });
     os = p.map(g -> cet.returns(() -> newBufferedWriter(g)));
     this.flushEveryLine = flushEveryLine;
   }

@@ -26,8 +26,8 @@ import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
 import org.infrastructurebuilder.pathref.JSONAndChecksumEnabled;
 import org.infrastructurebuilder.pathref.JSONBuilder;
-import org.infrastructurebuilder.pathref.JSONBuilderFactory;
-import org.infrastructurebuilder.pathref.PathRef;
+import org.infrastructurebuilder.pathref.JSONBuilderBaseFactory;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.util.versions.GAVBasic;
 import org.json.JSONObject;
 
@@ -64,7 +64,7 @@ public interface GAV extends GAVBasic, JSONAndChecksumEnabled {
   }
 
   default JSONBuilder getJSONBuilderFactory() {
-    return JSONBuilderFactory.newInstance()
+    return (JSONBuilder) JSONBuilderBaseFactory.newInstance()
 
         .addString(GAV_GROUPID, getGroupId())
 
@@ -84,7 +84,7 @@ public interface GAV extends GAVBasic, JSONAndChecksumEnabled {
     return this;
   }
 
-  default GAV withRelativeRoot(PathRef r) {
+  default GAV withRelativeRoot(PathRefFileSystem r) {
     return this;
   }
 

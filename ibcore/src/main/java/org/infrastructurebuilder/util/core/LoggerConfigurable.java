@@ -17,6 +17,7 @@
  */
 package org.infrastructurebuilder.util.core;
 
+import org.infrastructurebuilder.pathref.api.LoggerEnabled;
 import org.slf4j.Logger;
 
 @Deprecated

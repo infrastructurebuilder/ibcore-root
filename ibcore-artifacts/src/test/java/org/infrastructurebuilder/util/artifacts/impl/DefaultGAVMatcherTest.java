@@ -23,11 +23,11 @@ import java.util.Optional;
 
 import org.infrastructurebuilder.util.artifacts.GAVMatcherBuilder;
 import org.infrastructurebuilder.util.core.DefaultGAV;
-import org.infrastructurebuilder.util.core.DefaultIBVersion;
 import org.infrastructurebuilder.util.core.GAV;
 import org.infrastructurebuilder.util.core.GAVMatcher;
-import org.infrastructurebuilder.util.core.IBVersion;
 import org.infrastructurebuilder.util.core.RangeOperator;
+import org.infrastructurebuilder.util.version.DefaultIBVersion;
+import org.infrastructurebuilder.util.version.IBVersion;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

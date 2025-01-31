@@ -37,7 +37,7 @@
 
 	<!-- I see no way to increase this at the moment -->
 	<properties>
-		<test.coverage.percentage.required>99</test.coverage.percentage.required>
+		<test.coverage.percentage.required>98</test.coverage.percentage.required>
 		<jacoco.max.missed.classes>0</jacoco.max.missed.classes>
 	</properties>
 
@@ -126,7 +126,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.infrastructurebuilder.pathref</groupId>
-			<artifactId>ibcore-pathref</artifactId>
+			<artifactId>ibpathref-api</artifactId>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>

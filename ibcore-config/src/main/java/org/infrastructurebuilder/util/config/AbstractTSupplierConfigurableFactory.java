@@ -21,6 +21,7 @@ import static java.util.Optional.ofNullable;
 
 import java.util.Optional;
 
+import org.infrastructurebuilder.pathref.api.base.ConfigMapBuilder;
 import org.slf4j.Logger;
 
 public abstract class AbstractTSupplierConfigurableFactory<T> implements TSupplierConfigurableFactory<T> {
@@ -67,6 +68,7 @@ public abstract class AbstractTSupplierConfigurableFactory<T> implements TSuppli
     return this.weight;
   }
 
+  @SuppressWarnings("unchecked")
   public AbstractTSupplierConfigurableFactory<T> withConfig(ConfigMapBuilder config) {
     this.config = config;
     return this;
@@ -96,7 +98,6 @@ public abstract class AbstractTSupplierConfigurableFactory<T> implements TSuppli
     return ofNullable(this.displayName);
   }
 
-  @SuppressWarnings("unchecked")
   public AbstractTSupplierConfigurableFactory<T> withLogger(Logger logger) {
     this.logger = logger;
     return this;

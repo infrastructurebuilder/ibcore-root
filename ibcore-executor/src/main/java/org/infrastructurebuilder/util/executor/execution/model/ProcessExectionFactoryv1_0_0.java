@@ -33,8 +33,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.util.executor.ProcessException;
 import org.infrastructurebuilder.util.executor.ProcessExecution;
 import org.infrastructurebuilder.util.executor.ProcessExecutionFactory;
@@ -46,19 +49,19 @@ public class ProcessExectionFactoryv1_0_0 implements ProcessExecutionFactory {
   private final VersionedProcessExecutionFactory parent;
   private final String id;
   private final String executable;
-  private final Path workDirectory;
+  private final String workDirectory;
   private boolean background;
   private List<Integer> exitCodes = null;
-  private Path relativeRoot = null;
+  private PathRefFileSystem root = null;
   private Map<String, String> env = null;
   private boolean optional;
   private Checksum execChecksum = null;
-  private Path stdIn = null;
+  private String stdIn = null;
   private Duration timeout = null;
   private List<String> args = null;
 
   public ProcessExectionFactoryv1_0_0(VersionedProcessExecutionFactory parent, String id, String executable,
-      Path workDirectory)
+      String workDirectory)
   {
     this.parent = requireNonNull(parent);
     this.id = requireNonNull(id);
@@ -76,7 +79,7 @@ public class ProcessExectionFactoryv1_0_0 implements ProcessExecutionFactory {
     final Path execScratch = parent.getScratchDir().resolve(requireNonNull(id, "execution id"));
     if (ProcessRunner.ws.matcher(id).find())
       throw new ProcessException("No whitespace is allowed in execution ids for ProcessRunner");
-    if (!isDirectory(requireNonNull(execScratch))) {
+    if (!Files.exists(execScratch) || !isDirectory(requireNonNull(execScratch))) {
       ProcessException.pet.translate(() -> Files.createDirectories(execScratch));
     }
     if (!isWritable(execScratch))
@@ -94,9 +97,9 @@ public class ProcessExectionFactoryv1_0_0 implements ProcessExecutionFactory {
         throw new ProcessException("Checksum of executable " + c + " does not match supplied " + csum);
     });
     return new DefaultProcessExecution(this.id, this.executable, //
-        ofNullable(args).orElse(new ArrayList<>()), ofNullable(timeout), //
+        ofNullable(args).orElse(new ArrayList<>()), Objects.requireNonNull(root), ofNullable(timeout), //
         ofNullable(stdIn), this.workDirectory, optional, ofNullable(env), //
-        ofNullable(relativeRoot), ofNullable(exitCodes), //
+        ofNullable(exitCodes), //
         parent.getAddl(), background);
   }
 
@@ -114,7 +117,9 @@ public class ProcessExectionFactoryv1_0_0 implements ProcessExecutionFactory {
 
   @Override
   public ProcessExecutionFactory withStdIn(Path stdIn) {
-    this.stdIn = requireNonNull(stdIn);
+    if (requireNonNull(stdIn).isAbsolute())
+      throw new ProcessException("stdin must be a relative %s".formatted(stdIn));
+    this.stdIn = stdIn.toString();
     return this;
   }
 
@@ -137,8 +142,8 @@ public class ProcessExectionFactoryv1_0_0 implements ProcessExecutionFactory {
   }
 
   @Override
-  public ProcessExecutionFactory withRelativeRoot(Path relativeRoot) {
-    this.relativeRoot = requireNonNull(relativeRoot);
+  public ProcessExecutionFactory withRelativeRoot(PathRefFileSystem relativeRoot) {
+    this.root = requireNonNull(relativeRoot);
     return this;
   }
 

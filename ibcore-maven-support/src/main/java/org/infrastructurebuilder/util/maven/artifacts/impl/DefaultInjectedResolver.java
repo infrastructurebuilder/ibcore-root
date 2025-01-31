@@ -52,8 +52,10 @@ public class DefaultInjectedResolver implements InjectedResolver {
   private final List<ArtifactRepository> remoteArtifactRepos;
 
   @Inject
-  public DefaultInjectedResolver(final LocalArtifactRepository localRepository,
-      final RepositorySystem mavRepositorySystem, final List<ArtifactRepository> remoteArtifactRepositories)
+  public DefaultInjectedResolver( //
+      final LocalArtifactRepository localRepository, //
+      final RepositorySystem mavRepositorySystem, //
+      final List<ArtifactRepository> remoteArtifactRepositories)
   {
     this.localRepository = requireNonNull(localRepository);
     mavenRepositorySystem = requireNonNull(mavRepositorySystem);

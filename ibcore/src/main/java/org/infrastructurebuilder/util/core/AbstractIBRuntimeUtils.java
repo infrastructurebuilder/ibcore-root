@@ -23,7 +23,8 @@ import java.util.Optional;
 import java.util.SortedSet;
 
 import org.infrastructurebuilder.pathref.PathSupplier;
-import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
+import org.infrastructurebuilder.pathref.api.LoggerSupplier;
+import org.infrastructurebuilder.pathref.api.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
 import org.infrastructurebuilder.util.credentials.basic.CredentialsFactory;
 import org.infrastructurebuilder.util.versions.IBVersionsSupplier;
@@ -99,7 +100,7 @@ abstract public class AbstractIBRuntimeUtils implements IBRuntimeUtils {
   }
 
   @Override
-  public Optional<String> getStructuredSupplyTypeClassName(String type) {
+  public Optional<List<String>> getStructuredSupplyTypeClassName(String type) {
     return t2em.getStructuredSupplyTypeClassName(type);
   }
 
