@@ -248,7 +248,7 @@ public interface IBResource extends JSONOutputEnabled, ChecksumEnabled, NameDesc
   Optional<Long> size();
 
   default JSONObject asJSON() {
-    return JSONBuilderFactory.newInstance(getRelativePathRef().flatMap(PathRef::getPath))
+    return JSONBuilderFactory.newInstanceFromPathRef(getRelativePathRef())
 
         .addChecksum(PATH_CHECKSUM, getTChecksum())
 

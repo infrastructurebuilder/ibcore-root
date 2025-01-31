@@ -176,7 +176,6 @@ public class DefaultProcessExecutionResult implements ProcessExecutionResult {
     ;
   }
 
-  @Override
   public Optional<PathRef> getRelativePathRef() {
     return Optional.ofNullable(pr);
   }

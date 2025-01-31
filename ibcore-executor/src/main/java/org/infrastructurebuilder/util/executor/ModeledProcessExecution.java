@@ -95,7 +95,6 @@ public class ModeledProcessExecution extends GeneratedProcessExecution implement
     }
   }
 
-  @Override
   public Optional<PathRef> getRelativePathRef() {
     return getRelativeRootURL().map(URIPathRef::new);
   }

@@ -67,7 +67,7 @@ public class MavenBackedPathRefProducer implements PathRefProducer {
       t = FileSystems.newFileSystem(uri , env).getRootDirectories().iterator().next();
 
     } catch (Throwable thr) {
-      getLog().warn("Error getting " + NAME + " RelativeRootProtocol with value " + t, thr);
+      getLog().warn("Error getting " + NAME + " PathRefProducer with value " + t, thr);
     }
     return ofNullable(t);
 

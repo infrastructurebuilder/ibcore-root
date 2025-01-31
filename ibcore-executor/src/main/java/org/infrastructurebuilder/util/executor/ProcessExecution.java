@@ -72,6 +72,10 @@ public interface ProcessExecution extends JSONAndChecksumEnabled, AutoCloseable 
 
   ListCapturingLogOutputStream getStdErr();
 
+default Optional<PathRef> getRelativePathRef() {
+return Optional.empty();
+}
+
   @Override
   default JSONObject asJSON() {
     return JSONBuilderFactory.newInstanceFromPathRef(this.getRelativePathRef())

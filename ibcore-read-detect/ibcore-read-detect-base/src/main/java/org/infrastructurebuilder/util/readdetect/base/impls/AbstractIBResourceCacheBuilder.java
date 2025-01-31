@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.infrastructurebuilder.util.ibpathref.metadata.model.v1_0.IBMetadataModel;
 import org.infrastructurebuilder.util.ibpathref.metadata.model.v1_0.IBResourceCacheModel;
-import org.infrastructurebuilder.util.ibpathref.metadata.model.v1_0.IbcoreReadDetectModelVersioning;
+import org.infrastructurebuilder.util.ibpathref.metadata.model.v1_0.IbpathrefMetadataModelVersioning;
 import org.infrastructurebuilder.util.readdetect.base.IBResource;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceCacheBuilder;
 
@@ -32,7 +32,7 @@ abstract public class AbstractIBResourceCacheBuilder implements IBResourceCacheB
 
   public AbstractIBResourceCacheBuilder() {
     this.model = new IBResourceCacheModel();
-    this.model.setModelVersion(IbcoreReadDetectModelVersioning.apiVersion());
+    this.model.setModelVersion(IbpathrefMetadataModelVersioning.apiVersion());
   }
 
   @Override

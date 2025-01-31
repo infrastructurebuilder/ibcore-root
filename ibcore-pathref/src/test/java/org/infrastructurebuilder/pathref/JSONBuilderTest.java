@@ -239,7 +239,7 @@ public class JSONBuilderTest {
 
   @Test
   public void testAddPath() {
-    final String root = FileSystems.getDefault().getRootDirectories().iterator().next().toAbsolutePath().toUri()
+    final String root = PathRefFileSystemProvider.defaultFS.getRootDirectories().iterator().next().toAbsolutePath().toUri()
         .getPath().toString();
     final JSONObject j = new JSONObject("{\"X\": \"" + root + "\"}");
     Paths.get("/");

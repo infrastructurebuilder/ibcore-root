@@ -19,26 +19,10 @@ package org.infrastructurebuilder.util.core;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import java.util.Collections;
-import java.util.SortedSet;
-
 import org.infrastructurebuilder.api.base.NameDescribed;
-import org.infrastructurebuilder.pathref.JSONOutputEnabled;
-import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
-import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
 class DefaultEmptyTest {
-
-  @Test
-  void testGetRelativeRoot() {
-    assertFalse(new JSONOutputEnabled() {
-      @Override
-      public JSONObject asJSON() {
-        return new JSONObject();
-      }
-    }.getRelativePathRef().isPresent());
-  }
 
   @Test
   void testNameDescribed() {

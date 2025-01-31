@@ -36,10 +36,10 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class RelativeRootTest {
+class AbstractBasicPathPropertiesPathRefSupplierTest {
 
   private static final String ABC = "abc";
-  private final static Logger log = LoggerFactory.getLogger(RelativeRootTest.class);
+  private final static Logger log = LoggerFactory.getLogger(AbstractBasicPathPropertiesPathRefSupplierTest.class);
   private static TestingPathSupplier tps;
 
   @BeforeAll

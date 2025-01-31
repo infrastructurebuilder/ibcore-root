@@ -47,8 +47,7 @@ abstract public class AbstractIBResourceBuilderFactory<I> extends IBResourceCach
   public AbstractIBResourceBuilderFactory(PathRef relRoot) {
     super();
     this._root = relRoot;
-    String r = Optional.ofNullable(relRoot)
-        .map(rr -> rr.getPath().map(Path::toAbsolutePath).map(Path::toString).orElse(null)).orElse(null);
+    String r = Optional.ofNullable(relRoot).map(PathRef::toString).orElse(null);
     this.setRoot(r);
     log.debug("Root is {}", this.getRoot());
   }

@@ -17,8 +17,6 @@
  */
 package org.infrastructurebuilder.util.readdetect.avro;
 
-import static java.util.Objects.requireNonNull;
-
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.Properties;
@@ -31,7 +29,7 @@ import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.util.core.PathAndChecksum;
 import org.infrastructurebuilder.util.readdetect.base.IBResource;
-import org.infrastructurebuilder.util.ibpathref.metadata.model.v1_0.IBResourceModel;
+import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.infrastructurebuilder.util.readdetect.path.impls.relative.RelativePathIBResourceBuilderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
