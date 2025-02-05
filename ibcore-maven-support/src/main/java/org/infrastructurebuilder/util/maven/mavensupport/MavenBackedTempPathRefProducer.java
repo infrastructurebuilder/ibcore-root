@@ -15,29 +15,30 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.pathref.classpath;
+package org.infrastructurebuilder.util.maven.mavensupport;
 
-import static java.util.Optional.ofNullable;
-
-import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.UUID;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.infrastructurebuilder.pathref.AbstractBasePathRef;
-import org.infrastructurebuilder.pathref.PathRef;
-import org.infrastructurebuilder.pathref.PathRefProducer;
-import org.infrastructurebuilder.pathref.base.AbstractBasicPathPropertiesPathRefProducer;
-import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.apache.maven.project.MavenProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Named(ClasspathPathRefSupplier.NAME)
-public class ClasspathPathRefSupplier extends AbstractBasicPathPropertiesPathRefProducer {
-  private static final Logger log = LoggerFactory.getLogger(ClasspathPathRefSupplier.class);
+@Named(MavenBackedTempPathRefProducer.NAME)
+// NOT A SINGLETON, but returns an immutable value
+public class MavenBackedTempPathRefProducer extends MavenBackedPathRefProducer {
+  private static final Logger log = LoggerFactory.getLogger(MavenBackedTempPathRefProducer.class);
 
-  public static final String NAME = "classpath:/";
+  static final String NAME = "maven-temp";
+
+  @Inject
+  public MavenBackedTempPathRefProducer(MavenProjectSupplier project) {
+    super(project);
+  }
 
   @Override
   public String getName() {
@@ -45,12 +46,12 @@ public class ClasspathPathRefSupplier extends AbstractBasicPathPropertiesPathRef
   }
 
   @Override
-  protected Logger getLog() {
+  public Logger getLog() {
     return log;
   }
-  @Override
-  public Optional<String> getProperty() {
-    return Optional.of(NAME); // That's the URI for the Classpath filesystem
-  }
 
+  @Override
+  protected Optional<Path> getPathFromProject(MavenProject project) {
+    return super.getPathFromProject(project).map(p -> p.resolve(UUID.randomUUID().toString()));
+  }
 }

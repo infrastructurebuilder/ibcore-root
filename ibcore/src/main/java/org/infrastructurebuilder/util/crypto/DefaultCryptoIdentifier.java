@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.SortedSet;
 import java.util.UUID;
 
+import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
 import org.infrastructurebuilder.pathref.JSONBuilderFactory;
@@ -97,11 +98,12 @@ public class DefaultCryptoIdentifier implements CryptoIdentifier {
   }
 
   @Override
-  public Optional<ChecksumBuilder> getChecksumBuilder() {
-    return Optional.of(this.checksumBuilder //
+  public Checksum asChecksum() {
+     return this.checksumBuilder //
         .addString(getType()) //
         .addString(getValidationIdentifier()) //
-        .addSetString(getIdentifiers()));
+        .addSetString(getIdentifiers())
+        .asChecksum();
   }
 
 }

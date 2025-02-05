@@ -94,6 +94,11 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.infrastructurebuilder.pathref</groupId>
+			<artifactId>ibcore-pathref-properties-base</artifactId>
+			<version>0.30.1-SNAPSHOT</version>
+		</dependency>
   </dependencies>
 
   <build>

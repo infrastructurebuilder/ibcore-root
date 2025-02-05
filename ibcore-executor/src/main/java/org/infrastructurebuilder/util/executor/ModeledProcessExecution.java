@@ -29,6 +29,7 @@ import java.util.function.Function;
 
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.URIPathRef;
+import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
 import org.infrastructurebuilder.pathref.JSONAndChecksumEnabled;
@@ -99,7 +100,6 @@ public class ModeledProcessExecution extends GeneratedProcessExecution implement
     return getRelativeRootURL().map(URIPathRef::new);
   }
 
-  @Override
   public Optional<ChecksumBuilder> getChecksumBuilder() {
     return Optional.of(ChecksumBuilderFactory.newAlternateInstanceWithPathRef(this.getRelativePathRef())
         .addString(getModelVersion()) //
@@ -116,6 +116,11 @@ public class ModeledProcessExecution extends GeneratedProcessExecution implement
         .addPathAsString(getStdInPath()) //
 //    .addPathAsString(getRelativeRootURL()) // Never add RR to Checksum
         .addMapStringString(getEnvironment().flatMap(ModeledProcessExecution.envToMapSS)));
+  }
+
+  @Override
+  public Checksum asChecksum() {
+    return getChecksumBuilder().get().asChecksum();
   }
 
 }

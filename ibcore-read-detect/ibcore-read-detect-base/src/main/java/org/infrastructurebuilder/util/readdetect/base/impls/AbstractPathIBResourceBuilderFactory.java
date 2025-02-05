@@ -30,6 +30,7 @@ import java.util.function.Supplier;
 
 import org.infrastructurebuilder.objectmapper.jackson.ObjectMapperUtils;
 import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
 import org.infrastructurebuilder.util.core.IBUtils;
@@ -281,6 +282,11 @@ abstract public class AbstractPathIBResourceBuilderFactory extends AbstractIBRes
 
     public PathAndChecksum getPathAndChecksum() {
       return path;
+    }
+
+    @Override
+    public Checksum asChecksum() {
+      return getChecksumBuilder().map(ChecksumBuilder::asChecksum).orElse(null);
     }
 
     @Override

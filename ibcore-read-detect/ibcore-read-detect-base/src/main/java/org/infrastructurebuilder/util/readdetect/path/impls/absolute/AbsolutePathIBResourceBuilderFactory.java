@@ -185,6 +185,11 @@ public class AbsolutePathIBResourceBuilderFactory extends AbstractPathIBResource
         });
       }
 
+      @Override
+      public Checksum asChecksum() {
+        return getChecksumBuilder().get().asChecksum();
+      }
+
     }
 
   }

@@ -36,6 +36,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.pathref.AbsolutePathRef;
+import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
 import org.infrastructurebuilder.pathref.PathRef;
@@ -222,7 +223,12 @@ public class DefaultProcessExecution implements ProcessExecution {
   }
 
   public Optional<ChecksumBuilder> getChecksumBuilder() {
-    return Optional.ofNullable(this.builder);
+    return Optional.ofNullable(this.builder); // TODO
+  }
+
+  @Override
+  public Checksum asChecksum() {
+    return getChecksumBuilder().get().asChecksum();
   }
 
 }

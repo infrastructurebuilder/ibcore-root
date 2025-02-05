@@ -146,7 +146,7 @@ public class IBUtils {
       isJar = false;
     }
     if (!isJar && !isZip)
-      throw new IBException("THIS JVM CANNOT HANDLE ARCHIVES.  IBDATA WILL NOT WORK");
+      throw new IBException("THIS JVM CANNOT HANDLE ARCHIVES.");
   }
 
   public final static Function<String, Optional<BigInteger>> getIntValue = (s) -> {

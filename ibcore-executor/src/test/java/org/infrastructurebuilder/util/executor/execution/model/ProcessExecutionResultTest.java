@@ -185,11 +185,11 @@ public class ProcessExecutionResultTest {
     String se = e.getString("stderr");
     String so = e.getString("stdout");
     final String t = "{\n" + "  \"execution\": {\n" + "    \"environment\": {},\n"
-        + "    \"stdout\": \"/extraStdOut\",\n" //
+        + "    \"stdout\": \"extraStdOut\",\n" //
         + "    \"arguments\": [\"-version\"],\n" //
         + "    \"optional\": false,\n" //
         + "    \"id\": \"default\",\n" //
-        + "    \"stderr\": \"/extraStdErr\",\n" //
+        + "    \"stderr\": \"extraStdErr\",\n" //
         + "    \"executable\": \"java\"\n" //
         + "  },\n" //
         + "  \"std-out\": [\n" //

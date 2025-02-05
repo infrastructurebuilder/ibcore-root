@@ -26,6 +26,7 @@ import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
 import org.infrastructurebuilder.pathref.PathRef;
@@ -192,8 +193,12 @@ public class DefaultGAV extends DefaultGAVBasic implements GAV {
     return this;
   }
 
-  @Override
   public Optional<ChecksumBuilder> getChecksumBuilder() {
     return getDefaultChecksumBuilder();
+  }
+
+  @Override
+  public Checksum asChecksum() {
+    return getChecksumBuilder().get().asChecksum();
   }
 }

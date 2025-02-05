@@ -17,7 +17,7 @@
  */
 package org.infrastructurebuilder.util.config;
 
-import org.infrastructurebuilder.util.core.Configurable;
+import org.infrastructurebuilder.api.base.Configurable;
 
 public interface ConfigMapBuilderConfigurable extends Configurable<ConfigMapBuilder> {
 

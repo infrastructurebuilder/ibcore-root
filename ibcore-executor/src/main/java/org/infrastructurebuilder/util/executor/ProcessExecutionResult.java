@@ -24,12 +24,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
+import org.infrastructurebuilder.pathref.ChecksumBuilderEnabled;
 import org.infrastructurebuilder.pathref.JSONAndChecksumEnabled;
 import org.infrastructurebuilder.pathref.JSONBuilder;
 import org.infrastructurebuilder.pathref.JSONBuilderFactory;
 import org.json.JSONObject;
 
-public interface ProcessExecutionResult extends JSONAndChecksumEnabled {
+public interface ProcessExecutionResult extends JSONAndChecksumEnabled, ChecksumBuilderEnabled {
 
   Function<ProcessExecutionResult, Boolean> defaultValidator = (r) -> {
     return r.getException().isPresent() || r.getResultCode().orElse(ProcessExecutionResult.FAIL) != 0;

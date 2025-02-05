@@ -17,6 +17,7 @@
  */
 package org.infrastructurebuilder.util.maven.mavensupport;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -28,6 +29,7 @@ import org.apache.maven.project.MavenProject;
 import org.infrastructurebuilder.pathref.IBChecksumUtils;
 import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -50,7 +52,7 @@ class MavenBackedRelativeRootProtocolTest {
 
   MavenProject project;
   MavenBackedPathRefProducer p;
-  MavenBackedTempRelativeRootSupplier t;
+  MavenBackedTempPathRefProducer t;
   Path target;
 
   @BeforeEach
@@ -68,12 +70,13 @@ class MavenBackedRelativeRootProtocolTest {
 
     MavenProjectSupplier p2 = new MavenProjectSupplier(project);
     p = new MavenBackedPathRefProducer(p2);
-    t = new MavenBackedTempRelativeRootSupplier(p2);
+    t = new MavenBackedTempPathRefProducer(p2);
   }
 
   @Test
   void test() {
-    PathRef rr = p.with(null).get();
+    PathRefPath rr = p.with(null);
+    assertNotNull(rr);
 //    assertTrue(rr.isPath());
 //    assertEquals(target, rr.getPath().get());
 //    PathRef rr2 = t.with(null).get();

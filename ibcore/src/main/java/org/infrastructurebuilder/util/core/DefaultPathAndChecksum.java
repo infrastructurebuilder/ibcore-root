@@ -78,8 +78,8 @@ public class DefaultPathAndChecksum implements PathAndChecksum {
   }
 
   @Override
-  public Optional<ChecksumBuilder> getChecksumBuilder() {
-    return Optional.of(ChecksumBuilderFactory.flatInstance(this.checksum));
+  public Checksum asChecksum() {
+    return this.checksum;
   }
 
   @Override

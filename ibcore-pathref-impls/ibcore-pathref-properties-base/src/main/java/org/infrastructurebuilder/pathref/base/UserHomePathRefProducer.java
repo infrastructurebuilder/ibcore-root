@@ -15,10 +15,32 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.config;
+package org.infrastructurebuilder.pathref.base;
 
-import org.infrastructurebuilder.api.base.Configurable;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
-public interface ConfigMapConfigurable extends Configurable<ConfigMap> {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+@Singleton
+@Named(UserHomePathRefProducer.NAME)
+public final class UserHomePathRefProducer extends AbstractBasicPathPropertiesPathRefProducer {
+  public static final Logger logger = LoggerFactory.getLogger(UserHomePathRefProducer.class);
+  public static final String NAME = "user.home";
+
+  @Override
+  public String getName() {
+    return NAME;
+  }
+
+  @Override
+  public String getPropertyName() {
+    return NAME;
+  }
+
+  @Override
+  protected Logger getLog() {
+    return logger;
+  }
 }

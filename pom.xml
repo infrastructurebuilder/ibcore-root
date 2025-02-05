@@ -47,8 +47,8 @@
 		<module>ibcore-artifacts</module>
 		<module>ibcore-executor</module>
 		<module>ibcore-maven-download-plugin-component</module>
-		<!--
 		<module>ibcore-pathref-impls</module>
+		<!--
 		<module>ibcore-read-detect</module>
 		<module>ibcore-vertx-base</module>
 		<module>ibcore-vertx-blobstore</module>
