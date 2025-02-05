@@ -56,8 +56,7 @@ public class SetValuePathRefProducer extends AbstractBasicPathPropertiesPathRefP
   public final SetValuePathRefProducer withPath(Path p) {
     boolean set = this.path.compareAndSet(null, ofNullable(p) //
         .map(Path::toAbsolutePath) //
-        .map(Path::toUri)
-        .map(URI::toString) //
+        .map(Path::toUri).map(URI::toString) //
         .orElse(null));
     getLog().info(set ? "Path set to " + p : "Path not reset");
     return this;
@@ -72,6 +71,5 @@ public class SetValuePathRefProducer extends AbstractBasicPathPropertiesPathRefP
   protected Logger getLog() {
     return log;
   }
-
 
 }

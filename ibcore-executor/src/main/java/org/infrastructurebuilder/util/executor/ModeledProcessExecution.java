@@ -101,21 +101,21 @@ public class ModeledProcessExecution extends GeneratedProcessExecution implement
   }
 
   public Optional<ChecksumBuilder> getChecksumBuilder() {
-    return Optional.of(ChecksumBuilderFactory.newAlternateInstanceWithPathRef(this.getRelativePathRef())
-        .addString(getModelVersion()) //
-        .addString(getId()) //
-        .addString(getExecutable()) //
-        .addListString(getArguments()) //
-        .addString(getTimeout()) //
-        .addBoolean(getOptional()) //
-        .addBoolean(getBackground()) //
-        .addPathAsString(getWorkDirectory()) //
-        .addListString(getExitValues()) //
-        .addPathAsString(getStdOutPath()) //
-        .addPathAsString(getStdErrPath()) //
-        .addPathAsString(getStdInPath()) //
+    return Optional.of(
+        ChecksumBuilderFactory.newAlternateInstanceWithPathRef(this.getRelativePathRef()).addString(getModelVersion()) //
+            .addString(getId()) //
+            .addString(getExecutable()) //
+            .addListString(getArguments()) //
+            .addString(getTimeout()) //
+            .addBoolean(getOptional()) //
+            .addBoolean(getBackground()) //
+            .addPathAsString(getWorkDirectory()) //
+            .addListString(getExitValues()) //
+            .addPathAsString(getStdOutPath()) //
+            .addPathAsString(getStdErrPath()) //
+            .addPathAsString(getStdInPath()) //
 //    .addPathAsString(getRelativeRootURL()) // Never add RR to Checksum
-        .addMapStringString(getEnvironment().flatMap(ModeledProcessExecution.envToMapSS)));
+            .addMapStringString(getEnvironment().flatMap(ModeledProcessExecution.envToMapSS)));
   }
 
   @Override

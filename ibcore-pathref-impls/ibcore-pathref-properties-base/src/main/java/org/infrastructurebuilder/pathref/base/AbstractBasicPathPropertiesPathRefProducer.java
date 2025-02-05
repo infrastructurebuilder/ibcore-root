@@ -54,9 +54,9 @@ abstract public class AbstractBasicPathPropertiesPathRefProducer implements Path
     PathRefFileSystem fs;
     URI data;
     try {
-    data = URI.create(pStr);
+      data = URI.create(pStr);
     } catch (Throwable t) {
-      
+
       return null;
     }
     try {

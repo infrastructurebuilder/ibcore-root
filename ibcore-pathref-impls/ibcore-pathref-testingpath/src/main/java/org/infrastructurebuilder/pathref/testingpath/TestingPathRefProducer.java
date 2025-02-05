@@ -63,7 +63,7 @@ public class TestingPathRefProducer extends AbstractBasicPathPropertiesPathRefPr
     return Optional.of(this.tps.get().toUri().toString());
   }
 
-  public void finalization()  throws Throwable {
+  public void finalization() throws Throwable {
     this.tps.finalize();
   }
 

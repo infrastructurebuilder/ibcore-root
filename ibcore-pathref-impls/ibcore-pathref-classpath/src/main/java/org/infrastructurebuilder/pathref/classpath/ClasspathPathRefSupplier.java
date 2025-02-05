@@ -48,6 +48,7 @@ public class ClasspathPathRefSupplier extends AbstractBasicPathPropertiesPathRef
   protected Logger getLog() {
     return log;
   }
+
   @Override
   public Optional<String> getProperty() {
     return Optional.of(NAME); // That's the URI for the Classpath filesystem

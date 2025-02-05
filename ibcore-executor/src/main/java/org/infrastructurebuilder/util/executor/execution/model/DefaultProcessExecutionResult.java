@@ -172,8 +172,7 @@ public class DefaultProcessExecutionResult implements ProcessExecutionResult {
         .addListString(getStdErr()) //
         .addListString(getStdOut()) //
         .addChecksumEnabled(getExecution()) //
-)
-    ;
+    );
   }
 
   public Optional<PathRef> getRelativePathRef() {

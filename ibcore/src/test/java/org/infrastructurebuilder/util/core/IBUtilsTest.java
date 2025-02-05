@@ -383,7 +383,7 @@ public class IBUtilsTest {
         Reader r2 = new InputStreamReader(bis);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         Writer w2 = new OutputStreamWriter(bos)) {
-      y = copyAndDigest(r2,w2);
+      y = copyAndDigest(r2, w2);
     }
     expected.equals(y);
     assertEquals(expected, y, "Set the hex stream to " + expected);
@@ -469,13 +469,14 @@ public class IBUtilsTest {
   @Test
   public void testCopyAndDigestNullStream() throws NullPointerException {
     assertThrows(NullPointerException.class, () -> {
-      copyAndDigest((InputStream)null, (OutputStream) null);
+      copyAndDigest((InputStream) null, (OutputStream) null);
     });
   }
+
   @Test
   public void testCopyAndDigestNullReader() throws NullPointerException {
     assertThrows(NullPointerException.class, () -> {
-      copyAndDigest((Reader)null, (Writer)null);
+      copyAndDigest((Reader) null, (Writer) null);
     });
   }
 

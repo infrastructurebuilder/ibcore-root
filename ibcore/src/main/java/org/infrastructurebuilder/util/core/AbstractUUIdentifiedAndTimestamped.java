@@ -47,7 +47,8 @@ abstract public class AbstractUUIdentifiedAndTimestamped extends AbstractUUIdent
   }
 
   public JSONObject getLocalJSON() {
-    return JSONBuilderFactory.newInstance().addString(ID, getId().toString()).addInstant(TIMESTAMP, getTimestamp()).asJSON();
+    return JSONBuilderFactory.newInstance().addString(ID, getId().toString()).addInstant(TIMESTAMP, getTimestamp())
+        .asJSON();
   }
 
 }
