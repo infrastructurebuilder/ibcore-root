@@ -19,18 +19,24 @@ package org.infrastructurebuilder.util.readdetect.avro;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.net.URI;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.pathref.AbsolutePathRef;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.util.readdetect.base.IBResource;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathIBResourceBuilderFactory.AbstractPathIBResourceBuilder;
+import org.infrastructurebuilder.util.readdetect.path.impls.relative.RelativePathIBResourceBuilderFactory;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -50,17 +56,21 @@ class RelativePathAvroIBResourceBuilderFactoryTest {
   static void tearDownAfterClass() throws Exception {
   }
 
-  private Path root;
-  private AbsolutePathRef rr;
+  private Path _root;
   private Supplier<? extends AbstractPathIBResourceBuilder> b;
   private Checksum rick;
+  private PathRefFileSystem prpfs;
+  private PathRefPath root;
 
   @BeforeEach
   void setUp() throws Exception {
-    this.root = tps.getTestClasses();
-    this.rick = new Checksum(this.root.resolve(RICK_JPG));
-    this.rr = new AbsolutePathRef(this.root);
-    this.b = new RelativePathAvroIBResourceBuilderFactory(this.rr)//
+    this._root = tps.getTestClasses();
+    prpfs = (PathRefFileSystem) FileSystems.newFileSystem(URI.create(PathRefPath.PATHREF_TEMPLATE.formatted(this._root.toUri())),
+        new HashMap<>());
+    this.root = prpfs.getRoot();
+
+    this.rick = new Checksum(this._root.resolve(RICK_JPG));
+    this.b = new RelativePathAvroIBResourceBuilderFactory(this.root)//
         .fromPath(Paths.get(RICK_JPG));
 
   }

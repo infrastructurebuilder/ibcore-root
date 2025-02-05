@@ -18,9 +18,9 @@
 package org.infrastructurebuilder.util.core;
 
 import org.infrastructurebuilder.pathref.PathRef;
-import org.infrastructurebuilder.pathref.PathRefEnabled;
+import org.infrastructurebuilder.pathref.PathRefPathEnabled;
 
-public interface RelativeRootMutableEnabled extends PathRefEnabled {
+public interface RelativeRootMutableEnabled extends PathRefPathEnabled {
   <T> T withRelativeRoot(PathRef r);
 
 }

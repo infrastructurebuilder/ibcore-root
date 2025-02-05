@@ -36,6 +36,7 @@ import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.PathRef;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.OptStream;
@@ -54,7 +55,7 @@ public class RelativePathIBResourceBuilderFactory extends AbstractPathIBResource
 
   private static final long serialVersionUID = -7034230288330677232L;
 
-  public RelativePathIBResourceBuilderFactory(PathRef r) {
+  public RelativePathIBResourceBuilderFactory(PathRefPath r) {
     super(Objects.requireNonNull(r));
   }
 
@@ -67,7 +68,7 @@ public class RelativePathIBResourceBuilderFactory extends AbstractPathIBResource
   public static class RelativePathIBResourceBuilder extends AbstractPathIBResourceBuilder {
     private final static Logger log = LoggerFactory.getLogger(RelativePathIBResourceBuilder.class);
 
-    public RelativePathIBResourceBuilder(PathRef r) {
+    public RelativePathIBResourceBuilder(PathRefPath r) {
       super(r);
     }
 
@@ -108,8 +109,8 @@ public class RelativePathIBResourceBuilderFactory extends AbstractPathIBResource
 
       }
 
-      public RelativePathIBResource(PathRef r, IBResourceModel m, Path sourcePath) {
-        this(m, new DefaultPathAndChecksum(of(r), sourcePath));
+      public RelativePathIBResource(PathRefPath r, IBResourceModel m, Path sourcePath) {
+        this(m, new DefaultPathAndChecksum(r, sourcePath));
       }
 
       public RelativePathIBResource(PathRef r, IBResourceModel m) {

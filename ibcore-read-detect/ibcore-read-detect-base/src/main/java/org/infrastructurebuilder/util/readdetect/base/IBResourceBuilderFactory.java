@@ -37,6 +37,7 @@ import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -114,7 +115,7 @@ public interface IBResourceBuilderFactory<I> extends ResponsiveToString {
    * @return
    */
 
-  PathRef getRelativeRoot();
+  PathRefPath getRelativeRoot();
 
   Optional<IBResourceBuilder<I>> fromModel(IBResourceModel model);
 

@@ -19,11 +19,14 @@ package org.infrastructurebuilder.util.readdetect.avro;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.net.URI;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.HashMap;
 
-import org.infrastructurebuilder.pathref.AbsolutePathRef;
-import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.util.readdetect.path.impls.relative.RelativePathIBResourceBuilderFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -36,6 +39,7 @@ class AbsolutePathAvroIBResourceBuilderTest {
 
   @BeforeAll
   static void setUpBeforeClass() throws Exception {
+
   }
 
   @AfterAll
@@ -43,15 +47,19 @@ class AbsolutePathAvroIBResourceBuilderTest {
     tps.finalize();
   }
 
-  private PathRef rrs;
+  private PathRefPath rrs;
   private RelativePathIBResourceBuilderFactory rcf;
   private Path avdl, avro, avsc, csv, empty;
+  private Path path;
+  private PathRefFileSystem prpfs;
 
   @BeforeEach
   void setUp() throws Exception {
     var tr = tps.getTestClasses();
-    rrs = new AbsolutePathRef(tps.get());
-    this.rcf = new RelativePathIBResourceBuilderFactory(rrs);
+    path = tps.get();
+    prpfs = (PathRefFileSystem) FileSystems.newFileSystem(URI.create(PathRefPath.PATHREF_TEMPLATE.formatted(path.toUri())),
+        new HashMap<>());
+    this.rcf = new RelativePathIBResourceBuilderFactory((PathRefPath) prpfs.getRootDirectories().iterator().next());
     this.avdl = tr.resolve("ba.avdl");
     this.avro = tr.resolve("ba.avro");
     this.avsc = tr.resolve("ba.avsc");
@@ -87,5 +95,6 @@ class AbsolutePathAvroIBResourceBuilderTest {
   void testModel() {
     assertTrue(rcf.fromModel(null).isEmpty());
   }
+
 
 }

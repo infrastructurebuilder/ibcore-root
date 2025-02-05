@@ -23,6 +23,7 @@ import java.util.Set;
 import org.infrastructurebuilder.api.base.NameDescribed;
 import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.PathRefFactory;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
 
 /**
  * An IBResourceBuilderFactorySupplier is used to map {@link PathRef} identifiers supplied by a {@link PathRefFactory}
@@ -39,7 +40,7 @@ public interface IBResourceBuilderFactorySupplier extends NameDescribed {
 
   Set<String> getAvailableNames();
 
-  Optional<PathRef> getRoot(String id);
+  Optional<PathRefPath> getRoot(String id);
 
   /**
    * Get a builder with this relative root

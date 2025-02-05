@@ -32,6 +32,7 @@ import org.infrastructurebuilder.objectmapper.jackson.ObjectMapperUtils;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.PathRef;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.PathAndChecksum;
@@ -57,7 +58,7 @@ abstract public class AbstractPathIBResourceBuilderFactory extends AbstractIBRes
     this(null);
   }
 
-  public AbstractPathIBResourceBuilderFactory(PathRef root) {
+  public AbstractPathIBResourceBuilderFactory(PathRefPath root) {
     super(root);
   }
 
@@ -96,7 +97,7 @@ abstract public class AbstractPathIBResourceBuilderFactory extends AbstractIBRes
       this(null);
     }
 
-    public AbstractPathIBResourceBuilder(PathRef root) {
+    public AbstractPathIBResourceBuilder(PathRefPath root) {
       super(root);
     }
 

@@ -19,7 +19,6 @@ package org.infrastructurebuilder.util.readdetect.base;
 
 import static java.util.Optional.of;
 
-import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
@@ -27,6 +26,7 @@ import java.util.function.Supplier;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.util.ibpathref.metadata.model.v1_0.IBResourceCacheModel;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
@@ -40,14 +40,14 @@ abstract public class AbstractIBResourceBuilderFactory<I> extends IBResourceCach
 
   private final static Logger log = LoggerFactory.getLogger(AbstractIBResourceBuilderFactory.class);
 
-  private final PathRef _root;
+  private final PathRefPath _root;
 
   private final AtomicReference<TypeToExtensionMapper> t2e = new AtomicReference<>();
 
-  public AbstractIBResourceBuilderFactory(PathRef relRoot) {
+  public AbstractIBResourceBuilderFactory(PathRefPath relRoot) {
     super();
     this._root = relRoot;
-    String r = Optional.ofNullable(relRoot).map(PathRef::toString).orElse(null);
+    String r = Optional.ofNullable(relRoot).map(PathRefPath::toString).orElse(null);
     this.setRoot(r);
     log.debug("Root is {}", this.getRoot());
   }
@@ -60,7 +60,7 @@ abstract public class AbstractIBResourceBuilderFactory<I> extends IBResourceCach
   }
 
   @Override
-  public final PathRef getRelativeRoot() {
+  public final PathRefPath getRelativeRoot() {
     return this._root;
   }
 
