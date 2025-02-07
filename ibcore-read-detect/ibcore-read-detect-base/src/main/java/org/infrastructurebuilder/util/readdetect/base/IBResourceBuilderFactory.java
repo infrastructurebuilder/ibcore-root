@@ -32,12 +32,11 @@ import java.util.function.Function;
 
 import org.apache.tika.Tika;
 import org.apache.tika.metadata.TikaCoreProperties;
-import org.infrastructurebuilder.api.base.ResponsiveToString;
+import org.infrastructurebuilder.api.base.ResponsiveTo;
 import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.pathref.PathRef;
-import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.fs.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -48,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * source locations, such as {@link Path}s, {@link URL}s, and URL-like strings (given appropriate processors within a
  * given builder).
  *
- * A given IBResourceBuilderFactory may or may not have a {@link PathRef}. If it does not, then all values are
+ * A given IBResourceBuilderFactory may or may not have a {@link PathRefPath}. If it does not, then all values are
  * considered to be purely reference values
  *
  * @param
@@ -59,7 +58,7 @@ import org.slf4j.LoggerFactory;
  * local copy. An IBResourceCache is expected to be inviolate from the time a cache is created until it is no longer
  * needed. A cache has a serialized representation of all the IBResource elements within it, and thus can be persisted.
  */
-public interface IBResourceBuilderFactory<I> extends ResponsiveToString {
+public interface IBResourceBuilderFactory<I> extends ResponsiveTo<String> {
   final static Logger log = LoggerFactory.getLogger(IBResourceBuilderFactory.class.getName());
   final static Tika tika = new Tika();
 

@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.SortedSet;
 
-import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
+import org.infrastructurebuilder.pathref.fs.TypeToExtensionMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

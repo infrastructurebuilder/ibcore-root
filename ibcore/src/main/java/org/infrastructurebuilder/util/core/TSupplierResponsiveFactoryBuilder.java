@@ -19,6 +19,7 @@ package org.infrastructurebuilder.util.core;
 
 import java.util.Optional;
 
+import org.infrastructurebuilder.api.IdentifiedAndWeighted;
 import org.infrastructurebuilder.api.base.Configurable;
 import org.infrastructurebuilder.api.base.NameDescribed;
 import org.infrastructurebuilder.api.base.ResponsiveTo;

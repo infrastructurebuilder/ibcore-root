@@ -24,9 +24,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.pathref.Checksum;
-import org.infrastructurebuilder.pathref.PathRef;
-import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.fs.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.ibpathref.metadata.model.v1_0.IBResourceCacheModel;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;

@@ -28,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import org.infrastructurebuilder.api.OptStream;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.junit.jupiter.api.AfterAll;

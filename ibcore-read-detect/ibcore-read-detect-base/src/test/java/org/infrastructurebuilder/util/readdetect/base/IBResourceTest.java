@@ -31,12 +31,12 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.UUID;
 
+import org.infrastructurebuilder.api.base.DefaultPathAndChecksum;
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.pathref.AbsolutePathRef;
 import org.infrastructurebuilder.pathref.Checksum;
-import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
-import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.fs.PathRefUtils;
 import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathIBResourceBuilderFactory.AbstractPathIBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.path.impls.absolute.AbsolutePathIBResourceBuilderFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,7 +53,7 @@ public class IBResourceTest {
 
   private AbsolutePathIBResourceBuilderFactory rcf;
   private Path root;
-  private PathRef rrs;
+  private PathRefPath rrs;
   private IBResource r;
   private AbstractPathIBResourceBuilder bb;
 
@@ -62,7 +62,7 @@ public class IBResourceTest {
     this.wps = new TestingPathSupplier();
     testFile = this.wps.getTestClasses().resolve(TFILE_TEST);
     this.root = this.wps.get();
-    this.rrs = new AbsolutePathRef(this.root);
+    this.rrs = PathRefUtils.fromPath(this.root);
     this.rcf = new AbsolutePathIBResourceBuilderFactory();
     bb = this.rcf.getBuilder().get();
 

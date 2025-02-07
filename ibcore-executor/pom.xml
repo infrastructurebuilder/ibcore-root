@@ -40,7 +40,7 @@
 	<properties>
 		<test.coverage.percentage.required>71</test.coverage.percentage.required>
 		<jacoco.max.missed.classes>2</jacoco.max.missed.classes>
-		<current.process.execution.model.version>1.0.1-SNAPSHOT</current.process.execution.model.version>
+		<ibcore.executor.model.version>1.0.1-SNAPSHOT</ibcore.executor.model.version>
 	</properties>
 
 	<dependencies>
@@ -108,7 +108,7 @@
     -->
 		<dependency>
 			<groupId>org.infrastructurebuilder.pathref</groupId>
-			<artifactId>ibcore-pathref</artifactId>
+			<artifactId>ibpathref-api</artifactId>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>

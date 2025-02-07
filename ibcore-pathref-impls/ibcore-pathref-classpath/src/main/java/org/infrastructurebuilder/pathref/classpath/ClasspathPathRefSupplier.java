@@ -17,19 +17,11 @@
  */
 package org.infrastructurebuilder.pathref.classpath;
 
-import static java.util.Optional.ofNullable;
-
-import java.io.InputStream;
-import java.nio.file.Path;
 import java.util.Optional;
 
 import javax.inject.Named;
 
-import org.infrastructurebuilder.pathref.AbstractBasePathRef;
-import org.infrastructurebuilder.pathref.PathRef;
-import org.infrastructurebuilder.pathref.PathRefProducer;
 import org.infrastructurebuilder.pathref.base.AbstractBasicPathPropertiesPathRefProducer;
-import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

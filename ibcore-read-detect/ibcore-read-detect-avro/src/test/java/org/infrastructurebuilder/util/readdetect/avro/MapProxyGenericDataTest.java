@@ -17,7 +17,8 @@
  */
 package org.infrastructurebuilder.util.readdetect.avro;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
@@ -28,8 +29,11 @@ import org.apache.avro.generic.MapProxyGenericData;
 import org.apache.avro.generic.MapProxyGenericData.IBDataJRMPDateConversion;
 import org.apache.avro.generic.MapProxyGenericData.IBDataJRMPTimeConversion;
 import org.apache.avro.generic.MapProxyGenericData.IBDataJRMPTimestampConversion;
-import org.infrastructurebuilder.util.readdetect.avro.Formatters;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

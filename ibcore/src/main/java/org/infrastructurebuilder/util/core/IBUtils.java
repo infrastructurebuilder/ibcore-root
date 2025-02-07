@@ -24,7 +24,6 @@ import static java.nio.file.Files.createFile;
 import static java.nio.file.Files.exists;
 import static java.nio.file.Files.isRegularFile;
 import static java.nio.file.Files.isWritable;
-import static java.nio.file.Files.readAttributes;
 import static java.nio.file.Files.walkFileTree;
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
@@ -43,7 +42,6 @@ import static org.infrastructurebuilder.exceptions.IBException.cet;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -91,8 +89,6 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.Spliterators;
-import java.util.StringJoiner;
-import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -189,7 +185,7 @@ public class IBUtils {
   public final static Function<Path, Optional<BasicFileAttributes>> getAttributes = (i) -> {
     Optional<BasicFileAttributes> retVal = empty();
     try {
-      retVal = of(readAttributes(requireNonNull(i), BasicFileAttributes.class));
+      retVal = of(Files.readAttributes(requireNonNull(i), BasicFileAttributes.class));
     } catch (IOException e) {
       // log.error("Error reading basic attributes " + i, e);
     }

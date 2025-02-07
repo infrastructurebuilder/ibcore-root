@@ -21,16 +21,15 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.infrastructurebuilder.api.base.NameDescribed;
-import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.PathRefFactory;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
 
 /**
- * An IBResourceBuilderFactorySupplier is used to map {@link PathRef} identifiers supplied by a {@link PathRefFactory}
+ * An IBResourceBuilderFactorySupplier is used to map {@link PathRefPath} identifiers supplied by a {@link PathRefFactory}
  * to instances of an {@link IBResourceBuilderFactory}
  *
  * This may seem unnecessarily complex as a means to obtain a factory-of-builders, but being able to indicate the actual
- * location of a {@link PathRef} by its identifier rather than its path allows us to fit in between an immovable
+ * location of a {@link PathRefPath} by its identifier rather than its path allows us to fit in between an immovable
  * location and an unknown identifier when attempting to validate values later.
  *
  *

@@ -17,17 +17,15 @@
  */
 package org.infrastructurebuilder.pathref.base;
 
-import static java.util.Optional.ofNullable;
-
 import java.net.URI;
 import java.nio.file.FileSystems;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 
-import org.infrastructurebuilder.pathref.PathRefProducer;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.fs.PathRefProducer;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 

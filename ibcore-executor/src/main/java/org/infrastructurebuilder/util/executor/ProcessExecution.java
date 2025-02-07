@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.infrastructurebuilder.pathref.JSONAndChecksumEnabled;
 import org.infrastructurebuilder.pathref.JSONBuilderFactory;
-import org.infrastructurebuilder.pathref.PathRef;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.json.JSONObject;
 import org.zeroturnaround.exec.ProcessExecutor;
 
@@ -72,7 +72,7 @@ public interface ProcessExecution extends JSONAndChecksumEnabled, AutoCloseable 
 
   ListCapturingLogOutputStream getStdErr();
 
-  default Optional<PathRef> getRelativePathRef() {
+  default Optional<PathRefPath> getRelativePathRef() {
     return Optional.empty();
   }
 

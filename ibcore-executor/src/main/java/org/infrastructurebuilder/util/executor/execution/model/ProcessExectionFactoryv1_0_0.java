@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.util.executor.ProcessException;
 import org.infrastructurebuilder.util.executor.ProcessExecution;
 import org.infrastructurebuilder.util.executor.ProcessExecutionFactory;
@@ -49,7 +50,7 @@ public class ProcessExectionFactoryv1_0_0 implements ProcessExecutionFactory {
   private final Path workDirectory;
   private boolean background;
   private List<Integer> exitCodes = null;
-  private Path relativeRoot = null;
+  private PathRefPath relativeRoot = null;
   private Map<String, String> env = null;
   private boolean optional;
   private Checksum execChecksum = null;
@@ -137,7 +138,7 @@ public class ProcessExectionFactoryv1_0_0 implements ProcessExecutionFactory {
   }
 
   @Override
-  public ProcessExecutionFactory withRelativeRoot(Path relativeRoot) {
+  public ProcessExecutionFactory withRelativeRoot(PathRefPath relativeRoot) {
     this.relativeRoot = requireNonNull(relativeRoot);
     return this;
   }

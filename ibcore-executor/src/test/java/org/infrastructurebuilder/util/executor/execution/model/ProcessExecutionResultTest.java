@@ -50,10 +50,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.infrastructurebuilder.pathref.Checksum;
-import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.fs.PathRefUtils;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.executor.DefaultProcessExecutionResultBag;
 import org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream;
@@ -94,7 +94,7 @@ public class ProcessExecutionResultTest {
 
   private ProcessExecutionResult res3;
 
-  private Path scratchDir;
+  private PathRefPath scratchDir;
 
   private List<String> stdErr;
 
@@ -139,7 +139,7 @@ public class ProcessExecutionResultTest {
 
     stdErr = Arrays.asList("Hi", "there");
     stdOut = Arrays.asList("hello", "gentlepersons");
-    scratchDir = wps.get();
+    scratchDir = PathRefUtils.fromPath(wps.get());
     var uri = URI.create(PathRefPath.PATHREF_TEMPLATE.formatted(scratchDir.toUri()));
 
     PathRefFileSystem prfs = (PathRefFileSystem) FileSystems.newFileSystem(uri, new HashMap<>());

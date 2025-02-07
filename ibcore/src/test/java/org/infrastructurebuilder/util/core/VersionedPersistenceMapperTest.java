@@ -30,6 +30,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.StringJoiner;
 
+import org.infrastructurebuilder.api.Modeled;
 import org.infrastructurebuilder.util.core.DefaultIBVersion.DefaultIBVersionBoundedRange;
 import org.infrastructurebuilder.util.core.IBVersion.IBVersionBoundedRange;
 import org.json.JSONObject;

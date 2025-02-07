@@ -21,11 +21,7 @@ import static java.time.Duration.ofMillis;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Arrays;
@@ -34,9 +30,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
-import org.infrastructurebuilder.util.core.IBUtils;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.fs.PathRefUtils;
 import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.GeneratedProcessExecution;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -62,8 +58,10 @@ public class DefaultProcessExecutionTest {
   private ProcessExecutionModelXpp3WriterEx w;
   GeneratedProcessExecution p1;
   private DefaultProcessExecution p2;
-  private Path workDirectory;
+  private Path _workDirectory;
   private String id;
+  private Path workDirectory;
+  private PathRefPath root;
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -74,13 +72,16 @@ public class DefaultProcessExecutionTest {
     r = new ProcessExecutionModelXpp3Reader();
     w = new ProcessExecutionModelXpp3WriterEx();
     workDirectory = wps.get();
+    workDirectory = PathRefUtils.fromPath(_workDirectory);
+
+    root = PathRefUtils.fromPath(wps.getRoot());
 
     p1 = new GeneratedProcessExecution();
     p1.setId(id);
-    p1.setRelativeRootURL(workDirectory.toAbsolutePath().toUri().toURL().toExternalForm());
+    p1.setRoot(workDirectory.getFileSystem().toString());
 
     p2 = new DefaultProcessExecution(id, executable, arguments, timeout, empty(), workDirectory, true,
-        of(new HashMap<>()), of(wps.getRoot()), empty(), empty(), false);
+        of(new HashMap<>()), of(root), empty(), empty(), false);
 
   }
 

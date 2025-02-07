@@ -31,13 +31,13 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Supplier;
 
+import org.infrastructurebuilder.api.OptStream;
+import org.infrastructurebuilder.api.PathAndChecksum;
+import org.infrastructurebuilder.api.base.DefaultPathAndChecksum;
 import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.Checksum;
-import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
 import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.core.OptStream;
-import org.infrastructurebuilder.util.core.PathAndChecksum;
 import org.infrastructurebuilder.util.readdetect.base.IBResource;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory;

@@ -41,6 +41,8 @@ import java.util.Optional;
 import java.util.StringJoiner;
 
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
+import org.infrastructurebuilder.api.Modeled;
+import org.infrastructurebuilder.api.OptStream;
 import org.infrastructurebuilder.api.base.NameDescribed;
 import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.pathref.Checksum;
@@ -49,10 +51,8 @@ import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
 import org.infrastructurebuilder.pathref.ChecksumEnabled;
 import org.infrastructurebuilder.pathref.JSONBuilderFactory;
 import org.infrastructurebuilder.pathref.JSONOutputEnabled;
-import org.infrastructurebuilder.pathref.PathRef;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.core.Modeled;
-import org.infrastructurebuilder.util.core.OptStream;
 import org.infrastructurebuilder.util.readdetect.base.impls.IBURLPlexusIOResource;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
@@ -292,7 +292,7 @@ public interface IBResource extends JSONOutputEnabled, ChecksumEnabled, NameDesc
     return false;
   }
 
-  default Optional<PathRef> getRelativePathRef() {
+  default Optional<PathRefPath> getRelativePathRef() {
     return Optional.empty();
   }
 

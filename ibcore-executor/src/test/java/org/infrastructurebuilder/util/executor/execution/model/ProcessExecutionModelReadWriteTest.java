@@ -17,28 +17,18 @@
  */
 package org.infrastructurebuilder.util.executor.execution.model;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.Environment;
 import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.GeneratedProcessExecutionResult;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 class ProcessExecutionModelReadWriteTest {
 

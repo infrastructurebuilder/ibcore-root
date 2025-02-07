@@ -21,27 +21,15 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 
 import java.net.URI;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Properties;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.component.configurator.converters.basic.AbstractBasicConverter;
-import org.infrastructurebuilder.pathref.AbsolutePathRef;
-import org.infrastructurebuilder.pathref.AbstractBaseFileBackedPathRef;
-import org.infrastructurebuilder.pathref.PathRef;
-import org.infrastructurebuilder.pathref.PathRefProducer;
 import org.infrastructurebuilder.pathref.base.AbstractBasicPathPropertiesPathRefProducer;
-import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

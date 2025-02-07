@@ -20,10 +20,8 @@ package org.infrastructurebuilder.util.readdetect.path.impls.relative;
 import static java.lang.String.format;
 import static java.time.Instant.now;
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -32,22 +30,19 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Supplier;
 
+import org.infrastructurebuilder.api.OptStream;
+import org.infrastructurebuilder.api.PathAndChecksum;
+import org.infrastructurebuilder.api.base.DefaultPathAndChecksum;
 import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.Checksum;
-import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
 import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.core.OptStream;
-import org.infrastructurebuilder.util.core.PathAndChecksum;
 import org.infrastructurebuilder.util.readdetect.base.IBResource;
-import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceException;
 import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathIBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,27 +105,27 @@ public class RelativePathIBResourceBuilderFactory extends AbstractPathIBResource
       }
 
       public RelativePathIBResource(PathRefPath r, IBResourceModel m, Path sourcePath) {
-        this(m, new DefaultPathAndChecksum(r, sourcePath));
+        this(m, new DefaultPathAndChecksum(r));
       }
 
-      public RelativePathIBResource(PathRef r, IBResourceModel m) {
-        this(m,
-            new DefaultPathAndChecksum(of(r),
-                Paths
-                    .get(URI.create(m.getPath().orElseThrow(() -> new IBResourceException("No [required] file path")))),
-                new Checksum(m.getStreamChecksum())));
-      }
+//      public RelativePathIBResource(PathRef r, IBResourceModel m) {
+//        this(m,
+//            new DefaultPathAndChecksum(r,
+//                Paths
+//                    .get(URI.create(m.getPath().orElseThrow(() -> new IBResourceException("No [required] file path")))),
+//                new Checksum(m.getStreamChecksum())));
+//      }
 
-      public RelativePathIBResource(PathRef r, JSONObject j) {
-        this(r, IBResourceBuilder.modelFromJSON.apply(j).get()); // TODO Convert?
-        if (!validate(true))
-          throw new IBResourceException("Resource did not pass validation");
-      }
+//      public RelativePathIBResource(PathRef r, JSONObject j) {
+//        this(r, IBResourceBuilder.modelFromJSON.apply(j).get()); // TODO Convert?
+//        if (!validate(true))
+//          throw new IBResourceException("Resource did not pass validation");
+//      }
 
-      public RelativePathIBResource(PathRef r, Path path, Checksum checksum, Optional<String> type,
+      public RelativePathIBResource(PathRefPath path, Checksum checksum, Optional<String> type,
           Optional<Properties> addlProps)
       {
-        this(new IBResourceModel(), new DefaultPathAndChecksum(of(r), path, checksum));
+        this(new IBResourceModel(), new DefaultPathAndChecksum(path, checksum));
         IBUtils.getAttributes.apply(path).ifPresent(bfa -> {
           this.m.setCreated(bfa.creationTime().toInstant());
           this.m.setLastUpdate(bfa.lastModifiedTime().toInstant());
@@ -140,10 +135,6 @@ public class RelativePathIBResourceBuilderFactory extends AbstractPathIBResource
         requireNonNull(type).ifPresent(t -> m.setStreamType(t));
         if (!validate(true))
           throw new IBResourceException("Resource did not pass validation");
-      }
-
-      public RelativePathIBResource(PathRef r, Path path, Checksum checksum, Optional<String> type) {
-        this(r, path, checksum, type, empty());
       }
 
       @Override

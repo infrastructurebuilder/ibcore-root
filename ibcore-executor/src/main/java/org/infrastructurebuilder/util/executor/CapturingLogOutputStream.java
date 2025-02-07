@@ -20,7 +20,6 @@ package org.infrastructurebuilder.util.executor;
 import static java.nio.file.Files.createDirectories;
 import static java.nio.file.Files.newBufferedWriter;
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
 
 import java.io.BufferedWriter;

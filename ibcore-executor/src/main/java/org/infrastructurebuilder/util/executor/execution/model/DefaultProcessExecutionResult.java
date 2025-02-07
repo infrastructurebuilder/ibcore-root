@@ -29,7 +29,7 @@ import java.util.function.Function;
 
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
-import org.infrastructurebuilder.pathref.PathRef;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.util.executor.ProcessExecution;
 import org.infrastructurebuilder.util.executor.ProcessExecutionResult;
 import org.infrastructurebuilder.util.executor.model.executor.model.utils.IBCoreExecutorModelUtils;
@@ -76,7 +76,7 @@ public class DefaultProcessExecutionResult implements ProcessExecutionResult {
 
   private final ProcessExecution processExecution;
 
-  private final PathRef pr;
+  private final PathRefPath pr;
 
   public DefaultProcessExecutionResult(GeneratedProcessExecutionResult gper) {
     this.gper = requireNonNull(gper);
@@ -175,7 +175,7 @@ public class DefaultProcessExecutionResult implements ProcessExecutionResult {
     );
   }
 
-  public Optional<PathRef> getRelativePathRef() {
+  public Optional<PathRefPath> getRelativePathRef() {
     return Optional.ofNullable(pr);
   }
 

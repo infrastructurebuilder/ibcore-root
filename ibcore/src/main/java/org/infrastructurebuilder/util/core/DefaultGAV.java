@@ -29,7 +29,7 @@ import java.util.Optional;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
-import org.infrastructurebuilder.pathref.PathRef;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.util.versions.DefaultGAVBasic;
 import org.infrastructurebuilder.util.versions.IBVersionsSupplier;
 import org.json.JSONObject;
@@ -188,7 +188,7 @@ public class DefaultGAV extends DefaultGAVBasic implements GAV {
   }
 
   @Override
-  public GAV withRelativeRoot(PathRef r) {
+  public GAV withRelativeRoot(PathRefPath r) {
     this.builder = ChecksumBuilderFactory.newAlternateInstanceWithPathRef(Optional.ofNullable(r));
     return this;
   }

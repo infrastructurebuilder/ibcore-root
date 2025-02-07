@@ -40,7 +40,8 @@ import java.util.UUID;
 
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
-import org.infrastructurebuilder.util.core.IBUtils;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.fs.PathRefUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,12 +67,14 @@ public class ProcessRunnerTest {
   private Path scratchDir;
   private String ttClass;
   private Path ttest1;
-  private Path target;
+  private Path _target;
   private VersionedProcessExecutionFactory vpef;
+  private PathRefPath target;
 
   @BeforeEach
   public void setUp() throws Exception {
-    target = wps.getRoot();
+    _target = wps.getRoot();
+    target = PathRefUtils.fromPath(_target);
     scratchDir = target.resolve(UUID.randomUUID().toString());
     runner = new DefaultProcessRunner(scratchDir, of(System.out), of(logger), of(target));
     packerExecutable = target.resolve("packer" + (isWindows() ? ".exe" : "")).toAbsolutePath();

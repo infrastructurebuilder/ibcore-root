@@ -20,8 +20,8 @@ package org.infrastructurebuilder.util.artifacts;
 import java.util.Optional;
 import java.util.function.Function;
 
+import org.infrastructurebuilder.api.IdentifiedAndWeighted;
 import org.infrastructurebuilder.util.core.GAV;
-import org.infrastructurebuilder.util.core.IdentifiedAndWeighted;
 
 /**
  *

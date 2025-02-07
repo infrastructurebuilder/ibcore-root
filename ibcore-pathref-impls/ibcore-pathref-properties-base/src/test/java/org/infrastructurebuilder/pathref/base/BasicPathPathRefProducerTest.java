@@ -24,10 +24,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Set;
 
-import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.PathRefFactory;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
-import org.infrastructurebuilder.pathref.base.BasicPathPropertiesPathRefProducer;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;

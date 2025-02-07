@@ -97,8 +97,8 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
-import org.infrastructurebuilder.util.core.IdentifiedAndWeighted;
+import org.infrastructurebuilder.api.IdentifiedAndWeighted;
+import org.infrastructurebuilder.pathref.fs.TypeToExtensionMapper;
 
 @Named
 public class DefaultTypeToExtensionMapper implements TypeToExtensionMapper {

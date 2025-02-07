@@ -17,20 +17,18 @@
  */
 package org.infrastructurebuilder.util.readdetect.base;
 
-import java.util.Optional;
-
-import org.infrastructurebuilder.pathref.PathRef;
+import org.infrastructurebuilder.api.OptStream;
+import org.infrastructurebuilder.api.base.DefaultPathAndChecksum;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
-import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
-import org.infrastructurebuilder.util.core.OptStream;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathIBResourceBuilderFactory.AbstractIBResource;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 
 public class FakeAbstractIBResource extends AbstractIBResource {
   private final static TestingPathSupplier tps = new TestingPathSupplier();
 
-  public FakeAbstractIBResource(PathRef root, IBResourceModel model) {
-    super(model, new DefaultPathAndChecksum(Optional.ofNullable(root), tps.getTestClasses().resolve("rick.jpg")));
+  private FakeAbstractIBResource(PathRefPath root, IBResourceModel model) {
+    super(model, new DefaultPathAndChecksum( tps.getTestClasses().resolve("rick.jpg")));
   }
 
   @Override

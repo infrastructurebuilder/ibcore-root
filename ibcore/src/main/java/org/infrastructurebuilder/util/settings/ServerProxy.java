@@ -26,9 +26,9 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.infrastructurebuilder.api.Identified;
 import org.infrastructurebuilder.pathref.JSONBuilderFactory;
 import org.infrastructurebuilder.pathref.JSONOutputEnabled;
-import org.infrastructurebuilder.util.core.Identified;
 import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
 import org.infrastructurebuilder.util.credentials.basic.DefaultBasicCredentials;
 import org.json.JSONObject;

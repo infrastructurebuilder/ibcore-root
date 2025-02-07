@@ -20,11 +20,12 @@ package org.infrastructurebuilder.util.readdetect.base;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.pathref.PathRef;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
+
 
 public class DefaultEmptyIBResourceBuilder extends AbstractIBResourceBuilder<Void> {
 
-  public DefaultEmptyIBResourceBuilder(PathRef root) {
+  public DefaultEmptyIBResourceBuilder(PathRefPath root) {
     super(null);
   }
 

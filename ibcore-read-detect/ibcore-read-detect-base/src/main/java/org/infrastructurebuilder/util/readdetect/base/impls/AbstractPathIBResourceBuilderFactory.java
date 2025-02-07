@@ -28,14 +28,13 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.infrastructurebuilder.api.PathAndChecksum;
+import org.infrastructurebuilder.api.base.DefaultPathAndChecksum;
 import org.infrastructurebuilder.objectmapper.jackson.ObjectMapperUtils;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
-import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.util.core.DefaultPathAndChecksum;
 import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.core.PathAndChecksum;
 import org.infrastructurebuilder.util.ibpathref.metadata.model.v1_0.IBMetadataModel;
 import org.infrastructurebuilder.util.readdetect.base.AbstractIBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.base.AbstractIBResourceBuilderFactory;
@@ -158,7 +157,7 @@ abstract public class AbstractPathIBResourceBuilderFactory extends AbstractIBRes
     public IBResourceBuilder<Path> accept(Supplier<Path> path) {
       Optional<Path> supplied = ofNullable(path).map(Supplier::get);
       this.path = supplied.filter(p -> acceptable(p.toString()))
-          .map(s -> new DefaultPathAndChecksum(getRoot(), s, null)).orElse(null); // mapped to a
+          .map(s -> new DefaultPathAndChecksum(s, null)).orElse(null); // mapped to a
 
       if (supplied.isPresent() && this.path == null) {
         log.warn("Supplied.Path.No.PandC|" + supplied.get().toString());
@@ -303,7 +302,7 @@ abstract public class AbstractPathIBResourceBuilderFactory extends AbstractIBRes
     }
 
     @Override
-    public Optional<PathRef> getRelativePathRef() {
+    public Optional<PathRefPath> getRelativePathRef() {
       return this.path.getRoot();
     }
 
@@ -358,10 +357,13 @@ abstract public class AbstractPathIBResourceBuilderFactory extends AbstractIBRes
 
     @Override
     public Optional<Long> size() {
-//      return this.m.getStreamSize();
-      var v = this.path.size();
-      v.ifPresent(l -> this.m.setStreamSize(l));
-      return v;
+      try {
+        var v = this.path.size();
+        this.m.setStreamSize(v);
+        return Optional.of(v);
+      } catch (Throwable t) {
+        return Optional.empty();
+      }
     }
 
     @Override

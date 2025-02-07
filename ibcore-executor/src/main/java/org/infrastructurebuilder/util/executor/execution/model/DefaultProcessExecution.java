@@ -21,10 +21,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.UUID.randomUUID;
 
-import java.io.File;
 import java.io.PrintStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -35,11 +32,11 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.infrastructurebuilder.pathref.AbsolutePathRef;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
-import org.infrastructurebuilder.pathref.PathRef;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream;
 import org.infrastructurebuilder.util.executor.ModeledProcessExecution;
 import org.infrastructurebuilder.util.executor.ProcessException;
@@ -87,7 +84,7 @@ public class DefaultProcessExecution implements ProcessExecution {
 
   public DefaultProcessExecution(final String id, final String executable, final List<String> arguments,
       final Optional<java.time.Duration> timeout, final Optional<Path> stdIn, final Path workDirectory,
-      final boolean optional, final Optional<Map<String, String>> environment, final Optional<Path> relativeRoot,
+      final boolean optional, final Optional<Map<String, String>> environment, final Optional<PathRefPath> relativeRoot,
       final Optional<List<Integer>> exitValues, final Optional<java.io.PrintStream> addl, final boolean background)
   {
     this.gpe = new ModeledProcessExecution("1.0", id, executable, arguments,
@@ -98,7 +95,7 @@ public class DefaultProcessExecution implements ProcessExecution {
         null, // Placeholders until we set the values below
         null, //
         null, //
-        relativeRoot.map(AbsolutePathRef::new).map(AbsolutePathRef::toString).orElse(null),
+        relativeRoot.map(PathRefPath::getFileSystem).map(PathRefFileSystem::toString).orElse(null),
         requireNonNull(environment).map(DefaultProcessExecution.toEnvironment::apply).map(Environment::new)
             .orElseGet(() -> new Environment()));
     this.gpe.setStdOutPath(getStdOut().getPath().map(Path::toString).orElse(null));
@@ -110,7 +107,7 @@ public class DefaultProcessExecution implements ProcessExecution {
 
   DefaultProcessExecution(final String id, final String executable, final List<String> arguments,
       final Optional<Duration> timeout, final Optional<Path> stdIn, final Path workDirectory, final boolean optional,
-      final Optional<Map<String, String>> environment, final Optional<Path> relativeRoot,
+      final Optional<Map<String, String>> environment, final Optional<PathRefPath> relativeRoot,
       final Optional<List<Integer>> exitValues, final Optional<java.io.PrintStream> addl, final boolean background,
       final org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream stdout,
       final org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream stderr)
@@ -197,7 +194,7 @@ public class DefaultProcessExecution implements ProcessExecution {
     return gpe.getExitValues().map(ev -> ev.stream().map(Integer::parseInt).toList());
   }
 
-  public Optional<PathRef> getRelativeRoot() {
+  public Optional<PathRefPath> getRelativeRoot() {
     return gpe.getRelativePathRef();
   }
 

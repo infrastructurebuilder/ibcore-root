@@ -24,11 +24,10 @@ import java.util.function.Supplier;
 
 import org.apache.avro.file.SeekableFileInput;
 import org.apache.avro.file.SeekableInput;
+import org.infrastructurebuilder.api.PathAndChecksum;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.Checksum;
-import org.infrastructurebuilder.pathref.PathRef;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.util.core.PathAndChecksum;
 import org.infrastructurebuilder.util.readdetect.base.IBResource;
 import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.infrastructurebuilder.util.readdetect.path.impls.relative.RelativePathIBResourceBuilderFactory;
@@ -72,10 +71,10 @@ public class RelativePathAvroIBResourceBuilderFactory extends RelativePathIBReso
         super(m, sourcePath);
       }
 
-      public RelativePathIBResourceAvro(PathRef root, Path path, Checksum checksum, Optional<String> type,
+      public RelativePathIBResourceAvro(PathRefPath path, Checksum checksum, Optional<String> type,
           Optional<Properties> addlProps)
       {
-        super(root, path, checksum, type, addlProps);
+        super( path, checksum, type, addlProps);
       }
 
       @Override

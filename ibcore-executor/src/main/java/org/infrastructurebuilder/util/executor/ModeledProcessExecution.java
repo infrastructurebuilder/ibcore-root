@@ -21,20 +21,23 @@ import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toMap;
 
+import java.net.URI;
+import java.nio.file.FileSystemNotFoundException;
+import java.nio.file.FileSystems;
 import java.util.List;
 import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
 
+import org.infrastructurebuilder.api.Modeled;
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.pathref.URIPathRef;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
 import org.infrastructurebuilder.pathref.JSONAndChecksumEnabled;
-import org.infrastructurebuilder.pathref.PathRef;
-import org.infrastructurebuilder.util.core.Modeled;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.util.executor.model.executor.model.utils.IBCoreExecutorModelUtils;
 import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.Environment;
 import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.GeneratedProcessExecution;
@@ -71,16 +74,16 @@ public class ModeledProcessExecution extends GeneratedProcessExecution implement
         , s.getStdOutPath().orElse(null) //
         , s.getStdErrPath().orElse(null) //
         , s.getStdInPath().orElse(null) //
-        , s.getRelativeRootURL().orElse(null)//
+        , s.getRoot().orElse(null)//
         , s.getEnvironment().orElse(null));
   }
 
   public ModeledProcessExecution(String modelVersion, String id, String executable, List<String> arguments,
       String timeout, Boolean optional, Boolean background, String workDirectory, List<String> exitValues,
-      String stdOutPath, String stdErrPath, String stdInPath, String relativeRootURL, Environment environment)
+      String stdOutPath, String stdErrPath, String stdInPath, String root, Environment environment)
   {
     super(modelVersion, id, executable, arguments, timeout, optional, background, workDirectory, exitValues, stdOutPath,
-        stdErrPath, stdInPath, relativeRootURL, environment);
+        stdErrPath, stdInPath, root, environment);
 
   }
 
@@ -96,8 +99,15 @@ public class ModeledProcessExecution extends GeneratedProcessExecution implement
     }
   }
 
-  public Optional<PathRef> getRelativePathRef() {
-    return getRelativeRootURL().map(URIPathRef::new);
+  public Optional<PathRefPath> getRelativePathRef() {
+    return getRoot().map(uri -> {
+      try {
+        return ((PathRefFileSystem) FileSystems.getFileSystem(URI.create(uri))).getRoot();
+      } catch (FileSystemNotFoundException fsnf) {
+        log.error("Attempted to acquire uncreated filesystem %s".formatted(uri), fsnf);
+        return null;
+      }
+    });
   }
 
   public Optional<ChecksumBuilder> getChecksumBuilder() {
@@ -114,7 +124,7 @@ public class ModeledProcessExecution extends GeneratedProcessExecution implement
             .addPathAsString(getStdOutPath()) //
             .addPathAsString(getStdErrPath()) //
             .addPathAsString(getStdInPath()) //
-//    .addPathAsString(getRelativeRootURL()) // Never add RR to Checksum
+            .addString(getRoot().orElse(null)) // Never add RR to Checksum
             .addMapStringString(getEnvironment().flatMap(ModeledProcessExecution.envToMapSS)));
   }
 

@@ -19,7 +19,7 @@ package org.infrastructurebuilder.util.artifacts;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.infrastructurebuilder.util.core.IdentifiedAndWeighted;
+import org.infrastructurebuilder.api.IdentifiedAndWeighted;
 import org.junit.jupiter.api.Test;
 
 abstract public class TestWeightedAndIdentified {

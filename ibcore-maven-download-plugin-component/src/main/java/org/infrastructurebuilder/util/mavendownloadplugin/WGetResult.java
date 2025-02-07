@@ -22,7 +22,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.core.PathAndChecksum;
+import org.infrastructurebuilder.api.PathAndChecksum;
 
 public interface WGetResult {
   
