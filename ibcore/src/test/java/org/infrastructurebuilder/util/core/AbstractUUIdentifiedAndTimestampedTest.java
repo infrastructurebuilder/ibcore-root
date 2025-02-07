@@ -24,6 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.time.Instant;
 import java.util.UUID;
 
+import org.infrastructurebuilder.api.AbstractUUIdentifiedAndTimestamped;
+import org.infrastructurebuilder.api.UUIdentifiedAndTimestamped;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -58,7 +60,7 @@ public class AbstractUUIdentifiedAndTimestampedTest {
 
   @Test
   public void testCompare() {
-    var c = UUIdentifiedAndTimestamped.comparator;
+    var c = UUIdentifiedAndTimestamped.uandtcomparator;
     assertEquals(0, c.compare(w1, w1));
     assertTrue(c.compare(w2, w1) < 0);
     assertEquals(0, c.compare(s1, s2));
@@ -66,7 +68,7 @@ public class AbstractUUIdentifiedAndTimestampedTest {
 
   @Test
   public void testCompareSameTime() {
-    var c = UUIdentifiedAndTimestamped.comparator;
+    var c = UUIdentifiedAndTimestamped.uandtcomparator;
     assertFalse(s2.compareTo(s3) == 0);
   }
 

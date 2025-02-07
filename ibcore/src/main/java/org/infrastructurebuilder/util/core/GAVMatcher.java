@@ -20,7 +20,7 @@ package org.infrastructurebuilder.util.core;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-import org.infrastructurebuilder.util.core.IBVersion.IBVersionRange;
+import org.infrastructurebuilder.util.version.IBVersion.IBVersionRange;
 
 public interface GAVMatcher {
 

@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 
 import org.infrastructurebuilder.util.core.GAV;
 import org.infrastructurebuilder.util.core.GAVMatcher;
-import org.infrastructurebuilder.util.core.IBVersion.IBVersionRange;
+import org.infrastructurebuilder.util.version.IBVersion.IBVersionRange;
 
 public class DefaultGAVMatcher implements GAVMatcher {
 //  private final static Pattern allString = Pattern.compile(".*");

@@ -23,11 +23,11 @@ import java.io.Writer;
 import java.util.Optional;
 
 import org.infrastructurebuilder.api.Modeled;
-import org.infrastructurebuilder.util.core.DefaultIBVersion;
-import org.infrastructurebuilder.util.core.DefaultIBVersion.DefaultIBVersionBoundedRange;
-import org.infrastructurebuilder.util.core.IBVersion;
-import org.infrastructurebuilder.util.core.IBVersion.IBVersionBoundedRange;
 import org.infrastructurebuilder.util.executor.ModeledProcessExecution;
+import org.infrastructurebuilder.util.version.DefaultIBVersion;
+import org.infrastructurebuilder.util.version.IBVersion;
+import org.infrastructurebuilder.util.version.DefaultIBVersion.DefaultIBVersionBoundedRange;
+import org.infrastructurebuilder.util.version.IBVersion.IBVersionBoundedRange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

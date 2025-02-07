@@ -133,6 +133,7 @@ import org.infrastructurebuilder.pathref.IBChecksumUtils;
 import org.infrastructurebuilder.pathref.JSONOutputEnabled;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.util.settings.ServerProxy;
+import org.infrastructurebuilder.util.version.IBVersion;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -1229,7 +1230,7 @@ public class IBUtilsTest {
   @Test
   public void getVersion() {
     GAV g = new DefaultGAV("X:Y:1.0.0");
-    IBVersion ibv = IBUtils.getVersion(g).get();
+    IBVersion ibv = IBVersion.getVersion(g).get();
     assertEquals("1.0.0", ibv.getValue());
   }
 
@@ -1246,7 +1247,7 @@ public class IBUtilsTest {
   @Test
   public void testAPIVersion() {
     GAV g = new DefaultGAV("X:Y:1.0.0");
-    IBVersion c = IBUtils.apiVersion(g).get();
+    IBVersion c = IBVersion.apiVersion(g).get();
     assertEquals("1.0", c.getValue());
   }
 

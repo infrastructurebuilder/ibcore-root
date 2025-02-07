@@ -847,10 +847,6 @@ public class IBUtils {
         && (vPattern == null || vPattern.matcher(val).matches());
   }
 
-  public static Optional<IBVersion> apiVersion(final GAV gav) {
-    return requireNonNull(gav).getVersion().map(DefaultIBVersion::new).map(DefaultIBVersion::apiVersion);
-  }
-
   // public final static Function<Artifact, GAV> artifactToGAV = (art) -> {
   // final Path p = Optional.ofNullable(art.getFile()).map(p2 ->
   // p2.toPath()).orElse(null);
@@ -910,10 +906,6 @@ public class IBUtils {
   // a.getVersion(), a.getExtension())
   // .withFile(Optional.ofNullable(a.getFile()).map(File::toPath).orElse(null));
   // }
-
-  public static Optional<IBVersion> getVersion(final GAV art) {
-    return art.getVersion().map(DefaultIBVersion::new);
-  }
 
   // public static VersionScheme getVersionScheme() {
   // return new org.eclipse.aether.util.version.GenericVersionScheme();

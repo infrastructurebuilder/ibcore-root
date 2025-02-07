@@ -15,7 +15,7 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.core;
+package org.infrastructurebuilder.util.version;
 
 import static java.util.Objects.requireNonNull;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
@@ -24,6 +24,7 @@ import static org.infrastructurebuilder.util.core.IBVersionException.ibt;
 import java.util.Objects;
 
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.util.core.RangeOperator;
 
 import com.vdurmont.semver4j.Range;
 import com.vdurmont.semver4j.Requirement;

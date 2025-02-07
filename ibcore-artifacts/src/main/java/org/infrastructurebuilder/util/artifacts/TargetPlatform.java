@@ -19,19 +19,40 @@ package org.infrastructurebuilder.util.artifacts;
 
 import static java.util.Optional.empty;
 
+import java.util.Comparator;
 import java.util.Optional;
 
 /**
  * A TargetPlatform is a (unique) string identifier that can be tied to a GAV to produce a targeted output
  *
+ * Note that the comparator for a target platform is
+ *
  * @author mykel.alvis
  *
  */
-public interface TargetPlatform {
+public interface TargetPlatform extends Comparable<TargetPlatform> {
+  public final static Comparator<TargetPlatform> tpcomparator = new Comparator<>() {
+
+    @Override
+    public int compare(TargetPlatform tp1, TargetPlatform tp2) {
+      Optional<String> os1 = tp1.getOperatingSystem();
+      Optional<String> os2 = tp2.getOperatingSystem();
+      if (os1.isPresent() && os2.isPresent()) {
+        return os1.get().compareTo(os2.get());
+      } else if (os1.isPresent()) {
+        return 1; // this is present, tp2 is empty, so this is greater
+      } else if (os2.isPresent()) {
+        return -1; // tp2 is present, this is empty, so tp2 is greater
+      } else {
+        return tp1.getPlatformIdentifier().compareTo(tp2.getPlatformIdentifier());
+      }
+    }
+
+  };
+
   String getPlatformIdentifier();
 
   default Optional<String> getOperatingSystem() {
     return empty();
-
   }
 }

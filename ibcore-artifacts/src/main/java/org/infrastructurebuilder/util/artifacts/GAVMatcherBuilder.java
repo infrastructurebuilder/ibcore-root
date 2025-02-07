@@ -25,7 +25,7 @@ import java.util.regex.PatternSyntaxException;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.artifacts.impl.DefaultGAVMatcher;
 import org.infrastructurebuilder.util.core.GAVMatcher;
-import org.infrastructurebuilder.util.core.IBVersion.IBVersionRange;
+import org.infrastructurebuilder.util.version.IBVersion.IBVersionRange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

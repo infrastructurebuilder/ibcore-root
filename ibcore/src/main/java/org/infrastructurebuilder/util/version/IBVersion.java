@@ -15,11 +15,26 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.core;
+package org.infrastructurebuilder.util.version;
+
+import static java.util.Objects.requireNonNull;
+
+import java.util.Optional;
+
+import org.infrastructurebuilder.util.core.GAV;
+import org.infrastructurebuilder.util.core.RangeOperator;
 
 import com.vdurmont.semver4j.Semver.SemverType;
 
 public interface IBVersion extends Comparable<IBVersion> {
+  public static Optional<IBVersion> apiVersion(final GAV gav) {
+    return requireNonNull(gav).getVersion().map(DefaultIBVersion::new).map(DefaultIBVersion::apiVersion);
+  }
+  public static Optional<IBVersion> getVersion(final GAV art) {
+    return art.getVersion().map(DefaultIBVersion::new);
+  }
+
+
 
   public interface IBVersionRange {
     public boolean isSatisfiedBy(IBVersion version);

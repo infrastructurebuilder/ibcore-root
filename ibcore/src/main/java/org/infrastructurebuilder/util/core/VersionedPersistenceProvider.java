@@ -23,7 +23,8 @@ import java.io.Writer;
 import java.util.Optional;
 
 import org.infrastructurebuilder.api.Modeled;
-import org.infrastructurebuilder.util.core.IBVersion.IBVersionBoundedRange;
+import org.infrastructurebuilder.util.version.IBVersion;
+import org.infrastructurebuilder.util.version.IBVersion.IBVersionBoundedRange;
 
 public interface VersionedPersistenceProvider<T extends Modeled> extends Comparable<VersionedPersistenceProvider<?>> {
 
