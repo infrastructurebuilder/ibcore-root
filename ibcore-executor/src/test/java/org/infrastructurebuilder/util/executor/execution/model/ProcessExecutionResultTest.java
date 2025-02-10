@@ -139,7 +139,7 @@ public class ProcessExecutionResultTest {
     stdOut = Arrays.asList("hello", "gentlepersons");
     scratchDir = PathRefUtils.fromPath(wps.get());
     //    var uri = URI.create(PathRefPath.PATHREF_TEMPLATE.formatted(scratchDir.toUri()));
-
+    root = scratchDir.getFileSystem();
     Path sd = root.getRootDirectories().iterator().next();
 
     stdOutPth = IBUtils.touchFile(sd.resolve("extraStdOut"));
