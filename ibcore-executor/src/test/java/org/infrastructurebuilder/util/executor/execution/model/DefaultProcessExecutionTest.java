@@ -31,9 +31,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.pathref.fs.PathRefUtils;
-import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.GeneratedProcessExecution;
+import org.infrastructurebuilder.util.executor.ModeledProcessExecution;
+import org.infrastructurebuilder.util.executor.model.v1_0.GeneratedProcessExecution;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -54,14 +56,12 @@ public class DefaultProcessExecutionTest {
   public static void tearDownAfterClass() throws Exception {
   }
 
-  private ProcessExecutionModelXpp3Reader r;
-  private ProcessExecutionModelXpp3WriterEx w;
   GeneratedProcessExecution p1;
   private DefaultProcessExecution p2;
   private Path _workDirectory;
   private String id;
-  private Path workDirectory;
-  private PathRefPath root;
+  private PathRefPath workDirectory;
+  private PathRefFileSystem root;
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -69,19 +69,20 @@ public class DefaultProcessExecutionTest {
     String executable = wps.getRoot().resolve("packer").toAbsolutePath().toString();
     List<String> arguments = Arrays.asList("--version");
     Optional<Duration> timeout = of(ofMillis(30000L));
-    r = new ProcessExecutionModelXpp3Reader();
-    w = new ProcessExecutionModelXpp3WriterEx();
-    workDirectory = wps.get();
+    _workDirectory = wps.get();
     workDirectory = PathRefUtils.fromPath(_workDirectory);
 
-    root = PathRefUtils.fromPath(wps.getRoot());
+    var _root = PathRefUtils.fromPath(wps.getRoot());
+
+    root = _root.getFileSystem();
 
     p1 = new GeneratedProcessExecution();
+
     p1.setId(id);
     p1.setRoot(workDirectory.getFileSystem().toString());
 
-    p2 = new DefaultProcessExecution(id, executable, arguments, timeout, empty(), workDirectory, true,
-        of(new HashMap<>()), of(root), empty(), empty(), false);
+    p2 = new DefaultProcessExecution(id, executable, arguments, of(root),timeout, empty(), workDirectory, true,
+        of(new HashMap<>()),  empty(), empty(), false);
 
   }
 
@@ -90,6 +91,11 @@ public class DefaultProcessExecutionTest {
     wps.finalize();
   }
 
+  @Test
+  public void testModeled() {
+    ModeledProcessExecution aa = new ModeledProcessExecution(p1);
+    assertNotNull(aa);
+  }
   @Test
   public void testDefaultProcessExecution() {
     assertNotNull(p1);

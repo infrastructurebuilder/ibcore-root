@@ -25,8 +25,8 @@ import java.util.Optional;
 import org.infrastructurebuilder.api.Modeled;
 import org.infrastructurebuilder.util.executor.ModeledProcessExecution;
 import org.infrastructurebuilder.util.version.DefaultIBVersion;
-import org.infrastructurebuilder.util.version.IBVersion;
 import org.infrastructurebuilder.util.version.DefaultIBVersion.DefaultIBVersionBoundedRange;
+import org.infrastructurebuilder.util.version.IBVersion;
 import org.infrastructurebuilder.util.version.IBVersion.IBVersionBoundedRange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,12 +55,14 @@ public class ProcessPersistenceProvider implements ProcessExecutionVersionedPers
 
   @Override
   public ModeledProcessExecution read(Reader r) throws IOException {
+    log.debug("Reading from %s".formatted(r));
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
   public Optional<ModeledProcessExecution> fromVersionedObject(Modeled o) {
+    log.debug("fromVersionedObject(%s)".formatted(o.getModelVersion()));
     // TODO Auto-generated method stub
     return Optional.empty();
   }

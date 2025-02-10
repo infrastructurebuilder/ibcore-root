@@ -35,11 +35,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.pathref.fs.PathRefUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -64,22 +66,22 @@ public class ProcessRunnerTest {
   private DefaultProcessRunner runner;
   private Checksum packerCsum;
   private Path packerExecutable;
-  private Path scratchDir;
+  private PathRefPath scratchDir;
   private String ttClass;
-  private Path ttest1;
-  private Path _target;
+  private PathRefPath ttest1;
+  private PathRefFileSystem root;
   private VersionedProcessExecutionFactory vpef;
   private PathRefPath target;
 
   @BeforeEach
   public void setUp() throws Exception {
-    _target = wps.getRoot();
-    target = PathRefUtils.fromPath(_target);
+    root = PathRefUtils.fromPath(wps.getRoot()).getFileSystem();
+    target = root.getRoot();
     scratchDir = target.resolve(UUID.randomUUID().toString());
     runner = new DefaultProcessRunner(scratchDir, of(System.out), of(logger), of(target));
-    packerExecutable = target.resolve("packer" + (isWindows() ? ".exe" : "")).toAbsolutePath();
+    packerExecutable = target.resolve("packer" + (isWindows() ? ".exe" : "")).toRealPath().toAbsolutePath();
     packerCsum = new Checksum(packerExecutable);
-    ttest1 = wps.getTestClasses();
+    ttest1 = PathRefUtils.fromPath(wps.getTestClasses());
     ttClass = "ThreadTest1S";
     vpef = new DefaultVersionedProcessExecutionFactory(scratchDir, Optional.empty());
   }
@@ -134,7 +136,7 @@ public class ProcessRunnerTest {
 
         .withStdIn(in)
 
-        .withRelativeRoot(target)
+        .withRelativeRoot(root)
 
         .withBackground(true);
 
@@ -172,7 +174,7 @@ public class ProcessRunnerTest {
 
         .withStdIn(in)
 
-        .withRelativeRoot(target)
+        .withRelativeRoot(root)
 
         .withBackground(true);
 
@@ -239,7 +241,7 @@ public class ProcessRunnerTest {
 
         .withStdIn(in)
 
-        .withRelativeRoot(target)
+        .withRelativeRoot(root)
 
         .withBackground(true);
 
@@ -307,7 +309,7 @@ public class ProcessRunnerTest {
         // Default max runtime
         .withDuration(ofSeconds(20))
         // From the target root
-        .withRelativeRoot(target);
+        .withRelativeRoot(root);
 
     runner = runner.add(e2);
     runner.lock(ofSeconds(15), empty()).lock(Duration.ZERO, empty()); // Test double-locking
@@ -321,6 +323,7 @@ public class ProcessRunnerTest {
     assertNotNull(p.getResults());
 
     final ProcessExecutionResult a = p.getExecutions().get(id);
+    Optional<List<String>> stdo = a.getStdOut();
     final String x = String.join("\n", a.getStdOut().orElse(Collections.emptyList()));
     assertTrue(x.contains("version-prelease"));
   }
@@ -335,7 +338,7 @@ public class ProcessRunnerTest {
 
         .withDuration(ofSeconds(20))
 
-        .withRelativeRoot(target)
+        .withRelativeRoot(root)
 
         .withChecksum(packerCsum)
 
@@ -365,7 +368,7 @@ public class ProcessRunnerTest {
 
         .withDuration(ofSeconds(20))
 
-        .withRelativeRoot(target)
+        .withRelativeRoot(root)
 
         .withChecksum(new Checksum("abcd"))
 

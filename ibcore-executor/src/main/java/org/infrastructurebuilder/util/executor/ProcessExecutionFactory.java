@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
 
 /**
@@ -49,7 +50,7 @@ public interface ProcessExecutionFactory extends Supplier<ProcessExecution> {
 
   ProcessExecutionFactory withEnvironment(Map<String, String> env);
 
-  ProcessExecutionFactory withRelativeRoot(PathRefPath relativeRoot);
+  ProcessExecutionFactory withRelativeRoot(PathRefFileSystem relativeRoot);
 
   ProcessExecutionFactory withExitCodes(List<Integer> exitCodes);
 

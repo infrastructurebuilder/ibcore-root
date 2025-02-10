@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.util.executor.ProcessException;
 import org.infrastructurebuilder.util.executor.ProcessExecution;
@@ -47,10 +48,10 @@ public class ProcessExectionFactoryv1_0_0 implements ProcessExecutionFactory {
   private final VersionedProcessExecutionFactory parent;
   private final String id;
   private final String executable;
-  private final Path workDirectory;
+  private final PathRefPath workDirectory;
   private boolean background;
   private List<Integer> exitCodes = null;
-  private PathRefPath relativeRoot = null;
+  private PathRefFileSystem relativeRoot = null;
   private Map<String, String> env = null;
   private boolean optional;
   private Checksum execChecksum = null;
@@ -59,7 +60,7 @@ public class ProcessExectionFactoryv1_0_0 implements ProcessExecutionFactory {
   private List<String> args = null;
 
   public ProcessExectionFactoryv1_0_0(VersionedProcessExecutionFactory parent, String id, String executable,
-      Path workDirectory)
+      PathRefPath workDirectory)
   {
     this.parent = requireNonNull(parent);
     this.id = requireNonNull(id);
@@ -95,9 +96,9 @@ public class ProcessExectionFactoryv1_0_0 implements ProcessExecutionFactory {
         throw new ProcessException("Checksum of executable " + c + " does not match supplied " + csum);
     });
     return new DefaultProcessExecution(this.id, this.executable, //
-        ofNullable(args).orElse(new ArrayList<>()), ofNullable(timeout), //
+        ofNullable(args).orElse(new ArrayList<>()), ofNullable(relativeRoot), ofNullable(timeout), //
         ofNullable(stdIn), this.workDirectory, optional, ofNullable(env), //
-        ofNullable(relativeRoot), ofNullable(exitCodes), //
+        ofNullable(exitCodes), //
         parent.getAddl(), background);
   }
 
@@ -138,7 +139,7 @@ public class ProcessExectionFactoryv1_0_0 implements ProcessExecutionFactory {
   }
 
   @Override
-  public ProcessExecutionFactory withRelativeRoot(PathRefPath relativeRoot) {
+  public ProcessExecutionFactory withRelativeRoot(PathRefFileSystem relativeRoot) {
     this.relativeRoot = requireNonNull(relativeRoot);
     return this;
   }

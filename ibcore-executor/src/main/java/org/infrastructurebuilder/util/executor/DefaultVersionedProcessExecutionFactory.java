@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.util.executor.execution.model.ProcessExectionFactoryv1_0_0;
 
 public class DefaultVersionedProcessExecutionFactory implements VersionedProcessExecutionFactory {
@@ -39,12 +40,12 @@ public class DefaultVersionedProcessExecutionFactory implements VersionedProcess
   }
 
   @Override
-  public ProcessExecutionFactory getDefaultFactory(final Path workDirectory, final String id, final String executable) {
+  public ProcessExecutionFactory getDefaultFactory(final PathRefPath workDirectory, final String id, final String executable) {
     return getFactoryForVersion(DEFAULT_VERSION, workDirectory, id, executable).get();
   }
 
   @Override
-  public Optional<ProcessExecutionFactory> getFactoryForVersion(final String version, final Path workDirectory,
+  public Optional<ProcessExecutionFactory> getFactoryForVersion(final String version, final PathRefPath workDirectory,
       final String id, final String executable) {
     ProcessExecutionFactory f = null;
     switch (version) {
@@ -68,7 +69,7 @@ public class DefaultVersionedProcessExecutionFactory implements VersionedProcess
     return scratchDir;
   }
 
-  private ProcessExecutionFactory createFactory_v1_0_0(final Path workDirectory, final String id,
+  private ProcessExecutionFactory createFactory_v1_0_0(final PathRefPath workDirectory, final String id,
       final String executable) {
     return new ProcessExectionFactoryv1_0_0(this, id, executable, workDirectory);
   }

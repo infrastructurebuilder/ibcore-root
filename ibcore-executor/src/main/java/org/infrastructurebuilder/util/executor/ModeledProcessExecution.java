@@ -17,9 +17,7 @@
  */
 package org.infrastructurebuilder.util.executor;
 
-import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toMap;
 
 import java.net.URI;
 import java.nio.file.FileSystemNotFoundException;
@@ -29,6 +27,7 @@ import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.infrastructurebuilder.api.Modeled;
 import org.infrastructurebuilder.exceptions.IBException;
@@ -38,9 +37,9 @@ import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
 import org.infrastructurebuilder.pathref.JSONAndChecksumEnabled;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.util.executor.model.executor.model.utils.IBCoreExecutorModelUtils;
-import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.Environment;
-import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.GeneratedProcessExecution;
+import org.infrastructurebuilder.util.executor.model.utils.IBCoreExecutorModelUtils;
+import org.infrastructurebuilder.util.executor.model.v1_0.Environment;
+import org.infrastructurebuilder.util.executor.model.v1_0.GeneratedProcessExecution;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,10 +50,11 @@ public class ModeledProcessExecution extends GeneratedProcessExecution implement
   private static final long serialVersionUID = 92979582578090306L;
   private final static Logger log = LoggerFactory.getLogger(ModeledProcessExecution.class);
   public final static Function<Environment, Optional<SortedMap<String, String>>> envToMapSS = (e) -> {
-    return requireNonNull(e).getEnvEntry().map(es -> es.stream().collect(toMap(k -> k.getKey(), v -> v.getValue(), //
-        (v1, v2) -> {
-          throw new IBException(format("Duplicate %s / %s", v1, v2));
-        }, TreeMap::new)));
+    return requireNonNull(e).getEnvEntry()
+        .map(es -> es.stream().collect(Collectors.toMap(k -> k.getKey(), v -> v.getValue(), //
+            (v1, v2) -> {
+              throw new IBException("Duplicate %s / %s".formatted( v1, v2));
+            }, TreeMap::new)));
   };
 
   public ModeledProcessExecution() {

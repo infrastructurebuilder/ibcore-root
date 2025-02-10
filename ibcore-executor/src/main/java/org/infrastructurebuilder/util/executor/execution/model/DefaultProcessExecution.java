@@ -41,9 +41,9 @@ import org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream;
 import org.infrastructurebuilder.util.executor.ModeledProcessExecution;
 import org.infrastructurebuilder.util.executor.ProcessException;
 import org.infrastructurebuilder.util.executor.ProcessExecution;
-import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.EnvEntry;
-import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.Environment;
-import org.infrastructurebuilder.util.executor.model.executor.model.v1_0.GeneratedProcessExecution;
+import org.infrastructurebuilder.util.executor.model.v1_0.EnvEntry;
+import org.infrastructurebuilder.util.executor.model.v1_0.Environment;
+import org.infrastructurebuilder.util.executor.model.v1_0.GeneratedProcessExecution;
 import org.zeroturnaround.exec.ProcessExecutor;
 
 public class DefaultProcessExecution implements ProcessExecution {
@@ -82,11 +82,15 @@ public class DefaultProcessExecution implements ProcessExecution {
     this.stdOut = e.stdOut;
   }
 
-  public DefaultProcessExecution(final String id, final String executable, final List<String> arguments,
-      final Optional<java.time.Duration> timeout, final Optional<Path> stdIn, final Path workDirectory,
-      final boolean optional, final Optional<Map<String, String>> environment, final Optional<PathRefPath> relativeRoot,
-      final Optional<List<Integer>> exitValues, final Optional<java.io.PrintStream> addl, final boolean background)
+  public DefaultProcessExecution(final String id, final String executable, final List<String> arguments, //
+      final Optional<PathRefFileSystem> relativeRoot, //
+      final Optional<java.time.Duration> timeout, final Optional<Path> stdIn, final PathRefPath workDirectory,
+      final boolean optional, final Optional<Map<String, String>> environment, final Optional<List<Integer>> exitValues,
+      final Optional<java.io.PrintStream> addl, final boolean background)
   {
+    var rootstr = relativeRoot.map(r1 ->  {
+      return r1.toString();
+    });
     this.gpe = new ModeledProcessExecution("1.0", id, executable, arguments,
         timeout.map(Duration::toString).orElse(null), //
         optional, background, workDirectory.toString(),
@@ -95,9 +99,12 @@ public class DefaultProcessExecution implements ProcessExecution {
         null, // Placeholders until we set the values below
         null, //
         null, //
-        relativeRoot.map(PathRefPath::getFileSystem).map(PathRefFileSystem::toString).orElse(null),
+        relativeRoot.map(PathRefFileSystem::toString).orElse(null),
         requireNonNull(environment).map(DefaultProcessExecution.toEnvironment::apply).map(Environment::new)
             .orElseGet(() -> new Environment()));
+
+    Path p = getWorkDirectory();
+    String q = getStdOut().getPath().map(Path::toString).orElse(null);
     this.gpe.setStdOutPath(getStdOut().getPath().map(Path::toString).orElse(null));
     this.gpe.setStdErrPath(getStdErr().getPath().map(Path::toString).orElse(null));
     this.gpe.setStdInPath(stdIn.map(Path::toString).orElse(null));
@@ -105,14 +112,15 @@ public class DefaultProcessExecution implements ProcessExecution {
     gpe.setBackground(background);
   }
 
-  DefaultProcessExecution(final String id, final String executable, final List<String> arguments,
-      final Optional<Duration> timeout, final Optional<Path> stdIn, final Path workDirectory, final boolean optional,
-      final Optional<Map<String, String>> environment, final Optional<PathRefPath> relativeRoot,
-      final Optional<List<Integer>> exitValues, final Optional<java.io.PrintStream> addl, final boolean background,
+  DefaultProcessExecution(final String id, final String executable, final List<String> arguments, //
+      final Optional<PathRefFileSystem> relativeRoot, //
+      final Optional<Duration> timeout, final Optional<Path> stdIn, final PathRefPath workDirectory,
+      final boolean optional, final Optional<Map<String, String>> environment, final Optional<List<Integer>> exitValues,
+      final Optional<java.io.PrintStream> addl, final boolean background,
       final org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream stdout,
       final org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream stderr)
   {
-    this(id, executable, arguments, timeout, stdIn, workDirectory, optional, environment, relativeRoot, exitValues,
+    this(id, executable, arguments, relativeRoot, timeout, stdIn, workDirectory, optional, environment, exitValues,
         addl, background);
     this.stdOut = stdout;
     this.stdErr = stderr;

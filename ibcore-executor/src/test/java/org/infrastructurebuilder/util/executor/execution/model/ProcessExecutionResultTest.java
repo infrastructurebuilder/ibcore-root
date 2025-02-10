@@ -33,14 +33,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.URI;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -104,6 +101,7 @@ public class ProcessExecutionResultTest {
 
   private Path stdErrPth;
   private DefaultProcessExecution pe2;
+  private PathRefFileSystem root;
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -140,10 +138,9 @@ public class ProcessExecutionResultTest {
     stdErr = Arrays.asList("Hi", "there");
     stdOut = Arrays.asList("hello", "gentlepersons");
     scratchDir = PathRefUtils.fromPath(wps.get());
-    var uri = URI.create(PathRefPath.PATHREF_TEMPLATE.formatted(scratchDir.toUri()));
+    //    var uri = URI.create(PathRefPath.PATHREF_TEMPLATE.formatted(scratchDir.toUri()));
 
-    PathRefFileSystem prfs = (PathRefFileSystem) FileSystems.newFileSystem(uri, new HashMap<>());
-    Path sd = prfs.getRootDirectories().iterator().next();
+    Path sd = root.getRootDirectories().iterator().next();
 
     stdOutPth = IBUtils.touchFile(sd.resolve("extraStdOut"));
 
@@ -159,12 +156,12 @@ public class ProcessExecutionResultTest {
     pe = new DefaultProcessExecution(ID, // id
         EXEC, // executable
         ARGS, // arguments
+        empty(), // rr, // relativeRoot
         timeout, // timeout
         sin, // stdin
         scratchDir, // workDirectory
         optional, // optional
         env, // environment
-        empty(), // rr, // relativeRoot
         empty(), // exit values
         empty(), // addl
         false, // background
@@ -236,11 +233,11 @@ public class ProcessExecutionResultTest {
 
   @Test
   public void testEqualsObject() {
-    pe2 = new DefaultProcessExecution("abc", EXEC, ARGS,
+    pe2 = new DefaultProcessExecution("abc", EXEC, ARGS, of(root),
 
         empty(), empty(), scratchDir,
 
-        false, empty(), of(scratchDir), empty(), empty(), false);
+        false, empty(), empty(), empty(), false);
     DefaultProcessExecutionResult res2 = new DefaultProcessExecutionResult(pe2, of(0),
 
         empty(), ofEpochMilli(100L), ofMillis(200L));
@@ -317,8 +314,8 @@ public class ProcessExecutionResultTest {
   @Test
   public void testNegativeDuration() throws Exception {
 
-    ProcessExecution vv = new DefaultProcessExecution(ID, EXEC, ARGS, of(ofHours(-1)), empty(), scratchDir, false,
-        empty(), of(scratchDir), empty(), empty(), false);
+    ProcessExecution vv = new DefaultProcessExecution(ID, EXEC, ARGS, of(root), of(ofHours(-1)), empty(),
+        scratchDir, false, empty(), empty(), empty(), false);
     Assertions.assertThrows(ProcessException.class, () -> vv.getProcessExecutor());
     vv.close();
   }

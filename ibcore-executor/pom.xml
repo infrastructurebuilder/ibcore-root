@@ -39,7 +39,6 @@
 
 	<properties>
 		<test.coverage.percentage.required>71</test.coverage.percentage.required>
-		<jacoco.max.missed.classes>2</jacoco.max.missed.classes>
 		<ibcore.executor.model.version>1.0.1-SNAPSHOT</ibcore.executor.model.version>
 	</properties>
 
