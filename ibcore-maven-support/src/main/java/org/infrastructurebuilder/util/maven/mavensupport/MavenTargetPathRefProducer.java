@@ -17,31 +17,32 @@
  */
 package org.infrastructurebuilder.util.maven.mavensupport;
 
-import static java.util.Objects.requireNonNull;
+import static java.util.Optional.of;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Optional;
 
-import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Singleton;
 
-import org.infrastructurebuilder.pathref.PathSupplier;
+import org.apache.maven.project.MavenProject;
 
-@Named(MavenProjectBuildOutputDirectoryPathSupplier.NAME)
-@Singleton
-public class MavenProjectBuildOutputDirectoryPathSupplier implements PathSupplier {
-  public final static String NAME = "maven-target";
+@Named(MavenTargetPathRefProducer.MAVEN_TARGET)
+public class MavenTargetPathRefProducer extends MavenBackedPathRefProducer {
 
-  private final Path target;
+  static final String MAVEN_TARGET = "maven-target";
 
-  @Inject
-  public MavenProjectBuildOutputDirectoryPathSupplier(MavenProjectSupplier project) {
-    this.target = Paths.get(requireNonNull(project, "null.supplier").get().getBuild().getOutputDirectory()).toAbsolutePath();
+  public MavenTargetPathRefProducer(MavenProjectSupplier project) {
+    super(project);
   }
 
   @Override
-  public Path get() {
-    return this.target;
+  public String getName() {
+    return MAVEN_TARGET;
   }
+
+  @Override
+  protected Optional<Path> getPathFromProject(MavenProject project) {
+    return of(Path.of(project.getBuild().getDirectory()).toAbsolutePath());
+  }
+
 }

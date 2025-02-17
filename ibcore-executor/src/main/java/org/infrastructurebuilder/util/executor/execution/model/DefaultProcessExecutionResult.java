@@ -19,24 +19,23 @@ package org.infrastructurebuilder.util.executor.execution.model;
 
 import static java.util.Objects.requireNonNull;
 
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.util.executor.ProcessExecution;
 import org.infrastructurebuilder.util.executor.ProcessExecutionResult;
 import org.infrastructurebuilder.util.executor.model.utils.IBCoreExecutorModelUtils;
 import org.infrastructurebuilder.util.executor.model.v1_0.Environment;
-import org.infrastructurebuilder.util.executor.model.v1_0.ExecutionException;
 import org.infrastructurebuilder.util.executor.model.v1_0.GeneratedProcessExecutionResult;
-import org.infrastructurebuilder.util.executor.model.v1_0.Stack;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,58 +44,26 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class DefaultProcessExecutionResult implements ProcessExecutionResult {
   private final static Logger log = LoggerFactory.getLogger(DefaultProcessExecutionResult.class);
-
-  public final static Function<StackTraceElement[], List<Stack>> toNullableStack = (elements) -> {
-    if (elements == null)
-      return null;
-    List<Stack> l = new ArrayList<>();
-    for (StackTraceElement e : elements) {
-      var b = Stack.builder().withDeclaringClass(e.getClassName()) //
-          .withFileName(e.getFileName()) //
-          .withLineNumber((long) e.getLineNumber()) //
-          .withMethodName(e.getMethodName()) //
-          .withClassLoaderName(e.getClassLoaderName()) //
-          .withModuleName(e.getModuleName()) //
-          .withModuleVersion(e.getModuleVersion()) //
-          .build();
-      l.add(b);
-    }
-    return l;
-  };
-  public final static Function<Optional<Throwable>, ExecutionException> toNullableExecutionException = (o) -> {
-    return o.map(e -> ExecutionException.builder() //
-        .withMessage(e.getMessage()) //
-        .withKlass(e.getClass().getCanonicalName()) //
-        .withStack(toNullableStack.apply(e.getStackTrace())) //
-        .build()) //
-        .orElse(null);
-
-  };
   private final GeneratedProcessExecutionResult gper;
-
   private final ProcessExecution processExecution;
+  private final PathRefFileSystem pr;
 
-  private final PathRefPath pr;
-
-  public DefaultProcessExecutionResult(GeneratedProcessExecutionResult gper) {
-    this.gper = requireNonNull(gper);
-    this.pr = null;
-    this.processExecution = null;
-  }
-
+  @SuppressWarnings("unchecked")
   public DefaultProcessExecutionResult(ProcessExecution pe, Optional<Integer> exitCode, Optional<Throwable> exception,
       Instant startTime, Duration between)
   {
 
     this.processExecution = requireNonNull(pe);
-    this.pr = pe.getRelativePathRef().orElse(null);
+    this.pr = pe.getRoot().orElse(null);
     this.gper = GeneratedProcessExecutionResult.builder() //
         .withEnvironment(new Environment()) //
         .withStart(startTime) //
         .withRunTime(between.toString()) //
         .withExecutionException(toNullableExecutionException.apply(exception)) //
         .withResultCode((exitCode.orElse(0)).toString()) //
-        .withStdOut(pe.getStdOut().get()).withStdErr(pe.getStdErr().get())
+        .withStdOut(pe.getStdOut().get()) //
+        .withStdErr(pe.getStdErr().get()) //
+        .withStdInPath(pe.getStdIn().map(Path::toString).orElse(null)) //)
 
         .build();
     this.gper.setId(asChecksum().toString());
@@ -104,8 +71,8 @@ public class DefaultProcessExecutionResult implements ProcessExecutionResult {
 
   @Override
   public boolean equals(Object obj) {
-    if (obj != null && obj instanceof DefaultProcessExecutionResult)
-      return ((DefaultProcessExecutionResult) obj).getId().equals(getId());
+    if (obj != null && obj instanceof DefaultProcessExecutionResult dper)
+      return (dper.getId().equals(getId()));
     return false;
   }
 
@@ -175,7 +142,7 @@ public class DefaultProcessExecutionResult implements ProcessExecutionResult {
     );
   }
 
-  public Optional<PathRefPath> getRelativePathRef() {
+  public Optional<PathRefFileSystem> getRoot() {
     return Optional.ofNullable(pr);
   }
 

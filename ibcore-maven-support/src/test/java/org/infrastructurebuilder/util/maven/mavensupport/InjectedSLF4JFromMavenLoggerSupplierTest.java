@@ -15,14 +15,13 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.maven;
+package org.infrastructurebuilder.util.maven.mavensupport;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.apache.maven.monitor.logging.DefaultLog;
 import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
-import org.infrastructurebuilder.util.maven.mavensupport.InjectedSLF4JFromMavenLoggerSupplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;

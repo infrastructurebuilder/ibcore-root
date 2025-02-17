@@ -19,7 +19,6 @@ package org.infrastructurebuilder.util.readdetect.base;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
-import static org.infrastructurebuilder.constants.IBConstants.NO_PATH_SUPPLIED;
 import static org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory.extracted;
 import static org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory.toType;
 
@@ -30,12 +29,13 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.util.ibpathref.metadata.model.v1_0.IBMetadataModel;
-import org.infrastructurebuilder.util.ibpathref.metadata.model.v1_0.IBMetadataModel.IBMetadataModelBuilderBase;
-import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
+import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v1_0.IBMetadataModel;
+import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v1_0.IBMetadataModel.IBMetadataModelBuilderBase;
+import org.infrastructurebuilder.pathref.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +63,7 @@ abstract public class AbstractIBResourceBuilder<I> implements IBResourceBuilder<
   public IBResourceBuilder<I> fromJSON(JSONObject j) {
     model = IBResourceBuilder.modelFromJSON.apply(j)
         .orElseThrow(() -> new IBException("Unable to acquire model from json"));
-    String fp = model.getPath().orElseThrow(() -> new IBResourceException(NO_PATH_SUPPLIED));
+    String fp = model.getPath().orElseThrow(() -> new IBResourceException(IBConstants.NO_PATH_SUPPLIED));
     log.debug("Got %s from model", fp);
     Path p = extracted.apply(fp);
     this.sourcePath = p;

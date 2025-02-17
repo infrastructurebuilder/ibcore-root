@@ -49,75 +49,84 @@ import org.zeroturnaround.exec.ProcessExecutor;
 public class DefaultProcessExecution implements ProcessExecution {
 
   public final static Function<Map<String, String>, Environment> toEnvironment = (m) -> {
-    return new Environment(
-        requireNonNull(m).entrySet().stream().map(e -> new EnvEntry(e.getKey(), e.getValue())).toList());
+    return new Environment(requireNonNull(m).entrySet().stream() //
+        .map(e -> new EnvEntry(e.getKey(), e.getValue())) //
+        .toList());
   };
   public final static Function<Environment, Map<String, String>> fromEnvironment = (e) -> {
-    return requireNonNull(e).getEnvEntry()
-        .map(l -> l.stream().collect(Collectors.toMap(k -> k.getKey(), v -> v.getValue())))
+    return requireNonNull(e).getEnvEntry().map(l -> l.stream() //
+        .collect(Collectors //
+            .toMap(k -> k.getKey(), v -> v.getValue())))
         .orElseGet(Collections::emptyMap);
   };
-  private final ModeledProcessExecution gpe;
+  private final ModeledProcessExecution model;
   private final PrintStream addl;
   private ProcessExecutor executor;
   private ListCapturingLogOutputStream stdErr;// = new ListCapturingLogOutputStream(empty(), empty());
   private ListCapturingLogOutputStream stdOut;// = new ListCapturingLogOutputStream(empty(), empty());
   private final ChecksumBuilder builder = ChecksumBuilderFactory.newInstance();
 
-  public DefaultProcessExecution() {
-    this.addl = null;
-    this.gpe = null;
-  }
+//  public DefaultProcessExecution() {
+//    this.addl = null;
+//    this.model = null;
+//  }
 
-  public DefaultProcessExecution(GeneratedProcessExecution e) {
-    this.gpe = new ModeledProcessExecution(requireNonNull(e));
+  public DefaultProcessExecution(GeneratedProcessExecution gpe) {
+    this.model = new ModeledProcessExecution(requireNonNull(gpe));
     this.addl = null;
   }
 
   private DefaultProcessExecution(DefaultProcessExecution e) {
-    this.gpe = new ModeledProcessExecution(e.gpe);
+    this.model = new ModeledProcessExecution(e.model);
     this.addl = e.addl;
     this.executor = e.executor;
     this.stdErr = e.stdErr;
     this.stdOut = e.stdOut;
   }
 
-  public DefaultProcessExecution(final String id, final String executable, final List<String> arguments, //
-      final Optional<PathRefFileSystem> relativeRoot, //
-      final Optional<java.time.Duration> timeout, final Optional<Path> stdIn, final PathRefPath workDirectory,
-      final boolean optional, final Optional<Map<String, String>> environment, final Optional<List<Integer>> exitValues,
+  public DefaultProcessExecution(final String id, //
+      final String executable, final List<String> arguments, //
+      final PathRefFileSystem root, //
+      final Optional<java.time.Duration> timeout, //
+      final Optional<String> stdIn, //
+      final String workDirectory, //
+      final boolean optional, final Optional<Map<String, String>> environment, //
+      final Optional<List<Integer>> exitValues, //
       final Optional<java.io.PrintStream> addl, final boolean background)
   {
-    var rootstr = relativeRoot.map(r1 ->  {
-      return r1.toString();
-    });
-    this.gpe = new ModeledProcessExecution("1.0", id, executable, arguments,
+    this.model = new ModeledProcessExecution("1.0", id, executable, arguments, //
+        root.toString(), // Returns key-based URI of PRFS
         timeout.map(Duration::toString).orElse(null), //
         optional, background, workDirectory.toString(),
         exitValues.map(x -> x.stream().map(i -> i.toString()).toList()).orElse(null),
 
-        null, // Placeholders until we set the values below
-        null, //
-        null, //
-        relativeRoot.map(PathRefFileSystem::toString).orElse(null),
+        null, // getStdOut().getPath().map(Path::toString).orElse(null), // Placeholders until we set the values below
+        null, // getStdErr().getPath().map(Path::toString).orElse(null), //
+        null, // stdIn.map(Path::toString).orElse(null), //
+
         requireNonNull(environment).map(DefaultProcessExecution.toEnvironment::apply).map(Environment::new)
             .orElseGet(() -> new Environment()));
 
+    if (getWorkDirectory().getFileSystem() != root)
+      throw new ProcessException("Work directory must be set");
     Path p = getWorkDirectory();
     String q = getStdOut().getPath().map(Path::toString).orElse(null);
-    this.gpe.setStdOutPath(getStdOut().getPath().map(Path::toString).orElse(null));
-    this.gpe.setStdErrPath(getStdErr().getPath().map(Path::toString).orElse(null));
-    this.gpe.setStdInPath(stdIn.map(Path::toString).orElse(null));
+    this.model.setStdOutPath(getStdOut().getPath().map(Path::toString).orElse(null));
+    this.model.setStdErrPath(getStdErr().getPath().map(Path::toString).orElse(null));
+    this.model.setStdInPath(stdIn.orElse(null));
     this.addl = requireNonNull(addl).orElse(null);
-    gpe.setBackground(background);
+    model.setBackground(background);
   }
 
-  DefaultProcessExecution(final String id, final String executable, final List<String> arguments, //
-      final Optional<PathRefFileSystem> relativeRoot, //
-      final Optional<Duration> timeout, final Optional<Path> stdIn, final PathRefPath workDirectory,
-      final boolean optional, final Optional<Map<String, String>> environment, final Optional<List<Integer>> exitValues,
-      final Optional<java.io.PrintStream> addl, final boolean background,
-      final org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream stdout,
+  DefaultProcessExecution(final String id, //
+      final String executable, final List<String> arguments, //
+      final PathRefFileSystem relativeRoot, //
+      final Optional<Duration> timeout, //
+      final Optional<String> stdIn, //
+      final String workDirectory, //
+      final boolean optional, final Optional<Map<String, String>> environment, //
+      final Optional<List<Integer>> exitValues, final Optional<java.io.PrintStream> addl, //
+      final boolean background, final org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream stdout,
       final org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream stderr)
   {
     this(id, executable, arguments, relativeRoot, timeout, stdIn, workDirectory, optional, environment, exitValues,
@@ -135,7 +144,7 @@ public class DefaultProcessExecution implements ProcessExecution {
 
   @Override
   public void close() {
-    ofNullable(gpe).ifPresent(e -> {
+    ofNullable(model).ifPresent(e -> {
       try {
         getStdOut().close();
       } catch (Exception e1) {
@@ -148,38 +157,38 @@ public class DefaultProcessExecution implements ProcessExecution {
   }
 
   @Override
-  public Optional<List<String>> getArguments() {
-    return gpe.getArguments();
+  public List<String> getArguments() {
+    return model.getArguments();
   }
 
   @Override
   public String getExecutable() {
-    return gpe.getExecutable();
+    return model.getExecutable();
   }
 
   @Override
   public String getId() {
-    return gpe.getId();
+    return model.getId();
   }
 
   @Override
   public Optional<Path> getStdIn() {
-    return gpe.getStdInPath().map(Paths::get);
+    return model.getStdInPath().map(Paths::get);
   }
 
   @Override
   public Optional<Duration> getTimeout() {
-    return gpe.getTimeout().map(Duration::parse);
+    return model.getTimeout().map(Duration::parse);
   }
 
   @Override
   public boolean isBackground() {
-    return gpe.getBackground().orElse(false);
+    return model.getBackground().orElse(false);
   }
 
   @Override
   public boolean isOptional() {
-    return gpe.getOptional().orElse(false);
+    return model.getOptional().orElse(false);
   }
 
   @Override
@@ -189,21 +198,24 @@ public class DefaultProcessExecution implements ProcessExecution {
 
   @Override
   public Map<String, String> getExecutionEnvironment() {
-    return gpe.getEnvironment().map(DefaultProcessExecution.fromEnvironment).orElseGet(Collections::emptyMap);
+    return model.getEnvironment().map(DefaultProcessExecution.fromEnvironment).orElseGet(Collections::emptyMap);
   }
 
   @Override
   public Path getWorkDirectory() {
-    return gpe.getWorkDirectory().map(Paths::get).orElseThrow(() -> new ProcessException("No work directory"));
+    return model.getWorkDirectory()//
+        .map(p -> {
+          return this.getRelativeRoot().getPath(p);
+        }).orElseThrow(() -> new ProcessException("No work directory"));
   }
 
   @Override
   public Optional<List<Integer>> getExitValuesAsIntegers() {
-    return gpe.getExitValues().map(ev -> ev.stream().map(Integer::parseInt).toList());
+    return model.getExitValues().map(ev -> ev.stream().map(Integer::parseInt).toList());
   }
 
-  public Optional<PathRefPath> getRelativeRoot() {
-    return gpe.getRelativePathRef();
+  public PathRefFileSystem getRelativeRoot() {
+    return model.getRelativeRoot().orElseThrow(() -> new ProcessException("No relative root availabel"));
   }
 
   @Override
@@ -216,9 +228,11 @@ public class DefaultProcessExecution implements ProcessExecution {
 
   @Override
   public ListCapturingLogOutputStream getStdOut() {
-    if (this.stdOut == null)
-      this.stdOut = new ListCapturingLogOutputStream(getWorkDirectory().resolve(randomUUID().toString() + ".stdout"),
-          getAdditionalPrintStream());
+    if (this.stdOut == null) {
+      var q = getWorkDirectory();
+      var r = q.resolve(randomUUID().toString() + ".stdout");
+      this.stdOut = new ListCapturingLogOutputStream(r, getAdditionalPrintStream());
+    }
     return this.stdOut;
   }
 

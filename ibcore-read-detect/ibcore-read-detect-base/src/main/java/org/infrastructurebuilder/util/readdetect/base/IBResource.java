@@ -51,10 +51,10 @@ import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
 import org.infrastructurebuilder.pathref.ChecksumEnabled;
 import org.infrastructurebuilder.pathref.JSONBuilderFactory;
 import org.infrastructurebuilder.pathref.JSONOutputEnabled;
-import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
+import org.infrastructurebuilder.pathref.util.readdetect.model.v1_0.IBResourceModel;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.readdetect.base.impls.IBURLPlexusIOResource;
-import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
 
 /**
@@ -248,7 +248,7 @@ public interface IBResource extends JSONOutputEnabled, ChecksumEnabled, NameDesc
   Optional<Long> size();
 
   default JSONObject asJSON() {
-    return JSONBuilderFactory.newInstanceFromPathRef(getRelativePathRef())
+    return JSONBuilderFactory.newInstanceFromRelativeRoot(getRelativeRoot())
 
         .addChecksum(PATH_CHECKSUM, getTChecksum())
 
@@ -292,7 +292,7 @@ public interface IBResource extends JSONOutputEnabled, ChecksumEnabled, NameDesc
     return false;
   }
 
-  default Optional<PathRefPath> getRelativePathRef() {
+  default Optional<PathRefFileSystem> getRelativeRoot() {
     return Optional.empty();
   }
 
@@ -317,7 +317,7 @@ public interface IBResource extends JSONOutputEnabled, ChecksumEnabled, NameDesc
   IBResourceModel copyModel();
 
   default Optional<ChecksumBuilder> getChecksumBuilder() {
-    return Optional.of(ChecksumBuilderFactory.newInstance(this.getRelativePathRef())
+    return Optional.of(ChecksumBuilderFactory.newInstance(this.getRelativeRoot())
         .addChecksum(new Checksum(copyModel().getStreamChecksum())));
   }
 

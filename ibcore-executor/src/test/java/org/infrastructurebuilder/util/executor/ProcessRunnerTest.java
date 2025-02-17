@@ -43,7 +43,7 @@ import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.pathref.fs.PathRefUtils;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,51 +59,51 @@ public class ProcessRunnerTest {
       "version", "-machine-readable", "-color=false"
   };
 
+  private static PathRefFileSystem root;
+
   @BeforeAll
   public static void setUpBeforeClass() throws Exception {
+    root = PathRefPath.getOrCreatePRFS(wps.get(), Optional.of(ProcessRunnerTest.class.getName()));
   }
 
   private DefaultProcessRunner runner;
   private Checksum packerCsum;
   private Path packerExecutable;
-  private PathRefPath scratchDir;
   private String ttClass;
-  private PathRefPath ttest1;
-  private PathRefFileSystem root;
+  private String ttest1;
   private VersionedProcessExecutionFactory vpef;
   private PathRefPath target;
+  private String scratchDir;
 
   @BeforeEach
   public void setUp() throws Exception {
-    root = PathRefUtils.fromPath(wps.getRoot()).getFileSystem();
-    target = root.getRoot();
-    scratchDir = target.resolve(UUID.randomUUID().toString());
-    runner = new DefaultProcessRunner(scratchDir, of(System.out), of(logger), of(target));
-    packerExecutable = target.resolve("packer" + (isWindows() ? ".exe" : "")).toRealPath().toAbsolutePath();
+    scratchDir = UUID.randomUUID().toString();
+    target = root.getPath(scratchDir);
+    runner = new DefaultProcessRunner(root, scratchDir, of(System.out), of(logger));
+    packerExecutable = wps.getRoot().resolve("packer" + (isWindows() ? ".exe" : "")).toRealPath().toAbsolutePath();
     packerCsum = new Checksum(packerExecutable);
-    ttest1 = PathRefUtils.fromPath(wps.getTestClasses());
+    ttest1 = UUID.randomUUID().toString();
     ttClass = "ThreadTest1S";
-    vpef = new DefaultVersionedProcessExecutionFactory(scratchDir, Optional.empty());
+    vpef = new DefaultVersionedProcessExecutionFactory(root, scratchDir, Optional.empty());
   }
 
-  @AfterEach
-  public void tearDown() {
-    deletePath(scratchDir);
+  @AfterAll
+  public static void tearDownAfterClass() throws Exception {
+    wps.finalize();
   }
 
-  @Test
   public void testAddlConstructors1() {
-    deletePath(scratchDir);
+    deletePath(target);
     Optional<PrintStream> addl = empty();
-    assertNotNull(new DefaultProcessRunner(scratchDir, addl));
+    assertNotNull(new DefaultProcessRunner(root, scratchDir, addl));
     logger.info("I totally ran!");
   }
 
   @Test
   public void testAddlConstructors2() {
-    deletePath(scratchDir);
+    deletePath(target);
     Optional<PrintStream> addl = empty();
-    assertNotNull(new DefaultProcessRunner(scratchDir, addl, of(logger)));
+    assertNotNull(new DefaultProcessRunner(root, scratchDir, addl, of(logger)));
     logger.info("I totally ran!");
   }
 
@@ -127,7 +127,8 @@ public class ProcessRunnerTest {
   @Test
   public void testDaemon() {
     final String id = UUID.randomUUID().toString();
-    final Path in = ttest1.resolve("ThreadTest1S.class");
+
+    final Path in = root.getPath("target").resolve("ThreadTest1S.class");
     ProcessExecutionFactory e2 = vpef.getDefaultFactory(ttest1, id, "java")
 
         .withArguments(ttClass, "1")
@@ -159,14 +160,14 @@ public class ProcessRunnerTest {
     } catch (final Exception e) {
       fail(e.getClass().getCanonicalName() + " " + e.getMessage());
     }
-    assertFalse(Files.exists(scratchDir));
+    assertFalse(Files.exists(target));
   }
 
   @Disabled
   @Test
   public void testErrorResult() {
     final String id = UUID.randomUUID().toString();
-    final Path in = ttest1.resolve("ThreadTest1S.class");
+    final Path in = root.getPath("target").resolve("ThreadTest1S.class");
 
     ProcessExecutionFactory e2 = vpef.getFactoryForVersion("1.0.0", ttest1, id, "javac").get()
 
@@ -191,7 +192,7 @@ public class ProcessRunnerTest {
       logger.error("Unexpected exception occurred", e);
       fail(e.getClass().getCanonicalName() + " " + e.getMessage());
     }
-    assertFalse(Files.exists(scratchDir));
+    assertFalse(Files.exists(target));
   }
 
   @Test
@@ -232,7 +233,7 @@ public class ProcessRunnerTest {
   @Test
   public void testLongRunningDaemon() {
     final String id = UUID.randomUUID().toString();
-    final Path in = ttest1.resolve("ThreadTest1S.class");
+    final Path in = root.getPath("target").resolve("ThreadTest1S.class");
     ProcessExecutionFactory e2 = vpef.getFactoryForVersion("1.0.0", ttest1, id, "java").get()
 
         .withArguments(ttClass, "60")
@@ -263,11 +264,12 @@ public class ProcessRunnerTest {
 
   @Test
   public void testPEFNoScratch() throws Exception {
-    final Path p = scratchDir.resolve(UUID.randomUUID().toString());
-    if (Files.exists(p))
+    final String p = UUID.randomUUID().toString();
+
+    if (Files.exists(root.getPath(p)))
       throw new RuntimeException("Test failed because of a random thing");
 
-    try (ProcessRunner prr = new DefaultProcessRunner(p, of(System.out), of(logger), of(target))) {
+    try (ProcessRunner prr = new DefaultProcessRunner(root, p, of(System.out), of(logger))) {
     }
   }
 
@@ -288,14 +290,16 @@ public class ProcessRunnerTest {
 
   @Test
   public void testPEFUnwriteable() throws Exception {
-    final Path unknown = scratchDir.resolve(UUID.randomUUID().toString());
-    if (Files.exists(unknown))
+    final String unknown = UUID.randomUUID().toString();
+    Path u = root.getPath(unknown);
+    if (Files.exists(u))
       throw new RuntimeException("Test failed because of a random thing");
 
-    final Path p = Files.createDirectories(unknown);
+    final Path p = Files.createDirectories(u);
     if (!isWindows() && !p.toFile().setReadOnly())
       throw new RuntimeException("Cannot set readonly to file");
-    assertThrows(ProcessException.class, () -> new DefaultProcessRunner(p, of(System.out), of(logger), of(target)));
+    assertThrows(ProcessException.class, //
+        () -> new DefaultProcessRunner(root, unknown, of(System.out), of(logger)));
   }
 
   @Test

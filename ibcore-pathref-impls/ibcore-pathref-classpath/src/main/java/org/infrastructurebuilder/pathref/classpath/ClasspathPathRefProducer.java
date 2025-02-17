@@ -25,9 +25,9 @@ import org.infrastructurebuilder.pathref.base.AbstractBasicPathPropertiesPathRef
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Named(ClasspathPathRefSupplier.NAME)
-public class ClasspathPathRefSupplier extends AbstractBasicPathPropertiesPathRefProducer {
-  private static final Logger log = LoggerFactory.getLogger(ClasspathPathRefSupplier.class);
+@Named(ClasspathPathRefProducer.NAME)
+public class ClasspathPathRefProducer extends AbstractBasicPathPropertiesPathRefProducer {
+  private static final Logger log = LoggerFactory.getLogger(ClasspathPathRefProducer.class);
 
   public static final String NAME = "classpath:/";
 

@@ -29,6 +29,7 @@ import static org.infrastructurebuilder.util.executor.ProcessException.pet;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
@@ -46,6 +47,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.pathref.IBChecksumUtils;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.util.logging.NOOPLogger;
 import org.slf4j.Logger;
 import org.zeroturnaround.exec.InvalidExitValueException;
@@ -64,29 +66,28 @@ public class DefaultProcessRunner implements ProcessRunner {
 
   private final Path scratchDir;
   private final Vector<ProcessExecution> serialList = new Vector<>();
+  private final PathRefFileSystem root;
 
-  public DefaultProcessRunner(final Path scratchDir, final Optional<PrintStream> addl) {
-    this(scratchDir, addl, empty(), empty());
+  public DefaultProcessRunner(final PathRefFileSystem root, final String scratchDir, final Optional<PrintStream> addl) {
+    this(root, scratchDir, addl, empty(), empty());
   }
 
-  public DefaultProcessRunner(final Path scratchDir, final Optional<PrintStream> addl, final Optional<Logger> logger) {
-    this(scratchDir, addl, logger, empty(), Optional.of(Long.valueOf(100L)));
-  }
 
-  public DefaultProcessRunner(final Path scratchDir, final Optional<PrintStream> addl, final Optional<Logger> logger,
-      final Optional<Path> relativeRoot)
+  public DefaultProcessRunner(final PathRefFileSystem root, final String scratchDir, final Optional<PrintStream> addl,
+      final Optional<Logger> logger)
   {
-    this(scratchDir, addl, logger, relativeRoot, Optional.of(Long.valueOf(100L)));
+    this(root, scratchDir, addl, logger, Optional.of(Long.valueOf(100L)));
   }
 
-  public DefaultProcessRunner(final Path scratchDir, final Optional<PrintStream> addl, final Optional<Logger> logger,
-      final Optional<Path> relativeRoot, final Optional<Long> iterimSleepValue)
+  public DefaultProcessRunner(final PathRefFileSystem root, final String scratchDir, final Optional<PrintStream> addl,
+      final Optional<Logger> logger, final Optional<Long> iterimSleepValue)
   {
-    this.scratchDir = requireNonNull(scratchDir);
+    this.root = requireNonNull(root);
+    this.scratchDir = this.root.getPath(requireNonNull(scratchDir));
     if (exists(this.scratchDir))
       throw new ProcessException("Scratch directory must not exist -> " + this.scratchDir);
     pet.translate(() -> {
-      createDirectories(scratchDir);
+      Files.createDirectories(this.scratchDir);
     });
     this.addl = requireNonNull(addl);
     this.logger = requireNonNull(logger).orElse(new NOOPLogger());

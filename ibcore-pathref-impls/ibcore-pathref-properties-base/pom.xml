@@ -42,7 +42,7 @@
 			<artifactId>ibcore</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.infrastructurebuilder</groupId>
+			<groupId>org.infrastructurebuilder.pathref</groupId>
 			<artifactId>ibpathref-metadata-model</artifactId>
 		</dependency>
 	</dependencies>

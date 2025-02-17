@@ -19,25 +19,50 @@ package org.infrastructurebuilder.util.maven.mavensupport;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.apache.maven.model.Build;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.apache.maven.project.MavenProject;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class MavenProjectSupplierTest {
+class MavenProjectBuildDirectoryPathSupplierTest {
 
-  private MavenProjectSupplier mps;
+  @BeforeAll
+  static void setUpBeforeClass() throws Exception {
+  }
+
+  @AfterAll
+  static void tearDownAfterClass() throws Exception {
+  }
+
   private MavenProject p;
+  private MavenProjectBuildDirectoryPathSupplier mpbo;
+  private Path path;
 
   @BeforeEach
   public void setUp() throws Exception {
     p = new MavenProjectStub();
-    mps = new MavenProjectSupplier(p);
+    Build build = new Build();
+    path = Paths.get(".").toAbsolutePath();
+    build.setOutputDirectory(path.toString());
+    p.setBuild(build);
+
+    mpbo = new MavenProjectBuildDirectoryPathSupplier(p);
+  }
+
+  @AfterEach
+  void tearDown() throws Exception {
   }
 
   @Test
-  public void test() {
-    assertEquals(p, mps.get());
+  void testGet() {
+    assertEquals(path, mpbo.get());
   }
 
 }

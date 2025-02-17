@@ -21,41 +21,56 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.UUID;
 
+import org.infrastructurebuilder.pathref.TestingPathSupplier;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class VersionedProcessExecutionFactoryTest {
+  private final static TestingPathSupplier wps = new TestingPathSupplier();
+
+  private static PathRefFileSystem root;
 
   @BeforeAll
   static void setUpBeforeClass() throws Exception {
+    root = PathRefPath.getOrCreatePRFS(wps.get(), Optional.of(VersionedProcessExecutionFactoryTest.class.getName()));
   }
 
   private VersionedProcessExecutionFactory ef;
+  private PathRefPath scratchDir;
 
   @BeforeEach
+
   void setUp() throws Exception {
+    scratchDir = root.getPath(UUID.randomUUID().toString());
     ef = new VersionedProcessExecutionFactory() {
 
       @Override
-      public Path getScratchDir() {
-        // TODO Auto-generated method stub
-        return null;
+      public PathRefPath getScratchDir() {
+        return scratchDir;
       }
 
       @Override
-      public Optional<ProcessExecutionFactory> getFactoryForVersion(String version, PathRefPath workDirectory, String id,
+      public Optional<ProcessExecutionFactory> getFactoryForVersion(String version, String workDirectory, String id,
           String executable) {
         // TODO Auto-generated method stub
         return Optional.empty();
       }
 
       @Override
-      public ProcessExecutionFactory getDefaultFactory(PathRefPath workDirectory, String id, String executable) {
+      public ProcessExecutionFactory getDefaultFactory(String workDirectory, String id, String executable) {
         // TODO Auto-generated method stub
         return null;
+      }
+
+      @Override
+      public PathRefFileSystem getRoot() {
+        // TODO Auto-generated method stub
+        return root;
       }
     };
   }

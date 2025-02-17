@@ -27,7 +27,7 @@ import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
 import org.infrastructurebuilder.pathref.JSONAndChecksumEnabled;
 import org.infrastructurebuilder.pathref.JSONBuilder;
 import org.infrastructurebuilder.pathref.JSONBuilderFactory;
-import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.util.versions.GAVBasic;
 import org.json.JSONObject;
 
@@ -84,7 +84,7 @@ public interface GAV extends GAVBasic, JSONAndChecksumEnabled {
     return this;
   }
 
-  default GAV withRelativeRoot(PathRefPath r) {
+  default GAV withRelativeRoot(PathRefFileSystem r) {
     return this;
   }
 

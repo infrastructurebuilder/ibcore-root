@@ -18,6 +18,8 @@
 package org.infrastructurebuilder.util.executor;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.ofNullable;
 
 import java.net.URI;
 import java.nio.file.FileSystemNotFoundException;
@@ -53,7 +55,7 @@ public class ModeledProcessExecution extends GeneratedProcessExecution implement
     return requireNonNull(e).getEnvEntry()
         .map(es -> es.stream().collect(Collectors.toMap(k -> k.getKey(), v -> v.getValue(), //
             (v1, v2) -> {
-              throw new IBException("Duplicate %s / %s".formatted( v1, v2));
+              throw new IBException("Duplicate %s / %s".formatted(v1, v2));
             }, TreeMap::new)));
   };
 
@@ -65,7 +67,8 @@ public class ModeledProcessExecution extends GeneratedProcessExecution implement
     super(s.getModelVersion() //
         , s.getId() //
         , s.getExecutable() //
-        , s.getArguments().orElse(null) //
+        , s.getArguments() //
+        , ofNullable(s.getRoot()).orElseThrow(() -> new IBException("Requires root"))//
         , s.getTimeout().orElse(null) //
         , s.getOptional().orElse(null) //
         , s.getBackground().orElse(null) //
@@ -74,16 +77,20 @@ public class ModeledProcessExecution extends GeneratedProcessExecution implement
         , s.getStdOutPath().orElse(null) //
         , s.getStdErrPath().orElse(null) //
         , s.getStdInPath().orElse(null) //
-        , s.getRoot().orElse(null)//
         , s.getEnvironment().orElse(null));
   }
 
-  public ModeledProcessExecution(String modelVersion, String id, String executable, List<String> arguments,
-      String timeout, Boolean optional, Boolean background, String workDirectory, List<String> exitValues,
-      String stdOutPath, String stdErrPath, String stdInPath, String root, Environment environment)
+  public ModeledProcessExecution(String modelVersion, String id, //
+      String executable, List<String> arguments, //
+      String root,//
+      String timeout, Boolean optional, Boolean background, String workDirectory,
+      List<String> exitValues,//
+      String stdOutPath, String stdErrPath, String stdInPath, //
+      Environment environment)
   {
-    super(modelVersion, id, executable, arguments, timeout, optional, background, workDirectory, exitValues, stdOutPath,
-        stdErrPath, stdInPath, root, environment);
+    super(modelVersion, id, executable, arguments, root, //
+        timeout, optional, background, workDirectory, exitValues, //
+        stdOutPath, stdErrPath, stdInPath, environment);
 
   }
 
@@ -99,33 +106,32 @@ public class ModeledProcessExecution extends GeneratedProcessExecution implement
     }
   }
 
-  public Optional<PathRefPath> getRelativePathRef() {
-    return getRoot().map(uri -> {
-      try {
-        return ((PathRefFileSystem) FileSystems.getFileSystem(URI.create(uri))).getRoot();
-      } catch (FileSystemNotFoundException fsnf) {
-        log.error("Attempted to acquire uncreated filesystem %s".formatted(uri), fsnf);
-        return null;
-      }
-    });
+  public Optional<PathRefFileSystem> getRelativeRoot() {
+    PathRefFileSystem fs = null;
+    try {
+      fs = ((PathRefFileSystem) FileSystems.getFileSystem(URI.create(getRoot()))); // Must already exist
+    } catch (FileSystemNotFoundException fsnf) {
+      log.error("Attempted to acquire uncreated filesystem %s".formatted(getRoot()), fsnf);
+    }
+    return ofNullable(fs);
   }
 
   public Optional<ChecksumBuilder> getChecksumBuilder() {
-    return Optional.of(
-        ChecksumBuilderFactory.newAlternateInstanceWithPathRef(this.getRelativePathRef()).addString(getModelVersion()) //
-            .addString(getId()) //
-            .addString(getExecutable()) //
-            .addListString(getArguments()) //
-            .addString(getTimeout()) //
-            .addBoolean(getOptional()) //
-            .addBoolean(getBackground()) //
-            .addPathAsString(getWorkDirectory()) //
-            .addListString(getExitValues()) //
-            .addPathAsString(getStdOutPath()) //
-            .addPathAsString(getStdErrPath()) //
-            .addPathAsString(getStdInPath()) //
-            .addString(getRoot().orElse(null)) // Never add RR to Checksum
-            .addMapStringString(getEnvironment().flatMap(ModeledProcessExecution.envToMapSS)));
+    return Optional.of(ChecksumBuilderFactory.newAlternateInstanceWithPathRef(this.getRelativeRoot()) //
+        .addString(getModelVersion()) //
+        .addString(getId()) //
+        .addString(getExecutable()) //
+        .addListString(getArguments()) //
+        .addString(getTimeout()) //
+        .addBoolean(getOptional()) //
+        .addBoolean(getBackground()) //
+        .addPathAsString(getWorkDirectory()) //
+        .addListString(getExitValues()) //
+        .addPathAsString(getStdOutPath()) //
+        .addPathAsString(getStdErrPath()) //
+        .addPathAsString(getStdInPath()) //
+        .addString(getRoot()) //
+        .addMapStringString(getEnvironment().flatMap(ModeledProcessExecution.envToMapSS)));
   }
 
   @Override

@@ -38,7 +38,6 @@ import org.apache.avro.generic.GenericRecord;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.pathref.fs.PathRefUtils;
 import org.infrastructurebuilder.util.config.impl.DefaultConfigMapBuilder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -121,7 +120,7 @@ public class IBDataAvroUtilsTest {
   public void testFromMapAndWpNulled() {
     assertThrows(IBException.class, () -> {
       Path path = wps.getTestClasses();
-      PathRefPath rr = PathRefUtils.fromPath(path);
+      PathRefPath rr = PathRefPath.fromParentOfPath(path);
       IBDataAvroUtils.fromMapAndWP.apply(rr, new DefaultConfigMapBuilder());
     });
   }

@@ -22,6 +22,7 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Arrays;
@@ -33,7 +34,6 @@ import java.util.UUID;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.pathref.fs.PathRefUtils;
 import org.infrastructurebuilder.util.executor.ModeledProcessExecution;
 import org.infrastructurebuilder.util.executor.model.v1_0.GeneratedProcessExecution;
 import org.junit.jupiter.api.AfterAll;
@@ -48,40 +48,31 @@ public class DefaultProcessExecutionTest {
   public final static Logger log = LoggerFactory.getLogger(DefaultProcessExecutionTest.class.getName());
   public final static TestingPathSupplier wps = new TestingPathSupplier();
 
-  @BeforeAll
-  public static void setUpBeforeClass() throws Exception {
-  }
-
-  @AfterAll
-  public static void tearDownAfterClass() throws Exception {
-  }
-
   GeneratedProcessExecution p1;
   private DefaultProcessExecution p2;
-  private Path _workDirectory;
   private String id;
-  private PathRefPath workDirectory;
-  private PathRefFileSystem root;
+  private String workDirectory;
+  private static PathRefFileSystem root;
 
+  @BeforeAll
+  public static void setUpAll() throws Exception {
+    root = PathRefPath.getOrCreatePRFS(wps.get(), Optional.of(DefaultProcessExecutionTest.class.getName()));
+  }
   @BeforeEach
   public void setUp() throws Exception {
     id = UUID.randomUUID().toString();
     String executable = wps.getRoot().resolve("packer").toAbsolutePath().toString();
     List<String> arguments = Arrays.asList("--version");
     Optional<Duration> timeout = of(ofMillis(30000L));
-    _workDirectory = wps.get();
-    workDirectory = PathRefUtils.fromPath(_workDirectory);
-
-    var _root = PathRefUtils.fromPath(wps.getRoot());
-
-    root = _root.getFileSystem();
+    workDirectory = UUID.randomUUID().toString();
+    Files.createDirectories(root.getPath(workDirectory));
 
     p1 = new GeneratedProcessExecution();
 
     p1.setId(id);
-    p1.setRoot(workDirectory.getFileSystem().toString());
+    p1.setRoot(root.toString());
 
-    p2 = new DefaultProcessExecution(id, executable, arguments, of(root),timeout, empty(), workDirectory, true,
+    p2 = new DefaultProcessExecution(id, executable, arguments, root,timeout, empty(), workDirectory, true,
         of(new HashMap<>()),  empty(), empty(), false);
 
   }

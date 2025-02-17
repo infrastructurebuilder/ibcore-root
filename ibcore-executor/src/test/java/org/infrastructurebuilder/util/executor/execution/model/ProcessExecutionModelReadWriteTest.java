@@ -20,7 +20,6 @@ package org.infrastructurebuilder.util.executor.execution.model;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
-import java.util.Properties;
 import java.util.UUID;
 
 import org.infrastructurebuilder.util.executor.model.v1_0.Environment;

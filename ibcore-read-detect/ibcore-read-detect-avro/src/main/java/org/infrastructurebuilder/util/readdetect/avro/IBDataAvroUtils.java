@@ -44,7 +44,6 @@ import org.apache.avro.generic.MapProxyGenericData;
 import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.pathref.fs.PathRefUtils;
 import org.infrastructurebuilder.util.config.ConfigMapBuilder;
 import org.infrastructurebuilder.util.core.IBUtils;
 
@@ -79,7 +78,7 @@ public interface IBDataAvroUtils {
     DataFileWriter<GenericRecord> w = new DataFileWriter<GenericRecord>(
         new GenericDatumWriter<GenericRecord>(s, new MapProxyGenericData(new Formatters(map))));
     // create the working data file or die
-    Path file = PathRefUtils.makeAFile(rr, IBConstants.IBDATA_PREFIX, ".".concat(IBConstants.AVRO), false)
+    Path file = PathRefPath.makeAFile(rr, IBConstants.IBDATA_PREFIX, ".".concat(IBConstants.AVRO), false)
         .orElseThrow(() -> new IBException("Cannot create temp file"));
     cet.translate(() -> w.create(s, file.toFile()));
     return w;

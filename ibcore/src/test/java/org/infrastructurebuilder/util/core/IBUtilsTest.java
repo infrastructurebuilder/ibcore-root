@@ -149,7 +149,7 @@ import org.w3c.dom.Document;
 @SuppressWarnings("unused")
 public class IBUtilsTest {
 
-  private static final String B_XML_CSUM = "5cd814bd44716a73c2e380c443f573aa3f0a4aaf881f70810ec9c9552035433f6cca4c64161ce460e97db0089eefb1aad4d09e7151c330afc7a4caf528a6f475";
+  private static final String B_XML_CSUM = "444dd2fe95a17098ba7f33f6eb91bbbeb77984da6d465d2aa39980c1025dcd3dc6e4df7b3ed437de82a8dd2b6f9010317c872485c9adb11c2202e5a76350678a";
   private static final String JUNIT_4_8_2_JAR = "junit-4.8.2.jar";
   private static final String C1_PROPERTY = "process.executor.interim.sleep";
   private static final String FAKEFILE = "FAKEFILE.zip";

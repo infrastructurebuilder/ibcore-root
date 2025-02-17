@@ -32,7 +32,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class MavenBackedPathRefProducerTest {
+class MavenTargetPathRefProducerTest {
 
   private static final String XTXT = "X.txt";
   public final static TestingPathSupplier tps = new TestingPathSupplier();
@@ -47,7 +47,6 @@ class MavenBackedPathRefProducerTest {
   }
 
   MavenProject project;
-  MavenBackedPathRefProducer p;
   MavenBackedTempPathRefProducer t;
   Path target;
 
@@ -65,15 +64,14 @@ class MavenBackedPathRefProducerTest {
     project.setFile(xfile.toFile());
 
     MavenProjectSupplier p2 = new MavenProjectSupplier(project);
-    p = new MavenBackedPathRefProducer(p2);
     t = new MavenBackedTempPathRefProducer(p2);
   }
 
   @Test
   void test() {
-    assertEquals(MavenBackedPathRefProducer.NAME, p.getName());
-    assertNotNull(p.getLog());
-    PathRefPath rr = p.with(null);
+    assertEquals(MavenBackedTempPathRefProducer.NAME, t.getName());
+    assertNotNull(t.getLog());
+    PathRefPath rr = t.with(null);
     assertNotNull(rr);
 //    assertTrue(rr.isPath());
 //    assertEquals(target, rr.getPath().get());

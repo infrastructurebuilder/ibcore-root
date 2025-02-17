@@ -33,15 +33,16 @@ import org.infrastructurebuilder.api.base.DefaultPathAndChecksum;
 import org.infrastructurebuilder.objectmapper.jackson.ObjectMapperUtils;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v1_0.IBMetadataModel;
+import org.infrastructurebuilder.pathref.util.readdetect.model.v1_0.IBResourceModel;
 import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.ibpathref.metadata.model.v1_0.IBMetadataModel;
 import org.infrastructurebuilder.util.readdetect.base.AbstractIBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.base.AbstractIBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.base.IBResource;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory;
-import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -302,7 +303,7 @@ abstract public class AbstractPathIBResourceBuilderFactory extends AbstractIBRes
     }
 
     @Override
-    public Optional<PathRefPath> getRelativePathRef() {
+    public Optional<PathRefFileSystem> getRelativeRoot() {
       return this.path.getRoot();
     }
 

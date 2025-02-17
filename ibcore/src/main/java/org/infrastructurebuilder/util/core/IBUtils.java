@@ -966,7 +966,9 @@ public class IBUtils {
           throw new IBException("File " + path.toAbsolutePath() + " is not available to write");
         return path;
       } else {
-        createDirectories(path.getParent());
+        Path a = path;
+        Path p = a.getParent();
+        createDirectories(p);
       }
       return createFile(path);
     });

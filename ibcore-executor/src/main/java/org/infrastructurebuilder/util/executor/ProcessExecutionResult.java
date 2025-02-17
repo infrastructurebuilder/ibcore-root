@@ -19,6 +19,7 @@ package org.infrastructurebuilder.util.executor;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,14 +29,45 @@ import org.infrastructurebuilder.pathref.ChecksumBuilderEnabled;
 import org.infrastructurebuilder.pathref.JSONAndChecksumEnabled;
 import org.infrastructurebuilder.pathref.JSONBuilder;
 import org.infrastructurebuilder.pathref.JSONBuilderFactory;
+import org.infrastructurebuilder.util.executor.model.v1_0.ExecutionException;
+import org.infrastructurebuilder.util.executor.model.v1_0.Stack;
 import org.json.JSONObject;
 
 public interface ProcessExecutionResult extends JSONAndChecksumEnabled, ChecksumBuilderEnabled {
 
-  Function<ProcessExecutionResult, Boolean> defaultValidator = (r) -> {
+  public final Function<ProcessExecutionResult, Boolean> defaultValidator = (r) -> {
     return r.getException().isPresent() || r.getResultCode().orElse(ProcessExecutionResult.FAIL) != 0;
 
   };
+
+  public final static Function<StackTraceElement[], List<Stack>> toNullableStack = (elements) -> {
+    if (elements == null)
+      return null;
+    List<Stack> l = new ArrayList<>();
+    for (StackTraceElement e : elements) {
+      var b = Stack.builder().withDeclaringClass(e.getClassName()) //
+          .withFileName(e.getFileName()) //
+          .withLineNumber((long) e.getLineNumber()) //
+          .withMethodName(e.getMethodName()) //
+          .withClassLoaderName(e.getClassLoaderName()) //
+          .withModuleName(e.getModuleName()) //
+          .withModuleVersion(e.getModuleVersion()) //
+          .build();
+      l.add(b);
+    }
+    return l;
+  };
+
+  public final static Function<Optional<Throwable>, ExecutionException> toNullableExecutionException = (o) -> {
+    return o.map(e -> ExecutionException.builder() //
+        .withMessage(e.getMessage()) //
+        .withKlass(e.getClass().getCanonicalName()) //
+        .withStack(toNullableStack.apply(e.getStackTrace())) //
+        .build()) //
+        .orElse(null);
+
+  };
+
 
   String EXCEPTION = "exception";
   String EXECUTION = "execution";

@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class ClasspathPathRefTest {
+class ClasspathPathRefProducerTest {
 
   private static final String XFILE = "X.txt";
   private static final String ABC = "abc";
@@ -42,7 +42,7 @@ class ClasspathPathRefTest {
   private static final String URLROOT = "https://someserver.com/somepath";
   private static final String URLLIKE = "s3://some.amazon.com/bucket";
   private static final String OTHLIKE = "s3://some.amazon.com/otherbucket";
-  private final static Logger log = LoggerFactory.getLogger(ClasspathPathRefTest.class);
+  private final static Logger log = LoggerFactory.getLogger(ClasspathPathRefProducerTest.class);
   private static TestingPathSupplier tps;
 
   @BeforeAll
@@ -56,11 +56,11 @@ class ClasspathPathRefTest {
   }
 
   private PathRefFactory rrp;
-  private ClasspathPathRefSupplier h;
+  private ClasspathPathRefProducer h;
 
   @BeforeEach
   void setUp() throws Exception {
-    h = new ClasspathPathRefSupplier();
+    h = new ClasspathPathRefProducer();
     rrp = new PathRefFactory(Set.of(this.h));
   }
 
@@ -70,7 +70,7 @@ class ClasspathPathRefTest {
 
   @Test
   void testClasspath() {
-    PathRefPath cprr = rrp.getPathRef(ClasspathPathRefSupplier.NAME);
+    PathRefPath cprr = rrp.getPathRef(ClasspathPathRefProducer.NAME);
 //    assertTrue(cprr.extendAsPathRef(Paths.get(MYFILE_XML)).isEmpty());
 //    String k = cprr.relativize(ClasspathPathRefSupplier.NAME + MYFILE_XML).map(Path::toString).get();
 //    String q = cprr.getUrl().get().toExternalForm();

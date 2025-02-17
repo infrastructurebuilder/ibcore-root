@@ -92,7 +92,7 @@
 			<artifactId>tika-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
+			<groupId>org.infrastructurebuilder.pathref</groupId>
 			<artifactId>ibpathref-metadata-model</artifactId>
 		</dependency>
 		<dependency>

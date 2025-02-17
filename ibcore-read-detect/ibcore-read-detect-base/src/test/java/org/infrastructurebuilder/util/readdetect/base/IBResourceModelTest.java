@@ -34,7 +34,6 @@ import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.IBChecksumUtils;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.pathref.fs.PathRefUtils;
 import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathIBResourceBuilderFactory.AbstractPathIBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.path.impls.absolute.AbsolutePathIBResourceBuilderFactory;
 import org.junit.jupiter.api.AfterEach;
@@ -62,7 +61,7 @@ public class IBResourceModelTest {
     path = wps.get().resolve(UUID.randomUUID().toString());
     IBChecksumUtils.copy(source, path);
     lc = new Checksum(source);
-    rrs = PathRefUtils.fromPath(root);
+    rrs = PathRefPath.fromParentOfPath(root);
     f = new AbsolutePathIBResourceBuilderFactory();
     AbstractPathIBResourceBuilder bb = f.getBuilder().get();
     checksum = new Checksum(source);

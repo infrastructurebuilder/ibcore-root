@@ -32,7 +32,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class MavenBackedPathRefProducerTest {
+class MavenBackedTempPathRefProducerTest {
 
   private static final String XTXT = "X.txt";
   public final static TestingPathSupplier tps = new TestingPathSupplier();
@@ -47,33 +47,33 @@ class MavenBackedPathRefProducerTest {
   }
 
   MavenProject project;
-  MavenBackedPathRefProducer p;
-  MavenBackedTempPathRefProducer t;
+  MavenTargetPathRefProducer t;
   Path target;
 
   @BeforeEach
   void setUp() throws Exception {
-    target = tps.get();
+    var classes = tps.getClasses();
+    target = classes.getParent();
 
     var xfile = target.resolve(XTXT);
     IBChecksumUtils.copy(tps.getTestClasses().resolve(XTXT), xfile);
     project = new MavenProject();
     Build b = new Build();
 
-    b.setOutputDirectory(target.toString());
+    b.setOutputDirectory(classes.toString());
+    b.setDirectory(target.toString());
     project.setBuild(b);
     project.setFile(xfile.toFile());
 
     MavenProjectSupplier p2 = new MavenProjectSupplier(project);
-    p = new MavenBackedPathRefProducer(p2);
-    t = new MavenBackedTempPathRefProducer(p2);
+    t = new MavenTargetPathRefProducer(p2);
   }
 
   @Test
   void test() {
-    assertEquals(MavenBackedPathRefProducer.NAME, p.getName());
-    assertNotNull(p.getLog());
-    PathRefPath rr = p.with(null);
+    assertEquals(MavenTargetPathRefProducer.MAVEN_TARGET, t.getName());
+    assertNotNull(t.getLog());
+    PathRefPath rr = t.with(null);
     assertNotNull(rr);
 //    assertTrue(rr.isPath());
 //    assertEquals(target, rr.getPath().get());

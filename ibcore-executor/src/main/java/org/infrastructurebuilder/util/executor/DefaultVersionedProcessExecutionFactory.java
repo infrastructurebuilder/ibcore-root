@@ -17,35 +17,41 @@
  */
 package org.infrastructurebuilder.util.executor;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 
 import java.io.PrintStream;
 import java.nio.file.Path;
-import java.util.Objects;
 import java.util.Optional;
 
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.util.executor.execution.model.ProcessExectionFactoryv1_0_0;
 
 public class DefaultVersionedProcessExecutionFactory implements VersionedProcessExecutionFactory {
 
   private final Optional<PrintStream> addl;
-  private final Path scratchDir;
+  private final PathRefPath scratchDir;
+  private final PathRefFileSystem root;
 
   public final static String DEFAULT_VERSION = "2.0.0";
 
-  public DefaultVersionedProcessExecutionFactory(Path scratchDir, Optional<PrintStream> addl) {
-    this.scratchDir = Objects.requireNonNull(scratchDir);
-    this.addl = Objects.requireNonNull(addl);
+  public DefaultVersionedProcessExecutionFactory(final PathRefFileSystem root, String scratchDir,
+      Optional<PrintStream> addl)
+  {
+    this.root = requireNonNull(root);
+    this.scratchDir = this.root.getPath(requireNonNull(scratchDir));
+    this.addl = requireNonNull(addl);
   }
 
   @Override
-  public ProcessExecutionFactory getDefaultFactory(final PathRefPath workDirectory, final String id, final String executable) {
+  public ProcessExecutionFactory getDefaultFactory(final String workDirectory, final String id,
+      final String executable) {
     return getFactoryForVersion(DEFAULT_VERSION, workDirectory, id, executable).get();
   }
 
   @Override
-  public Optional<ProcessExecutionFactory> getFactoryForVersion(final String version, final PathRefPath workDirectory,
+  public Optional<ProcessExecutionFactory> getFactoryForVersion(final String version, final String workDirectory,
       final String id, final String executable) {
     ProcessExecutionFactory f = null;
     switch (version) {
@@ -53,7 +59,7 @@ public class DefaultVersionedProcessExecutionFactory implements VersionedProcess
       break;
     case "1.0.0":
     default:
-      f = createFactory_v1_0_0(workDirectory, id, executable);
+      f = createFactory_v1_0_0(workDirectory.toString(), id, executable);
       break;
     }
     return ofNullable(f);
@@ -65,13 +71,19 @@ public class DefaultVersionedProcessExecutionFactory implements VersionedProcess
   }
 
   @Override
-  public Path getScratchDir() {
+  public PathRefPath getScratchDir() {
     return scratchDir;
   }
 
-  private ProcessExecutionFactory createFactory_v1_0_0(final PathRefPath workDirectory, final String id,
+  private ProcessExecutionFactory createFactory_v1_0_0(final String workDirectory, final String id,
       final String executable) {
-    return new ProcessExectionFactoryv1_0_0(this, id, executable, workDirectory);
+    return new ProcessExectionFactoryv1_0_0(this, id, executable, workDirectory) //
+        .withRelativeRoot(getRoot());
+  }
+
+  @Override
+  public PathRefFileSystem getRoot() {
+    return this.root;
   }
 
 }

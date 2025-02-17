@@ -21,8 +21,8 @@ import org.infrastructurebuilder.api.OptStream;
 import org.infrastructurebuilder.api.base.DefaultPathAndChecksum;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.util.readdetect.model.v1_0.IBResourceModel;
 import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathIBResourceBuilderFactory.AbstractIBResource;
-import org.infrastructurebuilder.util.readdetect.model.v1_0.IBResourceModel;
 
 public class FakeAbstractIBResource extends AbstractIBResource {
   private final static TestingPathSupplier tps = new TestingPathSupplier();

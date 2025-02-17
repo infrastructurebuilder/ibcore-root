@@ -39,7 +39,6 @@ import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.PathSupplier;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.pathref.fs.PathRefUtils;
 import org.infrastructurebuilder.pathref.fs.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.config.ConfigMap;
 import org.infrastructurebuilder.util.config.ConfigMapConfigurable;
@@ -154,7 +153,7 @@ abstract public class AbstractIBResourceCollectorSupplier<I>
       this.wGetBldrFact = Objects.requireNonNull(wgs);
       Objects.requireNonNull(proxinfo).ifPresent(p -> {
       });
-      cf = getBuilderFactory(PathRefUtils.fromPath(workingDir)).withTypeMapper(t2e);
+      cf = getBuilderFactory(PathRefPath.fromParentOfPath(workingDir)).withTypeMapper(t2e);
       this.workingDir = requireNonNull(workingDir);
       this.mappers = fileMaprs.orElseGet(() -> new FileMapper[0]);
       log.info("Resource Collector created");

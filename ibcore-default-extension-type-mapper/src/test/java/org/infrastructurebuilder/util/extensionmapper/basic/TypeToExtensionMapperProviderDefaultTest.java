@@ -15,29 +15,34 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.maven.mavensupport;
+package org.infrastructurebuilder.util.extensionmapper.basic;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
-import org.apache.maven.project.MavenProject;
+import java.util.Collections;
+
+import org.infrastructurebuilder.pathref.fs.TypeToExtensionMapper;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class MavenProjectSupplierTest {
+class TypeToExtensionMapperProviderDefaultTest {
 
-  private MavenProjectSupplier mps;
-  private MavenProject p;
+  @BeforeAll
+  static void setUpBeforeClass() throws Exception {
+  }
 
   @BeforeEach
-  public void setUp() throws Exception {
-    p = new MavenProjectStub();
-    mps = new MavenProjectSupplier(p);
+  void setUp() throws Exception {
   }
 
   @Test
-  public void test() {
-    assertEquals(p, mps.get());
+  void testCreate() {
+    TypeToExtensionMapperProviderDefault d = new TypeToExtensionMapperProviderDefault();
+    assertNotNull(d);
+    TypeToExtensionMapper t = d.create("A", Collections.emptyMap());
+    assertNotNull(t);
+    assertTrue(t instanceof DefaultTypeToExtensionMapper);
   }
 
 }

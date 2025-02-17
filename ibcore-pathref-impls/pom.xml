@@ -40,14 +40,6 @@
 		<module>ibcore-pathref-properties-base</module>
 		<module>ibcore-pathref-classpath</module>
 		<module>ibcore-pathref-testingpath</module>
-<!--
-		<module>ibcore-pathref-userhome</module>
-		<module>ibcore-pathref-properties-envpath</module>
-		<module>ibcore-pathref-setpath</module>
-		<module>ibcore-pathref-properties-path</module>
-		<module>ibcore-pathref-uri</module>
-		<module>ibcore-pathref-zip</module>
--->
 	</modules>
 
 	<properties>
