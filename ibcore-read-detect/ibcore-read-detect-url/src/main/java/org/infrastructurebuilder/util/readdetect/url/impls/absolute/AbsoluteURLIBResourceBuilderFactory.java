@@ -38,6 +38,7 @@ import org.infrastructurebuilder.api.base.DefaultPathAndChecksum;
 import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.OptionalReflectionLoadingTikaDetector;
 import org.infrastructurebuilder.pathref.util.readdetect.model.v1_0.IBResourceModel;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.readdetect.base.IBResource;
@@ -183,7 +184,7 @@ public class AbsoluteURLIBResourceBuilderFactory extends AbstractPathIBResourceB
               log.warn(format("validation: expected checksum %s != actual checksum %s", s, n));
               return false;
             }
-            var actualType = IBResourceBuilderFactory.toOptionalType.apply(p)
+            var actualType = OptionalReflectionLoadingTikaDetector.toType.apply(p)
                 .orElse(IBConstants.APPLICATION_OCTET_STREAM);
             if (!this.m.getStreamType().equals(actualType)) {
               log.warn(format("validation: expected type %s != actual type %", this.m.getStreamType(), actualType));
