@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.infrastructurebuilder.pathref.PathRefFactory;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -67,8 +68,8 @@ class SetPathPathRefProducerTest {
 
   @Test
   void testRR() throws IOException {
-    PathRefPath rr = rrp.getPathRef(SetValuePathRefProducer.NAME);
-    assertEquals(tp, rr.toRealPath());
+     PathRefFileSystem rr = rrp.getPathRef(SetValuePathRefProducer.NAME);
+    assertEquals(tp, rr.getRoot().toRealPath());
   }
 
   @Test
@@ -89,7 +90,7 @@ class SetPathPathRefProducerTest {
   void testWithPath() throws IOException {
     var v = new SetValuePathRefProducer().withPath(tp);
     assertNotNull(v);
-    Path q = v.with(null).toRealPath();
+    Path q = v.with(null).getRoot().toRealPath();
     assertEquals(tp, q);
   }
 

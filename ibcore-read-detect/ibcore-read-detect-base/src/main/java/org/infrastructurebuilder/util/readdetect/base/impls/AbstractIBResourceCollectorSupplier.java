@@ -23,6 +23,7 @@ import static org.infrastructurebuilder.constants.IBConstants.CACHEDIR;
 import static org.infrastructurebuilder.constants.IBConstants.FILEMAPPERS;
 import static org.infrastructurebuilder.constants.IBConstants.WORKINGDIR;
 
+import java.net.URI;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
@@ -35,23 +36,24 @@ import javax.inject.Inject;
 import org.apache.maven.wagon.proxy.ProxyInfoProvider;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.components.io.filemappers.FileMapper;
+import org.infrastructurebuilder.api.ConfigMap;
+import org.infrastructurebuilder.api.LoggerSupplier;
+import org.infrastructurebuilder.api.base.ConfigMapConfigurable;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.PathSupplier;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.pathref.fs.TypeToExtensionMapper;
-import org.infrastructurebuilder.util.config.ConfigMap;
-import org.infrastructurebuilder.util.config.ConfigMapConfigurable;
 import org.infrastructurebuilder.util.core.HeadersSupplier;
 import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.core.LoggerSupplier;
 import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
 import org.infrastructurebuilder.util.mavendownloadplugin.WGetBuilderFactory;
 import org.infrastructurebuilder.util.mavendownloadplugin.nonpublic.DefaultWGetBuilderFactory;
-import org.infrastructurebuilder.util.readdetect.base.IBResource;
-import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory;
-import org.infrastructurebuilder.util.readdetect.base.IBResourceCollector;
-import org.infrastructurebuilder.util.readdetect.base.IBResourceCollectorSupplier;
+import org.infrastructurebuilder.util.readdetect.api.IBResource;
+import org.infrastructurebuilder.util.readdetect.api.IBResourceBuilderFactory;
+import org.infrastructurebuilder.util.readdetect.api.IBResourceCollector;
+import org.infrastructurebuilder.util.readdetect.api.IBResourceCollectorSupplier;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 
@@ -70,7 +72,7 @@ abstract public class AbstractIBResourceCollectorSupplier<I>
   private final Map<String, String> headers;
   private final Map<String, FileMapper> fileMappers;
 
-  private final AtomicReference<Path> cacheDirectory = new AtomicReference<>();
+  private final AtomicReference<PathRefFileSystem> cacheDirectory = new AtomicReference<>();
   private final AtomicReference<Path> workingDirectory = new AtomicReference<>();
   private final AtomicReference<FileMapper[]> mappers = new AtomicReference<>();
   private final WGetBuilderFactory wgs;
@@ -101,9 +103,12 @@ abstract public class AbstractIBResourceCollectorSupplier<I>
   @Override
   public IBResourceCollector get() {
     return new DefaultIBResourceCollector(log //
-        , wgs //
-            .withCacheDirectory(cacheDirectory.get()),
-        t2e, headers, workingDirectory.get(), ofNullable(this.proxyInfoProvider), ofNullable(mappers.get()));
+        , wgs.withCacheDirectory(cacheDirectory.get()) //
+        , t2e //
+        , headers //
+        , workingDirectory.get() //
+        , ofNullable(this.proxyInfoProvider) //
+        , ofNullable(mappers.get()));
   }
 
   public IBResourceCollectorSupplier withProxyInfoProvider(ProxyInfoProvider proxyInfoProvider) {
@@ -119,7 +124,20 @@ abstract public class AbstractIBResourceCollectorSupplier<I>
   public IBResourceCollectorSupplier withConfig(ConfigMap config) {
     this.workingDirectory.compareAndSet(null,
         this.pathSuppliers.get(requireNonNull(config).getString(WORKINGDIR)).get());
-    this.cacheDirectory.compareAndSet(null, this.pathSuppliers.get(requireNonNull(config).getString(CACHEDIR)).get());
+
+    String _cdir = requireNonNull(config).getString(CACHEDIR);
+    if (_cdir == null)
+      throw new IBException("No cache directory supplied");
+    if (_cdir.startsWith(PathRefPath.PATHREFPREFIX))
+      this.cacheDirectory.compareAndSet(null, PathRefPath.getOrCreatePRFS(URI.create(_cdir), config.toMap())
+          .orElseThrow(() -> new IBException("Could not get cache directory from %s".formatted(_cdir))));
+    else if (this.pathSuppliers.containsKey(_cdir)) {
+      this.cacheDirectory.compareAndSet(null, this.pathSuppliers.get(_cdir).getPRFS(config.toMap()) //
+          .orElseThrow(() -> new IBException("Could not create cache directory from %s".formatted(_cdir))));
+    } else {
+      this.cacheDirectory.compareAndSet(null, PathRefPath.getOrCreatePRFS(URI.create(_cdir), config.toMap()) //
+          .orElseThrow(() -> new IBException("Could not create cache directory from %s".formatted(_cdir))));
+    }
 
     List<FileMapper> ls = IBUtils.asStringStream(config.getJSONArray(FILEMAPPERS))
         .map(key -> ofNullable(fileMappers.get(key))
@@ -128,6 +146,8 @@ abstract public class AbstractIBResourceCollectorSupplier<I>
     this.mappers.compareAndSet(null, ls.toArray(new FileMapper[ls.size()]));
     return this;
   }
+
+  abstract public IBResourceBuilderFactory<I> getBuilderFactory(PathRefPath rr);
 
   // ------
   private class DefaultIBResourceCollector implements IBResourceCollector {
@@ -152,15 +172,17 @@ abstract public class AbstractIBResourceCollectorSupplier<I>
       // this.wps = requireNonNull(wps);
       this.wGetBldrFact = Objects.requireNonNull(wgs);
       Objects.requireNonNull(proxinfo).ifPresent(p -> {
+        this.wGetBldrFact.withProxyInfoProvider(p);
       });
-      cf = getBuilderFactory(PathRefPath.fromParentOfPath(workingDir)).withTypeMapper(t2e);
+      cf = getBuilderFactory(PathRefPath.fromParentOfPath(workingDir).orElse(null)) //
+          .withTypeMapper(t2e);
       this.workingDir = requireNonNull(workingDir);
       this.mappers = fileMaprs.orElseGet(() -> new FileMapper[0]);
       log.info("Resource Collector created");
     }
 
     @Override
-    synchronized public final Optional<List<IBResource>> collectCachedIBResources(//
+    synchronized public final Optional<List<IBResource>> collect(//
         boolean deleteExistingCacheIfPresent // makes overwrite
         , Optional<BasicCredentials> creds // NOT proxy creds
         , String sourceString //
@@ -264,5 +286,4 @@ abstract public class AbstractIBResourceCollectorSupplier<I>
     }
   }
 
-  abstract public IBResourceBuilderFactory<I> getBuilderFactory(PathRefPath rr);
 }

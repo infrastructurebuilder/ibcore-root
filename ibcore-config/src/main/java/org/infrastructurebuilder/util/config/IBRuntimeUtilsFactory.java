@@ -23,6 +23,7 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.infrastructurebuilder.api.base.ConfigMapBuilderSupplier;
 import org.infrastructurebuilder.util.core.IBRuntimeUtils;
 import org.infrastructurebuilder.util.core.TSupplier;
 

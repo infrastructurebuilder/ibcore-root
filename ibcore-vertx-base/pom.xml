@@ -42,6 +42,10 @@
   </properties>
 
   <dependencies>
+  <dependency>
+   <groupId>org.infrastructurebuilder.pathref</groupId>
+   <artifactId>ibpathref-metadata-model</artifactId>
+  </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder</groupId>
       <artifactId>ibcore</artifactId>

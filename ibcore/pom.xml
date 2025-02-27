@@ -99,10 +99,6 @@
 	<groupId>org.infrastructurebuilder.pathref</groupId>
 	<artifactId>ibpathref-api</artifactId>
     </dependency>
-<!--    <dependency>-->
-<!--      <groupId>org.infrastructurebuilder.pathref</groupId>-->
-<!--      <artifactId>ibcore-pathref</artifactId>-->
-<!--    </dependency>-->
     <dependency>
       <groupId>org.infrastructurebuilder.pathref</groupId>
       <artifactId>ibpathref-api</artifactId>

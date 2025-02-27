@@ -21,10 +21,11 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.api.IdentifiedAndWeighted;
+import org.infrastructurebuilder.api.LoggerEnabled;
+import org.infrastructurebuilder.api.base.ConfigMapBuilderConfigurable;
 import org.infrastructurebuilder.api.base.NameDescribed;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.Hinted;
-import org.infrastructurebuilder.util.core.LoggerEnabled;
 import org.infrastructurebuilder.util.core.TSupplier;
 
 public interface TSupplierConfigurableFactory<T> extends Supplier<TSupplier<T>>, //

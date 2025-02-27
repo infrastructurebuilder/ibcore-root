@@ -32,7 +32,7 @@ import org.apache.avro.file.DataFileStream;
 import org.apache.avro.file.SeekableInput;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericRecord;
-import org.infrastructurebuilder.util.readdetect.base.IBResource;
+import org.infrastructurebuilder.util.readdetect.api.IBResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,5 +50,12 @@ public interface IBResourceAvro extends IBResource {
     }
   };
 
-  Optional<SeekableInput> getSeekableFile();
+  default Optional<SeekableInput> getSeekableFile() {
+    try {
+      return getPath().map(SeekableInputFromPath::new);
+    } catch (Throwable t) {
+      log.error("Error getting seekable {}", getPath(), t);
+      return Optional.empty();
+    }
+  }
 }

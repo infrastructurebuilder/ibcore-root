@@ -64,15 +64,13 @@ import static org.infrastructurebuilder.util.core.IBUtils.reURL;
 import static org.infrastructurebuilder.util.core.IBUtils.readFile;
 import static org.infrastructurebuilder.util.core.IBUtils.readInputStreamAsStringStream;
 import static org.infrastructurebuilder.util.core.IBUtils.readJsonObject;
-import static org.infrastructurebuilder.util.core.IBUtils.readToJSONObject;
-import static org.infrastructurebuilder.util.core.IBUtils.readToString;
 import static org.infrastructurebuilder.util.core.IBUtils.removeXMLPrefix;
 import static org.infrastructurebuilder.util.core.IBUtils.size;
 import static org.infrastructurebuilder.util.core.IBUtils.splitToMap;
 import static org.infrastructurebuilder.util.core.IBUtils.strToDoc;
 import static org.infrastructurebuilder.util.core.IBUtils.stringFromDocument;
 import static org.infrastructurebuilder.util.core.IBUtils.touchFile;
-import static org.infrastructurebuilder.util.core.IBUtils.translateToWorkableArchiveURL;
+import static org.infrastructurebuilder.util.core.IBUtils.translateToWorkableArchiveURI;
 import static org.infrastructurebuilder.util.core.IBUtils.unzip;
 import static org.infrastructurebuilder.util.core.IBUtils.writeString;
 import static org.infrastructurebuilder.util.core.IBUtils.zipEntryToUrl;
@@ -94,6 +92,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.AccessDeniedException;
@@ -215,7 +214,8 @@ public class IBUtilsTest {
     IBUtils.moveAtomic(source, target);
     Path newC = target.resolve("A").resolve("B").resolve("C");
     assertTrue(Files.exists(newC));
-    assertTrue(IBUtils.getAttributes.apply(newC).isPresent());
+    assertTrue(IBUtils.getBasicAttributes.apply(newC).isPresent());
+    assertFalse(IBUtils.getAttributes.apply(newC).isPresent());
   }
 
   @Test
@@ -325,10 +325,10 @@ public class IBUtilsTest {
   @Test
   public void testASUrl() {
     final String src = "https://www.google.com/a?b";
-    final Optional<URL> u = IBUtils.asURL(src);
+    final Optional<URI> u = IBUtils.asURI(src);
     assertTrue(u.isPresent());
-    assertTrue(u.get().toExternalForm().contains(src));
-    assertFalse(IBUtils.asURL("abc").isPresent());
+    assertTrue(u.get().toString().contains(src));
+    assertTrue(IBUtils.asURI("abc").isPresent());
   }
 
   @Test
@@ -759,21 +759,21 @@ public class IBUtilsTest {
   }
 
   @Test
-  public void testMapStringToURLorNullBad() {
-    assertThrows(IBException.class, () -> IBUtils.mapStringToURLOrNull(Optional.of("Blethc")));
+  public void testMapStringToURIorNullBad() {
+    assertNotNull(IBUtils.mapStringToURIOrNull(Optional.of("Blethc")));
   }
 
   @Test
   public void testMapStringToURLorNullEmpty() {
 
-    assertNull(IBUtils.mapStringToURLOrNull(Optional.empty()));
+    assertNull(IBUtils.mapStringToURIOrNull(Optional.empty()));
   }
 
   @Test
   public void testMapStringToURLorNullGood() throws MalformedURLException {
     final String STRINGX = "http://www.google.com";
-    final URL u = new URL(STRINGX);
-    final URL u1 = IBUtils.mapStringToURLOrNull(Optional.of(STRINGX));
+    final URI u = URI.create(STRINGX);
+    final URI u1 = IBUtils.mapStringToURIOrNull(Optional.of(STRINGX));
     assertEquals(u, u1);
 
   }
@@ -785,7 +785,7 @@ public class IBUtilsTest {
       final String STRINGX = "http://www.google.com";
       URL u;
       u = new URL(STRINGX);
-      final URL u1 = IBUtils.mapStringToURLOrNull(null);
+      final URI u1 = IBUtils.mapStringToURIOrNull(null);
       assertEquals(u, u1);
     });
 
@@ -985,7 +985,7 @@ public class IBUtilsTest {
   @Test
   public void testreUrl() {
     assertFalse(ofNullable(reURL(null)).isPresent());
-    assertEquals(URL, reURL(URL).toExternalForm());
+    assertEquals(URI.create(URL), reURL(URL));
   }
 
   @Test
@@ -995,42 +995,10 @@ public class IBUtilsTest {
   }
 
   @Test
-  public void testReadFile() throws IOException {
-    final Path p = testClasses.resolve(X_TXT);
-
-    final String v = readFile(p, Charset.defaultCharset());
-
-    assertEquals("ABC_123", v);
-
-    try (InputStream ins = Files.newInputStream(p)) {
-      assertEquals("ABC_123", readToString(ins, Charset.defaultCharset()));
-    }
-  }
-
-  @Test
   public void testReadFilePath() throws IOException {
     final Path p = testClasses.resolve(X_TXT);
     final String v = readFile(p);
     assertEquals("ABC_123", "ABC_123", v);
-  }
-
-  @Test
-  public void testReadJsonObjectFromPath() throws IOException {
-    final Path p = testClasses.resolve("somefile.json");
-    final JSONObject j = readJsonObject(p);
-    JSONObject k;
-    try (InputStream ins = Files.newInputStream(p)) {
-      k = readToJSONObject(ins);
-    }
-
-    assertEquals("E", j.getJSONObject("C").getString("D"));
-    assertEquals("E", k.getJSONObject("C").getString("D"));
-  }
-
-  @Test
-  public void testReadToString() throws IOException {
-    final ByteArrayInputStream stream = new ByteArrayInputStream(ABC.getBytes(UTF_8));
-    assertEquals(ABC, ABC, readToString(stream));
   }
 
   @Test
@@ -1189,9 +1157,9 @@ public class IBUtilsTest {
   @Test
   public void testZipEntryToURL() throws MalformedURLException {
     final ZipEntry e = new ZipEntry("a");
-    final Optional<URL> p = Optional.of(new URL("file://x.zip"));
-    final URL r = zipEntryToUrl(p, e).get();
-    assertEquals("jar:file://x.zip!/a", r.toExternalForm());
+    final Optional<URI> p = Optional.of(URI.create("file://x.zip"));
+    final URI r = zipEntryToUrl(p, e).get();
+    assertEquals("jar:file://x.zip!/a", r.toString());
     assertFalse(zipEntryToUrl(Optional.empty(), e).isPresent());
 
   }
@@ -1265,15 +1233,17 @@ public class IBUtilsTest {
     Path p = testClasses.resolve("X.zip");
     URL k = p.toUri().toURL();
     String e = k.toExternalForm() + "!/rick.jpg";
-    URL u = translateToWorkableArchiveURL("jar:" + e);
-    URL v = translateToWorkableArchiveURL("zip:" + e);
+    URI u = translateToWorkableArchiveURI("jar:" + e);
+    URI v = translateToWorkableArchiveURI("zip:" + e);
 
-    URL first = new URL("https://file-examples.com/wp-content/uploads/2017/02/zip_2MB.zip");
-    String secondA = "zip:" + first.toExternalForm() + "!/zip_10MB/" + "file-sample_1MB.doc";
-    URL second = translateToWorkableArchiveURL(secondA);
+    URI first = URI.create("https://file-examples.com/wp-content/uploads/2017/02/zip_2MB.zip");
+    String secondA = "zip:" + first.toString() + "!/zip_10MB/" + "file-sample_1MB.doc";
+    URI second = translateToWorkableArchiveURI(secondA);
+
+    java.net.URL _second = second.toURL();
 
     Path cc = wps.get().resolve("file-sample_1MB.doc");
-    try (OutputStream outs = newOutputStream(cc); InputStream ins = second.openStream()) {
+    try (OutputStream outs = newOutputStream(cc); InputStream ins = _second.openStream()) {
       copy(ins, outs);
     }
     assertEquals(

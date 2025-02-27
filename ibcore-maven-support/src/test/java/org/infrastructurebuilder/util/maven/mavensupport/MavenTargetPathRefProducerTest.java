@@ -26,6 +26,7 @@ import org.apache.maven.model.Build;
 import org.apache.maven.project.MavenProject;
 import org.infrastructurebuilder.pathref.IBChecksumUtils;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -71,7 +72,7 @@ class MavenTargetPathRefProducerTest {
   void test() {
     assertEquals(MavenBackedTempPathRefProducer.NAME, t.getName());
     assertNotNull(t.getLog());
-    PathRefPath rr = t.with(null);
+    PathRefFileSystem rr = t.with(null);
     assertNotNull(rr);
 //    assertTrue(rr.isPath());
 //    assertEquals(target, rr.getPath().get());

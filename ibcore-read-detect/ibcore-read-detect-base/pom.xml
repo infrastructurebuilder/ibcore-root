@@ -54,6 +54,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.infrastructurebuilder</groupId>
+			<artifactId>ibcore-read-detect-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.infrastructurebuilder</groupId>
 			<artifactId>ibcore-maven-support</artifactId>
 		</dependency>
 		<dependency>

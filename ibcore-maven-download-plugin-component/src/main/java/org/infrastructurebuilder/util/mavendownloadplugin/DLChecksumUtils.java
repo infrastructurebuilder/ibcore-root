@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.MessageDigest;
 
 import org.apache.commons.codec.binary.Hex;
@@ -31,7 +32,7 @@ import org.apache.commons.codec.binary.Hex;
  */
 public class DLChecksumUtils {
 
-    public static void verifyChecksum(File file, String expectedDigest, MessageDigest digest) throws Exception {
+    public static void verifyChecksum(Path file, String expectedDigest, MessageDigest digest) throws Exception {
         String actualDigestHex = DLChecksumUtils.computeChecksumAsString(file, digest);
         if (!actualDigestHex.equals(expectedDigest)) {
 //          throw new MojoFailureException("Not same digest as expected: expected <" + expectedDigest + "> was <" + actualDigestHex + ">");
@@ -39,9 +40,9 @@ public class DLChecksumUtils {
         }
     }
 
-    public static String computeChecksumAsString(File file,
+    public static String computeChecksumAsString(Path file,
         MessageDigest digest) throws IOException {
-        InputStream fis = Files.newInputStream(file.toPath());
+        InputStream fis = Files.newInputStream(file);
         byte[] buffer = new byte[1024];
         int numRead;
         do {

@@ -102,7 +102,7 @@ public interface ProcessExecutionResult extends JSONAndChecksumEnabled, Checksum
 
   @Override
   default JSONObject asJSON() {
-    JSONBuilder jb = JSONBuilderFactory.newInstance()
+    JSONBuilder jb = (JSONBuilder) JSONBuilderFactory.newInstance()
 
         .addListString(STD_OUT, getStdOut())
 

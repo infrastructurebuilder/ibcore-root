@@ -56,7 +56,7 @@ public class DefaultProcessExecutionTest {
 
   @BeforeAll
   public static void setUpAll() throws Exception {
-    root = PathRefPath.getOrCreatePRFS(wps.get(), Optional.of(DefaultProcessExecutionTest.class.getName()));
+    root = PathRefPath.getOrCreatePRFS(wps.get(), Optional.of(DefaultProcessExecutionTest.class.getName())).get();
   }
   @BeforeEach
   public void setUp() throws Exception {

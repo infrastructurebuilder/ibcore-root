@@ -25,11 +25,11 @@ import java.util.Properties;
 
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.pathref.fs.PathRefProducer;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystemProducer;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 
-abstract public class AbstractBasicPathPropertiesPathRefProducer implements PathRefProducer {
+abstract public class AbstractBasicPathPropertiesPathRefProducer implements PathRefFileSystemProducer {
 
   private JSONObject config = new JSONObject();
 
@@ -40,7 +40,7 @@ abstract public class AbstractBasicPathPropertiesPathRefProducer implements Path
   }
 
   @Override
-  public PathRefPath with(String data1) {
+  public PathRefFileSystem with(String data1) {
 //    if (data == null )
 //      return Optional.empty();
     Map<String, ?> config = this.config.toMap(); // FIXME?
@@ -67,10 +67,7 @@ abstract public class AbstractBasicPathPropertiesPathRefProducer implements Path
         return null;
       }
     }
-    PathRefPath retVal = null;
-    if (fs != null)
-      retVal = ((PathRefPath) fs.getRootDirectories().iterator().next());
-    return retVal;
+    return fs;
   }
 
   /**

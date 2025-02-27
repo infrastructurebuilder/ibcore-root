@@ -19,7 +19,7 @@ package org.infrastructurebuilder.util.vertx.base;
 
 import java.nio.file.Path;
 
-import org.infrastructurebuilder.util.readdetect.base.IBResource;
+import org.infrastructurebuilder.util.readdetect.api.IBResource;
 
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;

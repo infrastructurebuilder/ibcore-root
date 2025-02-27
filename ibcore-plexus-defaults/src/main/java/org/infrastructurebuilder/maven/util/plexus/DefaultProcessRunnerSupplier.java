@@ -36,10 +36,11 @@ import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.infrastructurebuilder.api.ConfigMap;
+import org.infrastructurebuilder.api.LoggerSupplier;
+import org.infrastructurebuilder.api.base.ConfigMapBuilderSupplier;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.util.config.ConfigMap;
-import org.infrastructurebuilder.util.config.ConfigMapBuilderSupplier;
 import org.infrastructurebuilder.util.executor.DefaultProcessRunner;
 import org.infrastructurebuilder.util.executor.ProcessException;
 import org.infrastructurebuilder.util.executor.ProcessRunner;
@@ -59,9 +60,9 @@ public class DefaultProcessRunnerSupplier implements ProcessRunnerSupplier {
   private final String scratchDir;
 
   @Inject
-  public DefaultProcessRunnerSupplier(final ConfigMapBuilderSupplier cms, final Logger logger) {
+  public DefaultProcessRunnerSupplier(final ConfigMapBuilderSupplier cms, final LoggerSupplier logger) {
     cfgMap = requireNonNull(cms, "ConfigMapBuilderSupplier to DefaultProcessRunnerSupplier").get().get();
-    this.logger = requireNonNull(logger);
+    this.logger = requireNonNull(logger.get());
 
     addl = cfgMap.optString(PROCESS_EXECUTOR_SYSTEM_OUT).map(Boolean::valueOf)
         .flatMap(b -> Optional.ofNullable(b ? System.out : null));
@@ -74,7 +75,8 @@ public class DefaultProcessRunnerSupplier implements ProcessRunnerSupplier {
     String id = UUID.randomUUID().toString();
     scratchDir = "process-runner-" + id;
     Path volStr = Paths.get(cfgMap.getString(PROCESS_EXECUTOR_RELATIVE_ROOT));
-    root = PathRefPath.getOrCreatePRFS(volStr, Optional.of(id));
+    root = PathRefPath.getOrCreatePRFS(volStr, Optional.of(id)) //
+        .orElseThrow(() -> new ProcessException("Cannot create PathRefFileSystem for " + volStr));
     interimSleep = cfgMap.optString(PROCESS_EXECUTOR_INTERIM_SLEEP).map(Long::valueOf);
   }
 

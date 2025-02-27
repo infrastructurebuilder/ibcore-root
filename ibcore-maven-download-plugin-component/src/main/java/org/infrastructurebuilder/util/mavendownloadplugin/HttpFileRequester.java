@@ -28,6 +28,7 @@ import java.io.OutputStream;
 import java.net.ProxySelector;
 import java.net.URI;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import org.apache.http.Header;
@@ -184,7 +185,7 @@ public class HttpFileRequester {
 //            this.mavenSession = mavenSession;
 //            return this;
 //        }
-//        
+//
 //        public Builder withServerProxyMap(ServerProxyMap map) {
 //          this.serverProxyMap = map;
 //          return this;
@@ -244,7 +245,7 @@ public class HttpFileRequester {
      * @param outputFile the output file
      * @param headers list of headers
      */
-    public void download(final File outputFile, List<Header> headers) throws IOException {
+    public void download(final Path outputFile, List<Header> headers) throws IOException {
         try (final CloseableHttpClient httpClient = createHttpClientBuilder().build()) {
             final HttpCacheContext clientContext = HttpCacheContext.create();
             clientContext.setCredentialsProvider(this.credentialsProvider);
@@ -270,7 +271,7 @@ public class HttpFileRequester {
      * @return original response object
      * @throws IOException thrown if I/O operations don't succeed
      */
-    private Object handleResponse( URI uri, File outputFile, HttpResponse response )
+    private Object handleResponse( URI uri, Path outputFile, HttpResponse response )
             throws IOException {
         if (response.getStatusLine().getStatusCode() >= 400) {
             throw new DownloadFailureException(response.getStatusLine().getStatusCode(),
@@ -286,7 +287,7 @@ public class HttpFileRequester {
             progressReport.initiate( uri, entity.getContentLength());
             byte[] tmp = new byte[8 * 11024];
             try (InputStream in = entity.getContent(); OutputStream out =
-                    Files.newOutputStream( outputFile.toPath())) {
+                    Files.newOutputStream( outputFile)) {
                 int bytesRead;
                 while ((bytesRead = in.read(tmp)) != -1) {
                     out.write(tmp, 0, bytesRead);

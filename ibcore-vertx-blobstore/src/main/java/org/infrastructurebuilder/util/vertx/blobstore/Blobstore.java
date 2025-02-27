@@ -17,15 +17,13 @@
  */
 package org.infrastructurebuilder.util.vertx.blobstore;
 
-import static io.vertx.core.Future.succeededFuture;
-
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
 
-import org.infrastructurebuilder.util.core.LoggerEnabled;
-import org.infrastructurebuilder.util.readdetect.base.IBResource;
+import org.infrastructurebuilder.api.LoggerEnabled;
+import org.infrastructurebuilder.util.readdetect.api.IBResource;
 
 import io.vertx.codegen.annotations.Nullable;
 import io.vertx.core.Future;
@@ -59,11 +57,11 @@ public interface Blobstore<T> extends LoggerEnabled {
   }
 
   default Future<String> getName(String id) {
-    return getMetadata(id).compose(md -> succeededFuture(md.getName()));
+    return getMetadata(id).compose(md -> Future.succeededFuture(md.getName()));
   }
 
   default Future<String> getDescription(String id) {
-    return getMetadata(id).compose(md -> succeededFuture(md.getDescription().orElse(null)));
+    return getMetadata(id).compose(md -> Future.succeededFuture(md.getDescription().orElse(null)));
   }
 
 }

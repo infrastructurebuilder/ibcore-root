@@ -108,7 +108,7 @@ public class ProcessExecutionResultTest {
   @BeforeAll
   public static void setUpBeforeClass() throws Exception {
     Path tp = wps.get();
-    root = PathRefPath.getOrCreatePRFS(tp, Optional.of(ProcessExecutionResultTest.class.getName()));
+    root = PathRefPath.getOrCreatePRFS(tp, Optional.of(ProcessExecutionResultTest.class.getName())).get();
     logger.debug(" Root dir is {}", root);
   }
 

@@ -41,27 +41,30 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.generic.MapProxyGenericData;
+import org.infrastructurebuilder.api.ConfigMap;
+import org.infrastructurebuilder.api.base.ConfigMapBuilder;
 import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.util.config.ConfigMapBuilder;
 import org.infrastructurebuilder.util.core.IBUtils;
 
 public interface IBDataAvroUtils {
   public static final String NO_SCHEMA_CONFIG_FOR_MAPPER = "No schema config for mapper";
 
-  public static final Function<String, Schema> avroSchemaFromString = schema -> {
-    String q = ofNullable(schema).orElseThrow(() -> new IBException(NO_SCHEMA_CONFIG_FOR_MAPPER + "3"));
-    String s = cet
-        .returns(() -> ((Files.exists(Paths.get(schema))) ? Paths.get(schema).toUri().toURL().toExternalForm() : q));
-
-    boolean isURL = s.startsWith(JAR_PREFIX) //
-        || s.startsWith(HTTP_PREFIX) //
-        || s.startsWith(HTTPS_PREFIX) //
-        || s.startsWith(FILE_PREFIX) //
-        || s.startsWith(ZIP_PREFIX);
-    try (InputStream in = isURL ? IBUtils.translateToWorkableArchiveURL(s).openStream()
-        : IBDataAvroUtils.class.getResourceAsStream(s)) {
+  public static final Function<Path, Schema> avroSchemaFromString = schema -> {
+//    Path q = ofNullable(schema).orElseThrow(() -> new IBException(NO_SCHEMA_CONFIG_FOR_MAPPER + "3"));
+//    String s = cet
+//        .returns(() -> ((Files.exists(Paths.get(schema))) ? Paths.get(schema).toUri().toURL().toExternalForm() : q));
+//
+//    boolean isURL
+//        s.startsWith(JAR_PREFIX) //
+//        || s.startsWith(HTTP_PREFIX) //
+//        || s.startsWith(HTTPS_PREFIX) //
+//        || s.startsWith(FILE_PREFIX) //
+//        || s.startsWith(ZIP_PREFIX);
+//    try (InputStream in = isURL ? IBUtils.translateToWorkableArchiveURI(s).openStream()
+//        : IBDataAvroUtils.class.getResourceAsStream(s)) {
+    try (InputStream in = Files.newInputStream(ofNullable(schema).orElseThrow(() -> new IBException(NO_SCHEMA_CONFIG_FOR_MAPPER + "3")))) {
       return cet.returns(() -> new Schema.Parser().parse(in));
     } catch (IOException e) {
       throw new IBException(e); // Handles the close() of try-with-resources
@@ -71,9 +74,11 @@ public interface IBDataAvroUtils {
   public final static BiFunction<PathRefPath, ConfigMapBuilder, DataFileWriter<GenericRecord>> fromMapAndWP = (rr,
       cmb) -> {
     // Get the schema or die
-    var map = requireNonNull(cmb).get();
-    Schema s = avroSchemaFromString.apply(ofNullable(map.optString("schema", null))
-        .orElseThrow(() -> new IBException(NO_SCHEMA_CONFIG_FOR_MAPPER + " 2")));
+    ConfigMap map = requireNonNull(cmb).get();
+    String ss = ofNullable(map.optString("schema", null))
+        .orElseThrow(() -> new IBException(NO_SCHEMA_CONFIG_FOR_MAPPER + " 2"));
+    Path p = requireNonNull(rr).resolve(ss);
+    Schema s = avroSchemaFromString.apply(p);
     // Get the DataFileWriter or die
     DataFileWriter<GenericRecord> w = new DataFileWriter<GenericRecord>(
         new GenericDatumWriter<GenericRecord>(s, new MapProxyGenericData(new Formatters(map))));

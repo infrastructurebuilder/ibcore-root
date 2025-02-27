@@ -22,6 +22,7 @@ import static java.util.Optional.of;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.maven.project.MavenProject;
@@ -31,6 +32,7 @@ public class MavenTargetPathRefProducer extends MavenBackedPathRefProducer {
 
   static final String MAVEN_TARGET = "maven-target";
 
+  @Inject
   public MavenTargetPathRefProducer(MavenProjectSupplier project) {
     super(project);
   }

@@ -17,23 +17,27 @@
  */
 package org.infrastructurebuilder.util.readdetect.base;
 
-import org.infrastructurebuilder.api.OptStream;
-import org.infrastructurebuilder.api.base.DefaultPathAndChecksum;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.pathref.util.readdetect.model.v1_0.IBResourceModel;
-import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathIBResourceBuilderFactory.AbstractIBResource;
+import org.infrastructurebuilder.util.readdetect.api.IBResourceException;
+import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathRefPathIBResourceBuilderFactory.AbstractIBResource;
 
 public class FakeAbstractIBResource extends AbstractIBResource {
   private final static TestingPathSupplier tps = new TestingPathSupplier();
 
   private FakeAbstractIBResource(PathRefPath root, IBResourceModel model) {
-    super(model, new DefaultPathAndChecksum( tps.getTestClasses().resolve("rick.jpg")));
+    super(model,
+        PathRefPath.fromPath(tps.getTestClasses().resolve("rick.jpg"), Optional.of(UUID.randomUUID().toString()))
+            .orElseThrow(() -> new IBResourceException("Cannot create path")));
   }
 
   @Override
-  public OptStream get() {
-    return getPathAndChecksum().asOptStream();
+  public PathRefPath get() {
+    return (PathRefPath) this.path;
   }
 
   @Override

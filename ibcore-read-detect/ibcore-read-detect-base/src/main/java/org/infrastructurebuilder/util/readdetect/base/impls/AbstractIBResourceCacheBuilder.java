@@ -23,8 +23,8 @@ import java.util.List;
 import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v1_0.IBMetadataModel;
 import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v1_0.IBResourceCacheModel;
 import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v1_0.IbpathrefMetadataModelVersioning;
-import org.infrastructurebuilder.util.readdetect.base.IBResource;
-import org.infrastructurebuilder.util.readdetect.base.IBResourceCacheBuilder;
+import org.infrastructurebuilder.util.readdetect.api.IBResource;
+import org.infrastructurebuilder.util.readdetect.api.IBResourceCacheBuilder;
 
 abstract public class AbstractIBResourceCacheBuilder implements IBResourceCacheBuilder {
   protected final IBResourceCacheModel model;
@@ -62,6 +62,13 @@ abstract public class AbstractIBResourceCacheBuilder implements IBResourceCacheB
   @Override
   public IBResourceCacheBuilder withResources(List<IBResource> l) {
     this.resources.clear();
+    this.resources.addAll(l);
+    this.model.setResources(l.stream().map(m -> m.copyModel()).toList());
+    return this;
+  }
+
+  @Override
+  public IBResourceCacheBuilder addAllResources(List<IBResource> l) {
     this.resources.addAll(l);
     this.model.setResources(l.stream().map(m -> m.copyModel()).toList());
     return this;

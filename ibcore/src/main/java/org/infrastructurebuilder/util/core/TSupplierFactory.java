@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.api.IdentifiedAndWeighted;
+import org.infrastructurebuilder.api.LoggerEnabled;
 import org.infrastructurebuilder.api.base.Configurable;
 import org.infrastructurebuilder.api.base.NameDescribed;
 import org.infrastructurebuilder.exceptions.IBException;

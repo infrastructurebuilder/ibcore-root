@@ -37,7 +37,7 @@ class VersionedProcessExecutionFactoryTest {
 
   @BeforeAll
   static void setUpBeforeClass() throws Exception {
-    root = PathRefPath.getOrCreatePRFS(wps.get(), Optional.of(VersionedProcessExecutionFactoryTest.class.getName()));
+    root = PathRefPath.getOrCreatePRFS(wps.get(), Optional.of(VersionedProcessExecutionFactoryTest.class.getName())).get();
   }
 
   private VersionedProcessExecutionFactory ef;

@@ -54,7 +54,7 @@ public class DefaultProcessExecutionResult implements ProcessExecutionResult {
   {
 
     this.processExecution = requireNonNull(pe);
-    this.pr = pe.getRoot().orElse(null);
+    this.pr = pe.getRoot();
     this.gper = GeneratedProcessExecutionResult.builder() //
         .withEnvironment(new Environment()) //
         .withStart(startTime) //

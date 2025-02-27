@@ -26,6 +26,6 @@ public interface JsonAndChecksumEnabled extends JsonOutputEnabled, ChecksumEnabl
    * Warning! This only works if the checksum of an object is not included as part of the asJSON output
    */
   default Checksum asChecksum() {
-    return new Checksum(new JSONObject(toJson().toString()));
+    return new Checksum(new JSONObject(asJSON().toString()));
   }
 }

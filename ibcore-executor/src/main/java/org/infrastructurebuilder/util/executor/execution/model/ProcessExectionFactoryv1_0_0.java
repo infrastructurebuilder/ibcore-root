@@ -79,7 +79,7 @@ public class ProcessExectionFactoryv1_0_0 implements ProcessExecutionFactory {
     final Path execScratch = parent.getScratchDir().resolve(requireNonNull(id, "execution id"));
     if (ProcessRunner.ws.matcher(id).find())
       throw new ProcessException("No whitespace is allowed in execution ids for ProcessRunner");
-    if (!isDirectory(requireNonNull(execScratch))) {
+    if (!Files.exists(execScratch) || !isDirectory(requireNonNull(execScratch))) {
       ProcessException.pet.translate(() -> Files.createDirectories(execScratch));
     }
     if (!isWritable(execScratch))

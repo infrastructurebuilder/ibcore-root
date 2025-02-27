@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -38,7 +39,7 @@ import org.apache.avro.generic.GenericRecord;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.util.config.impl.DefaultConfigMapBuilder;
+import org.infrastructurebuilder.util.config.DefaultConfigMapBuilder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,7 +55,7 @@ public class IBDataAvroUtilsTest {
   @BeforeEach
   public void setUp() throws Exception {
     Path p = wps.getTestClasses().resolve("ba.avsc");
-    schema = avroSchemaFromString.apply(p.toAbsolutePath().toString());
+    schema = avroSchemaFromString.apply(p.toAbsolutePath());
     schema2 = BA.SCHEMA$;
     r = new GenericData.Record(schema);
     fields = schema.getFields().stream().collect(Collectors.toMap(Field::name, Function.identity()));
@@ -81,30 +82,6 @@ public class IBDataAvroUtilsTest {
 
   }
 
-  @Test
-  public void testNotObvioyslyBrokenURLZip() {
-    assertThrows(IBException.class, () -> avroSchemaFromString.apply("zip:file:/nope.jar"));
-  }
-
-  @Test
-  public void testNotObvioyslyBrokenURLHttp() {
-    assertThrows(IBException.class, () -> avroSchemaFromString.apply("http://www.example.com"));
-  }
-
-  @Test
-  public void testNotObvioyslyBrokenURLHttps() {
-    assertThrows(IBException.class, () -> avroSchemaFromString.apply("https://www.example.com"));
-  }
-
-  @Test
-  public void testNotObvioyslyBrokenURLJar() {
-    assertThrows(IBException.class, () -> avroSchemaFromString.apply("jar:file:/nope.zip"));
-  }
-
-  @Test
-  public void testNotObvioyslyBrokenURLFile() {
-    assertThrows(IBException.class, () -> avroSchemaFromString.apply("file:/nopw.www.example.com"));
-  }
 
   @Test
   public void testNulled() {
@@ -113,14 +90,14 @@ public class IBDataAvroUtilsTest {
 
   @Test
   public void testBrokenURL() {
-    assertThrows(IBException.class, () -> avroSchemaFromString.apply("noep:@3"));
+    assertThrows(IBException.class, () -> avroSchemaFromString.apply(Paths.get("noep:@3")));
   }
 
   @Test
   public void testFromMapAndWpNulled() {
     assertThrows(IBException.class, () -> {
       Path path = wps.getTestClasses();
-      PathRefPath rr = PathRefPath.fromParentOfPath(path);
+      PathRefPath rr = PathRefPath.fromParentOfPath(path).get();
       IBDataAvroUtils.fromMapAndWP.apply(rr, new DefaultConfigMapBuilder());
     });
   }

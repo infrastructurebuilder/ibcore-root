@@ -28,14 +28,15 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.util.readdetect.base.IBResource;
-import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathIBResourceBuilderFactory.AbstractPathIBResourceBuilder;
+import org.infrastructurebuilder.util.readdetect.api.IBResource;
+import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathRefPathIBResourceBuilderFactory.AbstractPathIBResourceBuilder;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -60,17 +61,18 @@ class RelativePathAvroIBResourceBuilderFactoryTest {
   private Checksum rick;
   private PathRefFileSystem prpfs;
   private PathRefPath root;
+  private Optional<String> config ;
 
   @BeforeEach
   void setUp() throws Exception {
+    config = Optional.of(UUID.randomUUID().toString());
     this._root = tps.getTestClasses();
-    prpfs = (PathRefFileSystem) FileSystems.newFileSystem(URI.create(PathRefPath.PATHREF_TEMPLATE.formatted(this._root.toUri())),
-        new HashMap<>());
+    prpfs = PathRefPath.getOrCreatePRFS(this._root, config).get();
     this.root = prpfs.getRoot();
 
     this.rick = new Checksum(this._root.resolve(RICK_JPG));
-    this.b = new RelativePathAvroIBResourceBuilderFactory(this.root)//
-        .fromPath(Paths.get(RICK_JPG));
+    this.b = new PathRefPathAvroIBResourceBuilderFactory(this.prpfs)//
+        .fromPath(this.root.resolve(RICK_JPG));
 
   }
 
@@ -82,10 +84,15 @@ class RelativePathAvroIBResourceBuilderFactoryTest {
   @Test
   void testGetBuilder() {
     assertNotNull(this.b);
-    Optional<IBResource> q = b.get().withAcquired(Instant.now()).withDescription("desc").withName("name").build();
+    AbstractPathIBResourceBuilder qq = b.get();
+    Optional<IBResource> q = qq
+        .withAcquired(Instant.now())
+        .withDescription("desc")
+        .withName("name")
+        .build();
     assertTrue(q.isPresent());
     IBResource v = q.get();
-    assertEquals(this.rick, v.getTChecksum());
+    assertEquals(this.rick, v.getByteStreamChecksum());
   }
 
   @Test

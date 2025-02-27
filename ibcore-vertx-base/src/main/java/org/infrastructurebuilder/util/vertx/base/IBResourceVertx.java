@@ -44,7 +44,7 @@ import java.util.function.Supplier;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.readdetect.base.IBResource;
+import org.infrastructurebuilder.util.readdetect.api.IBResource;
 
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
@@ -116,15 +116,20 @@ public interface IBResourceVertx extends Supplier<FutureStream>, JsonOutputEnabl
   default Future<JsonObject> toFutureJson() {
     CompositeFuture cf = Future.all(getChecksum(), getType());
     return cf.compose(f -> {
-      JsonBuilder jb = new JsonBuilder(empty()).addInstant(CREATE_DATE, getCreateDate())
+      JsonBuilder jb = (JsonBuilder) JsonBuilderFactory.newInstance().addInstant(CREATE_DATE, getCreateDate())
           .addInstant(UPDATE_DATE, getLastUpdateDate()).addInstant(MOST_RECENT_READ_TIME, getMostRecentReadTime())
           .addString(SOURCE_NAME, getSourceName())
-          .addString(SOURCE_URL, getSourceURL().map(java.net.URL::toExternalForm)).addPath(PATH, getPath())
-          .addLong(SIZE, size()).addString(DESCRIPTION, getDescription())
+          .addString(SOURCE_URL, getSourceURL().map(java.net.URL::toExternalForm)) //
+          .addPath(PATH, getPath()) //
+          .addLong(SIZE, size()) //
+          .addString(DESCRIPTION, getDescription()) //
           .addString(ORIGINAL_PATH, getOriginalPath().toString());
       Future<Checksum> fc = f.resultAt(0);
       Future<String> ft = f.resultAt(1);
-      return succeededFuture(jb.addChecksum(CHECKSUM, fc.result()).addString(MIME_TYPE, ft.result()).toJson());
+      return succeededFuture(jb //
+          .addChecksum(CHECKSUM, fc.result()) //
+          .addString(MIME_TYPE, ft.result()) //
+          .asJSON());
     });
   }
 

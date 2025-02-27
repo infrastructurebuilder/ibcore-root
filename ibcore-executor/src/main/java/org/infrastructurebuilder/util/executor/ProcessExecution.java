@@ -61,9 +61,7 @@ public interface ProcessExecution extends JSONAndChecksumEnabled, AutoCloseable 
 
   List<String> getArguments();
 
-  default Optional<PathRefFileSystem> getRoot() {
-    return Optional.empty();
-  }
+  PathRefFileSystem getRoot();
 
   Map<String, String> getExecutionEnvironment();
 

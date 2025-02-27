@@ -17,16 +17,21 @@
  */
 package org.infrastructurebuilder.util.mavendownloadplugin;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
+import org.infrastructurebuilder.pathref.fs.PathRefChecksumOptions;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.util.mavendownloadplugin.nonpublic.DefaultWGetBuilderFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -51,17 +56,24 @@ class WGetSupplierTest {
 
   private LoggingProgressReport lpr;
   private WGetBuilderFactory wgs;
-  private Path od;
+  private PathRefFileSystem od;
   private WGetBuilder b;
+  private Map<String, ?> localMap;
 
   @BeforeEach
   void setUp() throws Exception {
-    this.od = tps.get();
+    this.localMap = Map.of( //
+        PathRefPath.CHECKSUMOPTIONS, PathRefChecksumOptions.LASTMODIFIED, //
+        PathRefPath.PATHREFKEY, UUID.randomUUID().toString());
+    this.od = PathRefPath.getOrCreatePRFS(tps.get(), localMap).get();
     this.lpr = new LoggingProgressReport(log);
     this.wgs = new DefaultWGetBuilderFactory(new FakeArchiverManager());
     this.b = wgs //
+        .builder() //
         .withCacheDirectory(od) //
-        .builder().withLogger(log);
+        .withLogger(log)
+//        .withProxyInfoProvider(this.pr)
+        ;
   }
 
   @AfterEach
@@ -70,25 +82,23 @@ class WGetSupplierTest {
 
   @Test
   void testGet() throws MalformedURLException, URISyntaxException {
-    b.withUnpack(false).withUri(new URL(URL).toURI()).withOutputDirectory(this.od);
+    b.withUnpack(false).withUri(new URL(URL).toURI()).withOutputDirectory(this.od.getRoot());
     Optional<WGetResult> f = b.wget();
     assertTrue(f.isPresent());
-    var res = f.get();
-    assertTrue(Files.exists(res.getOriginal().get()));
+    WGetResult res = f.get();
+    assertTrue(Files.exists(res.getOriginal()));
   }
 
   @Test
   void testGetUnpacked() throws MalformedURLException, URISyntaxException {
-    b.withUnpack(true).withUri(new URL(URL).toURI()).withOutputDirectory(this.od);
+    b.withUnpack(true).withUri(new URL(URL).toURI()).withOutputDirectory(this.od.getRoot());
     Optional<WGetResult> f = b.wget();
     assertTrue(f.isPresent());
     var res = f.get();
-    assertTrue(Files.exists(res.getOriginal().get()));
+    assertTrue(Files.exists(res.getOriginal()));
 
     var all = res.getExpanded().get();
-    all.forEach(pandc -> {
-      log.info(pandc.toString());
-    });
+    assertEquals(1, all.size());
   }
 
 }

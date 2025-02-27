@@ -23,7 +23,9 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.infrastructurebuilder.pathref.PathRefFactory;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.util.readdetect.api.IBResourceBuilderFactorySupplier;
 
 abstract public class AbstractIBResourceBuilderFactorySupplier implements IBResourceBuilderFactorySupplier {
   private final PathRefFactory root;
@@ -39,7 +41,7 @@ abstract public class AbstractIBResourceBuilderFactorySupplier implements IBReso
   }
 
   @Override
-  public Optional<PathRefPath> getRoot(String name) {
+  public Optional<PathRefFileSystem> getRoot(String name) {
     return Optional.ofNullable(root.getPathRef(name));
   }
 

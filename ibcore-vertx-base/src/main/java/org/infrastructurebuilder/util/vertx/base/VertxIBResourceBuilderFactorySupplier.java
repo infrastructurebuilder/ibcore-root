@@ -24,9 +24,9 @@ import java.util.function.Supplier;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.infrastructurebuilder.pathref.PathRefEnabled;
-import org.infrastructurebuilder.pathref.TypeToExtensionMapper;
-import org.infrastructurebuilder.util.readdetect.base.IBResourceBuilderFactory;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
+import org.infrastructurebuilder.pathref.fs.TypeToExtensionMapper;
+import org.infrastructurebuilder.util.readdetect.api.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.vertx.base.impl.VertxIBResourceBuilderFactoryImpl;
 
 import io.vertx.core.Future;
@@ -36,12 +36,12 @@ import io.vertx.core.Vertx;
 public class VertxIBResourceBuilderFactorySupplier
     implements Supplier<IBResourceBuilderFactory<Future<VertxIBResource>>> {
   public final static String NAME = "VertxIBResourceBuilderFactorySupplier";
-  private final PathRefEnabled root;
+  private final PathRefFileSystem root;
   private final Vertx vertx;
   private final TypeToExtensionMapper t2e;
 
   @Inject
-  public VertxIBResourceBuilderFactorySupplier(Vertx vertx, PathRefEnabled root, TypeToExtensionMapper t2e) {
+  public VertxIBResourceBuilderFactorySupplier(Vertx vertx, PathRefFileSystem root, TypeToExtensionMapper t2e) {
     this.vertx = requireNonNull(vertx);
     this.root = requireNonNull(root);
     this.t2e = requireNonNull(t2e);

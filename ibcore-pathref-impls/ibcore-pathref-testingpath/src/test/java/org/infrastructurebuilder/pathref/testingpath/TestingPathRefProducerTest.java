@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.infrastructurebuilder.pathref.PathRefFactory;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -63,8 +64,8 @@ class TestingPathRefProducerTest {
   @Test
   void testTPS() throws IOException {
     Path root = h.getTps().getRoot();
-    PathRefPath t = rrp.getPathRef(h.getName());
-    assertEquals(root, t.toRealPath().getParent());
+     PathRefFileSystem t = rrp.getPathRef(h.getName());
+    assertEquals(root, t.getRoot().toRealPath().getParent());
 
   }
 

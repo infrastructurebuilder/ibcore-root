@@ -117,7 +117,7 @@ public class ModeledProcessExecution extends GeneratedProcessExecution implement
   }
 
   public Optional<ChecksumBuilder> getChecksumBuilder() {
-    return Optional.of(ChecksumBuilderFactory.newAlternateInstanceWithPathRef(this.getRelativeRoot()) //
+    return Optional.of(ChecksumBuilderFactory.newAlternateInstanceWithPathRef(this.getRelativeRoot().orElse(null)) //
         .addString(getModelVersion()) //
         .addString(getId()) //
         .addString(getExecutable()) //
@@ -137,6 +137,21 @@ public class ModeledProcessExecution extends GeneratedProcessExecution implement
   @Override
   public Checksum asChecksum() {
     return getChecksumBuilder().get().asChecksum();
+  }
+
+  @Override
+  public String getBuilderClass() {
+    return GeneratedProcessExecutionBuilder.class.getCanonicalName();
+  }
+
+  @Override
+  public String getModelVersion() {
+    return super.getModelVersion();
+  }
+
+  @Override
+  public String getModelClass() {
+    return GeneratedProcessExecution.class.getCanonicalName();
   }
 
 }

@@ -52,7 +52,6 @@ public class DefaultVertxGAV extends DefaultGAV implements VertxGAV {
     super(from);
   }
 
-  @Override
   public JsonObject toJson() {
     return new JsonObject(asJSON().toString());
   }

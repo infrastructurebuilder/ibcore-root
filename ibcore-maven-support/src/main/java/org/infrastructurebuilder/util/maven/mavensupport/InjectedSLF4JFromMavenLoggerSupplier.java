@@ -21,22 +21,25 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.maven.plugin.logging.Log;
-import org.infrastructurebuilder.util.core.LoggerSupplier;
+import org.infrastructurebuilder.api.LoggerSupplier;
 import org.infrastructurebuilder.util.logging.SLF4JFromMavenLogger;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.sonatype.inject.Nullable;
 
 @Named(InjectedSLF4JFromMavenLoggerSupplier.MAVENLOG)
 public class InjectedSLF4JFromMavenLoggerSupplier implements LoggerSupplier {
+  private final static Logger log = LoggerFactory.getLogger(Object.class);
   public static final String MAVENLOG = "maven-log";
   private final Log mavenLog;
 
   @Inject
-  public InjectedSLF4JFromMavenLoggerSupplier(Log mavenLog) {
+  public InjectedSLF4JFromMavenLoggerSupplier(@Nullable Log mavenLog) {
     this.mavenLog = mavenLog;
   }
 
   @Override
   public Logger get() {
-    return new SLF4JFromMavenLogger(this.mavenLog);
+    return log; //new SLF4JFromMavenLogger(this.mavenLog);
   }
 }

@@ -205,7 +205,7 @@ public class DefaultProcessExecution implements ProcessExecution {
   public Path getWorkDirectory() {
     return model.getWorkDirectory()//
         .map(p -> {
-          return this.getRelativeRoot().getPath(p);
+          return this.getRoot().getPath(p);
         }).orElseThrow(() -> new ProcessException("No work directory"));
   }
 
@@ -214,7 +214,7 @@ public class DefaultProcessExecution implements ProcessExecution {
     return model.getExitValues().map(ev -> ev.stream().map(Integer::parseInt).toList());
   }
 
-  public PathRefFileSystem getRelativeRoot() {
+  public PathRefFileSystem getRoot() {
     return model.getRelativeRoot().orElseThrow(() -> new ProcessException("No relative root availabel"));
   }
 

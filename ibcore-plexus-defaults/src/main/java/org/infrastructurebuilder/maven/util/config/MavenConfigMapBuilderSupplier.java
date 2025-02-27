@@ -38,11 +38,11 @@ import org.apache.maven.model.Build;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.sisu.Nullable;
+import org.infrastructurebuilder.api.base.ConfigMapBuilder;
+import org.infrastructurebuilder.api.base.ConfigMapBuilderSupplier;
 import org.infrastructurebuilder.exceptions.IBException;
-import org.infrastructurebuilder.util.config.ConfigMapBuilder;
-import org.infrastructurebuilder.util.config.ConfigMapBuilderSupplier;
-import org.infrastructurebuilder.util.config.impl.DefaultConfigMapBuilder;
-import org.infrastructurebuilder.util.config.impl.DefaultConfigMapBuilderSupplier;
+import org.infrastructurebuilder.util.config.DefaultConfigMapBuilder;
+import org.infrastructurebuilder.util.config.DefaultConfigMapBuilderSupplier;
 import org.json.JSONObject;
 
 @Named(MAVEN)

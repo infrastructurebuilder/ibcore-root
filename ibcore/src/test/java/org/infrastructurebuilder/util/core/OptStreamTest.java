@@ -28,7 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import org.infrastructurebuilder.api.OptStream;
+import org.infrastructurebuilder.api.OptStream2;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.junit.jupiter.api.AfterAll;
@@ -48,14 +48,14 @@ class OptStreamTest {
   static void tearDownAfterClass() throws Exception {
   }
 
-  private OptStream nullos;
-  private OptStream rick;
+  private OptStream2 nullos;
+  private OptStream2 rick;
   private Path rickroll;
   private Checksum csum;
 
   @BeforeEach
   void setUp() throws Exception {
-    this.nullos = new OptStream();
+    this.nullos = new OptStream2();
     this.rickroll = tps.getTestClasses().resolve("rick.jpg");
     this.csum = new Checksum(this.rickroll);
   }
@@ -73,7 +73,7 @@ class OptStreamTest {
 
   @Test
   void testGetStream() throws IOException, Exception {
-    try (OptStream rick2 = new OptStream(Files.newInputStream(rickroll))) {
+    try (OptStream2 rick2 = new OptStream2(Files.newInputStream(rickroll))) {
       Optional<InputStream> kv = rick2.getStream();
       assertTrue(kv.isPresent());
       Checksum c = rick2.getChecksum().get();

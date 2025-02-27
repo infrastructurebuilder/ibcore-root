@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.infrastructurebuilder.pathref.PathRefFactory;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -70,7 +71,7 @@ class ClasspathPathRefProducerTest {
 
   @Test
   void testClasspath() {
-    PathRefPath cprr = rrp.getPathRef(ClasspathPathRefProducer.NAME);
+     PathRefFileSystem cprr = rrp.getPathRef(ClasspathPathRefProducer.NAME);
 //    assertTrue(cprr.extendAsPathRef(Paths.get(MYFILE_XML)).isEmpty());
 //    String k = cprr.relativize(ClasspathPathRefSupplier.NAME + MYFILE_XML).map(Path::toString).get();
 //    String q = cprr.getUrl().get().toExternalForm();

@@ -63,7 +63,7 @@ public class ProcessRunnerTest {
 
   @BeforeAll
   public static void setUpBeforeClass() throws Exception {
-    root = PathRefPath.getOrCreatePRFS(wps.get(), Optional.of(ProcessRunnerTest.class.getName()));
+    root = PathRefPath.getOrCreatePRFS(wps.get(), Optional.of(ProcessRunnerTest.class.getName())).get();
   }
 
   private DefaultProcessRunner runner;

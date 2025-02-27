@@ -44,4 +44,18 @@ public class FakeModeled implements Modeled, JSONOutputEnabled {
     return "1.0";
   }
 
+  @Override
+  public String getBuilderClass() {
+    return FakeBuilder.class.getCanonicalName();
+  }
+
+  public static class FakeBuilder {
+    public FakeBuilder() {
+    }
+    public FakeModeled build() {
+      return new FakeModeled();
+    }
+
+  }
+
 }

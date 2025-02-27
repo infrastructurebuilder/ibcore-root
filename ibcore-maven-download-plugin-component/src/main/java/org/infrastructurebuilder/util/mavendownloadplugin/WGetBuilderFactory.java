@@ -17,20 +17,21 @@
  */
 package org.infrastructurebuilder.util.mavendownloadplugin;
 
-import java.nio.file.Path;
-
-import org.slf4j.Logger;
+import org.apache.maven.wagon.proxy.ProxyInfoProvider;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 
 /**
- * Fluent factory for setting up builders of 
+ * Fluent factory for setting up builders of
  */
 public interface WGetBuilderFactory  {
-  
+
   /**
-   * 
+   *
    * @return a new {@link WGetBuilder} every time
    */
   WGetBuilder builder();
-  
-  WGetBuilderFactory withCacheDirectory(Path path);
+
+  WGetBuilderFactory withCacheDirectory(PathRefFileSystem path);
+
+  WGetBuilderFactory withProxyInfoProvider(ProxyInfoProvider p);
 }

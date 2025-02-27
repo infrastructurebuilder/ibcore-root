@@ -39,8 +39,8 @@ public class VersionedPersistenceMapper<T extends Modeled> {
   private final Map<IBVersion, VersionedPersistenceProvider<T>> readers = new HashMap<>();
 
   @Inject
-  public VersionedPersistenceMapper(Set<VersionedPersistenceProvider<T>> providers) {
-    providers.forEach(p -> readers.put(p.getVersion(), p));
+  public VersionedPersistenceMapper(Set<VersionedPersistenceProvider<? extends Modeled>> providers) {
+    providers.forEach(p -> readers.put(p.getVersion(), (VersionedPersistenceProvider<T>) p));
   }
 
   public Optional<VersionedPersistenceProvider<T>> readerFor(IBVersionRange b) {

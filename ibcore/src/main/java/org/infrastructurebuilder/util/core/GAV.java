@@ -64,7 +64,7 @@ public interface GAV extends GAVBasic, JSONAndChecksumEnabled {
   }
 
   default JSONBuilder getJSONBuilderFactory() {
-    return JSONBuilderFactory.newInstance()
+    return (JSONBuilder) JSONBuilderFactory.newInstance()
 
         .addString(GAV_GROUPID, getGroupId())
 

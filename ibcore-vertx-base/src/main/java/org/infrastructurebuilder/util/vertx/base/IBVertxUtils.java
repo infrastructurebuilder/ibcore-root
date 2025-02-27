@@ -31,12 +31,12 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import org.infrastructurebuilder.api.Timestamped;
+import org.infrastructurebuilder.api.UUIdentified;
+import org.infrastructurebuilder.api.UUIdentifiedAndTimestamped;
+import org.infrastructurebuilder.api.UUIdentifiedAndWeighted;
 import org.infrastructurebuilder.pathref.Checksum;
-import org.infrastructurebuilder.pathref.PathRef;
-import org.infrastructurebuilder.util.core.Timestamped;
-import org.infrastructurebuilder.util.core.UUIdentified;
-import org.infrastructurebuilder.util.core.UUIdentifiedAndTimestamped;
-import org.infrastructurebuilder.util.core.UUIdentifiedAndWeighted;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.json.JSONObject;
 
 import io.vertx.core.json.JsonArray;
@@ -64,7 +64,7 @@ public class IBVertxUtils {
    * @return
    */
   public static JsonBuilder uuidentifiedJsonBuilder(UUIdentified u) {
-    return JsonBuilder.newInstance().addString(UUIdentified.ID, u.getId().toString());
+    return (JsonBuilder) JsonBuilderFactory.newInstance().addString(UUIdentified.ID, u.getId().toString());
   }
 
   /**
@@ -73,8 +73,8 @@ public class IBVertxUtils {
    * @param u
    * @return
    */
-  public static JsonBuilder uuidentifiedJsonBuilder(UUIdentified u, PathRef p) {
-    return JsonBuilder.newInstance(ofNullable(p)).addString(UUIdentified.ID, u.getId().toString());
+  public static JsonBuilder uuidentifiedJsonBuilder(UUIdentified u, PathRefPath p) {
+    return (JsonBuilder) JsonBuilderFactory.newInstanceFromRelativeRoot(p.getFileSystem()).addString(UUIdentified.ID, u.getId().toString());
   }
 
   /**
@@ -84,7 +84,7 @@ public class IBVertxUtils {
    * @return
    */
   public static JsonBuilder uuidentifiedAndTimestampedJsonBuilder(UUIdentifiedAndTimestamped u) {
-    return uuidentifiedJsonBuilder(u).addInstant(Timestamped.TIMESTAMP, u.getTimestamp());
+    return (JsonBuilder) uuidentifiedJsonBuilder(u).addInstant(Timestamped.TIMESTAMP, u.getTimestamp());
   }
 
   /**
@@ -94,7 +94,7 @@ public class IBVertxUtils {
    * @return
    */
   public static JsonBuilder uuidentifiedAndWeightedJsonBuilder(UUIdentifiedAndWeighted u) {
-    return uuidentifiedJsonBuilder(u).addInteger(UUIdentifiedAndWeighted.WEIGHT, u.getWeight());
+    return (JsonBuilder) uuidentifiedJsonBuilder(u).addInteger(UUIdentifiedAndWeighted.WEIGHT, u.getWeight());
   }
 
   /**

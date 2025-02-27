@@ -69,7 +69,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.infrastructurebuilder.pathref</groupId>
-			<artifactId>ibcore-pathref</artifactId>
+			<artifactId>ibpathref-api</artifactId>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
