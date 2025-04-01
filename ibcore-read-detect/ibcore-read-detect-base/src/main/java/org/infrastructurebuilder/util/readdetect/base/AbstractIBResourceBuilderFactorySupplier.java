@@ -22,9 +22,8 @@ import static java.util.Objects.requireNonNull;
 import java.util.Optional;
 import java.util.Set;
 
-import org.infrastructurebuilder.pathref.PathRefFactory;
+import org.infrastructurebuilder.pathref.fs.PathRefFactory;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
-import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.util.readdetect.api.IBResourceBuilderFactorySupplier;
 
 abstract public class AbstractIBResourceBuilderFactorySupplier implements IBResourceBuilderFactorySupplier {

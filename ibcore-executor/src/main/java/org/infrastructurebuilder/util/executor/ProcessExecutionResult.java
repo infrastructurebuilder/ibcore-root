@@ -28,7 +28,7 @@ import java.util.function.Function;
 import org.infrastructurebuilder.pathref.ChecksumBuilderEnabled;
 import org.infrastructurebuilder.pathref.JSONAndChecksumEnabled;
 import org.infrastructurebuilder.pathref.JSONBuilder;
-import org.infrastructurebuilder.pathref.JSONBuilderFactory;
+import org.infrastructurebuilder.pathref.JSONBuilderBaseFactory;
 import org.infrastructurebuilder.util.executor.model.v1_0.ExecutionException;
 import org.infrastructurebuilder.util.executor.model.v1_0.Stack;
 import org.json.JSONObject;
@@ -102,7 +102,7 @@ public interface ProcessExecutionResult extends JSONAndChecksumEnabled, Checksum
 
   @Override
   default JSONObject asJSON() {
-    JSONBuilder jb = (JSONBuilder) JSONBuilderFactory.newInstance()
+    JSONBuilder jb = (JSONBuilder) JSONBuilderBaseFactory.newInstance()
 
         .addListString(STD_OUT, getStdOut())
 

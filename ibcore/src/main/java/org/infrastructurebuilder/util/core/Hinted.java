@@ -17,7 +17,7 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import org.infrastructurebuilder.api.base.NameDescribed;
+import org.infrastructurebuilder.pathref.api.base.NameDescribed;
 
 public interface Hinted extends NameDescribed {
   default String getHint() {

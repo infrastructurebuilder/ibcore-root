@@ -43,8 +43,8 @@ import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -63,7 +63,7 @@ public class ProcessRunnerTest {
 
   @BeforeAll
   public static void setUpBeforeClass() throws Exception {
-    root = PathRefPath.getOrCreatePRFS(wps.get(), Optional.of(ProcessRunnerTest.class.getName())).get();
+    root = PathRefPathIF.getOrCreatePRFS(wps.get(), Optional.of(ProcessRunnerTest.class.getName())).get();
   }
 
   private DefaultProcessRunner runner;

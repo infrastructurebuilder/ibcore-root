@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,7 +37,7 @@ import org.infrastructurebuilder.pathref.IBChecksumUtils;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystemProvider;
-import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
 import org.infrastructurebuilder.util.readdetect.api.IBResource;
 import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathRefPathIBResourceBuilderFactory.AbstractPathIBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.base.impls.PathRefPathIBResourceBuilderFactory;
@@ -70,7 +69,7 @@ public class IBResourceModelTest {
     c1path = _root.resolve(UUID.randomUUID().toString()+".jpg");
     IBChecksumUtils.copy(c2source, c1path);
     lc = new Checksum(c2source);
-    rrs = PathRefPath.getOrCreatePRFS(_root).get();
+    rrs = PathRefPathIF.getOrCreatePRFS(_root).get();
     f = new PathRefPathIBResourceBuilderFactory(rrs);
     AbstractPathIBResourceBuilder bb = f.getBuilder().get();
     checksum = new Checksum(c2source);

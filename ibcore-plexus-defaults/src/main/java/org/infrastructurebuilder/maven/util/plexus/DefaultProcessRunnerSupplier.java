@@ -23,9 +23,6 @@ import static java.util.Optional.of;
 import static org.infrastructurebuilder.util.executor.ProcessException.pet;
 
 import java.io.PrintStream;
-import java.net.URI;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
@@ -36,11 +33,11 @@ import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.infrastructurebuilder.api.ConfigMap;
-import org.infrastructurebuilder.api.LoggerSupplier;
-import org.infrastructurebuilder.api.base.ConfigMapBuilderSupplier;
+import org.infrastructurebuilder.pathref.api.ConfigMap;
+import org.infrastructurebuilder.pathref.api.LoggerSupplier;
+import org.infrastructurebuilder.pathref.api.base.ConfigMapBuilderSupplier;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
-import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
 import org.infrastructurebuilder.util.executor.DefaultProcessRunner;
 import org.infrastructurebuilder.util.executor.ProcessException;
 import org.infrastructurebuilder.util.executor.ProcessRunner;
@@ -75,7 +72,7 @@ public class DefaultProcessRunnerSupplier implements ProcessRunnerSupplier {
     String id = UUID.randomUUID().toString();
     scratchDir = "process-runner-" + id;
     Path volStr = Paths.get(cfgMap.getString(PROCESS_EXECUTOR_RELATIVE_ROOT));
-    root = PathRefPath.getOrCreatePRFS(volStr, Optional.of(id)) //
+    root = PathRefPathIF.getOrCreatePRFS(volStr, Optional.of(id)) //
         .orElseThrow(() -> new ProcessException("Cannot create PathRefFileSystem for " + volStr));
     interimSleep = cfgMap.optString(PROCESS_EXECUTOR_INTERIM_SLEEP).map(Long::valueOf);
   }

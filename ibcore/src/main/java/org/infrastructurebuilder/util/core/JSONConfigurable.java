@@ -17,7 +17,7 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import org.infrastructurebuilder.api.base.Configurable;
+import org.infrastructurebuilder.pathref.api.base.Configurable;
 import org.json.JSONObject;
 
 public interface JSONConfigurable<T> extends Configurable<JSONObject> {

@@ -17,12 +17,12 @@
  */
 package org.infrastructurebuilder.util.readdetect.api;
 
-import org.infrastructurebuilder.api.IdentifiedAndWeighted;
-import org.infrastructurebuilder.api.base.NameDescribed;
-import org.infrastructurebuilder.api.base.ResponsiveTo;
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
 import org.infrastructurebuilder.pathref.JSONAndChecksumEnabled;
+import org.infrastructurebuilder.pathref.api.IdentifiedAndWeighted;
+import org.infrastructurebuilder.pathref.api.base.NameDescribed;
+import org.infrastructurebuilder.pathref.api.base.ResponsiveTo;
 import org.json.JSONObject;
 
 @Deprecated

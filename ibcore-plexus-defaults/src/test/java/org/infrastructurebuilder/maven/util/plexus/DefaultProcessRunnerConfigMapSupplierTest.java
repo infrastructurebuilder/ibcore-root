@@ -20,9 +20,9 @@ package org.infrastructurebuilder.maven.util.plexus;
 import static org.infrastructurebuilder.util.executor.ProcessRunnerSupplier.PROCESS_NAMESPACE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.infrastructurebuilder.api.ConfigMap;
-import org.infrastructurebuilder.api.base.ConfigMapBuilder;
-import org.infrastructurebuilder.api.base.ConfigMapBuilderSupplier;
+import org.infrastructurebuilder.pathref.api.ConfigMap;
+import org.infrastructurebuilder.pathref.api.base.ConfigMapBuilder;
+import org.infrastructurebuilder.pathref.api.base.ConfigMapBuilderSupplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

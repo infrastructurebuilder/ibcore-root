@@ -19,13 +19,13 @@ package org.infrastructurebuilder.util.executor;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.nio.file.Path;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ class VersionedProcessExecutionFactoryTest {
 
   @BeforeAll
   static void setUpBeforeClass() throws Exception {
-    root = PathRefPath.getOrCreatePRFS(wps.get(), Optional.of(VersionedProcessExecutionFactoryTest.class.getName())).get();
+    root = PathRefPathIF.getOrCreatePRFS(wps.get(), Optional.of(VersionedProcessExecutionFactoryTest.class.getName())).get();
   }
 
   private VersionedProcessExecutionFactory ef;

@@ -23,7 +23,6 @@ import static java.util.Optional.of;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,10 +32,9 @@ import java.util.UUID;
 
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
-import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
 import org.infrastructurebuilder.util.executor.ModeledProcessExecution;
 import org.infrastructurebuilder.util.executor.model.v1_0.GeneratedProcessExecution;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,7 +54,7 @@ public class DefaultProcessExecutionTest {
 
   @BeforeAll
   public static void setUpAll() throws Exception {
-    root = PathRefPath.getOrCreatePRFS(wps.get(), Optional.of(DefaultProcessExecutionTest.class.getName())).get();
+    root = PathRefPathIF.getOrCreatePRFS(wps.get(), Optional.of(DefaultProcessExecutionTest.class.getName())).get();
   }
   @BeforeEach
   public void setUp() throws Exception {

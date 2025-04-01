@@ -36,12 +36,13 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.infrastructurebuilder.api.ConfigMap;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
+import org.infrastructurebuilder.pathref.api.ConfigMap;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
 import org.infrastructurebuilder.util.config.DefaultConfigMapBuilder;
 import org.infrastructurebuilder.util.readdetect.api.IBResource;
 import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathRefPathIBResourceBuilderFactory.AbstractPathIBResourceBuilder;
@@ -72,7 +73,7 @@ public class IBResourceTest {
     this.wps = new TestingPathSupplier();
 //    testFile = this.wps.getTestClasses().resolve(TFILE_TEST);
     this.root = this.wps.get();
-    this.fs = PathRefPath.getOrCreatePRFS(this.wps.getTestClasses(), Optional.of("testing")).get();
+    this.fs = PathRefPathIF.getOrCreatePRFS(this.wps.getTestClasses(), Optional.of("testing")).get();
     this.rrs = this.fs.getRoot();
     testFile = this.rrs.resolve(TFILE_TEST);
     this.rcf = new PathRefPathIBResourceBuilderFactory(this.fs)

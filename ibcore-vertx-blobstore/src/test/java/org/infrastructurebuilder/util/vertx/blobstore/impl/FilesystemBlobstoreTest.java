@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
-import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -72,7 +72,7 @@ class FilesystemBlobstoreTest {
   @BeforeEach
   void setUp(VertxTestContext testContext) throws Exception {
     Path root = wps.get();
-    rrs = PathRefPath.fromPath(root, java.util.Optional.empty()).get().getFileSystem();
+    rrs = PathRefPathIF.fromPath(root, java.util.Optional.empty()).get().getFileSystem();
     this.fsbs = new FilesystemBlobstore(rrs, IBConstants.BLOBSTORE_NO_MAXBYTES);
     vertx = rtoc.vertx();
     // Prepare something on a Vert.x event-loop thread

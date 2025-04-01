@@ -28,9 +28,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.codehaus.plexus.logging.console.ConsoleLogger;
-import org.infrastructurebuilder.api.base.ConfigMapBuilder;
-import org.infrastructurebuilder.api.base.ConfigMapBuilderSupplier;
 import org.infrastructurebuilder.pathref.IBChecksumUtils;
+import org.infrastructurebuilder.pathref.api.base.ConfigMapBuilder;
+import org.infrastructurebuilder.pathref.api.base.ConfigMapBuilderSupplier;
 import org.infrastructurebuilder.util.config.DefaultConfigMapBuilderSupplier;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.executor.ProcessException;

@@ -116,7 +116,7 @@ import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.DigestReader;
 import org.infrastructurebuilder.pathref.IBChecksumUtils;
 import org.infrastructurebuilder.pathref.JSONOutputEnabled;
-import org.infrastructurebuilder.pathref.fs.PathRefFileAttributes;
+import org.infrastructurebuilder.pathref.fs.attribute.PathRefFileAttributes;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -194,7 +194,7 @@ public class IBUtils {
     return Optional.ofNullable(retVal);
   };
 
-  public final static Function<Path,  Optional<PathRefFileAttributes>> getAttributes = (i) -> {
+  public final static Function<Path, Optional<PathRefFileAttributes>> getAttributes = (i) -> {
     PathRefFileAttributes retVal = null;
     try {
       retVal = Files.readAttributes(requireNonNull(i), PathRefFileAttributes.class);
@@ -548,7 +548,7 @@ public class IBUtils {
   }
 
   public final static Optional<Boolean> getOptBoolean(final JSONObject j, final String key) {
-    return ofNullable(j.has(key) ? j.getBoolean(key) : null);
+    return ofNullable(j.has(key) ? (Boolean) j.getBoolean(key) : null);
   }
 
   public final static Optional<Integer> getOptInteger(final JSONObject orig, final String key) {

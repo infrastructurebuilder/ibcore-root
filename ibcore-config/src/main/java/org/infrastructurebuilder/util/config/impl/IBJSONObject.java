@@ -49,9 +49,9 @@ import java.util.StringJoiner;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
-import org.infrastructurebuilder.api.ConfigMap;
-import org.infrastructurebuilder.api.base.ConfigMapBuilder;
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.pathref.api.ConfigMap;
+import org.infrastructurebuilder.pathref.api.base.ConfigMapBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

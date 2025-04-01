@@ -52,7 +52,7 @@ import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.util.core.IBUtils;
+import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
 import org.infrastructurebuilder.util.executor.DefaultProcessExecutionResultBag;
 import org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream;
 import org.infrastructurebuilder.util.executor.MutableProcessExecutionResultBag;
@@ -108,7 +108,7 @@ public class ProcessExecutionResultTest {
   @BeforeAll
   public static void setUpBeforeClass() throws Exception {
     Path tp = wps.get();
-    root = PathRefPath.getOrCreatePRFS(tp, Optional.of(ProcessExecutionResultTest.class.getName())).get();
+    root = PathRefPathIF.getOrCreatePRFS(tp, Optional.of(ProcessExecutionResultTest.class.getName())).get();
     logger.debug(" Root dir is {}", root);
   }
 

@@ -17,8 +17,8 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import org.infrastructurebuilder.api.Modeled;
 import org.infrastructurebuilder.pathref.JSONOutputEnabled;
+import org.infrastructurebuilder.pathref.api.Modeled;
 import org.json.JSONObject;
 
 public class FakeModeled implements Modeled, JSONOutputEnabled {

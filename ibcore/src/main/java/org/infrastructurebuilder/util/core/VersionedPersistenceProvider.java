@@ -22,7 +22,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.Optional;
 
-import org.infrastructurebuilder.api.Modeled;
+import org.infrastructurebuilder.pathref.api.Modeled;
 import org.infrastructurebuilder.util.version.IBVersion;
 import org.infrastructurebuilder.util.version.IBVersion.IBVersionBoundedRange;
 

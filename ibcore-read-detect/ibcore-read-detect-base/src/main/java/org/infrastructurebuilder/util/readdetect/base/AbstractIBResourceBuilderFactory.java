@@ -23,10 +23,10 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.api.ConfigMap;
 import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.api.ConfigMap;
+import org.infrastructurebuilder.pathref.api.TypeToExtensionMapper;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
-import org.infrastructurebuilder.pathref.fs.TypeToExtensionMapper;
 import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v1_0.IBResourceCacheModel;
 import org.infrastructurebuilder.pathref.util.readdetect.model.v1_0.IBResourceModel;
 import org.infrastructurebuilder.util.readdetect.api.IBResourceBuilder;

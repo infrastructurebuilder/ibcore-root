@@ -21,7 +21,6 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Supplier;
 
-import org.apache.avro.file.SeekableInput;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;

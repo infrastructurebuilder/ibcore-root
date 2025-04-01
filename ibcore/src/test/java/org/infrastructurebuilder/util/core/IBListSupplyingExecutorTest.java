@@ -28,9 +28,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.api.LoggerSupplier;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
+import org.infrastructurebuilder.pathref.api.LoggerSupplier;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -28,11 +28,11 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.api.ConfigMap;
 import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.OptionalReflectionLoadingTikaDetector;
+import org.infrastructurebuilder.pathref.api.ConfigMap;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.pathref.util.readdetect.model.v1_0.IBResourceModel;

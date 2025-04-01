@@ -34,7 +34,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.infrastructurebuilder.pathref.JSONAndChecksumEnabled;
-import org.infrastructurebuilder.pathref.JSONBuilderFactory;
+import org.infrastructurebuilder.pathref.JSONBuilderBaseFactory;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -81,7 +81,7 @@ public interface ProcessExecution extends JSONAndChecksumEnabled, AutoCloseable 
 
   @Override
   default JSONObject asJSON() {
-    return JSONBuilderFactory.newInstanceFromRelativeRoot(this.getRoot())
+    return JSONBuilderBaseFactory.newInstanceFromRelativeRoot(this.getRoot())
 
         .addString(ID, getId())
 

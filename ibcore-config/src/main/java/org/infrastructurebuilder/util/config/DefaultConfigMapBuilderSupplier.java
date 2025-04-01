@@ -19,9 +19,9 @@ package org.infrastructurebuilder.util.config;
 
 import javax.inject.Named;
 
-import org.infrastructurebuilder.api.base.ConfigMapBuilder;
-import org.infrastructurebuilder.api.base.ConfigMapBuilderSupplier;
 import org.infrastructurebuilder.constants.IBConstants;
+import org.infrastructurebuilder.pathref.api.base.ConfigMapBuilder;
+import org.infrastructurebuilder.pathref.api.base.ConfigMapBuilderSupplier;
 import org.json.JSONObject;
 
 @Named(IBConstants.DEFAULT) // FIXME Maybe? Dunno if this is a component or not

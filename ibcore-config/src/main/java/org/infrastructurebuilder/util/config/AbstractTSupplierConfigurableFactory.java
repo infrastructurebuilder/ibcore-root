@@ -21,7 +21,7 @@ import static java.util.Optional.ofNullable;
 
 import java.util.Optional;
 
-import org.infrastructurebuilder.api.base.ConfigMapBuilder;
+import org.infrastructurebuilder.pathref.api.base.ConfigMapBuilder;
 import org.slf4j.Logger;
 
 public abstract class AbstractTSupplierConfigurableFactory<T> implements TSupplierConfigurableFactory<T> {

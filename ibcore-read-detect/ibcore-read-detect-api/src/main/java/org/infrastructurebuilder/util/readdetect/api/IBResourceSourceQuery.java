@@ -17,9 +17,9 @@
  */
 package org.infrastructurebuilder.util.readdetect.api;
 
-import org.infrastructurebuilder.api.Identified;
-import org.infrastructurebuilder.api.base.NameDescribed;
 import org.infrastructurebuilder.pathref.JSONOutputEnabled;
+import org.infrastructurebuilder.pathref.api.Identified;
+import org.infrastructurebuilder.pathref.api.base.NameDescribed;
 
 public interface IBResourceSourceQuery extends Identified, NameDescribed, JSONOutputEnabled {
 

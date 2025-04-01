@@ -27,10 +27,8 @@ import java.net.URI;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,10 +62,10 @@ import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
 import org.codehaus.plexus.archiver.snappy.SnappyUnArchiver;
 import org.codehaus.plexus.archiver.xz.XZUnArchiver;
 import org.codehaus.plexus.components.io.filemappers.FileMapper;
-import org.infrastructurebuilder.pathref.IBChecksumUtils;
 import org.infrastructurebuilder.pathref.fs.PathRefChecksumOptions;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
 import org.infrastructurebuilder.util.mavendownloadplugin.DownloadFailureException;
 import org.infrastructurebuilder.util.mavendownloadplugin.FileNameUtils;
 import org.infrastructurebuilder.util.mavendownloadplugin.HttpFileRequester;
@@ -416,7 +414,7 @@ public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
         if (this.cacheFileSystem == null) {
           Path cachePath = this.localRepoBaseDir.resolve(".cache") //
               .resolve("download-maven-plugin");
-          this.cacheFileSystem = PathRefPath.getOrCreatePRFS(cachePath.toUri(), Optional.of("cachefs")) //
+          this.cacheFileSystem = PathRefPathIF.getOrCreatePRFS(cachePath.toUri(), Optional.of("cachefs")) //
               .orElseThrow(() -> new IBMavenDownloadPluginComponentException("Cannot create cache directory"));
           ;
         } else if (Files.exists(cacheFileSystem.getRoot()) && !(Files.isDirectory(this.cacheFileSystem.getRoot()))) {
@@ -447,7 +445,7 @@ public class DefaultWGetBuilderFactory implements WGetBuilderFactory {
         this.outputFileName = FileNameUtils.getOutputFileName(this.uri);
       }
       Map<String, Object> checksummap = Map.of(PathRefPath.CHECKSUMOPTIONS, PathRefChecksumOptions.ALWAYS);
-      PathRefFileSystem outputDirectoryFS = PathRefPath.getOrCreatePRFS(outputDirectory, checksummap) //
+      PathRefFileSystem outputDirectoryFS = PathRefPathIF.getOrCreatePRFS(outputDirectory, checksummap) //
           .orElseThrow(() -> new IBMavenDownloadPluginComponentException(
               "Cannot create output fs from %s".formatted(outputDirectory)));
       final PathRefPath outputFile = outputDirectoryFS.getPath(this.outputFileName);

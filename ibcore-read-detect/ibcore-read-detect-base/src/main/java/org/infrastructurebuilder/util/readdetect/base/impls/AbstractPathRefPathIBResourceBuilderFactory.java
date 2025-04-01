@@ -26,23 +26,19 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.PosixFilePermission;
-import java.nio.file.attribute.PosixFilePermissions;
 import java.time.Instant;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.objectmapper.jackson.ObjectMapperUtils;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
-import org.infrastructurebuilder.pathref.fs.PathRefFileAttributeView;
-import org.infrastructurebuilder.pathref.fs.PathRefFileAttributes;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
+import org.infrastructurebuilder.pathref.fs.attribute.PathRefFileAttributeView;
+import org.infrastructurebuilder.pathref.fs.attribute.PathRefFileAttributes;
 import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v1_0.IBMetadataModel;
 import org.infrastructurebuilder.pathref.util.readdetect.model.v1_0.IBResourceModel;
 import org.infrastructurebuilder.util.core.IBUtils;
@@ -136,7 +132,7 @@ abstract public class AbstractPathRefPathIBResourceBuilderFactory
     @Override
     public IBResourceBuilder<PathRefPath> accept(Supplier<Path> path) {
       Optional<String> fsKey = getConfig().map(c -> c.optString("fsKey", null));
-      PathRefPath supplied = PathRefPath//
+      PathRefPath supplied = PathRefPathIF//
           .fromPath(Objects.requireNonNull(path).get(), Optional.empty())//
           .orElse(null);
       if (supplied != null) {
@@ -206,7 +202,7 @@ abstract public class AbstractPathRefPathIBResourceBuilderFactory
         m.setStreamType(getPath().map(path -> {
           String ret = null;
           try {
-            ret = Files.getFileAttributeView(path, PathRefFileAttributeView.class).readAttributes().type();
+            ret = Files.getFileAttributeView(path, PathRefFileAttributeView.class).readAttributes().type().get();
           } catch (IOException e) {
             log.error("Error getting type", e);
           }

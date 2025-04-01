@@ -21,7 +21,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.maven.plugin.logging.Log;
-import org.infrastructurebuilder.api.LoggerSupplier;
+import org.infrastructurebuilder.pathref.api.LoggerSupplier;
 import org.infrastructurebuilder.util.logging.SLF4JFromMavenLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

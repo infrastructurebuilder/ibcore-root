@@ -88,7 +88,9 @@ import static org.infrastructurebuilder.constants.IBConstants.XLSX;
 import static org.infrastructurebuilder.constants.IBConstants.XML;
 import static org.infrastructurebuilder.constants.IBConstants.ZIP;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -97,8 +99,8 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.infrastructurebuilder.api.IdentifiedAndWeighted;
-import org.infrastructurebuilder.pathref.fs.TypeToExtensionMapper;
+import org.infrastructurebuilder.pathref.api.IdentifiedAndWeighted;
+import org.infrastructurebuilder.pathref.api.TypeToExtensionMapper;
 
 @Named
 public class DefaultTypeToExtensionMapper implements TypeToExtensionMapper {
@@ -166,7 +168,7 @@ public class DefaultTypeToExtensionMapper implements TypeToExtensionMapper {
   }
 
   @Override
-  public Optional<String> getStructuredSupplyTypeClassName(String key) {
+  public Optional<List<String>> getStructuredSupplyTypeClassName(String key) {
     return list.stream().filter(k -> k.getId().equals(key)).map(TypeMapTuple::getStructuredType).findFirst()
         .orElse(Optional.empty());
 
@@ -182,22 +184,21 @@ public class DefaultTypeToExtensionMapper implements TypeToExtensionMapper {
 
     private final String type;
     private final String extension;
-    private final String structuredType;
+    private final String[] structuredType;
     private final Integer weight;
 
     public TypeMapTuple(String type, String extension) {
       this(type, extension, null);
     }
 
-    public TypeMapTuple(String type, String extension, String structuredType) {
-      this(type, extension, structuredType, 0);
-    }
-
-    public TypeMapTuple(String type, String extension, String structuredType, Integer weight) {
+    public TypeMapTuple(String type, String extension,  Integer weight, String... structuredTypes) {
       this.type = type;
       this.extension = extension;
-      this.structuredType = structuredType;
+      this.structuredType = structuredTypes;
       this.weight = ofNullable(weight).orElse(0);
+    }
+    public TypeMapTuple(String type, String extension,   String... structuredTypes) {
+      this(type, extension, 0, structuredTypes);
     }
 
     public String getId() {
@@ -208,8 +209,13 @@ public class DefaultTypeToExtensionMapper implements TypeToExtensionMapper {
       return extension;
     }
 
-    public Optional<String> getStructuredType() {
-      return ofNullable(structuredType);
+    public Optional<List<String>> getStructuredType() {
+      List<String> l = null;
+      if (this.structuredType.length > 0)
+        l = new ArrayList<>();
+      for (String k : this.structuredType)
+        l.add(k);
+      return ofNullable(l);
     }
 
     @Override

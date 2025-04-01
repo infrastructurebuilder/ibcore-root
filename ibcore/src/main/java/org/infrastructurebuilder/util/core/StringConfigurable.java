@@ -17,7 +17,7 @@
  */
 package org.infrastructurebuilder.util.core;
 
-import org.infrastructurebuilder.api.base.Configurable;
+import org.infrastructurebuilder.pathref.api.base.Configurable;
 
 /**
  * StringConfigurable is the most commonly-used type of Configurable within IB where the string provided is possibly a

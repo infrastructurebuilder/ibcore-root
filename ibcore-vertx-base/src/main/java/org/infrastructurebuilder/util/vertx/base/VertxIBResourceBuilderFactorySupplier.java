@@ -24,8 +24,8 @@ import java.util.function.Supplier;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.infrastructurebuilder.pathref.api.TypeToExtensionMapper;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
-import org.infrastructurebuilder.pathref.fs.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.readdetect.api.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.vertx.base.impl.VertxIBResourceBuilderFactoryImpl;
 

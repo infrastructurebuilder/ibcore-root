@@ -19,8 +19,8 @@ package org.infrastructurebuilder.util.extensionmapper.basic;
 
 import java.util.Map;
 
-import org.infrastructurebuilder.pathref.fs.TypeToExtensionMapper;
-import org.infrastructurebuilder.pathref.fs.TypeToExtensionMapperProvider;
+import org.infrastructurebuilder.pathref.api.TypeToExtensionMapper;
+import org.infrastructurebuilder.pathref.api.TypeToExtensionMapperProvider;
 
 public class TypeToExtensionMapperProviderDefault implements TypeToExtensionMapperProvider {
 

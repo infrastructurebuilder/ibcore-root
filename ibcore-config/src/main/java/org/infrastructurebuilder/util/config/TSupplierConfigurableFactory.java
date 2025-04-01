@@ -20,11 +20,11 @@ package org.infrastructurebuilder.util.config;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.api.IdentifiedAndWeighted;
-import org.infrastructurebuilder.api.LoggerEnabled;
-import org.infrastructurebuilder.api.base.ConfigMapBuilderConfigurable;
-import org.infrastructurebuilder.api.base.NameDescribed;
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.pathref.api.IdentifiedAndWeighted;
+import org.infrastructurebuilder.pathref.api.LoggerEnabled;
+import org.infrastructurebuilder.pathref.api.base.ConfigMapBuilderConfigurable;
+import org.infrastructurebuilder.pathref.api.base.NameDescribed;
 import org.infrastructurebuilder.util.core.Hinted;
 import org.infrastructurebuilder.util.core.TSupplier;
 

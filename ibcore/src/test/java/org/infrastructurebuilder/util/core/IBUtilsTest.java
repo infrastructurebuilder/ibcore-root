@@ -154,7 +154,7 @@ public class IBUtilsTest {
   private static final String FAKEFILE = "FAKEFILE.zip";
   private static final String CANNOT_READ_TARGET_DIR = "I cannot read the target dir";
   private static final String ABC = "ABC";
-  private static final String ABC_CHECKSUM = "397118fdac8d83ad98813c50759c85b8c47565d8268bf10da483153b747a74743a58a90e85aa9f705ce6984ffc128db567489817e4092d050d8a1cc596ddc119";
+  private static final String ABC_CHECKSUM = "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78";
   private static final String X_TXT = "X.txt";
   public static final String TESTFILE = "rick.jpg";
   private static JSONObject jj;

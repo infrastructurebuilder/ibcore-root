@@ -36,15 +36,16 @@ import javax.inject.Inject;
 import org.apache.maven.wagon.proxy.ProxyInfoProvider;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.components.io.filemappers.FileMapper;
-import org.infrastructurebuilder.api.ConfigMap;
-import org.infrastructurebuilder.api.LoggerSupplier;
-import org.infrastructurebuilder.api.base.ConfigMapConfigurable;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.PathSupplier;
+import org.infrastructurebuilder.pathref.api.ConfigMap;
+import org.infrastructurebuilder.pathref.api.LoggerSupplier;
+import org.infrastructurebuilder.pathref.api.TypeToExtensionMapper;
+import org.infrastructurebuilder.pathref.api.base.ConfigMapConfigurable;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.pathref.fs.TypeToExtensionMapper;
+import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
 import org.infrastructurebuilder.util.core.HeadersSupplier;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
@@ -128,14 +129,14 @@ abstract public class AbstractIBResourceCollectorSupplier<I>
     String _cdir = requireNonNull(config).getString(CACHEDIR);
     if (_cdir == null)
       throw new IBException("No cache directory supplied");
-    if (_cdir.startsWith(PathRefPath.PATHREFPREFIX))
-      this.cacheDirectory.compareAndSet(null, PathRefPath.getOrCreatePRFS(URI.create(_cdir), config.toMap())
+    if (_cdir.startsWith(PathRefPathIF.PATHREFPREFIX))
+      this.cacheDirectory.compareAndSet(null, PathRefPathIF.getOrCreatePRFS(URI.create(_cdir), config.toMap())
           .orElseThrow(() -> new IBException("Could not get cache directory from %s".formatted(_cdir))));
     else if (this.pathSuppliers.containsKey(_cdir)) {
       this.cacheDirectory.compareAndSet(null, this.pathSuppliers.get(_cdir).getPRFS(config.toMap()) //
           .orElseThrow(() -> new IBException("Could not create cache directory from %s".formatted(_cdir))));
     } else {
-      this.cacheDirectory.compareAndSet(null, PathRefPath.getOrCreatePRFS(URI.create(_cdir), config.toMap()) //
+      this.cacheDirectory.compareAndSet(null, PathRefPathIF.getOrCreatePRFS(URI.create(_cdir), config.toMap()) //
           .orElseThrow(() -> new IBException("Could not create cache directory from %s".formatted(_cdir))));
     }
 
@@ -174,7 +175,7 @@ abstract public class AbstractIBResourceCollectorSupplier<I>
       Objects.requireNonNull(proxinfo).ifPresent(p -> {
         this.wGetBldrFact.withProxyInfoProvider(p);
       });
-      cf = getBuilderFactory(PathRefPath.fromParentOfPath(workingDir).orElse(null)) //
+      cf = getBuilderFactory(PathRefPathIF.fromParentOfPath(workingDir).orElse(null)) //
           .withTypeMapper(t2e);
       this.workingDir = requireNonNull(workingDir);
       this.mappers = fileMaprs.orElseGet(() -> new FileMapper[0]);

@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.SortedSet;
 
-import org.infrastructurebuilder.api.LoggerSupplier;
 import org.infrastructurebuilder.pathref.PathSupplier;
-import org.infrastructurebuilder.pathref.fs.TypeToExtensionMapper;
+import org.infrastructurebuilder.pathref.api.LoggerSupplier;
+import org.infrastructurebuilder.pathref.api.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
 import org.infrastructurebuilder.util.credentials.basic.CredentialsFactory;
 import org.infrastructurebuilder.util.versions.IBVersionsSupplier;

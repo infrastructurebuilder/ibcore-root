@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Collections;
 
-import org.infrastructurebuilder.pathref.fs.TypeToExtensionMapper;
+import org.infrastructurebuilder.pathref.api.TypeToExtensionMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

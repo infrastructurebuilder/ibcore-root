@@ -17,23 +17,21 @@
  */
 package org.infrastructurebuilder.util.mavendownloadplugin.cache;
 
-//import com.googlecode.download.maven.plugin.internal.checksum.Checksums;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
-import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.util.mavendownloadplugin.IBMavenDownloadPluginComponentException;
-import org.infrastructurebuilder.util.mavendownloadplugin.checksum.DLChecksums;
-//import org.apache.maven.plugin.MojoFailureException;
-//import org.apache.maven.plugin.logging.Log;
-import org.slf4j.Logger;
-
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Optional;
+
+//import com.googlecode.download.maven.plugin.internal.checksum.Checksums;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.util.mavendownloadplugin.checksum.DLChecksums;
+//import org.apache.maven.plugin.MojoFailureException;
+//import org.apache.maven.plugin.logging.Log;
+import org.slf4j.Logger;
 
 /**
  * A class representing a download cache

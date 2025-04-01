@@ -34,11 +34,12 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 
-import org.infrastructurebuilder.api.ConfigMap;
-import org.infrastructurebuilder.api.base.ConfigMapConfigurable;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.api.ConfigMap;
+import org.infrastructurebuilder.pathref.api.base.ConfigMapConfigurable;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v1_0.IBMetadataModel;
 import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v1_0.IBMetadataModel.IBMetadataModelBuilderBase;
@@ -101,6 +102,12 @@ abstract public class AbstractIBResourceBuilder<I> //
   }
 
   @Override
+  public IBResourceBuilder<I> withChecksumSupplier(Supplier<Checksum> csum) {
+    return withChecksum(csum.get());
+  }
+
+
+  @Override
   public IBResourceBuilder<I> withAcquired(Instant acquired) {
     this.model.setAcquired(acquired);
     return this;
@@ -128,6 +135,12 @@ abstract public class AbstractIBResourceBuilder<I> //
     this.typeSet = true;
     return this;
   }
+
+  @Override
+  public IBResourceBuilder<I> withTypeSupplier(Supplier<String> type) {
+    return withType(type.get());
+  }
+
 
   @Override
   public IBResourceBuilder<I> withMetadata(JSONObject p) {

@@ -30,13 +30,13 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import org.apache.tika.metadata.TikaCoreProperties;
-import org.infrastructurebuilder.api.base.ConfigMapConfigurable;
-import org.infrastructurebuilder.api.base.ResponsiveTo;
 import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.pathref.api.TypeToExtensionMapper;
+import org.infrastructurebuilder.pathref.api.base.ConfigMapConfigurable;
+import org.infrastructurebuilder.pathref.api.base.ResponsiveTo;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.pathref.fs.TypeToExtensionMapper;
 import org.infrastructurebuilder.pathref.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;

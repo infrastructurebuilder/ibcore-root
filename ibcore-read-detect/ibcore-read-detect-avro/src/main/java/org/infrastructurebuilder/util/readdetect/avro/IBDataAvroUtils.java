@@ -19,18 +19,12 @@ package org.infrastructurebuilder.util.readdetect.avro;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
-import static org.infrastructurebuilder.constants.IBConstants.FILE_PREFIX;
-import static org.infrastructurebuilder.constants.IBConstants.HTTPS_PREFIX;
-import static org.infrastructurebuilder.constants.IBConstants.HTTP_PREFIX;
-import static org.infrastructurebuilder.constants.IBConstants.JAR_PREFIX;
-import static org.infrastructurebuilder.constants.IBConstants.ZIP_PREFIX;
 import static org.infrastructurebuilder.exceptions.IBException.cet;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -41,12 +35,12 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.generic.MapProxyGenericData;
-import org.infrastructurebuilder.api.ConfigMap;
-import org.infrastructurebuilder.api.base.ConfigMapBuilder;
 import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.pathref.api.ConfigMap;
+import org.infrastructurebuilder.pathref.api.base.ConfigMapBuilder;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.util.core.IBUtils;
+import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
 
 public interface IBDataAvroUtils {
   public static final String NO_SCHEMA_CONFIG_FOR_MAPPER = "No schema config for mapper";
@@ -83,7 +77,7 @@ public interface IBDataAvroUtils {
     DataFileWriter<GenericRecord> w = new DataFileWriter<GenericRecord>(
         new GenericDatumWriter<GenericRecord>(s, new MapProxyGenericData(new Formatters(map))));
     // create the working data file or die
-    Path file = PathRefPath.makeAFile(rr, IBConstants.IBDATA_PREFIX, ".".concat(IBConstants.AVRO), false)
+    Path file = PathRefPathIF.makeAFile(rr, IBConstants.IBDATA_PREFIX, ".".concat(IBConstants.AVRO), false)
         .orElseThrow(() -> new IBException("Cannot create temp file"));
     cet.translate(() -> w.create(s, file.toFile()));
     return w;

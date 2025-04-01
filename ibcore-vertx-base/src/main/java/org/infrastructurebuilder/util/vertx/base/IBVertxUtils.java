@@ -31,11 +31,11 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import org.infrastructurebuilder.api.Timestamped;
-import org.infrastructurebuilder.api.UUIdentified;
-import org.infrastructurebuilder.api.UUIdentifiedAndTimestamped;
-import org.infrastructurebuilder.api.UUIdentifiedAndWeighted;
 import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.api.Timestamped;
+import org.infrastructurebuilder.pathref.api.UUIdentified;
+import org.infrastructurebuilder.pathref.api.UUIdentifiedAndTimestamped;
+import org.infrastructurebuilder.pathref.api.UUIdentifiedAndWeighted;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.json.JSONObject;
 

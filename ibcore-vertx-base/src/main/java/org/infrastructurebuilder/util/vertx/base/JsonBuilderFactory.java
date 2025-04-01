@@ -23,7 +23,7 @@ import static org.infrastructurebuilder.constants.IBConstants.CLASS;
 import static org.infrastructurebuilder.constants.IBConstants.MESSAGE;
 import static org.infrastructurebuilder.constants.IBConstants.STACK_TRACE;
 import static org.infrastructurebuilder.constants.IBConstants.UNKNOWN_THROWABLE_CLASS;
-import static org.infrastructurebuilder.pathref.JSONBuilderFactory.TIMESTAMP;
+import static org.infrastructurebuilder.pathref.JSONBuilderBaseFactory.TIMESTAMP;
 
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -36,10 +36,10 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-import org.infrastructurebuilder.api.Modeled;
-import org.infrastructurebuilder.pathref.JSONBuilderFactory;
+import org.infrastructurebuilder.pathref.JSONBuilderBaseFactory;
 import org.infrastructurebuilder.pathref.ThrowableXsonObject;
 import org.infrastructurebuilder.pathref.XsonOutputEnabled;
+import org.infrastructurebuilder.pathref.api.Modeled;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +48,7 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 public class JsonBuilderFactory {
 
-  private final static Logger log = LoggerFactory.getLogger(JSONBuilderFactory.class);
+  private final static Logger log = LoggerFactory.getLogger(JSONBuilderBaseFactory.class);
   private final static AtomicReference<DateTimeFormatter> dts = new AtomicReference<>();
 
   public static JsonBuilder newInstance() {
@@ -68,7 +68,7 @@ public class JsonBuilderFactory {
     return dts.get();
   }
 
-  public static class JsonBuilderImpl extends JSONBuilderFactory.XsonBuilderImpl<JsonObject, JsonArray>
+  public static class JsonBuilderImpl extends JSONBuilderBaseFactory.XsonBuilderBaseImpl<JsonObject, JsonArray>
   implements JsonBuilder {
 
     public JsonBuilderImpl(PathRefFileSystem relativeRoot, JsonObject j) {
@@ -134,7 +134,6 @@ public class JsonBuilderFactory {
   }
 
   public static class ThrowableJsonObject extends ThrowableXsonObject<JsonObject> {
-    // Cant recurse static Function, so this is a method
     public static JsonObject _getThrowableJson(Throwable t) {
       final JsonObject j2 = new JsonObject();
       if (t != null) {

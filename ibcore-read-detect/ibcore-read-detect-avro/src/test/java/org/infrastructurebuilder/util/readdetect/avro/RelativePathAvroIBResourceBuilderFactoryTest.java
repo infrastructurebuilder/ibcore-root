@@ -21,12 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.net.URI;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -35,6 +31,7 @@ import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
 import org.infrastructurebuilder.util.readdetect.api.IBResource;
 import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathRefPathIBResourceBuilderFactory.AbstractPathIBResourceBuilder;
 import org.json.JSONObject;
@@ -67,7 +64,7 @@ class RelativePathAvroIBResourceBuilderFactoryTest {
   void setUp() throws Exception {
     config = Optional.of(UUID.randomUUID().toString());
     this._root = tps.getTestClasses();
-    prpfs = PathRefPath.getOrCreatePRFS(this._root, config).get();
+    prpfs = PathRefPathIF.getOrCreatePRFS(this._root, config).get();
     this.root = prpfs.getRoot();
 
     this.rick = new Checksum(this._root.resolve(RICK_JPG));

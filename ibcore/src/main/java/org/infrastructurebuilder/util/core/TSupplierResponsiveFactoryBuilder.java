@@ -19,12 +19,12 @@ package org.infrastructurebuilder.util.core;
 
 import java.util.Optional;
 
-import org.infrastructurebuilder.api.IdentifiedAndWeighted;
-import org.infrastructurebuilder.api.LoggerEnabled;
-import org.infrastructurebuilder.api.base.Configurable;
-import org.infrastructurebuilder.api.base.NameDescribed;
-import org.infrastructurebuilder.api.base.ResponsiveTo;
 import org.infrastructurebuilder.exceptions.IBException;
+import org.infrastructurebuilder.pathref.api.IdentifiedAndWeighted;
+import org.infrastructurebuilder.pathref.api.LoggerEnabled;
+import org.infrastructurebuilder.pathref.api.base.Configurable;
+import org.infrastructurebuilder.pathref.api.base.NameDescribed;
+import org.infrastructurebuilder.pathref.api.base.ResponsiveTo;
 
 public interface TSupplierResponsiveFactoryBuilder<R, T, C> extends ResponsiveTo<R>, //
     Configurable<C>, //

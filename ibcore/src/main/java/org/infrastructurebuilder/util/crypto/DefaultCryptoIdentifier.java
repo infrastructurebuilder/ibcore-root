@@ -26,7 +26,7 @@ import java.util.UUID;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
-import org.infrastructurebuilder.pathref.JSONBuilderFactory;
+import org.infrastructurebuilder.pathref.JSONBuilderBaseFactory;
 import org.json.JSONObject;
 
 public class DefaultCryptoIdentifier implements CryptoIdentifier {
@@ -51,7 +51,7 @@ public class DefaultCryptoIdentifier implements CryptoIdentifier {
 
   @Override
   public JSONObject asJSON() {
-    return JSONBuilderFactory.newInstance().addString("id", getId())
+    return JSONBuilderBaseFactory.newInstance().addString("id", getId())
         // type
         .addString(TYPE, getType())
         // identifiers

@@ -20,11 +20,15 @@ package org.infrastructurebuilder.util.mavendownloadplugin.cache;
 //import org.apache.maven.plugin.logging.Log;
 
 //import javax.annotation.concurrent.NotThreadSafe;
-import java.io.*;
+import java.io.IOException;
+import java.io.InvalidClassException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
-import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;

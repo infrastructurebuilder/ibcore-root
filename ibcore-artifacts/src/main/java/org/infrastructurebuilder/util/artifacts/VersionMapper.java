@@ -20,7 +20,7 @@ package org.infrastructurebuilder.util.artifacts;
 import java.util.List;
 import java.util.function.Function;
 
-import org.infrastructurebuilder.api.IdentifiedAndWeighted;
+import org.infrastructurebuilder.pathref.api.IdentifiedAndWeighted;
 import org.infrastructurebuilder.util.core.GAV;
 
 /**

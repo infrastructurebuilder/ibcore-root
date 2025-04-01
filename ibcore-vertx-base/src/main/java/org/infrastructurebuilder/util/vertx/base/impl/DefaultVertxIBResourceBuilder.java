@@ -86,6 +86,11 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
   }
 
   @Override
+  public IBResourceBuilder<Future<VertxIBResource>> withChecksumSupplier(Supplier<Checksum> csum) {
+    return this.withChecksum(csum.get()); // FIXME
+  }
+
+  @Override
   public Optional<IBResource> build(boolean hard) {
     // TODO Auto-generated method stub
     throw new IBException("Not implemented");// return Optional.empty();
@@ -157,6 +162,11 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
   @Override
   public IBResourceBuilder<Future<VertxIBResource>> withType(Optional<String> type) {
     return requireNonNull(type).map(t -> withType(t)).orElse(this);
+  }
+
+  @Override
+  public IBResourceBuilder<Future<VertxIBResource>> withTypeSupplier(Supplier<String> type) {
+    return withType(Optional.ofNullable(type.get()));
   }
 
   @Override

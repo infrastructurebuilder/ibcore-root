@@ -19,7 +19,7 @@ package org.infrastructurebuilder.util.core;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import org.infrastructurebuilder.api.base.NameDescribed;
+import org.infrastructurebuilder.pathref.api.base.NameDescribed;
 import org.junit.jupiter.api.Test;
 
 class DefaultEmptyTest {

@@ -31,7 +31,7 @@ import java.util.UUID;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.pathref.fs.PathRefChecksumOptions;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
-import org.infrastructurebuilder.pathref.fs.PathRefPath;
+import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
 import org.infrastructurebuilder.util.mavendownloadplugin.nonpublic.DefaultWGetBuilderFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -63,9 +63,9 @@ class WGetSupplierTest {
   @BeforeEach
   void setUp() throws Exception {
     this.localMap = Map.of( //
-        PathRefPath.CHECKSUMOPTIONS, PathRefChecksumOptions.LASTMODIFIED, //
-        PathRefPath.PATHREFKEY, UUID.randomUUID().toString());
-    this.od = PathRefPath.getOrCreatePRFS(tps.get(), localMap).get();
+        PathRefPathIF.CHECKSUMOPTIONS, PathRefChecksumOptions.LASTMODIFIED, //
+        PathRefPathIF.PATHREFKEY, UUID.randomUUID().toString());
+    this.od = PathRefPathIF.getOrCreatePRFS(tps.get(), localMap).get();
     this.lpr = new LoggingProgressReport(log);
     this.wgs = new DefaultWGetBuilderFactory(new FakeArchiverManager());
     this.b = wgs //

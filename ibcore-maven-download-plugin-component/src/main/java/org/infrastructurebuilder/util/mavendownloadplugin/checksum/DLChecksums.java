@@ -17,13 +17,12 @@
  */
 package org.infrastructurebuilder.util.mavendownloadplugin.checksum;
 
-//import com.googlecode.download.maven.plugin.internal.ChecksumUtils;
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.util.EnumMap;
 import java.util.Map;
+
 import javax.annotation.Nullable;
 
 import org.infrastructurebuilder.util.mavendownloadplugin.DLChecksumUtils;

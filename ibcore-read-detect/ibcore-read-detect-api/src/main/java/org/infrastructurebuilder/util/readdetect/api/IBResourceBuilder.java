@@ -33,7 +33,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.pathref.Checksum;
-import org.infrastructurebuilder.pathref.fs.PathRefFileAttributes;
+import org.infrastructurebuilder.pathref.fs.attribute.PathRefFileAttributes;
 import org.infrastructurebuilder.pathref.util.readdetect.model.v1_0.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -89,6 +89,14 @@ public interface IBResourceBuilder<I> {
   IBResourceBuilder<I> withChecksum(Checksum csum);
 
   /**
+   * Set the expected file checksum
+   *
+   * @param csum The expected checksum of the referenced stream
+   * @return
+   */
+  IBResourceBuilder<I> withChecksumSupplier(Supplier<Checksum> csum);
+
+  /**
    * Set the model to indicate that this is cached.
    *
    * Note that if the value is <i>not</i> cached, whatever that means to this particular resource, then validation
@@ -122,6 +130,14 @@ public interface IBResourceBuilder<I> {
    * @return
    */
   IBResourceBuilder<I> withType(String type);
+
+  /**
+   * Assigns an expected type to this resource
+   *
+   * @param type
+   * @return
+   */
+  IBResourceBuilder<I> withTypeSupplier(Supplier<String> type);
 
   /**
    * Detect the type using Tika.
@@ -239,9 +255,9 @@ public interface IBResourceBuilder<I> {
     if (a instanceof PathRefFileAttributes prfa) {
       this
 
-      .withChecksum(prfa.checksum())
+      .withChecksumSupplier(prfa.checksum())
 
-      .withType(prfa.type())
+      .withTypeSupplier(prfa.type())
 
       ;
 

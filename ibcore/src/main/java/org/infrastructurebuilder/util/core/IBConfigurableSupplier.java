@@ -19,7 +19,7 @@ package org.infrastructurebuilder.util.core;
 
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.api.IBConfigurable;
+import org.infrastructurebuilder.pathref.api.IBConfigurable;
 
 @Deprecated
 public interface IBConfigurableSupplier<T, C> extends IBConfigurable<C>, Supplier<T> {

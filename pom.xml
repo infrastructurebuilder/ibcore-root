@@ -27,7 +27,7 @@
 	<parent>
 		<groupId>org.infrastructurebuilder</groupId>
 		<artifactId>ibparent</artifactId>
-		<version>106-SNAPSHOT</version>
+		<version>106</version>
 	</parent>
 
 	<artifactId>ibcore-root</artifactId>

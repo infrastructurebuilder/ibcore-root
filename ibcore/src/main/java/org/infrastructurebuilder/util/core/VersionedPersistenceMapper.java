@@ -29,7 +29,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.infrastructurebuilder.api.Modeled;
+import org.infrastructurebuilder.pathref.api.Modeled;
 import org.infrastructurebuilder.util.version.IBVersion;
 import org.infrastructurebuilder.util.version.IBVersion.IBVersionRange;
 

@@ -22,7 +22,7 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
 
-import org.infrastructurebuilder.api.LoggerEnabled;
+import org.infrastructurebuilder.pathref.api.LoggerEnabled;
 import org.infrastructurebuilder.util.readdetect.api.IBResource;
 
 import io.vertx.codegen.annotations.Nullable;

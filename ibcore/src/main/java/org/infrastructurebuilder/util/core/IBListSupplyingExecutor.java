@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-import org.infrastructurebuilder.api.LoggerEnabled;
+import org.infrastructurebuilder.pathref.api.LoggerEnabled;
 
 public interface IBListSupplyingExecutor<T, C> extends Supplier<List<T>>, LoggerEnabled {
 
