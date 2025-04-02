@@ -39,7 +39,7 @@
 
 	<properties>
 		<test.coverage.percentage.required>71</test.coverage.percentage.required>
-		<ibcore.executor.model.version>1.0.1-SNAPSHOT</ibcore.executor.model.version>
+		<ibcore.executor.model.version>1.0.1</ibcore.executor.model.version>
 	</properties>
 
 	<dependencies>
