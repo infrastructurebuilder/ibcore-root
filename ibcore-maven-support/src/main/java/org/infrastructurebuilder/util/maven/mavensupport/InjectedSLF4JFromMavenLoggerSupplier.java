@@ -40,6 +40,6 @@ public class InjectedSLF4JFromMavenLoggerSupplier implements LoggerSupplier {
 
   @Override
   public Logger get() {
-    return log; //new SLF4JFromMavenLogger(this.mavenLog);
+    return log; // new SLF4JFromMavenLogger(this.mavenLog);
   }
 }

@@ -49,8 +49,7 @@ public class DefaultProcessExecutionResult implements ProcessExecutionResult {
   private final PathRefFileSystem pr;
 
   @SuppressWarnings("unchecked")
-  public DefaultProcessExecutionResult(ProcessExecution pe, Optional<Integer> exitCode,
-      Optional<Throwable> exception,
+  public DefaultProcessExecutionResult(ProcessExecution pe, Optional<Integer> exitCode, Optional<Throwable> exception,
       Instant startTime, Duration between)
   {
 
@@ -64,7 +63,7 @@ public class DefaultProcessExecutionResult implements ProcessExecutionResult {
         .withResultCode((exitCode.orElse(0)).toString()) //
         .withStdOut(pe.getStdOut().get()) //
         .withStdErr(pe.getStdErr().get()) //
-        .withStdInPath(pe.getStdIn().map(Path::toString).orElse(null)) //)
+        .withStdInPath(pe.getStdIn().map(Path::toString).orElse(null)) // )
 
         .withRoot(this.pr.toString())
 

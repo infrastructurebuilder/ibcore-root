@@ -130,8 +130,8 @@ public interface ProcessExecution extends JSONAndChecksumEnabled, AutoCloseable 
 
         .redirectOutput(getStdOut())
 
-        .redirectInput(getStdIn().map(si -> ProcessException.pet.returns(() -> Files.newInputStream(si)))
-            .orElse(System.in))
+        .redirectInput(
+            getStdIn().map(si -> ProcessException.pet.returns(() -> Files.newInputStream(si))).orElse(System.in))
 
         .exitValues(exitValues)
 

@@ -66,6 +66,7 @@ class DefaultInjectedResolverTest {
   private DefaultArtifactHandlerManager amd;
   private DefaultArtifactHandler ah;
   private DefaultPlexusContainer plexus;
+
   @BeforeEach
   void setUp() throws Exception {
 //    var x = new DefaultContainerConfiguration();
@@ -77,8 +78,8 @@ class DefaultInjectedResolverTest {
     af = new DefaultArtifactFactory();
     amd = new DefaultArtifactHandlerManager();
     ah = new DefaultArtifactHandler("jar");
-    Map<String, ArtifactHandler> afm =Map.of(ah.getType(), ah );
-    on(amd).set("artifactHandlers",afm);
+    Map<String, ArtifactHandler> afm = Map.of(ah.getType(), ah);
+    on(amd).set("artifactHandlers", afm);
     on(af).set("artifactHandlerManager", amd);
     on(repSystem).set("artifactFactory", af);
     on(repSystem).set("plexus", plexus);
@@ -102,18 +103,18 @@ class DefaultInjectedResolverTest {
 
   @Test
   void testFromArtifact() {
-   assertEquals(gav, dir.fromArtifact(a));
+    assertEquals(gav, dir.fromArtifact(a));
   }
 
   @Test
   void testFromDependency() {
-    assertEquals(gav,dir.fromDependency(d));
+    assertEquals(gav, dir.fromDependency(d));
   }
 
   @Test
   void testGetArtifactFromDependency() {
- // TODO must set artifact factory in repSystem
-    assertEquals(a,dir.getArtifactFromDependency(d));
+    // TODO must set artifact factory in repSystem
+    assertEquals(a, dir.getArtifactFromDependency(d));
   }
 
   @Test

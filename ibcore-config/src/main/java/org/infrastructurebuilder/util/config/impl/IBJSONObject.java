@@ -82,7 +82,6 @@ public class IBJSONObject implements ConfigMap, ConfigMapBuilder {
     return result.toString(charset.name());
   }
 
-
   private IBJSONObject(Stack<JSONObject> j) {
     ofNullable(j).ifPresent(j1 -> {
       this.s.addAll(j1);
@@ -181,8 +180,7 @@ public class IBJSONObject implements ConfigMap, ConfigMapBuilder {
   @Override
   public ConfigMapBuilder withJSONResource(String file, boolean optional) {
 
-    try (InputStream ins = getClass().getResourceAsStream(file);
-        Reader r = new InputStreamReader(ins)) {
+    try (InputStream ins = getClass().getResourceAsStream(file); Reader r = new InputStreamReader(ins)) {
       return withCopiedStack(readToJSONObject(ins));
     } catch (IOException e) {
       if (optional) {

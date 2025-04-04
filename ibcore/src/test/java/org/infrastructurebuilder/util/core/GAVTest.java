@@ -83,9 +83,7 @@ public class GAVTest {
 
   @Test
   public void testAsChecksum() {
-    assertEquals(
-        "740c7691f055149f16c150c89e4adfb79a8c674ce8dbb3ca5784226355fafb4c",
-        gav.asChecksum().toString());
+    assertEquals("740c7691f055149f16c150c89e4adfb79a8c674ce8dbb3ca5784226355fafb4c", gav.asChecksum().toString());
   }
 
   @Test

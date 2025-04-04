@@ -27,7 +27,6 @@ import java.util.function.Supplier;
 
 import org.apache.avro.file.SeekableInput;
 
-
 public class SeekableInputFromPath implements SeekableInput {
   private final Supplier<InputStream> res;
   private transient InputStream ins = null;
@@ -45,7 +44,7 @@ public class SeekableInputFromPath implements SeekableInput {
    * @throws IOException if an I/O error occurs
    */
   public SeekableInputFromPath(final Path resource, int bufferSize) {
-    this.res = () -> cet.returns( () -> Files.newInputStream(resource));
+    this.res = () -> cet.returns(() -> Files.newInputStream(resource));
     this.length = cet.returns(() -> Files.size(resource));
     this.bufferSize = bufferSize;
     cet.translate(() -> reset());

@@ -74,7 +74,7 @@ public class DefaultProcessRunnerSupplierTest {
     DefaultConfigMapBuilderSupplier q = new DefaultConfigMapBuilderSupplier();
     cms = q.get().withPropertiesResource("/c1.properties", false);
     logger = new SLF4JFromMavenLogger(new ConsoleLogger(org.codehaus.plexus.logging.Logger.LEVEL_DEBUG, "name"));
-    prs = new DefaultProcessRunnerSupplier(() -> cms,() ->  logger);
+    prs = new DefaultProcessRunnerSupplier(() -> cms, () -> logger);
     v = new DefaultConfigMapBuilderSupplier();
     cms2 = v.get().withPropertiesResource("/c4.properties", false);
   }
@@ -86,6 +86,6 @@ public class DefaultProcessRunnerSupplierTest {
 
   @Test
   public void testNonexistent() {
-    assertThrows(ProcessException.class, () -> new DefaultProcessRunnerSupplier(() -> cms2,() ->  logger));
+    assertThrows(ProcessException.class, () -> new DefaultProcessRunnerSupplier(() -> cms2, () -> logger));
   }
 }

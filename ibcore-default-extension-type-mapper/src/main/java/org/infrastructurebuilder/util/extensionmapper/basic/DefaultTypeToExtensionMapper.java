@@ -191,13 +191,14 @@ public class DefaultTypeToExtensionMapper implements TypeToExtensionMapper {
       this(type, extension, null);
     }
 
-    public TypeMapTuple(String type, String extension,  Integer weight, String... structuredTypes) {
+    public TypeMapTuple(String type, String extension, Integer weight, String... structuredTypes) {
       this.type = type;
       this.extension = extension;
       this.structuredType = Optional.ofNullable(structuredTypes).orElse(new String[0]);
       this.weight = ofNullable(weight).orElse(0);
     }
-    public TypeMapTuple(String type, String extension,   String... structuredTypes) {
+
+    public TypeMapTuple(String type, String extension, String... structuredTypes) {
       this(type, extension, 0, structuredTypes);
     }
 

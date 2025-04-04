@@ -30,11 +30,10 @@ public interface IBVersion extends Comparable<IBVersion> {
   public static Optional<IBVersion> apiVersion(final GAV gav) {
     return requireNonNull(gav).getVersion().map(DefaultIBVersion::new).map(DefaultIBVersion::apiVersion);
   }
+
   public static Optional<IBVersion> getVersion(final GAV art) {
     return art.getVersion().map(DefaultIBVersion::new);
   }
-
-
 
   public interface IBVersionRange {
     public boolean isSatisfiedBy(IBVersion version);

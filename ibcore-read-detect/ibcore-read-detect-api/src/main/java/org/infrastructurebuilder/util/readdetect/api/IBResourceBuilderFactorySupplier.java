@@ -26,8 +26,8 @@ import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
 
 /**
- * An IBResourceBuilderFactorySupplier is used to map {@link PathRefPath} identifiers supplied by a {@link PathRefFactory}
- * to instances of an {@link IBResourceBuilderFactory}
+ * An IBResourceBuilderFactorySupplier is used to map {@link PathRefPath} identifiers supplied by a
+ * {@link PathRefFactory} to instances of an {@link IBResourceBuilderFactory}
  *
  * This may seem unnecessarily complex as a means to obtain a factory-of-builders, but being able to indicate the actual
  * location of a {@link PathRefPath} by its identifier rather than its path allows us to fit in between an immovable
@@ -45,7 +45,7 @@ public interface IBResourceBuilderFactorySupplier extends NameDescribed {
   /**
    * Get a builder with this relative root
    *
-   * @param id The identifier of the {@link  to use as the root
+   * @param id The identifier of the {@link to use as the root
    * @return
    */
   Optional<IBResourceBuilderFactory<?>> get(String id);

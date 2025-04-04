@@ -93,7 +93,6 @@ public class ProcessExecutionResultTest {
 
   private ProcessExecutionResult res3;
 
-
   private List<String> stdErr = List.of("Hi", "there");
 
   private List<String> stdOut = List.of("hello", "gentlepersons");
@@ -188,16 +187,16 @@ public class ProcessExecutionResultTest {
     final JSONObject a = res.asJSON();
     String start = a.getString(START);
     JSONObject e = a.getJSONObject(EXECUTION);
-  String se = e.getString("stderr");
+    String se = e.getString("stderr");
     String so = e.getString("stdout");
     final String t = "{\n" //
         + "  \"execution\": {\n" //
         + "    \"environment\": {},\n" //
-        + "    \"stdout\": \""+ stdOutPth.toFullString() +"\",\n" //
+        + "    \"stdout\": \"" + stdOutPth.toFullString() + "\",\n" //
         + "    \"arguments\": [\"-version\"],\n" //
         + "    \"optional\": false,\n" //
         + "    \"id\": \"default\",\n" //
-        + "    \"stderr\": \""+ stdErrPth.toFullString() +"\",\n" //
+        + "    \"stderr\": \"" + stdErrPth.toFullString() + "\",\n" //
         + "    \"executable\": \"java\"\n" //
         + "  },\n" //
         + "  \"std-out\": [\n" //

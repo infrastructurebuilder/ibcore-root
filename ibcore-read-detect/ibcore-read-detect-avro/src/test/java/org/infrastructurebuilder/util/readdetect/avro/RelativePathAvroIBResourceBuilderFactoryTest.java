@@ -58,7 +58,7 @@ class RelativePathAvroIBResourceBuilderFactoryTest {
   private Checksum rick;
   private PathRefFileSystem prpfs;
   private PathRefPath root;
-  private Optional<String> config ;
+  private Optional<String> config;
 
   @BeforeEach
   void setUp() throws Exception {
@@ -82,11 +82,7 @@ class RelativePathAvroIBResourceBuilderFactoryTest {
   void testGetBuilder() {
     assertNotNull(this.b);
     AbstractPathIBResourceBuilder qq = b.get();
-    Optional<IBResource> q = qq
-        .withAcquired(Instant.now())
-        .withDescription("desc")
-        .withName("name")
-        .build();
+    Optional<IBResource> q = qq.withAcquired(Instant.now()).withDescription("desc").withName("name").build();
     assertTrue(q.isPresent());
     IBResource v = q.get();
     assertEquals(this.rick, v.getByteStreamChecksum());

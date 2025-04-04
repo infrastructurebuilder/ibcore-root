@@ -35,7 +35,7 @@ import org.infrastructurebuilder.pathref.OptionalReflectionLoadingTikaDetector;
 import org.infrastructurebuilder.pathref.api.ConfigMap;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.pathref.util.readdetect.model.v1_0.IBResourceModel;
+import org.infrastructurebuilder.pathref.util.readdetect.model.v0_0.IBResourceModel;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.readdetect.api.IBResource;
 import org.infrastructurebuilder.util.readdetect.api.IBResourceException;
@@ -158,6 +158,7 @@ public class PathRefPathIBResourceBuilderFactory extends AbstractPathRefPathIBRe
         m.setMostRecentReadTime(now());
         return getPath().orElse(null);
       }
+
       @Override
       public boolean validate(boolean hard) {
         return getPath().map(p -> {
@@ -188,5 +189,5 @@ public class PathRefPathIBResourceBuilderFactory extends AbstractPathRefPathIBRe
 
     }
 
-    }
+  }
 }

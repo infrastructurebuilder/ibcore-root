@@ -52,6 +52,7 @@ public class FakeModeled implements Modeled, JSONOutputEnabled {
   public static class FakeBuilder {
     public FakeBuilder() {
     }
+
     public FakeModeled build() {
       return new FakeModeled();
     }

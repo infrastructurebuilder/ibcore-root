@@ -63,7 +63,7 @@ class TestingPathRefProducerTest {
   @Test
   void testTPS() throws IOException {
     Path root = h.getTps().getRoot();
-     PathRefFileSystem t = rrp.getPathRef(h.getName());
+    PathRefFileSystem t = rrp.getPathRef(h.getName());
     assertEquals(root, t.getRoot().toRealPath().getParent());
 
   }

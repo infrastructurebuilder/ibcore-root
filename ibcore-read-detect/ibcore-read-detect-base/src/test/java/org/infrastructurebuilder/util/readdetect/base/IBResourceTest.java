@@ -76,8 +76,7 @@ public class IBResourceTest {
     this.fs = PathRefPathIF.getOrCreatePRFS(this.wps.getTestClasses(), Optional.of("testing")).get();
     this.rrs = this.fs.getRoot();
     testFile = this.rrs.resolve(TFILE_TEST);
-    this.rcf = new PathRefPathIBResourceBuilderFactory(this.fs)
-        .withConfig(cm);
+    this.rcf = new PathRefPathIBResourceBuilderFactory(this.fs).withConfig(cm);
     bb = this.rcf.getBuilder().get();
 
   }

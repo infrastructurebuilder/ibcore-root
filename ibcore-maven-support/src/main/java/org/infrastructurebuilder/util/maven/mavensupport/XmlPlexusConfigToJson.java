@@ -22,13 +22,14 @@ import org.infrastructurebuilder.pathref.JSONOutputEnabled;
 import org.json.JSONObject;
 import org.json.XML;
 
-public class XmlPlexusConfigToJson implements JSONOutputEnabled{
-
+public class XmlPlexusConfigToJson implements JSONOutputEnabled {
 
   private JSONObject json;
+
   public XmlPlexusConfigToJson(PlexusConfiguration xmlPlexusConfiguration) {
-      json = XML.toJSONObject(xmlPlexusConfiguration.toString(), false);
+    json = XML.toJSONObject(xmlPlexusConfiguration.toString(), false);
   }
+
   @Override
   public JSONObject asJSON() {
     return this.json;

@@ -20,7 +20,7 @@ package org.infrastructurebuilder.util.readdetect.api;
 import java.util.List;
 import java.util.Optional;
 
-import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v1_0.IBMetadataModel;
+import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v0_0.IBMetadataModel;
 
 public interface IBResourceCacheBuilder {
   // TODO this might need to be set automatically

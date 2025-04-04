@@ -23,7 +23,7 @@ import java.util.UUID;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
-import org.infrastructurebuilder.pathref.util.readdetect.model.v1_0.IBResourceModel;
+import org.infrastructurebuilder.pathref.util.readdetect.model.v0_0.IBResourceModel;
 import org.infrastructurebuilder.util.readdetect.api.IBResourceException;
 import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathRefPathIBResourceBuilderFactory.AbstractIBResource;
 

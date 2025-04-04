@@ -62,8 +62,7 @@ public class GenericRecordMapProxyTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    schema = IBDataAvroUtils.avroSchemaFromString
-        .apply(wps.getTestClasses().resolve("ba.avsc").toAbsolutePath());
+    schema = IBDataAvroUtils.avroSchemaFromString.apply(wps.getTestClasses().resolve("ba.avsc").toAbsolutePath());
     b = new GenericRecordBuilder(schema);
     r = new GenericData.Record(schema);
     p = new GenericRecordMapProxy(r);

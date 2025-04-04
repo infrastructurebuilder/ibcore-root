@@ -72,7 +72,6 @@ public class DefaultProcessRunner implements ProcessRunner {
     this(root, scratchDir, addl, empty(), empty());
   }
 
-
   public DefaultProcessRunner(final PathRefFileSystem root, final String scratchDir, final Optional<PrintStream> addl,
       final Optional<Logger> logger)
   {

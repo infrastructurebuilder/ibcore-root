@@ -82,9 +82,8 @@ public class ModeledProcessExecution extends GeneratedProcessExecution implement
 
   public ModeledProcessExecution(String modelVersion, String id, //
       String executable, List<String> arguments, //
-      String root,//
-      String timeout, Boolean optional, Boolean background, String workDirectory,
-      List<String> exitValues,//
+      String root, //
+      String timeout, Boolean optional, Boolean background, String workDirectory, List<String> exitValues, //
       String stdOutPath, String stdErrPath, String stdInPath, //
       Environment environment)
   {

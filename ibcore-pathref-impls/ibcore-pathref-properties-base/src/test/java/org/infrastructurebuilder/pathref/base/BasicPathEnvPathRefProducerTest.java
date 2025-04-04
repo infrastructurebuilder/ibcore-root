@@ -84,7 +84,7 @@ class BasicPathEnvPathRefProducerTest {
 
   @Test
   void testClasspath() throws IOException {
-     PathRefFileSystem home = rrp.getPathRef(HOME);
+    PathRefFileSystem home = rrp.getPathRef(HOME);
     assertNotNull(home);
     Path home2 = home.getRoot().toRealPath();
     assertTrue(home2.isAbsolute());

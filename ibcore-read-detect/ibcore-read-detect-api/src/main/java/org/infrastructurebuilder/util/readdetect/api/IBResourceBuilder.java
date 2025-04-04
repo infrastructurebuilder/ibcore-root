@@ -34,7 +34,7 @@ import java.util.function.Supplier;
 
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.fs.attribute.PathRefFileAttributes;
-import org.infrastructurebuilder.pathref.util.readdetect.model.v1_0.IBResourceModel;
+import org.infrastructurebuilder.pathref.util.readdetect.model.v0_0.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -222,11 +222,11 @@ public interface IBResourceBuilder<I> {
   IBResourceBuilder<I> withMostRecentAccess(Instant access);
 
   /**
-   * NOTE:  This may need to be rethought.  If a later model needs some different method of handling
-   * this, then having a default here could upset the balance of the Force.
+   * NOTE: This may need to be rethought. If a later model needs some different method of handling this, then having a
+   * default here could upset the balance of the Force.
    *
-   * Attempts to use an instance of something extending BasicFileAttributes to set the model's
-   * attribute values
+   * Attempts to use an instance of something extending BasicFileAttributes to set the model's attribute values
+   *
    * @param a
    * @return
    */
@@ -234,30 +234,30 @@ public interface IBResourceBuilder<I> {
     if (a == null)
       return this;
 //    if (a instanceof BasicFileAttributes bfa) {
-      this.withCreateDate(a.creationTime().toInstant())
+    this.withCreateDate(a.creationTime().toInstant())
 
-      .withSize(a.size())
+        .withSize(a.size())
 
-      .withMostRecentAccess(a.lastAccessTime().toInstant())
+        .withMostRecentAccess(a.lastAccessTime().toInstant())
 
-      .withLastUpdated(a.lastModifiedTime().toInstant());
+        .withLastUpdated(a.lastModifiedTime().toInstant());
 //    }
     if (a instanceof PosixFileAttributes pfa) {
       this
 
-      .withGroup(pfa.group().getName())
+          .withGroup(pfa.group().getName())
 
-      .withOwner(pfa.owner().getName())
+          .withOwner(pfa.owner().getName())
 
-      .withPermissions(new TreeSet<String>(pfa.permissions().stream().map(PosixFilePermission::name).toList()));
+          .withPermissions(new TreeSet<String>(pfa.permissions().stream().map(PosixFilePermission::name).toList()));
 
     }
     if (a instanceof PathRefFileAttributes prfa) {
       this
 
-      .withChecksumSupplier(prfa.checksum())
+          .withChecksumSupplier(prfa.checksum())
 
-      .withTypeSupplier(prfa.type())
+          .withTypeSupplier(prfa.type())
 
       ;
 
@@ -266,7 +266,9 @@ public interface IBResourceBuilder<I> {
   }
 
   IBResourceBuilder<I> withGroup(String groupName);
+
   IBResourceBuilder<I> withOwner(String ownerName);
+
   IBResourceBuilder<I> withPermissions(Set<String> perms);
 
   /**

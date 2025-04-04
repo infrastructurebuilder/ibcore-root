@@ -41,9 +41,9 @@ import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.api.ConfigMap;
 import org.infrastructurebuilder.pathref.api.base.ConfigMapConfigurable;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
-import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v1_0.IBMetadataModel;
-import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v1_0.IBMetadataModel.IBMetadataModelBuilderBase;
-import org.infrastructurebuilder.pathref.util.readdetect.model.v1_0.IBResourceModel;
+import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v0_0.IBMetadataModel;
+import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v0_0.IBMetadataModel.IBMetadataModelBuilderBase;
+import org.infrastructurebuilder.pathref.util.readdetect.model.v0_0.IBResourceModel;
 import org.infrastructurebuilder.util.readdetect.api.IBResource;
 import org.infrastructurebuilder.util.readdetect.api.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.api.IBResourceException;
@@ -106,7 +106,6 @@ abstract public class AbstractIBResourceBuilder<I> //
     return withChecksum(csum.get());
   }
 
-
   @Override
   public IBResourceBuilder<I> withAcquired(Instant acquired) {
     this.model.setAcquired(acquired);
@@ -140,7 +139,6 @@ abstract public class AbstractIBResourceBuilder<I> //
   public IBResourceBuilder<I> withTypeSupplier(Supplier<String> type) {
     return withType(type.get());
   }
-
 
   @Override
   public IBResourceBuilder<I> withMetadata(JSONObject p) {
@@ -197,8 +195,8 @@ abstract public class AbstractIBResourceBuilder<I> //
   @Override
   public IBResourceBuilder<I> withPermissions(Set<String> perms) {
     if (perms != null) {
-      this.model.setPermissions(PosixFilePermissions.toString(new HashSet<>(perms
-          .stream().map(PosixFilePermission::valueOf).toList())));
+      this.model.setPermissions(
+          PosixFilePermissions.toString(new HashSet<>(perms.stream().map(PosixFilePermission::valueOf).toList())));
     }
     return this;
   }

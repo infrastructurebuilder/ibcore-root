@@ -58,7 +58,8 @@ public interface IBDataAvroUtils {
 //        || s.startsWith(ZIP_PREFIX);
 //    try (InputStream in = isURL ? IBUtils.translateToWorkableArchiveURI(s).openStream()
 //        : IBDataAvroUtils.class.getResourceAsStream(s)) {
-    try (InputStream in = Files.newInputStream(ofNullable(schema).orElseThrow(() -> new IBException(NO_SCHEMA_CONFIG_FOR_MAPPER + "3")))) {
+    try (InputStream in = Files
+        .newInputStream(ofNullable(schema).orElseThrow(() -> new IBException(NO_SCHEMA_CONFIG_FOR_MAPPER + "3")))) {
       return cet.returns(() -> new Schema.Parser().parse(in));
     } catch (IOException e) {
       throw new IBException(e); // Handles the close() of try-with-resources

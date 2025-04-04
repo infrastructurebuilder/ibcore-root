@@ -66,7 +66,7 @@ public class IBResourceModelTest {
     c2source = wps.getTestClasses().resolve("rick.jpg");
     _root = wps.get();
     testFsId = UUID.randomUUID().toString();
-    c1path = _root.resolve(UUID.randomUUID().toString()+".jpg");
+    c1path = _root.resolve(UUID.randomUUID().toString() + ".jpg");
     IBChecksumUtils.copy(c2source, c1path);
     lc = new Checksum(c2source);
     rrs = PathRefPathIF.getOrCreatePRFS(_root).get();

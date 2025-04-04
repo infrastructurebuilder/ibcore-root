@@ -83,7 +83,6 @@ public class IBDataAvroUtilsTest {
 
   }
 
-
   @Test
   public void testNulled() {
     assertThrows(IBException.class, () -> avroSchemaFromString.apply(null));

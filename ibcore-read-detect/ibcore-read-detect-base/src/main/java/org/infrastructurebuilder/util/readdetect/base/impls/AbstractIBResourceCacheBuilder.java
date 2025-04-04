@@ -20,9 +20,9 @@ package org.infrastructurebuilder.util.readdetect.base.impls;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v1_0.IBMetadataModel;
-import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v1_0.IBResourceCacheModel;
-import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v1_0.IbpathrefMetadataModelVersioning;
+import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v0_0.IBMetadataModel;
+import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v0_0.IBResourceCacheModel;
+import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v0_0.IbpathrefMetadataModelVersioning;
 import org.infrastructurebuilder.util.readdetect.api.IBResource;
 import org.infrastructurebuilder.util.readdetect.api.IBResourceCacheBuilder;
 

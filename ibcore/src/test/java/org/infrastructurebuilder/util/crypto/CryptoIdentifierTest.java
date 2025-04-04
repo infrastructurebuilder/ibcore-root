@@ -86,9 +86,7 @@ public class CryptoIdentifierTest {
 
   @Test
   public void testAsChecksum() {
-    assertEquals(
-        "c50128cf99c06e860afbffcc4ddda158ddf9b1e7cce03899251cf667229066ab",
-        j.asChecksum().toString());
+    assertEquals("c50128cf99c06e860afbffcc4ddda158ddf9b1e7cce03899251cf667229066ab", j.asChecksum().toString());
   }
 
   @Test

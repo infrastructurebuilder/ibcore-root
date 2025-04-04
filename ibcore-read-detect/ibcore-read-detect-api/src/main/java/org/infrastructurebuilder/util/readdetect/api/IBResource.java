@@ -54,7 +54,7 @@ import org.infrastructurebuilder.pathref.api.base.NameDescribed;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.pathref.fs.attribute.PathRefFileAttributes;
-import org.infrastructurebuilder.pathref.util.readdetect.model.v1_0.IBResourceModel;
+import org.infrastructurebuilder.pathref.util.readdetect.model.v0_0.IBResourceModel;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.json.JSONObject;
 
@@ -145,8 +145,8 @@ import org.json.JSONObject;
  * </p>
  * <p>
  * The values of IBResource items are meant to be immutably accessible. However, by default, local files are NOT
- * considered immutable, nor are other types of data. The reliability of an IBResource's immutability is tied to
- * the manner in which it was produced.
+ * considered immutable, nor are other types of data. The reliability of an IBResource's immutability is tied to the
+ * manner in which it was produced.
  * </p>
  *
  * <p>
@@ -279,31 +279,33 @@ public interface IBResource extends JSONOutputEnabled, ChecksumEnabled, NameDesc
   Optional<Instant> getAcquireDate();
 
   /**
-   * @return last file update or empty if unknown.  This is provider-specific information and might not be available.
+   * @return last file update or empty if unknown. This is provider-specific information and might not be available.
    */
   Optional<Instant> getLastUpdateDate();
 
   /**
-   * The original query that produced this bytestream.  As a rule, IBResources are backed entirely by
-   * PathRefPathFileSystem instances, so the data read might be represented as a base path off the "root"
-   * location of this value.
+   * The original query that produced this bytestream. As a rule, IBResources are backed entirely by
+   * PathRefPathFileSystem instances, so the data read might be represented as a base path off the "root" location of
+   * this value.
    *
    * Default implementations of IBResource instances have a value mapped directly to the PathRefPath of the filesystem
-   * produced by the PathRefFileSystemProvider.  This is the "path" of the IBResource.
-   * @return  Non-null URI of the original source of the bytestream.
+   * produced by the PathRefFileSystemProvider. This is the "path" of the IBResource.
+   *
+   * @return Non-null URI of the original source of the bytestream.
    */
   URI getSourceURI();
 
   /**
-   * This conforms to the "filename" of the source.  Per the {@link Path} contract, this is the last element of the
-   * path.
+   * This conforms to the "filename" of the source. Per the {@link Path} contract, this is the last element of the path.
+   *
    * @return
    */
   Optional<String> getSourceName();
 
   /**
-   * Arbitrary metadata applied to this IBResource.  This is a JSON object that can be used for any purpose, but
-   * is occasionally used by subtypes for persisting subtype-specific information.
+   * Arbitrary metadata applied to this IBResource. This is a JSON object that can be used for any purpose, but is
+   * occasionally used by subtypes for persisting subtype-specific information.
+   *
    * @return non-null but possible empty {@link JSONObject}
    */
   JSONObject getMetadata();
@@ -331,7 +333,7 @@ public interface IBResource extends JSONOutputEnabled, ChecksumEnabled, NameDesc
   }
 
   /**
-   * The "default" implemetation of asJSON is generally correct.  However, subtypes may wish to override this method and
+   * The "default" implemetation of asJSON is generally correct. However, subtypes may wish to override this method and
    * replace or inject information here.
    *
    * Note that overriding any of the information below effectively invalidates the IBResource instance.
@@ -396,10 +398,10 @@ public interface IBResource extends JSONOutputEnabled, ChecksumEnabled, NameDesc
   }
 
   /**
-   * The root filesystem for an IBResource should be configured prior to utilizing any resources out
-   * of the library.  As a rule, all filesystems are persisted by a 'pathref:key:SOME_KEY' URI that may
-   * be used to reference an existing PathRefFileSystem.  If such a filesystem is not available, then,
-   * it must be created prior to using the IBResource.
+   * The root filesystem for an IBResource should be configured prior to utilizing any resources out of the library. As
+   * a rule, all filesystems are persisted by a 'pathref:key:SOME_KEY' URI that may be used to reference an existing
+   * PathRefFileSystem. If such a filesystem is not available, then, it must be created prior to using the IBResource.
+   *
    * @return
    */
   PathRefFileSystem getRelativeRoot();

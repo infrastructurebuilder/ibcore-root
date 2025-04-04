@@ -85,7 +85,7 @@ class AbstractBasicPathPropertiesPathRefProducerTest {
   void testUserHome() throws IOException {
     System.setProperty(h.getPropertyName(), p.toUri().toString());
     Path root = tps.getRoot();
-     PathRefFileSystem t = rrp.getPathRef(h.getName());
+    PathRefFileSystem t = rrp.getPathRef(h.getName());
     assertEquals(p, t.getRoot().toRealPath());
   }
 

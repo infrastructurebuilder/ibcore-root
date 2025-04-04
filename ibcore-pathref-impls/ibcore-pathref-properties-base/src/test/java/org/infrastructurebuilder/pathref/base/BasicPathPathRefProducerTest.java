@@ -70,7 +70,7 @@ class BasicPathPathRefProducerTest {
   void testUserHome() throws IOException {
     assertNotNull(h.getLog());
     Path root = tps.getRoot();
-     PathRefFileSystem t = rrp.getPathRef(h.getName());
+    PathRefFileSystem t = rrp.getPathRef(h.getName());
     assertEquals(root, t.getRoot().toRealPath().getParent());
   }
 

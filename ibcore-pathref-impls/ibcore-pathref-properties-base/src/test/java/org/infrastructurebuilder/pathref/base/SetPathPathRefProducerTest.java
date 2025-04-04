@@ -68,7 +68,7 @@ class SetPathPathRefProducerTest {
 
   @Test
   void testRR() throws IOException {
-     PathRefFileSystem rr = rrp.getPathRef(SetValuePathRefProducer.NAME);
+    PathRefFileSystem rr = rrp.getPathRef(SetValuePathRefProducer.NAME);
     assertEquals(tp, rr.getRoot().toRealPath());
   }
 

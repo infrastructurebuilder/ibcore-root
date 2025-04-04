@@ -70,7 +70,6 @@ public interface ProcessExecutionResult extends JSONAndChecksumEnabled, Checksum
 
   };
 
-
   String EXCEPTION = "exception";
   String EXECUTION = "execution";
   String RESULT_CODE = "result-code";

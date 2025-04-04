@@ -41,7 +41,7 @@ import org.infrastructurebuilder.pathref.api.ConfigMap;
 import org.infrastructurebuilder.pathref.api.TypeToExtensionMapper;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.pathref.util.readdetect.model.v1_0.IBResourceModel;
+import org.infrastructurebuilder.pathref.util.readdetect.model.v0_0.IBResourceModel;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.readdetect.api.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.api.IBResourceBuilderFactory;

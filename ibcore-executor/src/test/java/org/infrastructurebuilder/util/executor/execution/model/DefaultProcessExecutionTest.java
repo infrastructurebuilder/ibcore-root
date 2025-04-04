@@ -56,6 +56,7 @@ public class DefaultProcessExecutionTest {
   public static void setUpAll() throws Exception {
     root = PathRefPathIF.getOrCreatePRFS(wps.get(), Optional.of(DefaultProcessExecutionTest.class.getName())).get();
   }
+
   @BeforeEach
   public void setUp() throws Exception {
     id = UUID.randomUUID().toString();
@@ -70,8 +71,8 @@ public class DefaultProcessExecutionTest {
     p1.setId(id);
     p1.setRoot(root.toString());
 
-    p2 = new DefaultProcessExecution(id, executable, arguments, root,timeout, empty(), workDirectory, true,
-        of(new HashMap<>()),  empty(), empty(), false);
+    p2 = new DefaultProcessExecution(id, executable, arguments, root, timeout, empty(), workDirectory, true,
+        of(new HashMap<>()), empty(), empty(), false);
 
   }
 
@@ -80,12 +81,12 @@ public class DefaultProcessExecutionTest {
     wps.finalize();
   }
 
-
 //  @Test
   public void testModeled() {
     ModeledProcessExecution aa = new ModeledProcessExecution(p1);
     assertNotNull(aa);
   }
+
 //  @Test
   public void testDefaultProcessExecution() {
     assertNotNull(p1);

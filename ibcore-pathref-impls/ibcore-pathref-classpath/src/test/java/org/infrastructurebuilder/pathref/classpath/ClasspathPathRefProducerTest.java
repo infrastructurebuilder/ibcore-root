@@ -71,7 +71,7 @@ class ClasspathPathRefProducerTest {
 
   @Test
   void testClasspath() {
-     PathRefFileSystem cprr = rrp.getPathRef(ClasspathPathRefProducer.NAME);
+    PathRefFileSystem cprr = rrp.getPathRef(ClasspathPathRefProducer.NAME);
 //    assertTrue(cprr.extendAsPathRef(Paths.get(MYFILE_XML)).isEmpty());
 //    String k = cprr.relativize(ClasspathPathRefSupplier.NAME + MYFILE_XML).map(Path::toString).get();
 //    String q = cprr.getUrl().get().toExternalForm();
