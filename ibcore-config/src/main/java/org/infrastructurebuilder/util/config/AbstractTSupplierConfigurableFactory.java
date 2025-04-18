@@ -74,8 +74,8 @@ public abstract class AbstractTSupplierConfigurableFactory<T> implements TSuppli
     return this;
   }
 
-  protected ConfigMapBuilder getConfig() {
-    return this.config;
+  public Optional<ConfigMapBuilder> getConfig() {
+    return Optional.ofNullable(this.config);
   }
 
   public AbstractTSupplierConfigurableFactory<T> withHint(String hint) {

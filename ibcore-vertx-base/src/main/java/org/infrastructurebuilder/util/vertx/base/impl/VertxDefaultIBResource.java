@@ -39,8 +39,8 @@ import org.infrastructurebuilder.objectmapper.jackson.ObjectMapperUtils;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v0_0.IBMetadataModel;
-import org.infrastructurebuilder.pathref.util.readdetect.model.v0_0.IBResourceModel;
+import org.infrastructurebuilder.pathref.metadata.model.v0_0.IBMetadataModel;
+import org.infrastructurebuilder.pathref.metadata.model.v0_0.IBResourceModel;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.readdetect.api.IBResource;
 import org.infrastructurebuilder.util.readdetect.api.IBResourceBuilder;
@@ -289,7 +289,7 @@ public class VertxDefaultIBResource implements VertxIBResource {
   }
 
   @Override
-  public Optional<String> getPermissionsAsString() {
+  public Optional<String> getPermissions() {
     return this.m.getPermissions();
   }
 

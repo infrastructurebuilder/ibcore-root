@@ -19,6 +19,7 @@ package org.infrastructurebuilder.util.core;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import org.infrastructurebuilder.pathref.api.IBVersionException;
 import org.junit.jupiter.api.Test;
 
 public class IBVersionExceptionTest {

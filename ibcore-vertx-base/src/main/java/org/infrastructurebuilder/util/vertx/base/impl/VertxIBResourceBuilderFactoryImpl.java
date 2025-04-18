@@ -41,11 +41,10 @@ import org.infrastructurebuilder.pathref.api.ConfigMap;
 import org.infrastructurebuilder.pathref.api.TypeToExtensionMapper;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.pathref.util.readdetect.model.v0_0.IBResourceModel;
+import org.infrastructurebuilder.pathref.metadata.model.v0_0.IBResourceModel;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.readdetect.api.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.api.IBResourceBuilderFactory;
-import org.infrastructurebuilder.util.readdetect.api.IBResourceException;
 import org.infrastructurebuilder.util.readdetect.base.AbstractIBResourceBuilderFactory;
 import org.infrastructurebuilder.util.vertx.base.VertxIBResource;
 import org.json.JSONObject;
@@ -57,7 +56,6 @@ import io.vertx.core.Vertx;
 import io.vertx.core.file.AsyncFile;
 import io.vertx.core.file.FileSystem;
 import io.vertx.core.file.OpenOptions;
-import io.vertx.core.streams.ReadStream;
 
 @Named(VertxIBResourceBuilderFactoryImpl.NAME)
 public class VertxIBResourceBuilderFactoryImpl extends AbstractIBResourceBuilderFactory<Future<VertxIBResource>> {
@@ -98,7 +96,7 @@ public class VertxIBResourceBuilderFactoryImpl extends AbstractIBResourceBuilder
   }
 
   @Override
-  protected Optional<ConfigMap> getConfig() {
+  public Optional<ConfigMap> getConfig() {
     return Optional.ofNullable(this.config);
   }
 

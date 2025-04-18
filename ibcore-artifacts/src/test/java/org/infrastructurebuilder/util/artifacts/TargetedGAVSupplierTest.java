@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.core.GAV;
+import org.infrastructurebuilder.pathref.GAV;
 import org.junit.jupiter.api.Test;
 
 public class TargetedGAVSupplierTest {

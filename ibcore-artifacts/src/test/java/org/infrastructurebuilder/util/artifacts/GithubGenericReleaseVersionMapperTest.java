@@ -22,8 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import org.infrastructurebuilder.pathref.DefaultGAV;
 import org.infrastructurebuilder.pathref.api.IdentifiedAndWeighted;
-import org.infrastructurebuilder.util.core.DefaultGAV;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

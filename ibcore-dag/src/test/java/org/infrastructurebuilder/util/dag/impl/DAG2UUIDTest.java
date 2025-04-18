@@ -22,11 +22,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.infrastructurebuilder.util.comparators.BasicTComparator;
 import org.infrastructurebuilder.util.dag.CycleDetectedException;
 import org.infrastructurebuilder.util.dag.MutableDAG;
 import org.infrastructurebuilder.util.dag.MutableVertex;
@@ -41,23 +43,25 @@ public class DAG2UUIDTest {
   private MutableDAG<UUID> dag, dag1, dag2;
   private MutableVertex<UUID> dV;
   MutableVertex<UUID> cV;
+  Comparator<UUID> comp;
 
   @BeforeEach
   public void setUp() throws Exception {
+    comp = new BasicTComparator<>();
     a = UUID.randomUUID();
     b = UUID.randomUUID();
     c = UUID.randomUUID();
     d = UUID.randomUUID();
     e = UUID.randomUUID();
-    dag = new MutableDAGImpl<>();
-    dag1 = new MutableDAGImpl<>();
+    dag = new MutableDAGImpl<>(comp);
+    dag1 = new MutableDAGImpl<>(comp);
     dag1.addEdge(a, b);
     dag1.addVertex(c);
     dag1.addEdge(c, a);
     dag1.addEdge(c, b);
     dag1.addEdge(a, d);
     dag1.addEdge(b, d);
-    dag2 = new MutableDAGImpl<>();
+    dag2 = new MutableDAGImpl<>(comp);
     dag2.addEdge(a, b);
     dag2.addVertex(c);
     dag2.addEdge(c, a);
@@ -98,7 +102,7 @@ public class DAG2UUIDTest {
     assertNotEquals(dag1, null);
     assertNotEquals(dag1, "A");
     assertEquals(dag1, dag2);
-    final MutableDAG<UUID> dag3 = new DAGBuilderImpl.MutableDAGImpl<>();
+    final MutableDAG<UUID> dag3 = new DAGBuilderImpl.MutableDAGImpl<>(comp);
     dag3.addVertex(a);
     dag3.addVertex(b);
     dag3.addEdge(c, d);
@@ -197,11 +201,11 @@ public class DAG2UUIDTest {
     assertEquals(cV, cV);
     assertNotEquals(cV, null);
     assertNotEquals(cV, "abc");
-    final MutableVertex c1V = new DAGBuilderImpl.MutableDAGImpl.MutableVertexImpl(cV.getLabel(),
+    final MutableVertex c1V = new DAGBuilderImpl.MutableDAGImpl.MutableVertexImpl(comp, cV.getLabel(),
         new DAGBuilderImpl.MutableDAGImpl.MutableTopologicalSorterImpl());
     assertNotEquals(c1V, cV);
     assertEquals(dag1.getVertex(c), dag2.getVertex(c));
-    final MutableDAG<UUID> dag4 = new MutableDAGImpl<>();
+    final MutableDAG<UUID> dag4 = new MutableDAGImpl<>(comp);
     dag4.addEdge(a, b);
     dag4.addVertex(c);
     dag4.addEdge(c, a);

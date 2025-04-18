@@ -86,7 +86,7 @@ class AbstractTSupplierFactoryTest {
     TSupplier<String> v1 = this.tsf.get();
     assertNotNull(v1);
     assertEquals(VAL, v1.get());
-    assertEquals(this.tsf.getConfig(), VAL2);
+    assertEquals(this.tsf.getConfig().get(), VAL2);
     assertEquals(this.tsf.getWeight(), WEIGHT);
     assertEquals(this.tsf.getDescription().get(), DESC);
     assertEquals(this.tsf.getDisplayName().get(), VAL3);

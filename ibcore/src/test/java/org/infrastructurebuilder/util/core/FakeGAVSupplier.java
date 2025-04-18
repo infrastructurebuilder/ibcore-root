@@ -19,6 +19,10 @@ package org.infrastructurebuilder.util.core;
 
 import java.util.Optional;
 
+import org.infrastructurebuilder.pathref.DefaultGAV;
+import org.infrastructurebuilder.pathref.GAV;
+import org.infrastructurebuilder.pathref.GAVSupplier;
+
 public class FakeGAVSupplier implements GAVSupplier {
 
   private final String groupId;

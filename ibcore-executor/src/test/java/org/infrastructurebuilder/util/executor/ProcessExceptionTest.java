@@ -19,6 +19,7 @@ package org.infrastructurebuilder.util.executor;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import org.infrastructurebuilder.util.executor.api.ProcessException;
 import org.junit.jupiter.api.Test;
 
 public class ProcessExceptionTest {

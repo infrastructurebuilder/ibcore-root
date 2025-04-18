@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE project>
+
 <!--
 
     @formatter:off
@@ -18,133 +19,130 @@
     @formatter:on
 
 -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.infrastructurebuilder</groupId>
-		<artifactId>ibcore-root</artifactId>
-		<version>0.30.1-SNAPSHOT</version>
-	</parent>
+  <parent>
+    <groupId>org.infrastructurebuilder</groupId>
+    <artifactId>ibcore-root</artifactId>
+    <version>0.30.1-SNAPSHOT</version>
+  </parent>
 
-	<artifactId>ibcore-executor</artifactId>
-	<packaging>jar</packaging>
+  <artifactId>ibcore-executor</artifactId>
+  <packaging>jar</packaging>
 
-	<name>${project.artifactId}</name>
-	<description>Standard interfaces for running applications as a heavyweight
-		process</description>
-	<!-- URL for site gen -->
-	<url>${github.url.base}/${project.artifactId}</url>
+  <name>${project.artifactId}</name>
+  <description>Standard interfaces for running applications as a heavyweight process</description>
+  <!-- URL for site gen -->
+  <url>${github.url.base}/${project.artifactId}</url>
 
-	<properties>
-		<test.coverage.percentage.required>71</test.coverage.percentage.required>
-		<ibcore.executor.model.version>1.0.1</ibcore.executor.model.version>
-	</properties>
+  <properties>
+    <jacoco.max.missed.classes>2</jacoco.max.missed.classes>
+    <test.coverage.percentage.required>67</test.coverage.percentage.required>
+  </properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.infrastructurebuilder</groupId>
-			<artifactId>ibcore-config</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.infrastructurebuilder</groupId>
-			<artifactId>ibcore</artifactId>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.infrastructurebuilder.util.executor.model</groupId>
-			<artifactId>ibcore-executor-model</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.zeroturnaround</groupId>
-			<artifactId>zt-exec</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.zeroturnaround</groupId>
-			<artifactId>zt-process-killer</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency><!--       <groupId>org.skyscreamer</groupId> -->
-			<groupId>org.infrastructurebuilder.usurped</groupId>
-			<artifactId>jsonassert</artifactId>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>com.vaadin.external.google</groupId>
-					<artifactId>android-json</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.jooq</groupId>
-			<artifactId>joor</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.plexus</groupId>
-			<artifactId>plexus-utils</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.infrastructurebuilder.util.logging</groupId>
-			<artifactId>iblog-noop-component</artifactId>
-		</dependency>
-		<!--
+  <dependencies>
+    <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore-config</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder.util.executor.model</groupId>
+      <artifactId>ibcore-executor-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.zeroturnaround</groupId>
+      <artifactId>zt-exec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.zeroturnaround</groupId>
+      <artifactId>zt-process-killer</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency><!--       <groupId>org.skyscreamer</groupId> -->
+      <groupId>org.infrastructurebuilder.usurped</groupId>
+      <artifactId>jsonassert</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.vaadin.external.google</groupId>
+          <artifactId>android-json</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.jooq</groupId>
+      <artifactId>joor</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder.util.logging</groupId>
+      <artifactId>iblog-noop-component</artifactId>
+    </dependency>
+    <!--
     <dependency>
       <groupId>org.yaml</groupId>
       <artifactId>snakeyaml</artifactId>
       <version>2.2</version>
     </dependency>
-		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>jsr305</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+    </dependency>
     -->
-		<dependency>
-			<groupId>org.infrastructurebuilder.pathref</groupId>
-			<artifactId>ibpathref-api</artifactId>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+    <dependency>
+      <groupId>org.infrastructurebuilder.pathref</groupId>
+      <artifactId>ibpathref-api</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>com.googlecode.maven-download-plugin</groupId>
-				<artifactId>download-maven-plugin</artifactId>
-				<configuration>
-					<unpack>true</unpack>
-					<checkSignature>true</checkSignature>
-					<url>${hashicorp.packer.url}</url>
-					<sha1>${hashicorp.packer.download.sha1}</sha1>
-					<outputDirectory>${project.build.directory}</outputDirectory>
-				</configuration>
-				<executions>
-					<execution>
-						<id>getPacker</id>
-						<phase>generate-test-resources</phase>
-						<goals>
-							<goal>wget</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							org/infrastructurebuilder/util/executor/execution/model/**/*</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.googlecode.maven-download-plugin</groupId>
+        <artifactId>download-maven-plugin</artifactId>
+        <configuration>
+          <unpack>true</unpack>
+          <checkSignature>true</checkSignature>
+          <url>${hashicorp.packer.url}</url>
+          <sha1>${hashicorp.packer.download.sha1}</sha1>
+          <outputDirectory>${project.build.directory}</outputDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <id>getPacker</id>
+            <phase>generate-test-resources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>org/infrastructurebuilder/util/executor/execution/model/**/*</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

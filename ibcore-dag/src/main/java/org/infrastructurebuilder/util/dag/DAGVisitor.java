@@ -21,7 +21,7 @@ import static org.infrastructurebuilder.util.dag.DAGVisitResult.CONTINUE;
 
 import java.util.Optional;
 
-public interface DAGVisitor<T extends Comparable<T>> {
+public interface DAGVisitor<T> {
 
   default Optional<Object> getVisitationState() {
     return Optional.empty();

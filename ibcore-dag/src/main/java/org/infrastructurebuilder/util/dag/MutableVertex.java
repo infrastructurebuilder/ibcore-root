@@ -17,9 +17,17 @@
  */
 package org.infrastructurebuilder.util.dag;
 
+import java.util.Comparator;
 import java.util.List;
 
-public interface MutableVertex<T extends Comparable<T>> extends Comparable<MutableVertex<T>> {
+public interface MutableVertex<T> extends Comparable<MutableVertex<T>> {
+
+  Comparator<T> getComparator();
+
+  @Override
+  default int compareTo(MutableVertex<T> o) {
+    return getComparator().compare(this.getLabel(), o.getLabel());
+  }
 
   void addEdgeFrom(MutableVertex<T> vertex);
 

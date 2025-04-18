@@ -37,8 +37,8 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.repository.LocalArtifactRepository;
 import org.apache.maven.repository.RepositorySystem;
-import org.infrastructurebuilder.util.core.DefaultGAV;
-import org.infrastructurebuilder.util.core.GAV;
+import org.infrastructurebuilder.pathref.DefaultGAV;
+import org.infrastructurebuilder.pathref.GAV;
 import org.infrastructurebuilder.util.maven.artifacts.InjectedResolver;
 import org.infrastructurebuilder.util.maven.artifacts.ResolveOutcome;
 

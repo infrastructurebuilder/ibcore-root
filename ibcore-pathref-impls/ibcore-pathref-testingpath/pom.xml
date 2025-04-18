@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE project>
+
 <!--
 
     @formatter:off
@@ -19,32 +20,32 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-	<groupId>org.infrastructurebuilder.pathref</groupId>
-	<artifactId>ibcore-pathref-impls</artifactId>
-	<version>0.30.1-SNAPSHOT</version>
-	</parent>
+  <parent>
+    <groupId>org.infrastructurebuilder.pathref</groupId>
+    <artifactId>ibcore-pathref-impls</artifactId>
+    <version>0.30.1-SNAPSHOT</version>
+  </parent>
 
-	<artifactId>ibcore-pathref-testingpath</artifactId>
-	<packaging>jar</packaging>
+  <artifactId>ibcore-pathref-testingpath</artifactId>
+  <packaging>jar</packaging>
 
-	<name>${project.artifactId}</name>
-	<description>RelativeRoot from a default TestingPathSupplier instance</description>
-	<!-- URL for site gen -->
-	<url>${github.url.base}/${project.artifactId}</url>
+  <name>${project.artifactId}</name>
+  <description>RelativeRoot from a default TestingPathSupplier instance</description>
+  <!-- URL for site gen -->
+  <url>${github.url.base}/${project.artifactId}</url>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.infrastructurebuilder.pathref</groupId>
-			<artifactId>ibcore-pathref-properties-base</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.infrastructurebuilder.pathref</groupId>
-			<artifactId>ibpathref-api</artifactId>
-			<type>test-jar</type>
-			<scope>compile</scope>
-		</dependency>
-	</dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>org.infrastructurebuilder.pathref</groupId>
+      <artifactId>ibcore-pathref-properties-base</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder.pathref</groupId>
+      <artifactId>ibpathref-api</artifactId>
+      <type>test-jar</type>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
 </project>

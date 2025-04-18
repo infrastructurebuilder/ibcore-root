@@ -21,7 +21,7 @@ import static java.util.Optional.empty;
 
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.core.GAV;
+import org.infrastructurebuilder.pathref.GAV;
 
 public interface TargetPlatformGAVMapper {
 

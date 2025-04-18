@@ -145,7 +145,9 @@ public class IBResourceTest {
 
   @Test
   public void testFromPath() throws IOException {
-    r = bb.accept(() -> testFile).build(true).get();
+    var qv = bb.accept(() -> testFile);
+    var ty = qv.build(true);
+    r = ty.get();
     assertNotNull(r);
 
     var csum = new Checksum(testFile);

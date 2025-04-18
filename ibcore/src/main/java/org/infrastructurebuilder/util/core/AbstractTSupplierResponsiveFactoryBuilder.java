@@ -75,8 +75,8 @@ public abstract class AbstractTSupplierResponsiveFactoryBuilder<R, T, C>
     return (THIS) this;
   }
 
-  protected C getConfig() {
-    return this.config;
+  public Optional<C> getConfig() {
+    return Optional.ofNullable(this.config);
   }
 
   public AbstractTSupplierResponsiveFactoryBuilder<R, T, C> withHint(String hint) {

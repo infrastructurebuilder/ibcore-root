@@ -33,7 +33,7 @@ import org.infrastructurebuilder.pathref.api.base.ConfigMapBuilder;
 import org.infrastructurebuilder.pathref.api.base.ConfigMapBuilderSupplier;
 import org.infrastructurebuilder.util.config.DefaultConfigMapBuilderSupplier;
 import org.infrastructurebuilder.util.core.IBUtils;
-import org.infrastructurebuilder.util.executor.ProcessException;
+import org.infrastructurebuilder.util.executor.api.ProcessException;
 import org.infrastructurebuilder.util.logging.SLF4JFromMavenLogger;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;

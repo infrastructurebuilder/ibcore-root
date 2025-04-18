@@ -20,7 +20,6 @@ package org.infrastructurebuilder.util.maven.mavensupport;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.FileAttribute;
 import java.util.Optional;
 import java.util.UUID;
 

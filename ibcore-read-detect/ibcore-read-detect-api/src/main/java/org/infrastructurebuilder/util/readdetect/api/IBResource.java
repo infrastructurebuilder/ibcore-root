@@ -20,9 +20,10 @@ package org.infrastructurebuilder.util.readdetect.api;
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static java.nio.file.StandardOpenOption.READ;
 import static java.util.Objects.hash;
-import static org.infrastructurebuilder.constants.IBConstants.*;
+import static org.infrastructurebuilder.constants.IBConstants.CREATE_DATE;
 import static org.infrastructurebuilder.constants.IBConstants.MIME_TYPE;
 import static org.infrastructurebuilder.constants.IBConstants.MOST_RECENT_READ_TIME;
+import static org.infrastructurebuilder.constants.IBConstants.PATH;
 import static org.infrastructurebuilder.constants.IBConstants.PATH_CHECKSUM;
 import static org.infrastructurebuilder.constants.IBConstants.SIZE;
 import static org.infrastructurebuilder.constants.IBConstants.SOURCE_NAME;
@@ -46,7 +47,6 @@ import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
 import org.infrastructurebuilder.pathref.ChecksumEnabled;
-import org.infrastructurebuilder.pathref.JSONBuilderBaseFactory;
 import org.infrastructurebuilder.pathref.JSONBuilderFactory;
 import org.infrastructurebuilder.pathref.JSONOutputEnabled;
 import org.infrastructurebuilder.pathref.api.Modeled;
@@ -54,7 +54,7 @@ import org.infrastructurebuilder.pathref.api.base.NameDescribed;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.pathref.fs.attribute.PathRefFileAttributes;
-import org.infrastructurebuilder.pathref.util.readdetect.model.v0_0.IBResourceModel;
+import org.infrastructurebuilder.pathref.metadata.model.v0_0.IBResourceModel;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.json.JSONObject;
 
@@ -318,10 +318,10 @@ public interface IBResource extends JSONOutputEnabled, ChecksumEnabled, NameDesc
 
   Optional<String> getGroup();
 
-  Optional<String> getPermissionsAsString();
+  Optional<String> getPermissions();
 
-  default Optional<Set<PosixFilePermission>> getPermissions() {
-    return this.getPermissionsAsString().map(PosixFilePermissions::fromString);
+  default Optional<Set<PosixFilePermission>> getPermissionsAsSet() {
+    return this.getPermissions().map(PosixFilePermissions::fromString);
   }
 
   /**
@@ -381,7 +381,7 @@ public interface IBResource extends JSONOutputEnabled, ChecksumEnabled, NameDesc
 
         .addString(GROUP, getGroup())
 
-        .addString(PERMISSIONS, getPermissionsAsString())
+        .addString(PERMISSIONS, getPermissions())
 
         .asJSON();
   }

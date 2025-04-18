@@ -23,6 +23,7 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.infrastructurebuilder.pathref.api.ConfigMap;
 import org.infrastructurebuilder.pathref.api.base.ConfigMapBuilderSupplier;
 import org.infrastructurebuilder.util.core.IBRuntimeUtils;
 import org.infrastructurebuilder.util.core.TSupplier;
@@ -43,7 +44,7 @@ public class IBRuntimeUtilsFactory extends AbstractTSupplierConfigurableFactory<
     String someKey = "default";// FIXME
     withConfig(Optional.ofNullable(suppliers.get(someKey)).map(ConfigMapBuilderSupplier::get)
         .orElseGet(() -> ConfigMapBuilderSupplier.defaultBuilder()));
-    var c = getConfig().get();
+    ConfigMap c = getConfig().get().get();
     // ?? Get some form of config string here to determine which su
     c.optString(WEIGHT).ifPresent(s -> { // FIXME Do something here to configure IBR
       // ???

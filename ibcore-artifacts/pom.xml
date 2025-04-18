@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE project>
+
 <!--
 
     @formatter:off
@@ -57,12 +58,11 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>io.avaje</groupId>
       <artifactId>javax.inject</artifactId>
     </dependency>
-		<!--
+    <!--
     <dependency>
       <groupId>org.eclipse.sisu</groupId>
       <artifactId>org.eclipse.sisu.inject</artifactId>
@@ -94,13 +94,12 @@
       <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>
     </dependency>
-		<!--
+    <!--
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE project>
+
 <!--
 
     @formatter:off
@@ -31,13 +32,11 @@
   <packaging>jar</packaging>
 
   <name>${project.artifactId}</name>
-  <description>Lightly encumberd Standard interfaces (and exceptions) for
-		JVM-based applications within IB codebases</description>
+  <description>Lightly encumberd Standard interfaces (and exceptions) for JVM-based applications within IB codebases</description>
   <!-- URL for site gen -->
   <url>${github.url.base}/${project.artifactId}</url>
 
   <properties>
-
     <hashicorp.boundary.download.skip>false</hashicorp.boundary.download.skip>
     <hashicorp.consul.download.skip>false</hashicorp.consul.download.skip>
     <hashicorp.nomad.download.skip>false</hashicorp.nomad.download.skip>
@@ -47,8 +46,6 @@
     <hashicorp.vault.download.skip>false</hashicorp.vault.download.skip>
     <hashicorp.vagrant.download.skip>true</hashicorp.vagrant.download.skip>
     <hashicorp.waypoint.download.skip>false</hashicorp.waypoint.download.skip>
-
-
     <test.coverage.percentage.required>86</test.coverage.percentage.required>
     <jacoco.max.missed.classes>0</jacoco.max.missed.classes>
   </properties>
@@ -84,7 +81,6 @@
       <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
@@ -96,8 +92,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-	<groupId>org.infrastructurebuilder.pathref</groupId>
-	<artifactId>ibpathref-fs</artifactId>
+      <groupId>org.infrastructurebuilder.pathref</groupId>
+      <artifactId>ibpathref-fs</artifactId>
     </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder.pathref</groupId>

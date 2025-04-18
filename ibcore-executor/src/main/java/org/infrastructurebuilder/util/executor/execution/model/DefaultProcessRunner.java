@@ -15,9 +15,8 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.executor;
+package org.infrastructurebuilder.util.executor.execution.model;
 
-import static java.nio.file.Files.createDirectories;
 import static java.nio.file.Files.exists;
 import static java.time.Duration.ZERO;
 import static java.time.Duration.between;
@@ -25,7 +24,7 @@ import static java.time.Instant.now;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
-import static org.infrastructurebuilder.util.executor.ProcessException.pet;
+import static org.infrastructurebuilder.util.executor.api.ProcessException.pet;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -48,6 +47,11 @@ import java.util.function.Supplier;
 
 import org.infrastructurebuilder.pathref.IBChecksumUtils;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
+import org.infrastructurebuilder.util.executor.api.ProcessException;
+import org.infrastructurebuilder.util.executor.api.ProcessExecution;
+import org.infrastructurebuilder.util.executor.api.ProcessExecutionResult;
+import org.infrastructurebuilder.util.executor.api.ProcessExecutionResultBag;
+import org.infrastructurebuilder.util.executor.api.ProcessRunner;
 import org.infrastructurebuilder.util.logging.NOOPLogger;
 import org.slf4j.Logger;
 import org.zeroturnaround.exec.InvalidExitValueException;
@@ -55,17 +59,17 @@ import org.zeroturnaround.exec.ProcessExecutor;
 import org.zeroturnaround.exec.ProcessResult;
 import org.zeroturnaround.exec.StartedProcess;
 
-public class DefaultProcessRunner implements ProcessRunner {
+public class DefaultProcessRunner implements ProcessRunner<ProcessExecutor> {
 
   private final Optional<PrintStream> addl;
   private boolean keepScratchDir = false;
   private final Logger logger;
 
-  private final AtomicReference<Set<Future<ProcessExecutionResult>>> locked = new AtomicReference<>(null);
-  private final AtomicReference<ProcessExecutionResultBag> result = new AtomicReference<>(null);
+  private final AtomicReference<Set<Future<ProcessExecutionResult<ProcessExecutor>>>> locked = new AtomicReference<>(null);
+  private final AtomicReference<ProcessExecutionResultBag<ProcessExecutor>> result = new AtomicReference<>(null);
 
   private final Path scratchDir;
-  private final Vector<ProcessExecution> serialList = new Vector<>();
+  private final Vector<ProcessExecution<ProcessExecutor>> serialList = new Vector<>();
   private final PathRefFileSystem root;
 
   public DefaultProcessRunner(final PathRefFileSystem root, final String scratchDir, final Optional<PrintStream> addl) {
@@ -94,7 +98,7 @@ public class DefaultProcessRunner implements ProcessRunner {
   }
 
   @Override
-  public DefaultProcessRunner add(final Supplier<ProcessExecution> e) {
+  public DefaultProcessRunner add(final Supplier<ProcessExecution<ProcessExecutor>> e) {
     if (locked.get() != null)
       throw new ProcessException("Already locked");
     serialList.add(requireNonNull(e.get()));
@@ -109,7 +113,7 @@ public class DefaultProcessRunner implements ProcessRunner {
   }
 
   @Override
-  public Optional<ProcessExecutionResultBag> get() {
+  public Optional<ProcessExecutionResultBag<ProcessExecutor>> get() {
     return ofNullable(result.get());
   }
 
@@ -124,14 +128,14 @@ public class DefaultProcessRunner implements ProcessRunner {
   }
 
   @Override
-  public Optional<ProcessExecution> getProcessExecutionForId(final String id) {
+  public Optional<ProcessExecution<ProcessExecutor>> getProcessExecutionForId(final String id) {
     requireNonNull(id);
     return serialList.stream().filter(pe -> pe.getId().equals(id)).findFirst();
   }
 
   @Override
-  public final boolean hasErrorResult(final Map<String, ProcessExecutionResult> resultMap) {
-    for (final ProcessExecutionResult res : resultMap.values()) {
+  public final boolean hasErrorResult(final Map<String, ProcessExecutionResult<ProcessExecutor>> resultMap) {
+    for (final ProcessExecutionResult<ProcessExecutor> res : resultMap.values()) {
       final Optional<Integer> resultCode = res.getResultCode();
       if (!res.getStdErr().toString().isEmpty()) {
         getLogger().error(res.getStdErr().toString());
@@ -165,10 +169,10 @@ public class DefaultProcessRunner implements ProcessRunner {
           throw new ProcessException("Final duration cannot be negative " + fin);
         final Instant startedLock = now();
         final Instant endLock = startedLock.plus(fin.equals(ZERO) ? ProcessExecution.VERY_LONG : fin);
-        locked.compareAndSet(null, new HashSet<Future<ProcessExecutionResult>>());
+        locked.compareAndSet(null, new HashSet<Future<ProcessExecutionResult<ProcessExecutor>>>());
 
         final MutableProcessExecutionResultBag bag = new MutableProcessExecutionResultBag();
-        for (final ProcessExecution pe : serialList) {
+        for (final ProcessExecution<ProcessExecutor> pe : serialList) {
           ProcessExecutor pExecutor;
           pExecutor = pe.getProcessExecutor().addListener(bag);
           bag.addExecution(pe, pExecutor);
@@ -210,7 +214,7 @@ public class DefaultProcessRunner implements ProcessRunner {
   }
 
   @Override
-  public ProcessRunner setKeepScratchDir(final boolean keepScratchDir) {
+  public ProcessRunner<ProcessExecutor> setKeepScratchDir(final boolean keepScratchDir) {
     this.keepScratchDir = keepScratchDir;
     return this;
   }

@@ -15,21 +15,26 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.executor;
+package org.infrastructurebuilder.util.executor.execution.model;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableSet;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Future;
 
+import org.infrastructurebuilder.util.executor.api.ProcessExecutionResult;
+import org.infrastructurebuilder.util.executor.api.ProcessExecutionResultBag;
+import org.zeroturnaround.exec.ProcessExecutor;
 import org.zeroturnaround.exec.ProcessResult;
 
-public class DefaultProcessExecutionResultBag implements ProcessExecutionResultBag {
+public class DefaultProcessExecutionResultBag implements ProcessExecutionResultBag<ProcessExecutor> {
 
   private final List<String> executedIds;
-  private final Map<String, ProcessExecutionResult> executions;
+  private final Map<String, ProcessExecutionResult<ProcessExecutor>> executions;
   private final Map<String, Future<ProcessResult>> futures;
 
   DefaultProcessExecutionResultBag(final MutableProcessExecutionResultBag r) {
@@ -44,13 +49,13 @@ public class DefaultProcessExecutionResultBag implements ProcessExecutionResultB
   }
 
   @Override
-  public Map<String, ProcessExecutionResult> getExecutions() {
+  public Map<String, ProcessExecutionResult<ProcessExecutor>> getExecutions() {
     return executions;
   }
 
   @Override
-  public Map<String, Future<ProcessResult>> getRunningFutures() {
-    return futures;
+  public Set<String> getIncompleteFuturesIds() {
+    return unmodifiableSet(this.futures.keySet());
   }
 
 }

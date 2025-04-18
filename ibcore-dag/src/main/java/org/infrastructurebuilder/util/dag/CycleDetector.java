@@ -20,7 +20,7 @@ package org.infrastructurebuilder.util.dag;
 import java.util.List;
 import java.util.Map;
 
-public interface CycleDetector<T extends Comparable<T>> {
+public interface CycleDetector<T> {
 
   List<T> introducesCycle(MutableVertex<T> vertex);
 

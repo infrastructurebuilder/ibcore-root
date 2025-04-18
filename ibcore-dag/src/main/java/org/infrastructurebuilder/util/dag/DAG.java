@@ -17,10 +17,13 @@
  */
 package org.infrastructurebuilder.util.dag;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-public interface DAG<T extends Comparable<T>> {
+public interface DAG<T> {
+
+  Comparator<T> getComparator();
 
   List<T> getChildLabels(T label);
 

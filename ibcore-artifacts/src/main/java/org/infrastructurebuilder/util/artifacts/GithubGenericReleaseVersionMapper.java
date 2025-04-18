@@ -25,7 +25,7 @@ import java.util.List;
 
 import javax.inject.Named;
 
-import org.infrastructurebuilder.util.core.GAV;
+import org.infrastructurebuilder.pathref.GAV;
 
 /**
  * This maps to a list of "release versions" for some known golang release types that generally release in Github. The

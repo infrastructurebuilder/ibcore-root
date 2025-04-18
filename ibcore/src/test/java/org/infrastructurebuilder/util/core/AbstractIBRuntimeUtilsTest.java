@@ -26,6 +26,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.infrastructurebuilder.constants.IBConstants;
+import org.infrastructurebuilder.pathref.DefaultGAV;
+import org.infrastructurebuilder.pathref.GAV;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
 import org.infrastructurebuilder.util.credentials.basic.CredentialsFactory;

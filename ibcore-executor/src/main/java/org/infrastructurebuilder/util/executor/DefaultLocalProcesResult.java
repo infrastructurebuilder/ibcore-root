@@ -15,26 +15,17 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.core;
+package org.infrastructurebuilder.util.executor;
 
-import java.util.Optional;
-import java.util.regex.Pattern;
+import org.infrastructurebuilder.util.executor.api.LocalProcessResult;
+import org.zeroturnaround.exec.ProcessResult;
 
-import org.infrastructurebuilder.util.version.IBVersion.IBVersionRange;
+public class DefaultLocalProcesResult implements LocalProcessResult<ProcessResult> {
 
-public interface GAVMatcher {
+  @Override
+  public ProcessResult getProcessResult() {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
-  Optional<Pattern> getArtifactId();
-
-  Optional<Pattern> getClassifier();
-
-  Optional<Pattern> getExtension();
-
-  Optional<Pattern> getGroupId();
-
-  Optional<Pattern> getVersionByString();
-
-  Optional<IBVersionRange> getVersionRange();
-
-  boolean matches(GAV target, boolean strict);
 }

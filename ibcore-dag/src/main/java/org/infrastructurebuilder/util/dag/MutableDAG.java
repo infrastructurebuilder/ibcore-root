@@ -17,10 +17,12 @@
  */
 package org.infrastructurebuilder.util.dag;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-public interface MutableDAG<T extends Comparable<T>> {
+public interface MutableDAG<T> {
+  Comparator<T> getComparator();
 
   void addEdge(MutableVertex<T> from, MutableVertex<T> to) throws CycleDetectedException;
 

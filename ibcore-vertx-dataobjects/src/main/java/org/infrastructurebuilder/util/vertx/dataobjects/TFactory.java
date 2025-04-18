@@ -20,7 +20,7 @@ package org.infrastructurebuilder.util.vertx.dataobjects;
 import java.util.Optional;
 
 import org.infrastructurebuilder.pathref.api.Identified;
-import org.infrastructurebuilder.util.core.Typed;
+import org.infrastructurebuilder.pathref.api.Typed;
 import org.infrastructurebuilder.util.vertx.base.Tags;
 import org.infrastructurebuilder.util.vertx.base.Versioned;
 import org.infrastructurebuilder.util.vertx.blobstore.Blobstore;

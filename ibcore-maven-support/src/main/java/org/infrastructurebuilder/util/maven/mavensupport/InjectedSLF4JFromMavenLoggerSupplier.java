@@ -17,19 +17,18 @@
  */
 package org.infrastructurebuilder.util.maven.mavensupport;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.maven.plugin.logging.Log;
+import org.infrastructurebuilder.pathref.api.LoggerProvider;
 import org.infrastructurebuilder.pathref.api.LoggerSupplier;
 import org.infrastructurebuilder.util.logging.SLF4JFromMavenLogger;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.sonatype.inject.Nullable;
 
 @Named(InjectedSLF4JFromMavenLoggerSupplier.MAVENLOG)
-public class InjectedSLF4JFromMavenLoggerSupplier implements LoggerSupplier {
-  private final static Logger log = LoggerFactory.getLogger(Object.class);
+public class InjectedSLF4JFromMavenLoggerSupplier implements LoggerSupplier, LoggerProvider {
   public static final String MAVENLOG = "maven-log";
   private final Log mavenLog;
 
@@ -40,6 +39,6 @@ public class InjectedSLF4JFromMavenLoggerSupplier implements LoggerSupplier {
 
   @Override
   public Logger get() {
-    return log; // new SLF4JFromMavenLogger(this.mavenLog);
+    return new SLF4JFromMavenLogger(this.mavenLog);
   }
 }

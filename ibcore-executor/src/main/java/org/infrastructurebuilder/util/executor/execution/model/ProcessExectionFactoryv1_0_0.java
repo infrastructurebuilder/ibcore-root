@@ -37,16 +37,16 @@ import java.util.Objects;
 
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
-import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.util.executor.ProcessException;
-import org.infrastructurebuilder.util.executor.ProcessExecution;
-import org.infrastructurebuilder.util.executor.ProcessExecutionFactory;
-import org.infrastructurebuilder.util.executor.ProcessRunner;
-import org.infrastructurebuilder.util.executor.VersionedProcessExecutionFactory;
+import org.infrastructurebuilder.util.executor.api.ProcessException;
+import org.infrastructurebuilder.util.executor.api.ProcessExecution;
+import org.infrastructurebuilder.util.executor.api.ProcessExecutionFactory;
+import org.infrastructurebuilder.util.executor.api.ProcessRunner;
+import org.infrastructurebuilder.util.executor.api.VersionedProcessExecutionFactory;
+import org.zeroturnaround.exec.ProcessExecutor;
 
-public class ProcessExectionFactoryv1_0_0 implements ProcessExecutionFactory {
+public class ProcessExectionFactoryv1_0_0 implements ProcessExecutionFactory<ProcessExecutor> {
 
-  private final VersionedProcessExecutionFactory parent;
+  private final VersionedProcessExecutionFactory<ProcessExecutor> parent;
   private final String id;
   private final String executable;
   private final String workDirectory;
@@ -60,7 +60,7 @@ public class ProcessExectionFactoryv1_0_0 implements ProcessExecutionFactory {
   private Duration timeout = null;
   private List<String> args = null;
 
-  public ProcessExectionFactoryv1_0_0(VersionedProcessExecutionFactory parent, String id, String executable,
+  public ProcessExectionFactoryv1_0_0(VersionedProcessExecutionFactory<ProcessExecutor> parent, String id, String executable,
       String workDirectory)
   {
     this.parent = requireNonNull(parent);
@@ -75,7 +75,7 @@ public class ProcessExectionFactoryv1_0_0 implements ProcessExecutionFactory {
   }
 
   @Override
-  public ProcessExecution get() {
+  public ProcessExecution<ProcessExecutor> get() {
     final Path execScratch = parent.getScratchDir().resolve(requireNonNull(id, "execution id"));
     if (ProcessRunner.ws.matcher(id).find())
       throw new ProcessException("No whitespace is allowed in execution ids for ProcessRunner");
@@ -104,19 +104,19 @@ public class ProcessExectionFactoryv1_0_0 implements ProcessExecutionFactory {
   }
 
   @Override
-  public ProcessExecutionFactory withArguments(String... args) {
+  public ProcessExecutionFactory<ProcessExecutor> withArguments(String... args) {
     this.args = Arrays.asList(requireNonNull(args));
     return this;
   }
 
   @Override
-  public ProcessExecutionFactory withDuration(Duration timeout) {
+  public ProcessExecutionFactory<ProcessExecutor> withDuration(Duration timeout) {
     this.timeout = requireNonNull(timeout);
     return this;
   }
 
   @Override
-  public ProcessExecutionFactory withStdIn(Path stdIn) {
+  public ProcessExecutionFactory<ProcessExecutor> withStdIn(Path stdIn) {
     if (requireNonNull(stdIn).isAbsolute())
       throw new ProcessException("stdin must be a relative %s".formatted(stdIn));
     this.stdIn = stdIn.toString();
@@ -124,37 +124,37 @@ public class ProcessExectionFactoryv1_0_0 implements ProcessExecutionFactory {
   }
 
   @Override
-  public ProcessExecutionFactory withChecksum(Checksum execChecksum) {
+  public ProcessExecutionFactory<ProcessExecutor> withExecutableChecksum(Checksum execChecksum) {
     this.execChecksum = requireNonNull(execChecksum);
     return this;
   }
 
   @Override
-  public ProcessExecutionFactory withOptional(boolean optional) {
+  public ProcessExecutionFactory<ProcessExecutor> withOptional(boolean optional) {
     this.optional = requireNonNull(optional);
     return this;
   }
 
   @Override
-  public ProcessExecutionFactory withEnvironment(Map<String, String> env) {
+  public ProcessExecutionFactory<ProcessExecutor> withEnvironment(Map<String, String> env) {
     this.env = requireNonNull(env);
     return this;
   }
 
   @Override
-  public ProcessExecutionFactory withRelativeRoot(PathRefFileSystem relativeRoot) {
+  public ProcessExecutionFactory<ProcessExecutor> withRelativeRoot(PathRefFileSystem relativeRoot) {
     this.root = requireNonNull(relativeRoot);
     return this;
   }
 
   @Override
-  public ProcessExecutionFactory withExitCodes(List<Integer> exitCodes) {
+  public ProcessExecutionFactory<ProcessExecutor> withExitCodes(List<Integer> exitCodes) {
     this.exitCodes = requireNonNull(exitCodes);
     return this;
   }
 
   @Override
-  public ProcessExecutionFactory withBackground(boolean background) {
+  public ProcessExecutionFactory<ProcessExecutor> withBackground(boolean background) {
     this.background = requireNonNull(background);
     return this;
   }

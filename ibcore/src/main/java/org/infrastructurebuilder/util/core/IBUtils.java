@@ -72,6 +72,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -111,9 +112,12 @@ import org.infrastructurebuilder.constants.IBConstants;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.DigestReader;
+import org.infrastructurebuilder.pathref.GAV;
 import org.infrastructurebuilder.pathref.IBChecksumUtils;
 import org.infrastructurebuilder.pathref.JSONOutputEnabled;
 import org.infrastructurebuilder.pathref.fs.attribute.PathRefFileAttributes;
+import org.infrastructurebuilder.util.comparators.OptComparators;
+import org.infrastructurebuilder.util.versions.GAVBasic;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -1060,4 +1064,5 @@ public class IBUtils {
   public static Optional<Long> size(Path p) {
     return Optional.ofNullable(p).map(pp -> IBException.cet.returns(() -> Files.size(pp)));
   }
+
 }

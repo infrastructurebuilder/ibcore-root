@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE project>
+
 <!--
 
     @formatter:off
@@ -19,49 +20,49 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.infrastructurebuilder</groupId>
-		<artifactId>ibcore-root</artifactId>
-		<version>0.30.1-SNAPSHOT</version>
-	</parent>
+  <parent>
+    <groupId>org.infrastructurebuilder</groupId>
+    <artifactId>ibcore-root</artifactId>
+    <version>0.30.1-SNAPSHOT</version>
+  </parent>
 
-	<artifactId>ibcore-read-detect</artifactId>
-	<packaging>pom</packaging>
+  <artifactId>ibcore-read-detect</artifactId>
+  <packaging>pom</packaging>
 
-	<name>${project.artifactId}</name>
-	<description>Component that reads files and detects their types</description>
-	<!-- URL for site gen -->
-	<url>${github.url.base}/${project.artifactId}</url>
+  <name>${project.artifactId}</name>
+  <description>Component that reads files and detects their types</description>
+  <!-- URL for site gen -->
+  <url>${github.url.base}/${project.artifactId}</url>
 
-	<modules>
-		<module>ibcore-read-detect-api</module>
-		<module>ibcore-read-detect-base</module>
-<!--
-		<module>ibcore-read-detect-url</module>
-		<module>ibcore-read-detect-path-cache</module>
+  <modules>
+    <module>ibcore-read-detect-api</module>
+    <module>ibcore-read-detect-base</module>
+    <!--
+    <module>ibcore-read-detect-url</module>
+    <module>ibcore-read-detect-path-cache</module>
 -->
-		<module>ibcore-read-detect-avro</module>
-	</modules>
+    <module>ibcore-read-detect-avro</module>
+  </modules>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.infrastructurebuilder.util.logging</groupId>
-			<artifactId>iblogconfig</artifactId>
-			<classifier>debug</classifier>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.infrastructurebuilder.pathref</groupId>
-			<artifactId>ibpathref-api</artifactId>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder.util.logging</groupId>
+      <artifactId>iblogconfig</artifactId>
+      <classifier>debug</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder.pathref</groupId>
+      <artifactId>ibpathref-api</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>

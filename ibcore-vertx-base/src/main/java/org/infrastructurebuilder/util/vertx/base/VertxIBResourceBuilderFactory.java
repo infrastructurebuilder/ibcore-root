@@ -27,7 +27,7 @@ import java.util.Optional;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
-import org.infrastructurebuilder.pathref.util.readdetect.model.v0_0.IBResourceModel;
+import org.infrastructurebuilder.pathref.metadata.model.v0_0.IBResourceModel;
 import org.infrastructurebuilder.util.readdetect.api.IBResourceBuilder;
 import org.json.JSONObject;
 import org.slf4j.Logger;

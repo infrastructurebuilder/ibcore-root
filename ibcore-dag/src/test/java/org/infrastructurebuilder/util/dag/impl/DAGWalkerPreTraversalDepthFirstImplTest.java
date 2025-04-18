@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import org.infrastructurebuilder.util.dag.CycleDetectedException;
@@ -35,6 +36,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class DAGWalkerPreTraversalDepthFirstImplTest {
+  Comparator<String> cmp = new Comparator<>() {
+    @Override
+    public int compare(String o1, String o2) {
+      return o1.compareTo(o2);
+    }
+
+  };
 
   @BeforeAll
   public static void setUpBeforeClass() throws Exception {
@@ -67,7 +75,7 @@ public class DAGWalkerPreTraversalDepthFirstImplTest {
 
   @Test
   public void testWalk() throws CycleDetectedException {
-    final DAG<String> dag = new DAGBuilderImpl<String>().addEdge("A", "B").build();
+    final DAG<String> dag = new DAGBuilderImpl<String>(cmp).addEdge("A", "B").build();
     final List<DAGVisitor<String>> visitors = Arrays.asList(new DAGVisitor<String>() {
       @Override
       public DAGVisitResult visitNode(Vertex<String> node) {

@@ -35,7 +35,7 @@ import org.infrastructurebuilder.pathref.OptionalReflectionLoadingTikaDetector;
 import org.infrastructurebuilder.pathref.api.ConfigMap;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.pathref.util.readdetect.model.v0_0.IBResourceModel;
+import org.infrastructurebuilder.pathref.metadata.model.v0_0.IBResourceModel;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.readdetect.api.IBResource;
 import org.infrastructurebuilder.util.readdetect.api.IBResourceException;
@@ -54,7 +54,8 @@ public class PathRefPathIBResourceBuilderFactory extends AbstractPathRefPathIBRe
   @Override
   public Supplier<? extends AbstractPathIBResourceBuilder> getBuilder() {
     // Delivers a new builder from the relative root each time
-    return () -> new PathRefPathIBResourceBuilder(getRelativeRoot());
+    return () -> new PathRefPathIBResourceBuilder(getRelativeRoot())
+        .withConfig(config);
   }
 
   public Logger getLog() {
@@ -68,7 +69,7 @@ public class PathRefPathIBResourceBuilderFactory extends AbstractPathRefPathIBRe
   }
 
   @Override
-  protected Optional<ConfigMap> getConfig() {
+  public Optional<ConfigMap> getConfig() {
     return Optional.ofNullable(this.config);
   }
 
@@ -88,7 +89,7 @@ public class PathRefPathIBResourceBuilderFactory extends AbstractPathRefPathIBRe
     }
 
     @Override
-    protected Optional<ConfigMap> getConfig() {
+    public Optional<ConfigMap> getConfig() {
       return Optional.ofNullable(this.config);
     }
 

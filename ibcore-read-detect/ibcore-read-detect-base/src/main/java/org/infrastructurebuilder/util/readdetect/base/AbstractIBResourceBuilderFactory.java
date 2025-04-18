@@ -24,17 +24,17 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.pathref.Checksum;
+import org.infrastructurebuilder.pathref.DefaultIBVersion;
+import org.infrastructurebuilder.pathref.IBVersion;
+import org.infrastructurebuilder.pathref.IBVersion.VersionDiff;
 import org.infrastructurebuilder.pathref.api.ConfigMap;
 import org.infrastructurebuilder.pathref.api.TypeToExtensionMapper;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
-import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v0_0.IBResourceCacheModel;
-import org.infrastructurebuilder.pathref.util.readdetect.model.v0_0.IBResourceModel;
+import org.infrastructurebuilder.pathref.metadata.model.v0_0.IBResourceCacheModel;
+import org.infrastructurebuilder.pathref.metadata.model.v0_0.IBResourceModel;
 import org.infrastructurebuilder.util.readdetect.api.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.api.IBResourceBuilderFactory;
 import org.infrastructurebuilder.util.readdetect.base.impls.IbcoreReadDetectBaseVersioning;
-import org.infrastructurebuilder.util.version.DefaultIBVersion;
-import org.infrastructurebuilder.util.version.IBVersion;
-import org.infrastructurebuilder.util.version.IBVersion.VersionDiff;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,8 +65,6 @@ abstract public class AbstractIBResourceBuilderFactory<I> //
   }
 
   abstract protected Supplier<? extends IBResourceBuilder<I>> getBuilder();
-
-  abstract protected Optional<ConfigMap> getConfig();
 
   @Override
   public int respondsTo(String input) {

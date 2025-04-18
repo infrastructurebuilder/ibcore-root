@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -52,6 +53,13 @@ public class DAGBuilderTest {
   private static final String ONE = "1";
   private static final String THREE = "3";
   private static final String TWO = "2";
+  Comparator<String> cmp = new Comparator<>() {
+    @Override
+    public int compare(String o1, String o2) {
+      return o1.compareTo(o2);
+    }
+
+  };
 
   @BeforeAll
   public static void setUpBeforeClass() throws Exception {
@@ -69,13 +77,13 @@ public class DAGBuilderTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    b = new DAGBuilderImpl<String>().addEdge(ONE, TWO).addEdge(TWO, THREE).addEdge(ONE, FOUR).build();
-    c = new DAGBuilderImpl<>(b).build();
-    final DAGBuilder<String> d1 = new DAGBuilderImpl<>(b);
+    b = new DAGBuilderImpl<String>(cmp).addEdge(ONE, TWO).addEdge(TWO, THREE).addEdge(ONE, FOUR).build();
+    c = new DAGBuilderImpl<>(cmp, b).build();
+    final DAGBuilder<String> d1 = new DAGBuilderImpl<>(cmp, b);
     d1.addVertex(FIVE);
     d = d1.build();
 
-    md = new DAGBuilderImpl<>();
+    md = new DAGBuilderImpl<>(cmp);
 //    dag = Reflect.on(md).get("dag");
 //    assertNotNull(dag);
   }
@@ -86,7 +94,7 @@ public class DAGBuilderTest {
 
   @Test
   public void testAddEdgeMutableVertexOfTMutableVertexOfT() throws CycleDetectedException {
-    final DAGBuilder<String> d1 = new DAGBuilderImpl<>(b);
+    final DAGBuilder<String> d1 = new DAGBuilderImpl<>(cmp, b);
     final MutableVertex<String> one = d1.addVertex(ONE);
     final MutableVertex<String> two = d1.addVertex(TWO);
     final MutableVertex<String> three = d1.addVertex(THREE);
@@ -109,7 +117,7 @@ public class DAGBuilderTest {
   public void testDAGBuilderDAGOfT() throws CycleDetectedException {
     assertEquals(b, c);
     assertNotEquals(b, d);
-    assertNotEquals(b, new DAGBuilderImpl<>(b).addEdge(ONE, THREE).build());
+    assertNotEquals(b, new DAGBuilderImpl<>(cmp, b).addEdge(ONE, THREE).build());
 
   }
 
@@ -119,11 +127,11 @@ public class DAGBuilderTest {
     assertNotEquals(b, null);
     assertNotEquals(b, "X");
 
-    final DAGBuilder<String> d1 = new DAGBuilderImpl<>();
+    final DAGBuilder<String> d1 = new DAGBuilderImpl<>(cmp);
     final MutableVertex<String> one = d1.addVertex(ONE);
     final MutableVertex<String> two = d1.addVertex(TWO);
     final MutableVertex<String> three = d1.addVertex(THREE);
-    final DAGBuilder<String> d2 = new DAGBuilderImpl<>();
+    final DAGBuilder<String> d2 = new DAGBuilderImpl<>(cmp);
     d2.addVertex(ONE);
     d2.addVertex(TWO);
     d2.addVertex(THREE);
@@ -141,20 +149,20 @@ public class DAGBuilderTest {
 
   @Test
   public void testDagNotequals1() throws CycleDetectedException {
-    final DAGBuilder<String> d1 = new DAGBuilderImpl<>();
+    final DAGBuilder<String> d1 = new DAGBuilderImpl<>(cmp);
     d1.addVertex(ONE);
     d1.addVertex(TWO);
     d1.addVertex(THREE);
-    final DAGBuilder<String> d2 = new DAGBuilderImpl<>();
+    final DAGBuilder<String> d2 = new DAGBuilderImpl<>(cmp);
     d2.addVertex(ONE);
     d2.addVertex(TWO);
     d2.addVertex(FOUR);
 
-    final MutableDAGImpl<String> s1 = new MutableDAGImpl<>(new MutableDAGImpl<>(d1.build()));
-    MutableDAGImpl<String> s2 = new MutableDAGImpl<>(d2.build());
+    final MutableDAGImpl<String> s1 = new MutableDAGImpl<>(cmp, new MutableDAGImpl<>(cmp, d1.build()));
+    MutableDAGImpl<String> s2 = new MutableDAGImpl<>(cmp, d2.build());
     assertNotEquals(s1, s2);
     d2.addVertex(THREE);
-    s2 = new MutableDAGImpl<>(d2.build());
+    s2 = new MutableDAGImpl<>(cmp, d2.build());
     assertNotEquals(s1, s2);
   }
 
@@ -182,7 +190,7 @@ public class DAGBuilderTest {
 
   @Test
   public void testRemoveEdgeMutableVertexOfTMutableVertexOfT() throws CycleDetectedException {
-    final DAGBuilder<String> d1 = new DAGBuilderImpl<>(b);
+    final DAGBuilder<String> d1 = new DAGBuilderImpl<>(cmp, b);
     final MutableVertex<String> one = d1.addVertex(ONE);
     final MutableVertex<String> two = d1.addVertex(TWO);
     final MutableVertex<String> three = d1.addVertex(THREE);
@@ -196,7 +204,7 @@ public class DAGBuilderTest {
 
   @Test
   public void testRemoveEdgeTT() throws CycleDetectedException {
-    final DAGBuilder<String> d1 = new DAGBuilderImpl<>(b);
+    final DAGBuilder<String> d1 = new DAGBuilderImpl<>(cmp, b);
     final MutableVertex<String> one = d1.addVertex(ONE);
     final MutableVertex<String> two = d1.addVertex(TWO);
     final MutableVertex<String> three = d1.addVertex(THREE);
@@ -213,7 +221,7 @@ public class DAGBuilderTest {
 
   @Test
   public void testSortTT() throws CycleDetectedException {
-    final DAGBuilder<String> d1 = new DAGBuilderImpl<>(b);
+    final DAGBuilder<String> d1 = new DAGBuilderImpl<>(cmp, b);
     final MutableVertex<String> one = d1.addVertex(ONE);
     final MutableVertex<String> two = d1.addVertex(TWO);
     final MutableVertex<String> three = d1.addVertex(THREE);
@@ -228,8 +236,8 @@ public class DAGBuilderTest {
   @Test
   public void testVertexImplEquals() throws CycleDetectedException {
 
-    final DAGBuilder<String> d1 = new DAGBuilderImpl<>();
-    final DAGBuilder<String> d2 = new DAGBuilderImpl<>();
+    final DAGBuilder<String> d1 = new DAGBuilderImpl<>(cmp);
+    final DAGBuilder<String> d2 = new DAGBuilderImpl<>(cmp);
     d2.addVertex(ONE);
     d2.addVertex(TWO);
     d2.addVertex(THREE);
@@ -252,16 +260,16 @@ public class DAGBuilderTest {
 
   @Test
   public void testWalkMutable() throws CycleDetectedException {
-    final DAGBuilder<String> d1 = new DAGBuilderImpl<>();
+    final DAGBuilder<String> d1 = new DAGBuilderImpl<>(cmp);
     d1.addVertex(ONE);
     d1.addVertex(TWO);
     d1.addVertex(THREE);
-    final DAGBuilder<String> d2 = new DAGBuilderImpl<>();
+    final DAGBuilder<String> d2 = new DAGBuilderImpl<>(cmp);
     d2.addVertex(ONE);
     d2.addVertex(TWO);
     d2.addVertex(FOUR);
 
-    new MutableDAGImpl<>(new MutableDAGImpl<>(d1.build()));
+    new MutableDAGImpl<>(cmp, new MutableDAGImpl<>(cmp, d1.build()));
 
     final List<String> collected = new ArrayList<>();
     final DAGVisitor<String> v = new DAGVisitor<String>() {

@@ -17,9 +17,10 @@
  */
 package org.infrastructurebuilder.util.maven.mavensupport;
 
+import static java.util.Objects.requireNonNull;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -37,7 +38,7 @@ public class MavenProjectBuildDirectoryPathSupplier implements PathSupplier {
 
   @Inject
   public MavenProjectBuildDirectoryPathSupplier(MavenProject mp) {
-    this.target = Paths.get(Objects.requireNonNull(mp).getBuild().getOutputDirectory()).toAbsolutePath();
+    this.target = Paths.get(requireNonNull(mp).getBuild().getOutputDirectory()).toAbsolutePath();
   }
 
   @Override

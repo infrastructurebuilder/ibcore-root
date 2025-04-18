@@ -20,7 +20,7 @@ package org.infrastructurebuilder.maven.util.plexus;
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.of;
-import static org.infrastructurebuilder.util.executor.ProcessException.pet;
+import static org.infrastructurebuilder.util.executor.api.ProcessException.pet;
 
 import java.io.PrintStream;
 import java.nio.file.Files;
@@ -38,10 +38,10 @@ import org.infrastructurebuilder.pathref.api.LoggerSupplier;
 import org.infrastructurebuilder.pathref.api.base.ConfigMapBuilderSupplier;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
-import org.infrastructurebuilder.util.executor.DefaultProcessRunner;
-import org.infrastructurebuilder.util.executor.ProcessException;
-import org.infrastructurebuilder.util.executor.ProcessRunner;
-import org.infrastructurebuilder.util.executor.ProcessRunnerSupplier;
+import org.infrastructurebuilder.util.executor.api.ProcessException;
+import org.infrastructurebuilder.util.executor.api.ProcessRunner;
+import org.infrastructurebuilder.util.executor.api.ProcessRunnerSupplier;
+import org.infrastructurebuilder.util.executor.execution.model.DefaultProcessRunner;
 import org.slf4j.Logger;
 
 @Named
@@ -78,7 +78,7 @@ public class DefaultProcessRunnerSupplier implements ProcessRunnerSupplier {
   }
 
   @Override
-  public ProcessRunner get() {
+  public DefaultProcessRunner get() {
     return new DefaultProcessRunner(root, scratchDir, addl, of(logger), interimSleep);
   }
 

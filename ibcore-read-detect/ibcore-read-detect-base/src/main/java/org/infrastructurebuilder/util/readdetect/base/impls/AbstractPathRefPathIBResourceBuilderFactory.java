@@ -19,6 +19,7 @@ package org.infrastructurebuilder.util.readdetect.base.impls;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toSet;
 import static org.infrastructurebuilder.constants.IBConstants.APPLICATION_OCTET_STREAM;
 
 import java.io.IOException;
@@ -26,9 +27,17 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileOwnerAttributeView;
+import java.nio.file.attribute.GroupPrincipal;
+import java.nio.file.attribute.PosixFileAttributeView;
+import java.nio.file.attribute.PosixFileAttributes;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.nio.file.attribute.UserPrincipal;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import org.infrastructurebuilder.objectmapper.jackson.ObjectMapperUtils;
@@ -39,8 +48,8 @@ import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
 import org.infrastructurebuilder.pathref.fs.attribute.PathRefFileAttributeView;
 import org.infrastructurebuilder.pathref.fs.attribute.PathRefFileAttributes;
-import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v0_0.IBMetadataModel;
-import org.infrastructurebuilder.pathref.util.readdetect.model.v0_0.IBResourceModel;
+import org.infrastructurebuilder.pathref.metadata.model.v0_0.IBMetadataModel;
+import org.infrastructurebuilder.pathref.metadata.model.v0_0.IBResourceModel;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.readdetect.api.IBResource;
 import org.infrastructurebuilder.util.readdetect.api.IBResourceBuilder;
@@ -103,9 +112,39 @@ abstract public class AbstractPathRefPathIBResourceBuilderFactory
     @Override
     public Optional<IBResourceBuilder<PathRefPath>> validate(boolean hard) {
       this.sourcePath = requireNonNull(path);
+      Instant now = Instant.now();
       return super.validate(hard).map(builder -> {
+        String owner = null;
+        String group = null;
+        String perms = null;
+
         var op = requireNonNull(path);
+        FileOwnerAttributeView foav = null;
+        try {
+          PosixFileAttributes attrs = Files.readAttributes(op, PosixFileAttributes.class);
+          GroupPrincipal _group = attrs.group();
+
+          // Get the group name
+          group = _group.getName();
+
+          foav = Files.getFileAttributeView(op, FileOwnerAttributeView.class);
+          UserPrincipal _owner = foav.getOwner();
+          owner = _owner.getName();
+          PosixFileAttributes pfa = Files.readAttributes(op, PosixFileAttributes.class);
+          perms = PosixFilePermissions.toString(pfa.permissions());
+//          perms = pfa.permissions().stream().map(PosixFilePermission::name).collect(toSet());
+        } catch (IOException rer) {
+
+        }
         // Attributes might not exist... :(
+        PosixFileAttributes qq = null;
+        try {
+          PosixFileAttributeView pfav = null;
+          pfav = Files.getFileAttributeView(op, PosixFileAttributeView.class);
+          qq = pfav.readAttributes();
+        } catch (IOException ioee1) {
+
+        }
         PathRefFileAttributes attr;
         try {
 
@@ -113,9 +152,15 @@ abstract public class AbstractPathRefPathIBResourceBuilderFactory
 
           builder
 
-              .withFileAttributes(attr)
+              .withOwner(owner)
 
-              .withAcquired(Instant.now())
+              .withGroup(group)
+
+              .withPermissions(perms)
+
+              .withFileAttributes(attr) // FIXME Insufficient
+
+              .withAcquired(now)
 
               .withName(op.getFileName().toString());
         } catch (IOException e) {
@@ -133,7 +178,7 @@ abstract public class AbstractPathRefPathIBResourceBuilderFactory
     public IBResourceBuilder<PathRefPath> accept(Supplier<Path> path) {
       Optional<String> fsKey = getConfig().map(c -> c.optString("fsKey", null));
       PathRefPath supplied = PathRefPathIF//
-          .fromPath(Objects.requireNonNull(path).get(), Optional.empty())//
+          .fromPath(Objects.requireNonNull(path).get(), null)//
           .orElse(null);
       if (supplied != null) {
         this.path = (acceptable(supplied)) ? supplied : null;
@@ -264,7 +309,7 @@ abstract public class AbstractPathRefPathIBResourceBuilderFactory
     }
 
     @Override
-    public Optional<String> getPermissionsAsString() {
+    public Optional<String> getPermissions() {
       return this.m.getPermissions();
     }
 

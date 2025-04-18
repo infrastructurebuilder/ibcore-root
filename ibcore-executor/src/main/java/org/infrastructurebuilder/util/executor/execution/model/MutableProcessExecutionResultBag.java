@@ -15,7 +15,7 @@
  * limitations under the License.
  * @formatter:on
  */
-package org.infrastructurebuilder.util.executor;
+package org.infrastructurebuilder.util.executor.execution.model;
 
 import static java.time.Duration.between;
 import static java.time.Instant.now;
@@ -35,7 +35,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
-import org.infrastructurebuilder.util.executor.execution.model.DefaultProcessExecutionResult;
+import org.infrastructurebuilder.util.executor.api.ProcessExecution;
+import org.infrastructurebuilder.util.executor.api.ProcessExecutionResult;
 import org.zeroturnaround.exec.ProcessExecutor;
 import org.zeroturnaround.exec.ProcessResult;
 import org.zeroturnaround.exec.listener.ProcessListener;
@@ -45,13 +46,13 @@ public class MutableProcessExecutionResultBag extends ProcessListener {
   private final ConcurrentMap<String, Throwable> exceptions = new ConcurrentHashMap<>();
   private final List<String> executedIds = new ArrayList<>();
 //  private final ConcurrentMap<ProcessExecution, ProcessExecutor> executors   = new ConcurrentHashMap<>();
-  private final Vector<ProcessExecution> executors2 = new Vector<>();
+  private final Vector<ProcessExecution<ProcessExecutor>> executors2 = new Vector<>();
   private final ConcurrentMap<String, Integer> exitCodes = new ConcurrentHashMap<>();
   private final ConcurrentMap<String, Future<ProcessResult>> futures = new ConcurrentHashMap<>();
   private final ConcurrentMap<String, Process> processes = new ConcurrentHashMap<>();
   private final ConcurrentMap<String, Instant> startTimes = new ConcurrentHashMap<>();
 
-  public void addExecution(final ProcessExecution pe, final ProcessExecutor pExecutor) {
+  void addExecution(final ProcessExecution<ProcessExecutor> pe, final ProcessExecutor pExecutor) {
     synchronized (executedIds) {
       executors2.add(pe);
 //      executors.put(requireNonNull(pe), requireNonNull(pExecutor));
@@ -59,12 +60,12 @@ public class MutableProcessExecutionResultBag extends ProcessListener {
     }
   }
 
-  public MutableProcessExecutionResultBag addFuture(final ProcessExecution pe, final Future<ProcessResult> future) {
+  MutableProcessExecutionResultBag addFuture(final ProcessExecution<ProcessExecutor> pe, final Future<ProcessResult> future) {
     futures.put(requireNonNull(pe).getId(), requireNonNull(future));
     return this;
   }
 
-  public void addProcess(final ProcessExecution pe, final Process process) {
+  public void addProcess(final ProcessExecution<ProcessExecutor> pe, final Process process) {
     processes.put(requireNonNull(pe).getId(), requireNonNull(process));
 
   }
@@ -131,10 +132,10 @@ public class MutableProcessExecutionResultBag extends ProcessListener {
     return executedIds;
   }
 
-  public Map<String, ProcessExecutionResult> getExecutionResults() {
+  public Map<String, ProcessExecutionResult<ProcessExecutor>> getExecutionResults() {
     synchronized (executedIds) {
-      final Map<String, ProcessExecutionResult> m = new HashMap<>();
-      for (final ProcessExecution pe : executors2) {
+      final Map<String, ProcessExecutionResult<ProcessExecutor>> m = new HashMap<>();
+      for (final ProcessExecution<ProcessExecutor> pe : executors2) {
 //        for (final ProcessExecution pe : executors.keySet()) {
         final String id = pe.getId();
         final Instant startTime = ofNullable(startTimes.get(id)).orElse(null);
@@ -155,7 +156,7 @@ public class MutableProcessExecutionResultBag extends ProcessListener {
     return new DefaultProcessExecutionResultBag(this);
   }
 
-  public void setException(final ProcessExecution pe, final Throwable t) {
+  public void setException(final ProcessExecution<ProcessExecutor> pe, final Throwable t) {
     exceptions.put(requireNonNull(pe).getId(), requireNonNull(t));
 
   }

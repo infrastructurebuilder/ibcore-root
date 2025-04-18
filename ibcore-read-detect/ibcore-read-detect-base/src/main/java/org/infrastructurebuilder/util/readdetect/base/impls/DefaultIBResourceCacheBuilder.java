@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.infrastructurebuilder.objectmapper.jackson.ObjectMapperUtils;
-import org.infrastructurebuilder.pathref.util.ibpathref.metadata.model.v0_0.IBResourceCacheModel;
-import org.infrastructurebuilder.pathref.util.readdetect.model.v0_0.IBResourceModel;
+import org.infrastructurebuilder.pathref.metadata.model.v0_0.IBResourceCacheModel;
+import org.infrastructurebuilder.pathref.metadata.model.v0_0.IBResourceModel;
 import org.infrastructurebuilder.util.readdetect.api.IBResource;
 import org.infrastructurebuilder.util.readdetect.api.IBResourceCache;
 import org.json.JSONObject;

@@ -21,11 +21,13 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
+import org.infrastructurebuilder.util.executor.api.ListCapturingLogOutputStream;
+
 public class OverrideListCapturingOutputStream extends ListCapturingLogOutputStream {
 
   private final List<String> l2;
 
-  public OverrideListCapturingOutputStream(final Optional<Path> pth, final List<String> output) {
+  public OverrideListCapturingOutputStream(final Path pth, final List<String> output) {
     super(pth, Optional.empty());
     l2 = output;
   }

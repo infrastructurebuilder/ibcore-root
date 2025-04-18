@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.PosixFileAttributes;
 import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.Set;
@@ -34,7 +35,7 @@ import java.util.function.Supplier;
 
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.fs.attribute.PathRefFileAttributes;
-import org.infrastructurebuilder.pathref.util.readdetect.model.v0_0.IBResourceModel;
+import org.infrastructurebuilder.pathref.metadata.model.v0_0.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -249,7 +250,7 @@ public interface IBResourceBuilder<I> {
 
           .withOwner(pfa.owner().getName())
 
-          .withPermissions(new TreeSet<String>(pfa.permissions().stream().map(PosixFilePermission::name).toList()));
+          .withPermissions(PosixFilePermissions.toString(pfa.permissions()));
 
     }
     if (a instanceof PathRefFileAttributes prfa) {
@@ -269,7 +270,7 @@ public interface IBResourceBuilder<I> {
 
   IBResourceBuilder<I> withOwner(String ownerName);
 
-  IBResourceBuilder<I> withPermissions(Set<String> perms);
+  IBResourceBuilder<I> withPermissions(String perms);
 
   /**
    * validate checks the values provided so far and throws IBResourceException if anything is off.

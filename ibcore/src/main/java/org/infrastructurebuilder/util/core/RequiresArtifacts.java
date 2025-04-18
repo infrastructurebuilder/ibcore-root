@@ -20,6 +20,8 @@ package org.infrastructurebuilder.util.core;
 import java.util.Collections;
 import java.util.List;
 
+import org.infrastructurebuilder.pathref.GAV;
+
 public interface RequiresArtifacts {
   /**
    * Return a list of coordinates that must be in the classpath in order to load the driver

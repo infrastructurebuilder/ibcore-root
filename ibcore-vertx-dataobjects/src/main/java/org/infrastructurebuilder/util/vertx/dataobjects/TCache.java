@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.infrastructurebuilder.util.core.Typed;
+import org.infrastructurebuilder.pathref.api.Typed;
 
 import io.vertx.core.Future;
 

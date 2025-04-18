@@ -17,7 +17,7 @@
  */
 package org.infrastructurebuilder.maven.util.plexus;
 
-import static org.infrastructurebuilder.util.executor.ProcessRunnerSupplier.PROCESS_NAMESPACE;
+import static org.infrastructurebuilder.util.executor.api.ProcessRunnerSupplier.PROCESS_NAMESPACE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.infrastructurebuilder.pathref.api.ConfigMap;

@@ -72,8 +72,8 @@ public abstract class AbstractTSupplierFactory<T, C> implements TSupplierFactory
     return (THIS) this;
   }
 
-  protected C getConfig() {
-    return this.config;
+  public Optional<C> getConfig() {
+    return Optional.ofNullable(this.config);
   }
 
   public AbstractTSupplierFactory<T, C> withHint(String hint) {

@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import org.infrastructurebuilder.util.core.GAV;
+import org.infrastructurebuilder.pathref.GAV;
 import org.junit.jupiter.api.Test;
 
 public class MavenDependenciesSupplierTest extends AbstractPlexusDefaultsConfigTest {

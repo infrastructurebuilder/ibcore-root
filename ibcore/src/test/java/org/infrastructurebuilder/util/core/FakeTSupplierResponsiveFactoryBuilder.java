@@ -35,7 +35,7 @@ public class FakeTSupplierResponsiveFactoryBuilder
   @Override
   public Optional<TSupplier<String>> build(String resp) {
     return Optional.ofNullable(getConfig()).flatMap(c -> {
-      return TSupplier.getNullableTSupplier(this.map.get(c));
+      return TSupplier.getNullableTSupplier(this.map.get(c.orElse(null)));
     });
   }
 

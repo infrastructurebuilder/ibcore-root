@@ -25,7 +25,7 @@ import java.util.Properties;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.pathref.util.readdetect.model.v0_0.IBResourceModel;
+import org.infrastructurebuilder.pathref.metadata.model.v0_0.IBResourceModel;
 import org.infrastructurebuilder.util.readdetect.api.IBResource;
 import org.infrastructurebuilder.util.readdetect.base.impls.AbstractPathRefPathIBResourceBuilderFactory.AbstractIBResource;
 import org.json.JSONObject;
@@ -162,7 +162,7 @@ public class IBResourceInMemoryDelegated implements IBResource {
   }
 
   @Override
-  public Optional<String> getPermissionsAsString() {
+  public Optional<String> getPermissions() {
     // TODO Auto-generated method stub
     return Optional.empty();
   }

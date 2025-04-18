@@ -43,7 +43,7 @@
 
   <dependencies>
   <dependency>
-   <groupId>org.infrastructurebuilder.pathref</groupId>
+      <groupId>org.infrastructurebuilder.pathref.metadata.model</groupId>
    <artifactId>ibpathref-metadata-model</artifactId>
   </dependency>
     <dependency>
@@ -114,8 +114,8 @@
       <artifactId>ibcore-read-detect-base</artifactId>
     </dependency>
     <dependency>
-    	<groupId>org.infrastructurebuilder</groupId>
-    	<artifactId>ibconstants</artifactId>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibconstants</artifactId>
     </dependency>
   </dependencies>
 </project>

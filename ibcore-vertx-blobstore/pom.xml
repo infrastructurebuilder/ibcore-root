@@ -19,71 +19,71 @@
 
 -->
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.infrastructurebuilder</groupId>
-		<artifactId>ibcore-root</artifactId>
-		<version>0.30.1-SNAPSHOT</version>
-	</parent>
+  <parent>
+    <groupId>org.infrastructurebuilder</groupId>
+    <artifactId>ibcore-root</artifactId>
+    <version>0.30.1-SNAPSHOT</version>
+  </parent>
 
-	<artifactId>ibcore-vertx-blobstore</artifactId>
-	<packaging>jar</packaging>
+  <artifactId>ibcore-vertx-blobstore</artifactId>
+  <packaging>jar</packaging>
 
-	<name>${project.artifactId}</name>
-	<description>Blob management tools for Vert.x</description>
-	<!-- URL for site gen -->
-	<url>${github.url.base}/${project.artifactId}</url>
+  <name>${project.artifactId}</name>
+  <description>Blob management tools for Vert.x</description>
+  <!-- URL for site gen -->
+  <url>${github.url.base}/${project.artifactId}</url>
 
-	<properties>
-		<test.coverage.percentage.required>11</test.coverage.percentage.required>
-		<jacoco.max.missed.classes>2</jacoco.max.missed.classes>
-	</properties>
+  <properties>
+    <test.coverage.percentage.required>11</test.coverage.percentage.required>
+    <jacoco.max.missed.classes>2</jacoco.max.missed.classes>
+  </properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.infrastructurebuilder</groupId>
-			<artifactId>ibcore</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.infrastructurebuilder</groupId>
-			<artifactId>ibcore-vertx-base</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.infrastructurebuilder</groupId>
-			<artifactId>ibcore</artifactId>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.vertx</groupId>
-			<artifactId>vertx-codegen</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.infrastructurebuilder.pathref</groupId>
-			<artifactId>ibcore-pathref-setpath</artifactId>
-		</dependency>
-		<!--
+  <dependencies>
+    <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore-vertx-base</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-codegen</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder.pathref</groupId>
+      <artifactId>ibcore-pathref-setpath</artifactId>
+    </dependency>
+    <!--
     <dependency>
       <groupId>org.eclipse.sisu</groupId>
       <artifactId>org.eclipse.sisu.inject</artifactId>
     </dependency>
      -->
-		<dependency>
-			<groupId>org.eclipse.sisu</groupId>
-			<artifactId>org.eclipse.sisu.plexus</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>javax.inject</groupId>
-					<artifactId>javax.inject</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency><!--       <groupId>com.vdurmont</groupId> -->
-			<groupId>org.infrastructurebuilder.usurped</groupId>
-			<artifactId>semver4j</artifactId>
-		</dependency>
-		<!--
+    <dependency>
+      <groupId>org.eclipse.sisu</groupId>
+      <artifactId>org.eclipse.sisu.plexus</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.inject</groupId>
+          <artifactId>javax.inject</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency><!--       <groupId>com.vdurmont</groupId> -->
+      <groupId>org.infrastructurebuilder.usurped</groupId>
+      <artifactId>semver4j</artifactId>
+    </dependency>
+    <!--
     <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
@@ -91,57 +91,57 @@
       <classifier>no_aop</classifier>
     </dependency>
  -->
-		<dependency>
-			<groupId>org.jooq</groupId>
-			<artifactId>joor</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<scope>test</scope>
-		</dependency>
+    <dependency>
+      <groupId>org.jooq</groupId>
+      <artifactId>joor</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency><!--       <groupId>org.skyscreamer</groupId> -->
-			<groupId>org.infrastructurebuilder.usurped</groupId>
-			<artifactId>jsonassert</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.vertx</groupId>
-			<artifactId>vertx-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.infrastructurebuilder</groupId>
-			<artifactId>ibcore-read-detect-base</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.vertx</groupId>
-			<artifactId>vertx-junit5</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.infrastructurebuilder</groupId>
-			<artifactId>ibcore-maven-support</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.maven.wagon</groupId>
-			<artifactId>wagon-provider-api</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency><!--       <groupId>org.skyscreamer</groupId> -->
+      <groupId>org.infrastructurebuilder.usurped</groupId>
+      <artifactId>jsonassert</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore-read-detect-base</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-junit5</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibcore-maven-support</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-provider-api</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.infrastructurebuilder.pathref</groupId>
-			<artifactId>ibcore-pathref-testingpath</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-	</dependencies>
+    <dependency>
+      <groupId>org.infrastructurebuilder.pathref</groupId>
+      <artifactId>ibcore-pathref-testingpath</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
 </project>

@@ -21,14 +21,19 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.UUID.randomUUID;
 
+import java.io.File;
 import java.io.PrintStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -36,22 +41,21 @@ import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
-import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream;
-import org.infrastructurebuilder.util.executor.ModeledProcessExecution;
-import org.infrastructurebuilder.util.executor.ProcessException;
-import org.infrastructurebuilder.util.executor.ProcessExecution;
+import org.infrastructurebuilder.util.executor.api.ListCapturingLogOutputStream;
+import org.infrastructurebuilder.util.executor.api.ModeledProcessExecution;
+import org.infrastructurebuilder.util.executor.api.ProcessException;
+import org.infrastructurebuilder.util.executor.api.ProcessExecution;
 import org.infrastructurebuilder.util.executor.model.v1_0.EnvEntry;
 import org.infrastructurebuilder.util.executor.model.v1_0.Environment;
 import org.infrastructurebuilder.util.executor.model.v1_0.GeneratedProcessExecution;
 import org.zeroturnaround.exec.ProcessExecutor;
 
-public class DefaultProcessExecution implements ProcessExecution {
+public class DefaultProcessExecution implements ProcessExecution<ProcessExecutor> {
 
   public final static Function<Map<String, String>, Environment> toEnvironment = (m) -> {
     return new Environment(requireNonNull(m).entrySet().stream() //
         .map(e -> new EnvEntry(e.getKey(), e.getValue())) //
-        .toList());
+        .collect(Collectors.toSet()));
   };
   public final static Function<Environment, Map<String, String>> fromEnvironment = (e) -> {
     return requireNonNull(e).getEnvEntry().map(l -> l.stream() //
@@ -109,8 +113,8 @@ public class DefaultProcessExecution implements ProcessExecution {
 
     if (getWorkDirectory().getFileSystem() != root)
       throw new ProcessException("Work directory must be set");
-    Path p = getWorkDirectory();
-    String q = getStdOut().getPath().map(Path::toString).orElse(null);
+//    Path p = getWorkDirectory();
+//    String q = getStdOut().getPath().map(Path::toString).orElse(null);
     this.model.setStdOutPath(getStdOut().getPath().map(Path::toString).orElse(null));
     this.model.setStdErrPath(getStdErr().getPath().map(Path::toString).orElse(null));
     this.model.setStdInPath(stdIn.orElse(null));
@@ -126,8 +130,8 @@ public class DefaultProcessExecution implements ProcessExecution {
       final String workDirectory, //
       final boolean optional, final Optional<Map<String, String>> environment, //
       final Optional<List<Integer>> exitValues, final Optional<java.io.PrintStream> addl, //
-      final boolean background, final org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream stdout,
-      final org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream stderr)
+      final boolean background, final org.infrastructurebuilder.util.executor.api.ListCapturingLogOutputStream stdout,
+      final org.infrastructurebuilder.util.executor.api.ListCapturingLogOutputStream stderr)
   {
     this(id, executable, arguments, relativeRoot, timeout, stdIn, workDirectory, optional, environment, exitValues,
         addl, background);
@@ -135,12 +139,48 @@ public class DefaultProcessExecution implements ProcessExecution {
     this.stdErr = stderr;
   }
 
-  @Override
   public ProcessExecutor getProcessExecutor() {
     if (this.executor == null)
-      this.executor = ProcessExecution.super.getProcessExecutor();
+      this.executor = _getProcessExecutor();
+
     return this.executor;
   }
+
+  private ProcessExecutor _getProcessExecutor() {
+    final List<String> command = new ArrayList<>();
+    command.add(getExecutable());
+    command.addAll(getArguments());
+    List<Integer> l = getExitValuesAsIntegers().orElseGet(() -> new ArrayList<>());
+    Integer[] exitValues = (Integer[]) l.toArray(new Integer[l.size()]);
+    File w = getWorkDirectory().toFile();
+    log.debug("Working directory for {} is {}", getId(), w);
+    final ProcessExecutor pe = new ProcessExecutor()
+
+        .environment(getExecutionEnvironment())
+
+        .directory(w)
+
+        .redirectError(getStdErr())
+
+        .redirectOutput(getStdOut())
+
+        .redirectInput(
+            getStdIn().map(si -> ProcessException.pet.returns(() -> Files.newInputStream(si))).orElse(System.in))
+
+        .exitValues(exitValues)
+
+        .command(command)
+
+    ;
+    if (getTimeout().isPresent()) {
+      final Duration d = getTimeout().get();
+      if (d.isNegative())
+        throw new ProcessException("Negative timeouts are disallowed " + d);
+      return pe.timeout(d.get(ChronoUnit.SECONDS) * 1000 + d.get(ChronoUnit.NANOS), TimeUnit.NANOSECONDS);
+    } else
+      return pe;
+  }
+
 
   @Override
   public void close() {

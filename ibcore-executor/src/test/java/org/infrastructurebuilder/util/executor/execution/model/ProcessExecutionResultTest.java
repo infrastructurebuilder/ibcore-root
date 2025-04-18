@@ -22,8 +22,8 @@ import static java.time.Duration.ofMillis;
 import static java.time.Instant.ofEpochMilli;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static org.infrastructurebuilder.util.executor.ProcessExecutionResult.EXECUTION;
-import static org.infrastructurebuilder.util.executor.ProcessExecutionResult.START;
+import static org.infrastructurebuilder.util.executor.api.ProcessExecutionResult.EXECUTION;
+import static org.infrastructurebuilder.util.executor.api.ProcessExecutionResult.START;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -53,14 +53,12 @@ import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
-import org.infrastructurebuilder.util.executor.DefaultProcessExecutionResultBag;
-import org.infrastructurebuilder.util.executor.ListCapturingLogOutputStream;
-import org.infrastructurebuilder.util.executor.MutableProcessExecutionResultBag;
 import org.infrastructurebuilder.util.executor.OverrideListCapturingOutputStream;
-import org.infrastructurebuilder.util.executor.ProcessException;
-import org.infrastructurebuilder.util.executor.ProcessExecution;
-import org.infrastructurebuilder.util.executor.ProcessExecutionResult;
-import org.infrastructurebuilder.util.executor.ProcessExecutionResultBag;
+import org.infrastructurebuilder.util.executor.api.ListCapturingLogOutputStream;
+import org.infrastructurebuilder.util.executor.api.ProcessException;
+import org.infrastructurebuilder.util.executor.api.ProcessExecution;
+import org.infrastructurebuilder.util.executor.api.ProcessExecutionResult;
+import org.infrastructurebuilder.util.executor.api.ProcessExecutionResultBag;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -123,8 +121,8 @@ public class ProcessExecutionResultTest {
 
     stdOutPth = workDir.resolve("extraStdOut");
     stdErrPth = workDir.resolve("extraStdErr");
-    lpaoO = new OverrideListCapturingOutputStream(of(stdOutPth), stdOut);
-    lpaoE = new OverrideListCapturingOutputStream(of(stdErrPth), stdErr);
+    lpaoO = new OverrideListCapturingOutputStream(stdOutPth, stdOut);
+    lpaoE = new OverrideListCapturingOutputStream(stdErrPth, stdErr);
 
     Optional<String> sin = empty();
     Optional<Duration> timeout = empty();
@@ -233,7 +231,7 @@ public class ProcessExecutionResultTest {
 
   @Test
   public void testClosingCapturedStream() {
-    try (ListCapturingLogOutputStream abc = new ListCapturingLogOutputStream(empty(), of(pr))) {
+    try (ListCapturingLogOutputStream abc = new ListCapturingLogOutputStream(null, of(pr))) {
 
     } catch (final IOException e) {
 
@@ -283,7 +281,7 @@ public class ProcessExecutionResultTest {
   @Test
   public void testGetRunningfutures() {
     final ProcessExecutionResultBag b = merb.lock();
-    assertNotNull(b.getRunningFutures());
+    assertNotNull(b.getIncompleteFuturesIds());
   }
 
   @Test
@@ -313,7 +311,7 @@ public class ProcessExecutionResultTest {
         "{\n" + "  \"executed-ids\": [],\n" + "  \"results\": [],\n" + "  \"incomplete-futures-ids\": []\n" + "}");
     final JSONObject b2 = b.asJSON();
     JSONAssert.assertEquals(jj, b2, true);
-    assertEquals(new ArrayList<String>(), b.getErrors());
+    assertEquals(new ArrayList<String>(), b.getErrorIds());
     merb.addFuture(pe, future);
     final ProcessExecutionResultBag p = merb.lock();
     assertNotNull(p);

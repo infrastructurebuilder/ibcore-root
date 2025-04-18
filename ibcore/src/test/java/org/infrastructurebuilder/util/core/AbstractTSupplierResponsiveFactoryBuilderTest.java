@@ -49,8 +49,13 @@ class AbstractTSupplierResponsiveFactoryBuilderTest {
   void setUp() throws Exception {
     this.map = Map.of("X", "Y", "Z", "A", "XX", "YY");
 
-    this.fake = (FakeTSupplierResponsiveFactoryBuilder) new FakeTSupplierResponsiveFactoryBuilder(map).withHint("fake")
-        .withLogger(log).withConfig("X");
+    this.fake = (FakeTSupplierResponsiveFactoryBuilder) new FakeTSupplierResponsiveFactoryBuilder(map)
+
+        .withHint("fake")
+
+        .withLogger(log)
+
+        .withConfig("X");
   }
 
   @AfterEach
@@ -62,7 +67,7 @@ class AbstractTSupplierResponsiveFactoryBuilderTest {
     assertEquals("fake", this.fake.getHint());
     assertTrue(this.fake.respondsTo("X") >= 0);
     assertFalse(this.fake.respondsTo("Y") >= 0);
-    assertEquals(this.fake.get("X").get(), "Y");
+    assertEquals("Y", this.fake.get("X").get());
   }
 
 }

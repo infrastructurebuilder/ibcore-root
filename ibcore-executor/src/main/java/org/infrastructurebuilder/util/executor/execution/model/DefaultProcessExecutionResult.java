@@ -22,7 +22,6 @@ import static java.util.Objects.requireNonNull;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,26 +29,26 @@ import java.util.Optional;
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
-import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.util.executor.ProcessExecution;
-import org.infrastructurebuilder.util.executor.ProcessExecutionResult;
+import org.infrastructurebuilder.util.executor.api.ProcessExecution;
+import org.infrastructurebuilder.util.executor.api.ProcessExecutionResult;
 import org.infrastructurebuilder.util.executor.model.utils.IBCoreExecutorModelUtils;
 import org.infrastructurebuilder.util.executor.model.v1_0.Environment;
 import org.infrastructurebuilder.util.executor.model.v1_0.GeneratedProcessExecutionResult;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zeroturnaround.exec.ProcessExecutor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-public class DefaultProcessExecutionResult implements ProcessExecutionResult {
+public class DefaultProcessExecutionResult implements ProcessExecutionResult<ProcessExecutor> {
   private final static Logger log = LoggerFactory.getLogger(DefaultProcessExecutionResult.class);
   private final GeneratedProcessExecutionResult gper;
-  private final ProcessExecution processExecution;
+  private final ProcessExecution<ProcessExecutor> processExecution;
   private final PathRefFileSystem pr;
 
   @SuppressWarnings("unchecked")
-  public DefaultProcessExecutionResult(ProcessExecution pe, Optional<Integer> exitCode, Optional<Throwable> exception,
+  public DefaultProcessExecutionResult(ProcessExecution<ProcessExecutor> pe, Optional<Integer> exitCode, Optional<Throwable> exception,
       Instant startTime, Duration between)
   {
 
@@ -102,7 +101,7 @@ public class DefaultProcessExecutionResult implements ProcessExecutionResult {
   }
 
   @Override
-  public Optional<ProcessExecution> getExecution() {
+  public Optional<ProcessExecution<ProcessExecutor>> getExecution() {
     return Optional.ofNullable(this.processExecution);
   }
 

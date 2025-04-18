@@ -17,10 +17,13 @@
  */
 package org.infrastructurebuilder.util.dag.impl;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -29,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.NavigableSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -48,21 +50,21 @@ import org.infrastructurebuilder.util.dag.MutableVertex;
 import org.infrastructurebuilder.util.dag.TopologicalSorter;
 import org.infrastructurebuilder.util.dag.Vertex;
 
-public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
-  public static final class MutableDAGImpl<T extends Comparable<T>> implements Serializable, MutableDAG<T> {
+public class DAGBuilderImpl<T> implements DAGBuilder<T> {
+
+  public static final class MutableDAGImpl<T> implements Serializable, MutableDAG<T> {
     /**
      *
      */
     private static final long serialVersionUID = 7477357523381006826L;
 
-    public static final class DAGImpl<T extends Comparable<T>> implements Serializable, DAG<T> {
+    public static final class DAGImpl<T> implements Serializable, DAG<T> {
       /**
        *
        */
       private static final long serialVersionUID = 8128453028940561054L;
 
-      public final static class DepthFirstTopologicalSorterImpl<T extends Comparable<T>>
-          implements TopologicalSorter<T> {
+      public final static class DepthFirstTopologicalSorterImpl<T> implements TopologicalSorter<T> {
 
         private final Integer NOT_VISTITED = 0;
 
@@ -76,11 +78,11 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
         }
 
         @Override
-        public List<T> sort(final Vertex<T> Vertex) {
+        public List<T> sort(final Vertex<T> vertex) {
 
           final List<T> retValue = new LinkedList<>();
 
-          dfsVisit(Vertex, new HashMap<Vertex<T>, Integer>(), retValue);
+          dfsVisit(vertex, new HashMap<Vertex<T>, Integer>(), retValue);
 
           return retValue;
         }
@@ -98,22 +100,22 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
           return retValue;
         }
 
-        private void dfsVisit(final Vertex<T> Vertex, final Map<Vertex<T>, Integer> VertexStateMap,
+        private void dfsVisit(final Vertex<T> vertex, final Map<Vertex<T>, Integer> vertexStateMap,
             final List<T> list) {
-          VertexStateMap.put(Vertex, VISITING);
+          vertexStateMap.put(vertex, VISITING);
 
-          for (final Vertex<T> v : Vertex.getChildren())
-            if (isNotVisited(v, VertexStateMap)) {
-              dfsVisit(v, VertexStateMap, list);
+          for (final Vertex<T> v : vertex.getChildren())
+            if (isNotVisited(v, vertexStateMap)) {
+              dfsVisit(v, vertexStateMap, list);
             }
 
-          VertexStateMap.put(Vertex, VISITED);
+          vertexStateMap.put(vertex, VISITED);
 
-          list.add(Vertex.getLabel());
+          list.add(vertex.getLabel());
         }
 
-        private boolean isNotVisited(final Vertex<T> Vertex, final Map<Vertex<T>, Integer> VertexStateMap) {
-          final Integer state = VertexStateMap.get(Vertex);
+        private boolean isNotVisited(final Vertex<T> vertex, final Map<Vertex<T>, Integer> vertexStateMap) {
+          final Integer state = vertexStateMap.get(vertex);
 
           return state == null || NOT_VISTITED.equals(state);
         }
@@ -121,7 +123,7 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
       }
 
       @SuppressWarnings("hiding")
-      private class VertexImpl<T extends Comparable<T>> implements Serializable, Vertex<T> {
+      private class VertexImpl<T> implements Serializable, Vertex<T> {
 
         /**
          *
@@ -137,19 +139,21 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
         final List<Vertex<T>> children = new ArrayList<>();
         final List<Vertex<T>> parents = new ArrayList<>();
 
-        public VertexImpl(final DAGImpl<T> dagImpl, final T label) {
+        private final Comparator<T> comparator;
+
+        public VertexImpl(Comparator<T> comparator, final DAGImpl<T> dagImpl, final T label) {
           this.dag = dagImpl;
-          this.label = Objects.requireNonNull(label);
+          this.label = requireNonNull(label);
+          this.comparator = requireNonNull(comparator);
+        }
+
+        @Override
+        public Comparator<T> getComparator() {
+          return this.comparator;
         }
 
         public void addEdgeTo(final Vertex<T> to) {
           children.add(to);
-        }
-
-        @Override
-        public int compareTo(final Vertex<T> o) {
-          final int retval = getLabel().compareTo(o.getLabel());
-          return retval;
         }
 
         @SuppressWarnings({
@@ -247,8 +251,10 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
 
       private final NavigableSet<Vertex<T>> vertexTreeSet = new TreeSet<>();
 
-      public DAGImpl(final MutableDAG<T> inDag) throws CycleDetectedException {
-        super();
+      private final Comparator<T> comparator;
+
+      public DAGImpl(final Comparator<T> comparator, final MutableDAG<T> inDag) throws CycleDetectedException {
+        this.comparator = requireNonNull(comparator);
         for (final MutableVertex<T> v : inDag.getVerticies()) {
           addVertex(v.getLabel());
           if (v.isConnected()) {
@@ -257,6 +263,11 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
             }
           }
         }
+      }
+
+      @Override
+      public Comparator<T> getComparator() {
+        return this.comparator;
       }
 
       @SuppressWarnings({
@@ -377,7 +388,7 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
 
       @Override
       public void walk(final DAGWalker<T> walker, final List<DAGVisitor<T>> visitors) {
-        Objects.requireNonNull(walker, "DAGWalker").walk(this, Objects.requireNonNull(visitors, "DAGWalk Visitors"));
+        requireNonNull(walker, "DAGWalker").walk(this, requireNonNull(visitors, "DAGWalk Visitors"));
       }
 
       private void addEdge(final T from, final T to) throws CycleDetectedException {
@@ -401,7 +412,7 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
         if (vertexMap.containsKey(label)) {
           retValue = vertexMap.get(label);
         } else {
-          retValue = new VertexImpl<>(this, label);
+          retValue = new VertexImpl<>(getComparator(), this, label);
 
           vertexMap.put(label, retValue);
 
@@ -413,7 +424,7 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
 
     }
 
-    static class MutableTopologicalSorterImpl<T extends Comparable<T>> {
+    static class MutableTopologicalSorterImpl<T> {
 
       private final Integer NOT_VISTITED = 0;
 
@@ -447,30 +458,30 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
         return retValue;
       }
 
-      private void dfsVisit(final MutableVertex<T> MutableVertex,
-          final Map<MutableVertex<T>, Integer> MutableVertexStateMap, final List<T> list) {
-        MutableVertexStateMap.put(MutableVertex, VISITING);
+      private void dfsVisit(final MutableVertex<T> mutableVertex,
+          final Map<MutableVertex<T>, Integer> mutableVertexStateMap, final List<T> list) {
+        mutableVertexStateMap.put(mutableVertex, VISITING);
 
-        for (final MutableVertex<T> v : MutableVertex.getChildren())
-          if (isNotVisited(v, MutableVertexStateMap)) {
-            dfsVisit(v, MutableVertexStateMap, list);
+        for (final MutableVertex<T> v : mutableVertex.getChildren())
+          if (isNotVisited(v, mutableVertexStateMap)) {
+            dfsVisit(v, mutableVertexStateMap, list);
           }
 
-        MutableVertexStateMap.put(MutableVertex, VISITED);
+        mutableVertexStateMap.put(mutableVertex, VISITED);
 
-        list.add(MutableVertex.getLabel());
+        list.add(mutableVertex.getLabel());
       }
 
-      private boolean isNotVisited(final MutableVertex<T> MutableVertex,
-          final Map<MutableVertex<T>, Integer> MutableVertexStateMap) {
-        final Integer state = MutableVertexStateMap.get(MutableVertex);
+      private boolean isNotVisited(final MutableVertex<T> mutableVertex,
+          final Map<MutableVertex<T>, Integer> vutableVertexStateMap) {
+        final Integer state = vutableVertexStateMap.get(mutableVertex);
 
         return state == null || NOT_VISTITED.equals(state);
       }
 
     }
 
-    static class MutableVertexImpl<T extends Comparable<T>> implements Serializable, MutableVertex<T> {
+    static class MutableVertexImpl<T> implements Serializable, MutableVertex<T> {
 
       /**
        *
@@ -482,10 +493,17 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
       final List<MutableVertex<T>> children = new ArrayList<>();
 
       final List<MutableVertex<T>> parents = new ArrayList<>();
+      private final Comparator<T> comparator;
 
-      MutableVertexImpl(final T label, final MutableTopologicalSorterImpl<T> sorter) {
-        this.label = Objects.requireNonNull(label);
-        this.sorter = Objects.requireNonNull(sorter);
+      MutableVertexImpl(Comparator<T> comparator, final T label, final MutableTopologicalSorterImpl<T> sorter) {
+        this.label = requireNonNull(label);
+        this.sorter = requireNonNull(sorter);
+        this.comparator = requireNonNull(comparator);
+      }
+
+      @Override
+      public Comparator<T> getComparator() {
+        return this.comparator;
       }
 
       @Override
@@ -498,11 +516,11 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
         children.add(vertex);
       }
 
-      @Override
-      public int compareTo(final MutableVertex<T> o) {
-        final int retval = getLabel().compareTo(o.getLabel());
-        return retval;
-      }
+//      @Override
+//      public int compareTo(final MutableVertex<T> o) {
+//        final int retval = getLabel().compareTo(o.getLabel());
+//        return retval;
+//      }
 
       @SuppressWarnings({
           "rawtypes", "unchecked"
@@ -602,11 +620,14 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
 
     private final NavigableSet<MutableVertex<T>> vertexTreeSet = new TreeSet<>();
 
-    MutableDAGImpl() {
-      super();
+    private final Comparator<T> comparator;
+
+    MutableDAGImpl(Comparator<T> comparator) {
+      this.comparator = requireNonNull(comparator);
     }
 
-    MutableDAGImpl(final DAG<T> inDag) throws CycleDetectedException {
+    MutableDAGImpl(Comparator<T> comparator, final DAG<T> inDag) throws CycleDetectedException {
+      this(comparator);
       for (final Vertex<T> v : inDag.getVerticies()) {
         addVertex(v.getLabel());
         if (v.isConnected()) {
@@ -617,7 +638,8 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
       }
     }
 
-    MutableDAGImpl(final MutableDAG<T> inDag) throws CycleDetectedException {
+    MutableDAGImpl(Comparator<T> comparator, final MutableDAG<T> inDag) throws CycleDetectedException {
+      this(comparator);
       for (final MutableVertex<T> v : inDag.getVerticies()) {
         addVertex(v.getLabel());
         if (v.isConnected()) {
@@ -626,6 +648,11 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
           }
         }
       }
+    }
+
+    @Override
+    public Comparator<T> getComparator() {
+      return comparator;
     }
 
     @Override
@@ -663,7 +690,7 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
       if (vertexMap.containsKey(label)) {
         retValue = vertexMap.get(label);
       } else {
-        retValue = new MutableVertexImpl<>(label, this.sorter);
+        retValue = new MutableVertexImpl<>(getComparator(), label, this.sorter);
 
         vertexMap.put(label, retValue);
 
@@ -692,9 +719,10 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
         return false;
       final Iterator<T> li = l1.iterator();
       final Iterator<T> ri = r1.iterator();
-      while (li.hasNext())
-        if (li.next().compareTo(ri.next()) != 0)
+      while (li.hasNext()) {
+        if (getComparator().compare(li.next(), ri.next()) != 0)
           return false;
+      }
       return true;
     }
 
@@ -789,7 +817,7 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
 
   }
 
-  static class CycleDetectorImpl<T extends Comparable<T>> implements CycleDetector<T> {
+  static class CycleDetectorImpl<T> implements CycleDetector<T> {
 
     private final Integer NOT_VISTITED = 0;
 
@@ -864,17 +892,24 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
   }
 
   private final MutableDAGImpl<T> dag;
+  private final Comparator<T> comparator;
 
-  public DAGBuilderImpl() throws CycleDetectedException {
-    this(new MutableDAGImpl<T>());
+  public DAGBuilderImpl(Comparator<T> comparator) throws CycleDetectedException {
+    this(comparator, new MutableDAGImpl<T>(comparator));
   }
 
-  public DAGBuilderImpl(final DAG<T> inDag) throws CycleDetectedException {
-    this(new MutableDAGImpl<>(inDag));
+  public DAGBuilderImpl(Comparator<T> comparator, final DAG<T> inDag) throws CycleDetectedException {
+    this(comparator, new MutableDAGImpl<>(comparator, inDag));
   }
 
-  public DAGBuilderImpl(final MutableDAG<T> inDag) throws CycleDetectedException {
-    dag = new MutableDAGImpl<>(inDag);
+  public DAGBuilderImpl(Comparator<T> comparator, final MutableDAG<T> inDag) throws CycleDetectedException {
+    dag = new MutableDAGImpl<>(comparator, inDag);
+    this.comparator = requireNonNull(comparator);
+  }
+
+  @Override
+  public Comparator<T> getComparator() {
+    return this.comparator;
   }
 
   @Override
@@ -897,7 +932,7 @@ public class DAGBuilderImpl<T extends Comparable<T>> implements DAGBuilder<T> {
   @Override
   public DAG<T> build() {
     return IBException.cet.returns(() -> {
-      return new MutableDAGImpl.DAGImpl<>(dag);
+      return new MutableDAGImpl.DAGImpl<>(getComparator(), dag);
     });
   }
 

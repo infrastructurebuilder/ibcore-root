@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.SortedSet;
 
+import org.infrastructurebuilder.pathref.GAV;
 import org.infrastructurebuilder.util.credentials.basic.BasicCredentials;
 import org.infrastructurebuilder.util.versions.IBVersionsSupplier;
 import org.junit.jupiter.api.AfterAll;

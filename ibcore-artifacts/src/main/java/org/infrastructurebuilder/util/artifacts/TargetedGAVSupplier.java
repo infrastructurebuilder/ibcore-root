@@ -21,8 +21,8 @@ import static java.util.Optional.empty;
 
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.core.GAV;
-import org.infrastructurebuilder.util.core.GAVSupplier;
+import org.infrastructurebuilder.pathref.GAV;
+import org.infrastructurebuilder.pathref.GAVSupplier;
 
 public interface TargetedGAVSupplier extends GAVSupplier {
   default Optional<GAV> getTargetedGAV(TargetPlatform platform) {

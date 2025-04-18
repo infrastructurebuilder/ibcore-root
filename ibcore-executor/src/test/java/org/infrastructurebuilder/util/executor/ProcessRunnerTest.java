@@ -21,7 +21,7 @@ import static java.time.Duration.ofMinutes;
 import static java.time.Duration.ofSeconds;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static org.infrastructurebuilder.pathref.IBChecksumUtils.deletePath;
+import static org.infrastructurebuilder.pathref.api.APIUtils.deletePath;
 import static org.infrastructurebuilder.util.core.IBUtils.isWindows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -44,6 +44,15 @@ import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.pathref.fs.PathRefPathIF;
+import org.infrastructurebuilder.util.executor.api.ProcessException;
+import org.infrastructurebuilder.util.executor.api.ProcessExecution;
+import org.infrastructurebuilder.util.executor.api.ProcessExecutionFactory;
+import org.infrastructurebuilder.util.executor.api.ProcessExecutionResult;
+import org.infrastructurebuilder.util.executor.api.ProcessExecutionResultBag;
+import org.infrastructurebuilder.util.executor.api.ProcessRunner;
+import org.infrastructurebuilder.util.executor.api.VersionedProcessExecutionFactory;
+import org.infrastructurebuilder.util.executor.execution.model.DefaultProcessExecutionResult;
+import org.infrastructurebuilder.util.executor.execution.model.DefaultProcessRunner;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,6 +60,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zeroturnaround.exec.ProcessExecutor;
 
 public class ProcessRunnerTest {
   private final static Logger logger = LoggerFactory.getLogger(ProcessRunnerTest.class.getName());
@@ -63,7 +73,8 @@ public class ProcessRunnerTest {
 
   @BeforeAll
   public static void setUpBeforeClass() throws Exception {
-    root = PathRefPathIF.getOrCreatePRFS(wps.get(), Optional.of(ProcessRunnerTest.class.getName())).get();
+    root = PathRefPathIF.getOrCreatePRFS(wps.get() //
+        , of(ProcessRunnerTest.class.getName())).get();
   }
 
   private DefaultProcessRunner runner;
@@ -71,7 +82,7 @@ public class ProcessRunnerTest {
   private Path packerExecutable;
   private String ttClass;
   private String ttest1;
-  private VersionedProcessExecutionFactory vpef;
+  private VersionedProcessExecutionFactory<ProcessExecutor> vpef;
   private PathRefPath target;
   private String scratchDir;
 
@@ -79,7 +90,11 @@ public class ProcessRunnerTest {
   public void setUp() throws Exception {
     scratchDir = UUID.randomUUID().toString();
     target = root.getPath(scratchDir);
-    runner = new DefaultProcessRunner(root, scratchDir, of(System.out), of(logger));
+    runner = new DefaultProcessRunner(//
+        root //
+        , scratchDir //
+        , of(System.out) //
+        , of(logger));
     packerExecutable = wps.getRoot().resolve("packer" + (isWindows() ? ".exe" : "")).toRealPath().toAbsolutePath();
     packerCsum = new Checksum(packerExecutable);
     ttest1 = UUID.randomUUID().toString();
@@ -110,14 +125,17 @@ public class ProcessRunnerTest {
   @Test
   public void testAddLocked() {
     final String id = UUID.randomUUID().toString();
-    ProcessExecutionFactory e = vpef.getFactoryForVersion("1.0.0", scratchDir, id, packerExecutable.toString()).get()
-
-        .withArguments(PACKER_VERSION_PARAMS)
-
-        .withChecksum(packerCsum);
+    ProcessExecutionFactory<ProcessExecutor> e = vpef.getFactoryForVersion( //
+        "1.0.0" //
+        , scratchDir //
+        , id //
+        , packerExecutable.toString()//
+    ).get() //
+        .withArguments(PACKER_VERSION_PARAMS) //
+        .withExecutableChecksum(packerCsum); // Change to withExecutableChecksum once deprecated
     runner = runner.add(e);
     runner //
-        .lock(ofSeconds(30), Optional.of(1L)) //
+        .lock(ofSeconds(30), of(1L)) //
         .lock(Duration.ZERO, empty());
     assertThrows(ProcessException.class, () -> runner.add(e));
 
@@ -129,7 +147,7 @@ public class ProcessRunnerTest {
     final String id = UUID.randomUUID().toString();
 
     final Path in = root.getPath("target").resolve("ThreadTest1S.class");
-    ProcessExecutionFactory e2 = vpef.getDefaultFactory(ttest1, id, "java")
+    ProcessExecutionFactory<ProcessExecutor> e2 = vpef.getDefaultFactory(ttest1, id, "java")
 
         .withArguments(ttClass, "1")
 
@@ -141,10 +159,10 @@ public class ProcessRunnerTest {
 
         .withBackground(true);
 
-    try (ProcessRunner newrunner = runner.add(e2)) {
+    try (ProcessRunner<ProcessExecutor> newrunner = runner.add(e2)) {
       newrunner.setKeepScratchDir(false);
       newrunner.lock(ofSeconds(15), of(25L));
-      final ProcessExecutionResultBag p = runner.get().get();
+      final ProcessExecutionResultBag<ProcessExecutor> p = runner.get().get();
       assertTrue(p.getDuration().isPresent());
       assertNotNull(p.getStdErrs());
       assertNotNull(p.getStdOuts());
@@ -154,7 +172,7 @@ public class ProcessRunnerTest {
       assertNotNull(p.getResults());
       assertFalse(newrunner.hasErrorResult(p.getResults()));
 
-      final ProcessExecutionResult a = p.getExecutions().get(id);
+      final ProcessExecutionResult<ProcessExecutor> a = p.getExecutions().get(id);
       final String x = String.join("\n", a.getStdOut().orElse(Collections.emptyList()));
       assertTrue(x.contains("SUCCESS"));
     } catch (final Exception e) {
@@ -169,7 +187,7 @@ public class ProcessRunnerTest {
     final String id = UUID.randomUUID().toString();
     final Path in = root.getPath("target").resolve("ThreadTest1S.class");
 
-    ProcessExecutionFactory e2 = vpef.getFactoryForVersion("1.0.0", ttest1, id, "javac").get()
+    ProcessExecutionFactory<ProcessExecutor> e2 = vpef.getFactoryForVersion("1.0.0", ttest1, id, "javac").get()
 
         .withDuration(ofMinutes(1))
 
@@ -179,13 +197,13 @@ public class ProcessRunnerTest {
 
         .withBackground(true);
 
-    try (ProcessRunner newrunner = runner.add(e2)) {
+    try (ProcessRunner<ProcessExecutor> newrunner = runner.add(e2)) {
       newrunner.setKeepScratchDir(false);
       newrunner.lock(ofSeconds(15), of(25L));
-      final ProcessExecutionResultBag p = runner.get().get();
+      final ProcessExecutionResultBag<ProcessExecutor> p = runner.get().get();
 
       assertTrue(newrunner.hasErrorResult(p.getResults()));
-      final ProcessExecutionResult a = p.getExecutions().get(id);
+      final ProcessExecutionResult<ProcessExecutor> a = p.getExecutions().get(id);
       assertEquals(2, a.getResultCode().get().longValue());
       logger.debug(a.getId() + " " + a.getException().toString() + a.getResultCode());
     } catch (final Exception e) {
@@ -199,11 +217,11 @@ public class ProcessRunnerTest {
   public void testGetExecution() throws Exception {
     final String id = "default";
 
-    ProcessExecutionFactory e3 = vpef.getFactoryForVersion("1.0.0", scratchDir, id, "java").get();
+    ProcessExecutionFactory<ProcessExecutor> e3 = vpef.getFactoryForVersion("1.0.0", scratchDir, id, "java").get();
 
-    try (ProcessRunner e2 = runner.add(e3)) {
+    try (ProcessRunner<ProcessExecutor> e2 = runner.add(e3)) {
 
-      final ProcessExecution e = e2.getProcessExecutionForId(id).get();
+      final ProcessExecution<ProcessExecutor> e = e2.getProcessExecutionForId(id).get();
       assertNotNull(e);
       assertNotNull(e.getStdErr());
       assertNotNull(e.getStdIn());
@@ -234,7 +252,7 @@ public class ProcessRunnerTest {
   public void testLongRunningDaemon() {
     final String id = UUID.randomUUID().toString();
     final Path in = root.getPath("target").resolve("ThreadTest1S.class");
-    ProcessExecutionFactory e2 = vpef.getFactoryForVersion("1.0.0", ttest1, id, "java").get()
+    ProcessExecutionFactory<ProcessExecutor> e2 = vpef.getFactoryForVersion("1.0.0", ttest1, id, "java").get()
 
         .withArguments(ttClass, "60")
 
@@ -248,7 +266,7 @@ public class ProcessRunnerTest {
 
     runner = runner.add(e2);
     runner.lock(ofSeconds(4), of(25L));
-    final ProcessExecutionResultBag p = runner.get().get();
+    final ProcessExecutionResultBag<ProcessExecutor> p = runner.get().get();
     assertTrue(p.getDuration().isPresent());
     assertNotNull(p.getStdErrs());
     assertNotNull(p.getStdOuts());
@@ -257,7 +275,7 @@ public class ProcessRunnerTest {
     assertNotNull(p.getExecutionEnvironment());
     assertNotNull(p.getResults());
 
-    final ProcessExecutionResult a = p.getExecutions().get(id);
+    final DefaultProcessExecutionResult a = (DefaultProcessExecutionResult) p.getExecutions().get(id);
     final String x = String.join("\n", a.getStdOut().orElse(Collections.emptyList()));
     assertFalse(x.contains("FAILURE"));
   }
@@ -269,7 +287,7 @@ public class ProcessRunnerTest {
     if (Files.exists(root.getPath(p)))
       throw new RuntimeException("Test failed because of a random thing");
 
-    try (ProcessRunner prr = new DefaultProcessRunner(root, p, of(System.out), of(logger))) {
+    try (ProcessRunner<ProcessExecutor> prr = new DefaultProcessRunner(root, p, of(System.out), of(logger))) {
     }
   }
 
@@ -305,9 +323,9 @@ public class ProcessRunnerTest {
   @Test
   public void testwithChecksum() {
     final String id = UUID.randomUUID().toString();
-    ProcessExecutionFactory e2 = vpef.getFactoryForVersion("1.0.0", scratchDir, id, packerExecutable.toString()).get()
+    ProcessExecutionFactory<ProcessExecutor> e2 = vpef.getFactoryForVersion("1.0.0", scratchDir, id, packerExecutable.toString()).get()
         // packer checksum
-        .withChecksum(packerCsum)
+        .withExecutableChecksum(packerCsum)
         // Execution arguents
         .withArguments(PACKER_VERSION_PARAMS)
         // Default max runtime
@@ -317,7 +335,7 @@ public class ProcessRunnerTest {
 
     runner = runner.add(e2);
     runner.lock(ofSeconds(15), empty()).lock(Duration.ZERO, empty()); // Test double-locking
-    final ProcessExecutionResultBag p = runner.get().get();
+    final ProcessExecutionResultBag<ProcessExecutor> p = runner.get().get();
     assertTrue(p.getDuration().isPresent());
     assertNotNull(p.getStdErrs());
     assertNotNull(p.getStdOuts());
@@ -326,8 +344,8 @@ public class ProcessRunnerTest {
     assertNotNull(p.getExecutionEnvironment());
     assertNotNull(p.getResults());
 
-    final ProcessExecutionResult a = p.getExecutions().get(id);
-    Optional<List<String>> stdo = a.getStdOut();
+    final DefaultProcessExecutionResult a = (DefaultProcessExecutionResult) p.getExecutions().get(id);
+//    Optional<List<String>> stdo = a.getStdOut();
     final String x = String.join("\n", a.getStdOut().orElse(Collections.emptyList()));
     assertTrue(x.contains("version-prelease"));
   }
@@ -336,7 +354,7 @@ public class ProcessRunnerTest {
   public void testwithChecksum2() {
     final String id = UUID.randomUUID().toString();
 
-    ProcessExecutionFactory e2 = vpef.getFactoryForVersion("1.0.0", scratchDir, id, packerExecutable.toString()).get()
+    ProcessExecutionFactory<ProcessExecutor> e2 = vpef.getFactoryForVersion("1.0.0", scratchDir, id, packerExecutable.toString()).get()
 
         .withArguments(PACKER_VERSION_PARAMS)
 
@@ -344,12 +362,12 @@ public class ProcessRunnerTest {
 
         .withRelativeRoot(root)
 
-        .withChecksum(packerCsum)
+        .withExecutableChecksum(packerCsum)
 
     ;
 
     runner = runner.add(e2).lock();
-    final ProcessExecutionResultBag p = runner.get().get();
+    final ProcessExecutionResultBag<ProcessExecutor> p = runner.get().get();
     assertTrue(p.getDuration().isPresent());
     assertNotNull(p.getStdErrs());
     assertNotNull(p.getStdOuts());
@@ -358,7 +376,7 @@ public class ProcessRunnerTest {
     assertNotNull(p.getExecutionEnvironment());
     assertNotNull(p.getResults());
 
-    final ProcessExecutionResult a = p.getExecution(id).get();
+    final DefaultProcessExecutionResult a = (DefaultProcessExecutionResult) p.getExecutionResultForId(id).get();
     final String x = String.join("\n", a.getStdOut().orElse(Collections.emptyList()));
     assertTrue(x.contains("version-prelease"));
   }
@@ -366,7 +384,7 @@ public class ProcessRunnerTest {
   @Test
   public void testwithFakeChecksum() {
     final String id = UUID.randomUUID().toString();
-    ProcessExecutionFactory e2 = vpef.getFactoryForVersion("1.0.0", scratchDir, id, packerExecutable.toString()).get()
+    ProcessExecutionFactory<ProcessExecutor> e2 = vpef.getFactoryForVersion("1.0.0", scratchDir, id, packerExecutable.toString()).get()
 
         .withArguments(PACKER_VERSION_PARAMS)
 
@@ -374,7 +392,7 @@ public class ProcessRunnerTest {
 
         .withRelativeRoot(root)
 
-        .withChecksum(new Checksum("abcd"))
+        .withExecutableChecksum(new Checksum("abcd"))
 
     ;
     assertThrows(ProcessException.class, () -> runner.add(e2));

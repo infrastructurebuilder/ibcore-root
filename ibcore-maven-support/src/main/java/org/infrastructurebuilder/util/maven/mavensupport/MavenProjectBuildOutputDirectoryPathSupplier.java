@@ -37,8 +37,7 @@ public class MavenProjectBuildOutputDirectoryPathSupplier implements PathSupplie
 
   @Inject
   public MavenProjectBuildOutputDirectoryPathSupplier(MavenProjectSupplier project) {
-    this.target = Paths.get(requireNonNull(project, "null.supplier").get().getBuild().getOutputDirectory())
-        .toAbsolutePath();
+    this.target = Paths.get(requireNonNull(project).get().getBuild().getOutputDirectory()).toAbsolutePath();
   }
 
   @Override

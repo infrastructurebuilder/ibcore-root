@@ -19,6 +19,6 @@ package org.infrastructurebuilder.util.dag;
 
 import java.util.List;
 
-public interface DAGWalker<T extends Comparable<T>> extends AutoCloseable {
+public interface DAGWalker<T> extends AutoCloseable {
   void walk(DAG<T> dag, List<DAGVisitor<T>> visitors);
 }

@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -31,6 +32,14 @@ import org.infrastructurebuilder.util.dag.MutableVertex;
 import org.junit.jupiter.api.Test;
 
 public class DAGTest {
+  Comparator<String> cmp = new Comparator<>() {
+    @Override
+    public int compare(String o1, String o2) {
+      return o1.compareTo(o2);
+    }
+
+  };
+
   @Test
   public void testCycleException() {
     final CycleDetectedException e = new CycleDetectedException("Test Message", new ArrayList<String>());
@@ -40,7 +49,7 @@ public class DAGTest {
   @SuppressWarnings("rawtypes")
   @Test
   public void testDAG() throws CycleDetectedException {
-    final MutableDAG<String> dag = new DAGBuilderImpl.MutableDAGImpl<>();
+    final MutableDAG<String> dag = new DAGBuilderImpl.MutableDAGImpl<>(cmp);
 
     dag.addVertex("a");
     final MutableVertex<String> v = dag.getVertex("a");
@@ -146,7 +155,7 @@ public class DAGTest {
   })
   @Test
   public void testGetPredessors() throws CycleDetectedException {
-    final MutableDAG dag = new DAGBuilderImpl.MutableDAGImpl<>();
+    final MutableDAG dag = new DAGBuilderImpl.MutableDAGImpl<>(cmp);
 
     dag.addEdge("a", "b");
 

@@ -72,7 +72,7 @@ class FilesystemBlobstoreTest {
   @BeforeEach
   void setUp(VertxTestContext testContext) throws Exception {
     Path root = wps.get();
-    rrs = PathRefPathIF.fromPath(root, java.util.Optional.empty()).get().getFileSystem();
+    rrs = PathRefPathIF.fromPath(root, null).get().getFileSystem();
     this.fsbs = new FilesystemBlobstore(rrs, IBConstants.BLOBSTORE_NO_MAXBYTES);
     vertx = rtoc.vertx();
     // Prepare something on a Vert.x event-loop thread

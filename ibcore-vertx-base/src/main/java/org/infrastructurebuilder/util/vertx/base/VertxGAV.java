@@ -17,8 +17,7 @@
  */
 package org.infrastructurebuilder.util.vertx.base;
 
-import org.infrastructurebuilder.util.core.GAV;
-import org.json.JSONObject;
+import org.infrastructurebuilder.pathref.GAV;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

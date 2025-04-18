@@ -17,15 +17,22 @@
  */
 package org.infrastructurebuilder.util.executor;
 
-import static java.util.Objects.requireNonNull;
+import java.util.concurrent.Future;
 
-import java.util.Map;
+import org.infrastructurebuilder.util.executor.api.ExecutingProcess;
+import org.zeroturnaround.exec.ProcessResult;
 
-@FunctionalInterface
-public interface ExecutionEnvironmentFilter {
-  public ExecutionEnvironmentFilter defaultFilter = (m) -> {
-    return requireNonNull(m);
-  };
+public class DefaultExecutingProcess implements ExecutingProcess<ProcessResult> {
 
-  Map<String, String> filter(Map<String, String> inMap);
+  private final Future<ProcessResult> future;
+
+  public DefaultExecutingProcess(Future<ProcessResult> p) {
+    this.future = p;
+  }
+
+  @Override
+  public Future<ProcessResult> getProcess() {
+    return this.future;
+  }
+
 }

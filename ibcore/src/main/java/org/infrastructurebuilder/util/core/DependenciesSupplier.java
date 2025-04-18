@@ -20,6 +20,8 @@ package org.infrastructurebuilder.util.core;
 import java.util.List;
 import java.util.function.Supplier;
 
+import org.infrastructurebuilder.pathref.GAV;
+
 public interface DependenciesSupplier extends Supplier<List<GAV>> {
 
 }

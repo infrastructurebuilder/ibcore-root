@@ -17,9 +17,17 @@
  */
 package org.infrastructurebuilder.util.dag;
 
+import java.util.Comparator;
 import java.util.List;
 
-public interface Vertex<T extends Comparable<T>> extends Comparable<Vertex<T>> {
+public interface Vertex<T> extends Comparable<Vertex<T>> {
+
+  Comparator<T> getComparator();
+
+  @Override
+  default int compareTo(Vertex<T> o) {
+    return getComparator().compare(this.getLabel(), o.getLabel());
+  }
 
   List<T> getChildLabels();
 

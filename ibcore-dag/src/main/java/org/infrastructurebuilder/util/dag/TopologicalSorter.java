@@ -19,7 +19,7 @@ package org.infrastructurebuilder.util.dag;
 
 import java.util.List;
 
-public interface TopologicalSorter<T extends Comparable<T>> {
+public interface TopologicalSorter<T> {
 
   List<T> sort(DAG<T> graph);
 

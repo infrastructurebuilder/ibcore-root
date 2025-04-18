@@ -37,7 +37,7 @@ import org.infrastructurebuilder.pathref.api.base.ConfigMapConfigurable;
 import org.infrastructurebuilder.pathref.api.base.ResponsiveTo;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
 import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.pathref.util.readdetect.model.v0_0.IBResourceModel;
+import org.infrastructurebuilder.pathref.metadata.model.v0_0.IBResourceModel;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -19,7 +19,6 @@ package org.infrastructurebuilder.util.vertx.base;
 
 import static java.time.Instant.ofEpochSecond;
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.ofNullable;
 import static org.infrastructurebuilder.constants.IBConstants.INSTANT;
 import static org.infrastructurebuilder.pathref.ChecksumEnabled.CHECKSUM;
 

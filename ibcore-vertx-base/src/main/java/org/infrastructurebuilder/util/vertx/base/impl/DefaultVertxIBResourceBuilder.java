@@ -24,7 +24,6 @@ import static org.infrastructurebuilder.util.readdetect.api.IBResourceBuilderFac
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.time.Instant;
@@ -36,8 +35,7 @@ import java.util.function.Supplier;
 import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
-import org.infrastructurebuilder.pathref.fs.PathRefPath;
-import org.infrastructurebuilder.pathref.util.readdetect.model.v0_0.IBResourceModel;
+import org.infrastructurebuilder.pathref.metadata.model.v0_0.IBResourceModel;
 import org.infrastructurebuilder.util.readdetect.api.IBResource;
 import org.infrastructurebuilder.util.readdetect.api.IBResourceBuilder;
 import org.infrastructurebuilder.util.readdetect.api.IBResourceBuilderFactory;
@@ -133,11 +131,8 @@ public class DefaultVertxIBResourceBuilder implements IBResourceBuilder<Future<V
   }
 
   @Override
-  public IBResourceBuilder<Future<VertxIBResource>> withPermissions(Set<String> perms) {
-    if (perms != null) {
-      this.model.setPermissions(
-          PosixFilePermissions.toString(new HashSet<>(perms.stream().map(PosixFilePermission::valueOf).toList())));
-    }
+  public IBResourceBuilder<Future<VertxIBResource>> withPermissions(String perms) {
+    this.model.setPermissions(perms);
     return this;
   }
 

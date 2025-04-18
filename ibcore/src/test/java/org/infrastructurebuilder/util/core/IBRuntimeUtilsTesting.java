@@ -20,6 +20,8 @@ package org.infrastructurebuilder.util.core;
 import java.util.Collections;
 import java.util.List;
 
+import org.infrastructurebuilder.pathref.DefaultGAV;
+import org.infrastructurebuilder.pathref.GAV;
 import org.infrastructurebuilder.pathref.PathSupplier;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.pathref.api.TypeToExtensionMapper;

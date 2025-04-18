@@ -22,6 +22,8 @@ import static java.util.Collections.emptyList;
 import java.nio.file.Path;
 import java.util.List;
 
+import org.infrastructurebuilder.pathref.GAV;
+import org.infrastructurebuilder.pathref.GAVSupplier;
 import org.infrastructurebuilder.pathref.api.LoggerEnabled;
 import org.infrastructurebuilder.pathref.api.TypeToExtensionMapper;
 import org.infrastructurebuilder.util.credentials.basic.CredentialsFactory;

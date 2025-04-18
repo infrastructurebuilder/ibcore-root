@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.SortedSet;
 
+import org.infrastructurebuilder.pathref.GAV;
+import org.infrastructurebuilder.pathref.GAVSupplier;
 import org.infrastructurebuilder.pathref.PathSupplier;
 import org.infrastructurebuilder.pathref.api.LoggerSupplier;
 import org.infrastructurebuilder.pathref.api.TypeToExtensionMapper;
