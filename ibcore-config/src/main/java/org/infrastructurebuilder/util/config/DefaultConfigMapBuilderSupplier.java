@@ -40,7 +40,6 @@ public class DefaultConfigMapBuilderSupplier implements ConfigMapBuilderSupplier
 
   protected void resetConfigMapBuilder(ConfigMapBuilder l) {
     this.builder = l;
-
   }
 
   @Override

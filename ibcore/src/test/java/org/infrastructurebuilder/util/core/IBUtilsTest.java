@@ -230,7 +230,7 @@ public class IBUtilsTest {
     a.forEach(ss -> q.add(ss));
     String v = q.toString();
     Enumeration<Object> e = new StringTokenizer(v);
-    List<String> k = IBUtils.enumerationAsStream(e, true).map(Object::toString).toList();
+    List<String> k = IBUtils.enumerationAsStream(e, false).map(Object::toString).sorted().toList();
     assertEquals(a, k);
   }
 
@@ -245,7 +245,7 @@ public class IBUtilsTest {
     String v = q.toString();
     Enumeration<Object> e = new StringTokenizer(v);
     ArrayList<String> b = new ArrayList<>();
-    IBUtils.enumerationAsStream(e, true).forEach(o -> {
+    IBUtils.enumerationAsStream(e, false).map(Object::toString).sorted().forEach(o -> {
       b.add(o.toString());
     });
     assertEquals(a, b);

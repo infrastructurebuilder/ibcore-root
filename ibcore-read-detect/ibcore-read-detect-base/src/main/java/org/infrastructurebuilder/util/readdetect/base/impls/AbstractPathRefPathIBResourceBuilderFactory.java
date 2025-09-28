@@ -334,28 +334,33 @@ abstract public class AbstractPathRefPathIBResourceBuilderFactory
     @Override
     public JSONObject getMetadata() {
       var mx = this.m.getMetadata().orElse(new IBMetadataModel());
-      String x = "{}";
+      String x = null;
       try {
         x = ObjectMapperUtils.mapper.get().writeValueAsString(mx);
       } catch (JsonProcessingException | JSONException e) {
-        log.error("Error with processing metadata" + x);
+        log.error("Error with processing metadata" + ofNullable(x).orElse("no metadata"));
+        x = "{}";
       }
       return new JSONObject(x);
     }
 
+    private void _resetByteStream() {
+      this.byteStreamChecksum = null;
+      
+    }
     protected void setName(String name) {
       this.m.setStreamName(name);
-      this.byteStreamChecksum = null;
+      this._resetByteStream();
     }
 
     protected void setDescription(String desc) {
       this.m.setDescription(desc);
-      this.byteStreamChecksum = null;
+      this._resetByteStream();
     }
 
     public void setSource(String source) {
       this.m.setStreamSource(requireNonNull(source));
-      this.byteStreamChecksum = null;
+      this._resetByteStream();
     }
 
     @Override

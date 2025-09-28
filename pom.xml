@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.infrastructurebuilder</groupId>
     <artifactId>ibparent</artifactId>
-    <version>108</version>
+    <version>112-SNAPSHOT</version>
   </parent>
 
   <artifactId>ibcore-root</artifactId>
@@ -227,11 +227,13 @@
         <version>${project.version}</version>
         <type>test-jar</type>
       </dependency>
-      <dependency>
+      <!-- 
+	  <dependency>
         <groupId>org.infrastructurebuilder.pathref</groupId>
         <artifactId>ibcore-pathref-setpath</artifactId>
         <version>${project.version}</version>
       </dependency>
+	  -->
       <dependency>
         <groupId>org.infrastructurebuilder.util.executor.model</groupId>
         <artifactId>ibcore-executor-model</artifactId>

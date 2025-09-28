@@ -24,10 +24,10 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.pathref.base.AbstractBasicPathPropertiesPathRefProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.infrastructurebuilder.pathref.TestingPathSupplier;
 
 /**
  * This is primarily for testing purposes, as its source is a {@link TestingPathSupplier} and those are very IB

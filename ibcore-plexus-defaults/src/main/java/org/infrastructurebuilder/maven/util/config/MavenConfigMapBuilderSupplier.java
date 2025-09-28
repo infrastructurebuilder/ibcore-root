@@ -108,8 +108,4 @@ public class MavenConfigMapBuilderSupplier extends DefaultConfigMapBuilderSuppli
     return MAVEN;
   }
 
-  protected void addASingle(JSONObject jsonObject) {
-    super.addASingle(jsonObject);
-
-  }
 }

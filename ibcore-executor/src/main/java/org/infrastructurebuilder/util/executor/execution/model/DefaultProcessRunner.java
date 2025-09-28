@@ -59,14 +59,16 @@ import org.zeroturnaround.exec.ProcessExecutor;
 import org.zeroturnaround.exec.ProcessResult;
 import org.zeroturnaround.exec.StartedProcess;
 
-public class DefaultProcessRunner implements ProcessRunner<ProcessExecutor> {
+public class DefaultProcessRunner implements ProcessRunner<ProcessExecutor, ProcessResult> {
 
   private final Optional<PrintStream> addl;
   private boolean keepScratchDir = false;
   private final Logger logger;
 
-  private final AtomicReference<Set<Future<ProcessExecutionResult<ProcessExecutor>>>> locked = new AtomicReference<>(null);
-  private final AtomicReference<ProcessExecutionResultBag<ProcessExecutor>> result = new AtomicReference<>(null);
+  private final AtomicReference<Set<Future<ProcessExecutionResult<ProcessExecutor>>>> locked = new AtomicReference<>(
+      null);
+  private final AtomicReference<ProcessExecutionResultBag<ProcessExecutor, ProcessResult>> result = new AtomicReference<>(
+      null);
 
   private final Path scratchDir;
   private final Vector<ProcessExecution<ProcessExecutor>> serialList = new Vector<>();
@@ -113,7 +115,7 @@ public class DefaultProcessRunner implements ProcessRunner<ProcessExecutor> {
   }
 
   @Override
-  public Optional<ProcessExecutionResultBag<ProcessExecutor>> get() {
+  public Optional<ProcessExecutionResultBag<ProcessExecutor, ProcessResult>> get() {
     return ofNullable(result.get());
   }
 
@@ -214,7 +216,7 @@ public class DefaultProcessRunner implements ProcessRunner<ProcessExecutor> {
   }
 
   @Override
-  public ProcessRunner<ProcessExecutor> setKeepScratchDir(final boolean keepScratchDir) {
+  public ProcessRunner<ProcessExecutor, ProcessResult> setKeepScratchDir(final boolean keepScratchDir) {
     this.keepScratchDir = keepScratchDir;
     return this;
   }

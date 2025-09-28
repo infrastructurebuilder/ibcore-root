@@ -67,8 +67,8 @@ abstract public class AbstractIBResourceBuilderFactory<I> //
   abstract protected Supplier<? extends IBResourceBuilder<I>> getBuilder();
 
   @Override
-  public int respondsTo(String input) {
-    return getName().equals(input) ? 0 : -1;
+  public boolean respondsTo(String input) {
+    return getName().equals(input);
   }
 
   @Override

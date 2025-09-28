@@ -17,45 +17,41 @@
  */
 package org.infrastructurebuilder.util.executor.execution.model;
 
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
-import static java.util.Collections.unmodifiableSet;
-
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Future;
 
+import org.infrastructurebuilder.util.executor.api.AbstractProcessExecutionResultBag;
 import org.infrastructurebuilder.util.executor.api.ProcessExecutionResult;
-import org.infrastructurebuilder.util.executor.api.ProcessExecutionResultBag;
 import org.zeroturnaround.exec.ProcessExecutor;
 import org.zeroturnaround.exec.ProcessResult;
 
-public class DefaultProcessExecutionResultBag implements ProcessExecutionResultBag<ProcessExecutor> {
+public class DefaultProcessExecutionResultBag extends AbstractProcessExecutionResultBag<ProcessExecutor, ProcessResult> {
 
-  private final List<String> executedIds;
-  private final Map<String, ProcessExecutionResult<ProcessExecutor>> executions;
-  private final Map<String, Future<ProcessResult>> futures;
+  final static DefaultProcessExecutionResultBag from(MutableProcessExecutionResultBag r) {
+    Map<String, ProcessExecutionResult<ProcessExecutor>> a = r.getExecutionResults();
+    List<String> b = r.getExecutedIds();
+    Map<String, Future<ProcessResult>> c = r.getRunningFutures();
+    return new DefaultProcessExecutionResultBag(a, b, c);
 
-  DefaultProcessExecutionResultBag(final MutableProcessExecutionResultBag r) {
-    executions = unmodifiableMap(r.getExecutionResults());
-    executedIds = unmodifiableList(r.getExecutedIds());
-    futures = unmodifiableMap(r.getRunningFutures());
   }
 
-  @Override
-  public List<String> getExecutedIds() {
-    return executedIds;
-  }
+//  DefaultProcessExecutionResultBag(final MutableProcessExecutionResultBag r) {
+//    super(r.getExecutionResults()
+//
+//        , r.getExecutedIds()
+//
+//        , r.getRunningFutures());
+//
+//    Map<String, ProcessExecutionResult<ProcessExecutor>> r1 = r.getExecutionResults();
+//  }
 
-  @Override
-  public Map<String, ProcessExecutionResult<ProcessExecutor>> getExecutions() {
-    return executions;
-  }
+  public DefaultProcessExecutionResultBag(Map<String, ProcessExecutionResult<ProcessExecutor>> a
 
-  @Override
-  public Set<String> getIncompleteFuturesIds() {
-    return unmodifiableSet(this.futures.keySet());
+      , List<String> b
+
+      , Map<String, Future<ProcessResult>> c) {
+    super(a, b, c);
   }
 
 }

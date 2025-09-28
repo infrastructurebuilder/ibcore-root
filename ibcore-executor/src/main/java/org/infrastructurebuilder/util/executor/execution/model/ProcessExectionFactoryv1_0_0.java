@@ -37,6 +37,7 @@ import java.util.Objects;
 
 import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
+import org.infrastructurebuilder.pathref.fs.PathRefPath;
 import org.infrastructurebuilder.util.executor.api.ProcessException;
 import org.infrastructurebuilder.util.executor.api.ProcessExecution;
 import org.infrastructurebuilder.util.executor.api.ProcessExecutionFactory;
@@ -104,8 +105,8 @@ public class ProcessExectionFactoryv1_0_0 implements ProcessExecutionFactory<Pro
   }
 
   @Override
-  public ProcessExecutionFactory<ProcessExecutor> withArguments(String... args) {
-    this.args = Arrays.asList(requireNonNull(args));
+  public ProcessExecutionFactory<ProcessExecutor> withArguments(List<String> args) {
+    this.args = Objects.requireNonNull(args);
     return this;
   }
 
@@ -117,8 +118,8 @@ public class ProcessExectionFactoryv1_0_0 implements ProcessExecutionFactory<Pro
 
   @Override
   public ProcessExecutionFactory<ProcessExecutor> withStdIn(Path stdIn) {
-    if (requireNonNull(stdIn).isAbsolute())
-      throw new ProcessException("stdin must be a relative %s".formatted(stdIn));
+    if (!(requireNonNull(stdIn) instanceof PathRefPath))
+      throw new ProcessException("stdin must be a PathRefPath per the root %s".formatted(stdIn));
     this.stdIn = stdIn.toString();
     return this;
   }

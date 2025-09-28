@@ -17,57 +17,24 @@
  */
 package org.infrastructurebuilder.util.executor.execution.model;
 
-import static java.util.Objects.requireNonNull;
-
-import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-import org.infrastructurebuilder.pathref.ChecksumBuilder;
-import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
-import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
+import org.infrastructurebuilder.util.executor.api.AbstractProcessExecutionResult;
 import org.infrastructurebuilder.util.executor.api.ProcessExecution;
-import org.infrastructurebuilder.util.executor.api.ProcessExecutionResult;
-import org.infrastructurebuilder.util.executor.model.utils.IBCoreExecutorModelUtils;
-import org.infrastructurebuilder.util.executor.model.v1_0.Environment;
-import org.infrastructurebuilder.util.executor.model.v1_0.GeneratedProcessExecutionResult;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeroturnaround.exec.ProcessExecutor;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-public class DefaultProcessExecutionResult implements ProcessExecutionResult<ProcessExecutor> {
+public class DefaultProcessExecutionResult extends AbstractProcessExecutionResult<ProcessExecutor> {
   private final static Logger log = LoggerFactory.getLogger(DefaultProcessExecutionResult.class);
-  private final GeneratedProcessExecutionResult gper;
-  private final ProcessExecution<ProcessExecutor> processExecution;
-  private final PathRefFileSystem pr;
 
   @SuppressWarnings("unchecked")
-  public DefaultProcessExecutionResult(ProcessExecution<ProcessExecutor> pe, Optional<Integer> exitCode, Optional<Throwable> exception,
-      Instant startTime, Duration between)
+  public DefaultProcessExecutionResult(ProcessExecution<ProcessExecutor> pe, Optional<Integer> exitCode,
+      Optional<Throwable> exception, Instant startTime, Duration between)
   {
-
-    this.processExecution = requireNonNull(pe);
-    this.pr = pe.getRoot();
-    this.gper = GeneratedProcessExecutionResult.builder() //
-        .withEnvironment(new Environment()) //
-        .withStart(startTime) //
-        .withRunTime(between.toString()) //
-        .withExecutionException(toNullableExecutionException.apply(exception)) //
-        .withResultCode((exitCode.orElse(0)).toString()) //
-        .withStdOut(pe.getStdOut().get()) //
-        .withStdErr(pe.getStdErr().get()) //
-        .withStdInPath(pe.getStdIn().map(Path::toString).orElse(null)) // )
-
-        .withRoot(this.pr.toString())
-
-        .build();
-    this.gper.setId(asChecksum().toString());
+    super(pe, exitCode, exception, startTime, between);
   }
 
   @Override
@@ -77,74 +44,5 @@ public class DefaultProcessExecutionResult implements ProcessExecutionResult<Pro
     return false;
   }
 
-  @Override
-  public String getId() {
-    return this.gper.getId();
-  }
-
-  @Override
-  public Instant getStartTime() {
-    return this.gper.getStart();
-  }
-
-  @Override
-  public Optional<JSONObject> getException() {
-    var o = IBCoreExecutorModelUtils.getObjectMapper();
-    return this.gper.getExecutionException().map(e -> {
-      try {
-        return o.writeValueAsString(e);
-      } catch (JsonProcessingException e1) {
-        log.error("Error processinging getException()", e1);
-        return null;
-      }
-    }).map(JSONObject::new);
-  }
-
-  @Override
-  public Optional<ProcessExecution<ProcessExecutor>> getExecution() {
-    return Optional.ofNullable(this.processExecution);
-  }
-
-  @Override
-  public Map<String, String> getExecutionEnvironment() {
-    return DefaultProcessExecution.fromEnvironment.apply(this.gper.getEnvironment());
-  }
-
-  @Override
-  public Optional<Integer> getResultCode() {
-    return this.gper.getResultCode().map(Integer::valueOf);
-  }
-
-  @Override
-  public Duration getRunningtime() {
-    return Duration.parse(this.gper.getRunTime());
-  }
-
-  @Override
-  public Optional<List<String>> getStdErr() {
-    return this.gper.getStdErr();
-  }
-
-  @Override
-  public Optional<List<String>> getStdOut() {
-    return this.gper.getStdOut();
-  }
-
-  public Optional<ChecksumBuilder> getChecksumBuilder() {
-    return Optional.of(ChecksumBuilderFactory.newInstance(getRoot().orElse(null)) //
-        .addJSONObject(getException()) //
-        .addMapStringString(getExecutionEnvironment()) //
-        .addInteger(getResultCode()) //
-        .addDuration(getRunningtime()) //
-        .addInstant(getStartTime()) //
-        .addListString(getStdErr()) //
-        .addListString(getStdOut()) //
-        .addChecksumEnabled(getExecution()) //
-    );
-  }
-
-  public Optional<PathRefFileSystem> getRoot() {
-    return Optional.ofNullable(pr);
-  }
 
 }

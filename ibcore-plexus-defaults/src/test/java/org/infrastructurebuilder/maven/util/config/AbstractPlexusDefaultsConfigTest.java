@@ -41,6 +41,7 @@ import org.apache.maven.model.Build;
 import org.apache.maven.model.Model;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.utils.xml.Xpp3Dom;
 import org.infrastructurebuilder.pathref.TestingPathSupplier;
 import org.infrastructurebuilder.pathref.api.ConfigMap;
 import org.junit.jupiter.api.BeforeAll;

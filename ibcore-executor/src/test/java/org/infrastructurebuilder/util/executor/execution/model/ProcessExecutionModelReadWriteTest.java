@@ -47,6 +47,9 @@ class ProcessExecutionModelReadWriteTest {
 
   @BeforeEach
   void setUp() throws Exception {
+    Instant now = Instant.now();
+    Duration one = Duration.ofMinutes(1L);
+    Instant end = now.plus(one);
     this.id = UUID.randomUUID().toString();
     this.stdErr = List.of("");
     this.stdOut = List.of("Hello, world");
@@ -56,8 +59,9 @@ class ProcessExecutionModelReadWriteTest {
     this.m.setEnvironment(e);
     this.m.setExecutionException(null);
     this.m.setResultCode("0");
-    this.m.setRunTime(Duration.ofMinutes(1L).toString());
-    this.m.setStart(Instant.now());
+    this.m.setDuration(one.toString());
+    this.m.setStartTime(now);
+    this.m.setEndTime(end);
     this.m.setStdErr(this.stdErr);
     this.m.setStdOut(this.stdOut);
   }

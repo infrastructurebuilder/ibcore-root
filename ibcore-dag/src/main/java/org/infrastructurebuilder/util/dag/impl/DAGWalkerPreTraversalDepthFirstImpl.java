@@ -33,7 +33,7 @@ import org.infrastructurebuilder.util.dag.DAGVisitor;
 import org.infrastructurebuilder.util.dag.DAGWalker;
 import org.infrastructurebuilder.util.dag.Vertex;
 
-public class DAGWalkerPreTraversalDepthFirstImpl<T extends Comparable<T>> implements DAGWalker<T> {
+public class DAGWalkerPreTraversalDepthFirstImpl<T> implements DAGWalker<T> {
 
   public DAGWalkerPreTraversalDepthFirstImpl() {
   }
@@ -60,7 +60,6 @@ public class DAGWalkerPreTraversalDepthFirstImpl<T extends Comparable<T>> implem
       final List<DAGVisitor<T>> visitors) {
     DAGVisitResult result = CONTINUE;
     synchronized (entered) {
-
       if (entered.contains(node))
         return CONTINUE;
       entered.add(node);

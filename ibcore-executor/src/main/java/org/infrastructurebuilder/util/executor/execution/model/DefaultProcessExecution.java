@@ -41,6 +41,7 @@ import org.infrastructurebuilder.pathref.Checksum;
 import org.infrastructurebuilder.pathref.ChecksumBuilder;
 import org.infrastructurebuilder.pathref.ChecksumBuilderFactory;
 import org.infrastructurebuilder.pathref.fs.PathRefFileSystem;
+import org.infrastructurebuilder.util.executor.api.AbstractProcessExecutionResult;
 import org.infrastructurebuilder.util.executor.api.ListCapturingLogOutputStream;
 import org.infrastructurebuilder.util.executor.api.ModeledProcessExecution;
 import org.infrastructurebuilder.util.executor.api.ProcessException;
@@ -52,17 +53,6 @@ import org.zeroturnaround.exec.ProcessExecutor;
 
 public class DefaultProcessExecution implements ProcessExecution<ProcessExecutor> {
 
-  public final static Function<Map<String, String>, Environment> toEnvironment = (m) -> {
-    return new Environment(requireNonNull(m).entrySet().stream() //
-        .map(e -> new EnvEntry(e.getKey(), e.getValue())) //
-        .collect(Collectors.toSet()));
-  };
-  public final static Function<Environment, Map<String, String>> fromEnvironment = (e) -> {
-    return requireNonNull(e).getEnvEntry().map(l -> l.stream() //
-        .collect(Collectors //
-            .toMap(k -> k.getKey(), v -> v.getValue())))
-        .orElseGet(Collections::emptyMap);
-  };
   private final ModeledProcessExecution model;
   private final PrintStream addl;
   private ProcessExecutor executor;
@@ -108,7 +98,7 @@ public class DefaultProcessExecution implements ProcessExecution<ProcessExecutor
         null, // getStdErr().getPath().map(Path::toString).orElse(null), //
         null, // stdIn.map(Path::toString).orElse(null), //
 
-        requireNonNull(environment).map(DefaultProcessExecution.toEnvironment::apply).map(Environment::new)
+        requireNonNull(environment).map(AbstractProcessExecutionResult.toEnvironment::apply).map(Environment::new)
             .orElseGet(() -> new Environment()));
 
     if (getWorkDirectory().getFileSystem() != root)
@@ -154,7 +144,7 @@ public class DefaultProcessExecution implements ProcessExecution<ProcessExecutor
     Integer[] exitValues = (Integer[]) l.toArray(new Integer[l.size()]);
     File w = getWorkDirectory().toFile();
     log.debug("Working directory for {} is {}", getId(), w);
-    final ProcessExecutor pe = new ProcessExecutor()
+    ProcessExecutor _pe = new ProcessExecutor()
 
         .environment(getExecutionEnvironment())
 
@@ -164,14 +154,23 @@ public class DefaultProcessExecution implements ProcessExecution<ProcessExecutor
 
         .redirectOutput(getStdOut())
 
-        .redirectInput(
-            getStdIn().map(si -> ProcessException.pet.returns(() -> Files.newInputStream(si))).orElse(System.in))
+//        .redirectInput(
+//            getStdIn().map(si -> ProcessException.pet.returns(() -> Files.newInputStream(si))).orElse(System.in))
 
         .exitValues(exitValues)
 
         .command(command)
 
     ;
+    
+    
+    if (getStdIn().isPresent()) {
+      var sip = getStdIn().get();
+      var fi =  ProcessException.pet.returns(() -> Files.newInputStream(sip));
+      _pe = _pe.redirectInput(fi);
+    }
+    final ProcessExecutor pe = _pe;
+
     if (getTimeout().isPresent()) {
       final Duration d = getTimeout().get();
       if (d.isNegative())
@@ -213,7 +212,9 @@ public class DefaultProcessExecution implements ProcessExecution<ProcessExecutor
 
   @Override
   public Optional<Path> getStdIn() {
-    return model.getStdInPath().map(Paths::get);
+    return model.getStdInPath().map(p -> {
+      return getRoot().getPath(p);
+    });
   }
 
   @Override
@@ -238,7 +239,7 @@ public class DefaultProcessExecution implements ProcessExecution<ProcessExecutor
 
   @Override
   public Map<String, String> getExecutionEnvironment() {
-    return model.getEnvironment().map(DefaultProcessExecution.fromEnvironment).orElseGet(Collections::emptyMap);
+    return model.getEnvironment().map(AbstractProcessExecutionResult.fromEnvironment).orElseGet(Collections::emptyMap);
   }
 
   @Override

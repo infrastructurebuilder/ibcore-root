@@ -77,7 +77,6 @@
       <!--
       <version>4.9.1.1-SNAPSHOT</version>
 -->
-      <version>4.9.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.inject</groupId>
@@ -131,6 +130,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>net.bytebuddy</groupId>
+      <artifactId>byte-buddy</artifactId>
+      <version>1.17.7</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.infrastructurebuilder</groupId>
       <artifactId>ibcore</artifactId>
     </dependency>
@@ -138,6 +143,11 @@
       <groupId>org.infrastructurebuilder.pathref</groupId>
       <artifactId>ibpathref-api</artifactId>
       <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

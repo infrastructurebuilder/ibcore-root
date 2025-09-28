@@ -31,6 +31,7 @@ import org.infrastructurebuilder.util.executor.api.VersionedProcessExecutionFact
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.zeroturnaround.exec.ProcessExecutor;
 
 class VersionedProcessExecutionFactoryTest {
   private final static TestingPathSupplier wps = new TestingPathSupplier();
@@ -43,14 +44,14 @@ class VersionedProcessExecutionFactoryTest {
         .get();
   }
 
-  private VersionedProcessExecutionFactory ef;
+  private VersionedProcessExecutionFactory<ProcessExecutor> ef;
   private PathRefPath scratchDir;
 
   @BeforeEach
 
   void setUp() throws Exception {
     scratchDir = root.getPath(UUID.randomUUID().toString());
-    ef = new VersionedProcessExecutionFactory() {
+    ef = new VersionedProcessExecutionFactory<>() {
 
       @Override
       public PathRefPath getScratchDir() {
@@ -58,14 +59,14 @@ class VersionedProcessExecutionFactoryTest {
       }
 
       @Override
-      public Optional<ProcessExecutionFactory> getFactoryForVersion(String version, String workDirectory, String id,
+      public Optional<ProcessExecutionFactory<ProcessExecutor>> getFactoryForVersion(String version, String workDirectory, String id,
           String executable) {
         // TODO Auto-generated method stub
         return Optional.empty();
       }
 
       @Override
-      public ProcessExecutionFactory getDefaultFactory(String workDirectory, String id, String executable) {
+      public ProcessExecutionFactory<ProcessExecutor> getDefaultFactory(String workDirectory, String id, String executable) {
         // TODO Auto-generated method stub
         return null;
       }

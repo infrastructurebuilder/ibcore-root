@@ -153,7 +153,7 @@ public class MutableProcessExecutionResultBag extends ProcessListener {
   }
 
   public DefaultProcessExecutionResultBag lock() {
-    return new DefaultProcessExecutionResultBag(this);
+    return DefaultProcessExecutionResultBag.from(this);
   }
 
   public void setException(final ProcessExecution<ProcessExecutor> pe, final Throwable t) {

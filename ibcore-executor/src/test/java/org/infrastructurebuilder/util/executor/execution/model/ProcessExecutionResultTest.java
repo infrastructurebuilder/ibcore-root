@@ -67,6 +67,7 @@ import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zeroturnaround.exec.ProcessExecutor;
 import org.zeroturnaround.exec.ProcessOutput;
 import org.zeroturnaround.exec.ProcessResult;
 
@@ -89,7 +90,7 @@ public class ProcessExecutionResultTest {
 
   private DefaultProcessExecutionResult res;
 
-  private ProcessExecutionResult res3;
+  private ProcessExecutionResult<ProcessExecutor> res3;
 
   private List<String> stdErr = List.of("Hi", "there");
 
@@ -203,7 +204,7 @@ public class ProcessExecutionResultTest {
         + "  ],\n" //
         + "  \"start\": \"1970-01-01T00:00:00.100000000Z\",\n" //
         + "  \"result-code\": 0,\n" //
-        + "  \"runtime\": \"PT0.1S\",\n" //
+        + "  \"duration\": \"PT0.1S\",\n" //
         + "  \"std-err\": [\n" //
         + "    \"Hi\",\n" //
         + "    \"there\"\n" //
@@ -355,7 +356,7 @@ public class ProcessExecutionResultTest {
     final Duration d = ofMillis(100L);
     final Instant end = x.plus(d);
     assertEquals(x, res.getStartTime());
-    assertEquals(d, res.getRunningtime());
+    assertEquals(d, res.getDuration());
     assertEquals(end, res.getEndTime());
 
   }
